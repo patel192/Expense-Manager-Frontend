@@ -2191,30 +2191,30 @@ button,
   font-size: 0.9em; }
   #footer .copyright a {
     color: inherit; }
-    .main-nav {
+    .nav {
       position: sticky;
       top: 0;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       padding: 0.8rem 4rem;
-      background-color:rgb(37, 179, 6);
+      background-color:#24dd17;
       transition: top 500ms ease-in-out;
       border-radius: 40px;
       margin-top: 0px;
     }
-    .nav-links a {
+    .links a {
       display: inline-block;
       margin: 0 1em;
     }
-    .main-nav a {
+    .nav a {
       color: white;
       text-decoration: none;
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.2em;
     }
-    .main-nav a:hover {
+    .nav a:hover {
       color: rgb(74, 7, 150);
     }
 
