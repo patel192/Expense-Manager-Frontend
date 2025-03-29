@@ -1,17 +1,16 @@
-import React from 'react'
-
+import React from "react";
 export const Content = () => {
   return (
-    <div class="content">
-         
-        <div>
+    <div>
+      <section id="banner">
+        <div class="content">
           <header>
             <h1>
-              Welcome To
+              Hi, I’m Editorial
               <br />
-              Expense Manager
+              by HTML5 UP
             </h1>
-            <p>Unlock financial freedom, one expense at a time</p>
+            <p>A free and fully responsive site template</p>
           </header>
           <p>
             Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin
@@ -31,9 +30,7 @@ export const Content = () => {
         <span class="image object">
           <img src="src\assets\Images\614y4xnqgdL.png" alt="" />
         </span>
-
-
-      {/* <!-- Section --> */}
+      </section>
       <section>
         <header class="major">
           <h2>Erat lacinia</h2>
@@ -85,8 +82,6 @@ export const Content = () => {
           </article>
         </div>
       </section>
-
-      {/* <!-- Section --> */}
       <section>
         <header class="major">
           <h2>Ipsum sed dolor</h2>
@@ -203,5 +198,5 @@ export const Content = () => {
         </div>
       </section>
     </div>
-  )
-}
+  );
+};

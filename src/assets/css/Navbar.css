@@ -14,7 +14,7 @@ body {
     flex-wrap: wrap;
     justify-content: space-between;
     padding: 0.8rem 4rem;
-    background-color:rgb(152, 135, 183);
+    background-color:rgb(0, 255, 8);
     transition: top 500ms ease-in-out;
     border-radius: 40px;
     margin: 10px 15px auto 15px;
@@ -23,6 +23,7 @@ body {
   .links {
     display: flex;
     margin: 0 -1em;
+    text-decoration: none;
   }
   
   .links a {
@@ -48,7 +49,7 @@ body {
     letter-spacing: 0.2em;
   }
   nav a:hover {
-    color: rgb(74, 7, 150);
+    color: rgb(16, 113, 19);
   }
   
 

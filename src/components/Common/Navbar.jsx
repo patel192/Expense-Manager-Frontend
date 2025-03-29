@@ -2,7 +2,7 @@ import React from "react";
 import { Link, Outlet } from "react-router-dom";
 export const Navbar = ({ toggleSidebar }) => {
   return (
-    <div class="inner">
+    <div>
       <header id="header">
         <nav class="nav">
           <div>
@@ -11,7 +11,7 @@ export const Navbar = ({ toggleSidebar }) => {
             </a>
           </div>
           <div class="links">
-            <Link to="/home">Home</Link>
+            <Link to="/">Home</Link>
             <Link to="#">Contact</Link>
             <Link to="#">About</Link>
             <Link to="#">Features</Link>
