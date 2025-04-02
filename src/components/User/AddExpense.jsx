@@ -32,6 +32,7 @@ export const AddExpense = () => {
       const res = await axios.post("/expense", finalData);
       if (res.status == 201) {
         alert("expense added successfully");
+        window.location.reload();
       } else {
         alert("Error");
       }
