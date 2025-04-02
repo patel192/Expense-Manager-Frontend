@@ -1,4 +1,5 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom'
 
 export const AdminNavbar = () => {
   return (
@@ -37,7 +38,7 @@ export const AdminNavbar = () => {
     </header>
     
       <div className="middle">
-        
+        <Outlet></Outlet>
       </div>
     
   </div>

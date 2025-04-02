@@ -6,7 +6,7 @@ export const UserNavbar = () => {
     <div>
       <header id="header">
         <a href="index.html" class="logo">
-          <strong>Editorial</strong> by HTML5 UP
+          <strong>Hey</strong> Welcome
         </a>
         <ul class="icons">
           <li>
@@ -38,7 +38,7 @@ export const UserNavbar = () => {
       </header>
       
         <div className="middle">
-          
+       <Outlet></Outlet>   
         </div>
       
     </div>

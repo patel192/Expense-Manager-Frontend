@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import "./assets/css/fontawesome-all.min.css";
 import "./assets/css/Navbar.css";
 import { Login } from "./Login";
-import { Navbar } from "./components/Common/Navbar";
+import axios from "axios";
 
 import { Signup } from "./Signup";
 import { Content } from "./components/Common/Content";
@@ -25,6 +25,7 @@ import { ReportAdmins } from "./components/Admin/ReportAdmins";
 import { Systemlog } from "./components/Admin/Systemlog";
 
 function App() {
+  axios.defaults.baseURL = "http://localhost:3001/api";
   return (
     <Routes>
      <Route  element={<PublicLayout/>}>
@@ -40,10 +41,10 @@ function App() {
      <Route path="income" element={<Income/>}></Route>
      <Route path="reports" element={<Reports/>}></Route>
      <Route path="transaction" element={<Transaction/>}></Route>
-     <Route path="dashboard" element={<UserDashboard/>}></Route>
+     <Route path="userdashboard" element={<UserDashboard/>}></Route>
      </Route>
      
-     <Route path="/admin" index element={<AdminLayout/>}>
+     <Route path="/admin" element={<AdminLayout/>}>
      <Route path="admindashboard" element={<AdminDashboard/>}></Route>
      <Route path="accesscontrol" element={<Accesscontrol/>}></Route>
      <Route path="managecategories" element={<ManageCategories/>}></Route>

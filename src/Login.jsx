@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import "./assets/css/Login.css"
@@ -29,9 +30,9 @@ export const Login = () => {
   
                   // Navigate to appropriate dashboard
                   if (res.data.data.roleId.name === "User") {
-                      Navigate("/dashboard");
+                      Navigate("/private/userdashboard");
                   } else if (res.data.data.roleId.name === "Admin") {
-                      Navigate("/admindashboard");
+                      Navigate("/admin/admindashboard");
                   }
               } else {
                   console.error("Invalid response structure, missing required fields.");

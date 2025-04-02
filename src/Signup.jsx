@@ -14,9 +14,7 @@ export const Signup = () => {
 
   const submitHandler = async (data) => {
     try {
-      console.log("Form Data Before Sending:", data); // Debugging
-
-      const res = await axios.post("/user", data); // Correct API path
+       const res = await axios.post("/user", data); // Correct API path
 
       if (res.status === 201) {
         alert("User created successfully");
