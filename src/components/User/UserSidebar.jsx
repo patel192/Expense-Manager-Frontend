@@ -23,8 +23,8 @@ export const UserSidebar = () => {
             <li>
               <span class="opener active">Expenses</span>
               <ul>
-                <li><Link to="/private/addexpense"></Link>Add Expense</li>
-                <li><a href="#">All Expenses</a></li>
+                <li><Link to="/private/addexpense">Add Expense</Link></li>
+                <li><Link to="/private/allexpenses">All Expenses</Link></li>
                 
               </ul>
             </li>

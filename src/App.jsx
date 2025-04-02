@@ -23,6 +23,7 @@ import { ManageCategories } from "./components/Admin/ManageCategories";
 import { ManageUsers } from "./components/Admin/ManageUsers";
 import { ReportAdmins } from "./components/Admin/ReportAdmins";
 import { Systemlog } from "./components/Admin/Systemlog";
+import { AllExpenses } from "./components/User/AllExpenses";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
@@ -37,6 +38,7 @@ function App() {
      </Route>
      <Route path="/private" element={<PrivateLayout/>}>
      <Route path="addexpense" element={<AddExpense/>}></Route>
+     <Route path="allexpenses" element={<AllExpenses/>}></Route>
      <Route path="budget" element={<Budget/>}></Route>
      <Route path="income" element={<Income/>}></Route>
      <Route path="reports" element={<Reports/>}></Route>
