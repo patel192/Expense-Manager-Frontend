@@ -6,19 +6,20 @@ import { useEffect } from "react";
 
 export const AllExpenses = () => {
   const [expenses, setExpenses] = useState([]); // State to store fetched expenses
-
+  
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/api/expenses"); 
+        const res =await axios.get("http://localhost:3001/api/expenses"); 
         setExpenses(res.data.data);
       } catch (error) {
         console.error("Error fetching expenses:", error);
       }
     };
-
+    
     fetchExpenses();
   }, []);
+  
   return (
     <div>
       <div style={{textAlign:"center",fontSize:"20px",color:"black"}}>All Expenses</div>
@@ -33,6 +34,8 @@ export const AllExpenses = () => {
             <div className="expense-amount">₹{expense.amount}</div>
             <div className="expense-date">{new Date(expense.date).toLocaleDateString()}</div>
           </div>
+          <div>
+            <button style={{background:"red"}}>Delete</button></div>
         </div>
       ))
     ) : (

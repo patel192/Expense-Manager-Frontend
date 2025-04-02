@@ -10,9 +10,9 @@ import { ForgotPassword } from "./ForgotPassword";
 import { ResetPassword } from "./ResetPassword";
 import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateLayout } from "./components/Layouts/PrivateLayout";
-import { AddExpense } from "./components/User/AddExpense";
+import { AddExpense } from "./components/User/Expense/AddExpense";
 import { AdminLayout } from "./components/Layouts/AdminLayout";
-import { Budget } from "./components/User/Budget";
+
 import { Reports } from "./components/User/Reports";
 import { Income } from "./components/User/Income";
 import { Transaction } from "./components/User/Transaction";
@@ -23,7 +23,9 @@ import { ManageCategories } from "./components/Admin/ManageCategories";
 import { ManageUsers } from "./components/Admin/ManageUsers";
 import { ReportAdmins } from "./components/Admin/ReportAdmins";
 import { Systemlog } from "./components/Admin/Systemlog";
-import { AllExpenses } from "./components/User/AllExpenses";
+import { AllExpenses } from "./components/User/Expense/AllExpenses";
+import { SetBudget } from "./components/User/Budget/SetBudget";
+import { ViewBudget } from "./components/User/Budget/ViewBudget";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
@@ -39,7 +41,8 @@ function App() {
      <Route path="/private" element={<PrivateLayout/>}>
      <Route path="addexpense" element={<AddExpense/>}></Route>
      <Route path="allexpenses" element={<AllExpenses/>}></Route>
-     <Route path="budget" element={<Budget/>}></Route>
+     <Route path="addbudget" element={<SetBudget/>}></Route>
+     <Route path="allbudget" element={<ViewBudget/>}></Route>
      <Route path="income" element={<Income/>}></Route>
      <Route path="reports" element={<Reports/>}></Route>
      <Route path="transaction" element={<Transaction/>}></Route>

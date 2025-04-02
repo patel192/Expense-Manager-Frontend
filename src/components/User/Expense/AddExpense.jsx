@@ -13,7 +13,7 @@ export const AddExpense = () => {
   useEffect(() => {
     const storedUserId = localStorage.getItem("id");
     if (storedUserId) {
-      setValue("userID", storedUserId); // Pre-fill userId inside form data
+      setValue("userID", storedUserId); 
     } else {
       console.warn("No userId found in localStorage");
     }
