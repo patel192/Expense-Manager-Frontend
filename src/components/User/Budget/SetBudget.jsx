@@ -23,7 +23,7 @@ export const SetBudget = () => {
       userId: data.userID,
       categoryId: data.categoryId,
       amount: data.amount,
-      start_date: data.start_datedate,
+      start_date: data.start_date,
       end_date: data.end_date,
     };
     try {
