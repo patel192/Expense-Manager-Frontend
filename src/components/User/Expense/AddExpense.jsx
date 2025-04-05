@@ -21,8 +21,8 @@ export const AddExpense = () => {
 
   const SubmitHandler = async (data) => {
     const finalData = {
-      userId: data.userID, // Explicitly place userId first
-      categoryId: data.categoryId,
+      userID: data.userID, // Explicitly place userId first
+      categoryID: data.categoryID,
       amount: data.amount,
       date: data.date,
       description: data.description,
@@ -48,7 +48,7 @@ export const AddExpense = () => {
           <label>Category</label>
           <select
             className="form-select"
-            {...register("categoryId", {
+            {...register("categoryID", {
               required: "Please select an expense category",
             })}
           >
@@ -65,8 +65,8 @@ export const AddExpense = () => {
               Supplies and Materials
             </option>
           </select>
-          {errors.categoryId && (
-            <p style={{ color: "red" }}>{errors.categoryId.message}</p>
+          {errors.categoryID && (
+            <p style={{ color: "red" }}>{errors.categoryID.message}</p>
           )}
         </div>
 

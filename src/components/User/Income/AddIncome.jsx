@@ -20,7 +20,7 @@ export const AddIncome = () => {
 
   const SubmitHandler = async (data) => {
     const finalData = {
-      userId: data.userID, // Explicitly place userId first
+      userID: data.userID, // Explicitly place userId first
       amount: data.amount,
       source: data.source,
       date: data.date,

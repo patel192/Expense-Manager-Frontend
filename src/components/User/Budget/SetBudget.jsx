@@ -20,8 +20,8 @@ export const SetBudget = () => {
   }, [setValue]);
   const SubmitHandler = async (data) => {
     const finalData = {
-      userId: data.userID,
-      categoryId: data.categoryId,
+      userID: data.userID,
+      categoryID: data.categoryID,
       amount: data.amount,
       start_date: data.start_date,
       end_date: data.end_date,
@@ -44,10 +44,10 @@ export const SetBudget = () => {
     <div style={{ textAlign: "center" }}>
       <form onSubmit={handleSubmit(SubmitHandler)}>
         <div className="form-group">
-          <label>Category</label>
+          <label>Add Budget</label>
           <select
             className="form-select"
-            {...register("categoryId", {
+            {...register("categoryID", {
               required: "Please select Budget category",
             })}
           >
@@ -64,8 +64,8 @@ export const SetBudget = () => {
               Supplies and Materials
             </option>
           </select>
-          {errors.categoryId && (
-            <p style={{ color: "red" }}>{errors.categoryId.message}</p>
+          {errors.categoryID && (
+            <p style={{ color: "red" }}>{errors.categoryID.message}</p>
           )}
         </div>
 
