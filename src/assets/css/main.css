@@ -54,6 +54,52 @@ input::-moz-focus-inner {
   border: 0;
   padding: 0; }
 
+/* extra css */
+/* Common layout styles */
+/* Default App Layout */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+/* Admin Layout */
+.admin-layout #wrapper {
+  background-color: #f4f6f9; /* Light grey */
+}
+
+.admin-layout #main {
+  margin-left: 250px; /* Ensure space for sidebar */
+}
+
+/* User Layout */
+.user-layout #wrapper {
+  background-color: #e3f2fd; /* Light blue */
+}
+
+.user-layout #main {
+  margin-left: 220px; /* Adjust if sidebar differs */
+}
+
+/* Public Layout */
+.public-layout #wrapper {
+  background-color: #ffffff; /* Keep default white */
+}
+
+.public-layout #main {
+  max-width: auto;
+}
+
+/* Auth Pages (Login, Signup) */
+.auth-page #wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f8f9fa; /* Soft grey */
+}
+
+
 input, select, textarea {
   -moz-appearance: none;
   -webkit-appearance: none;

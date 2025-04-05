@@ -1,15 +1,14 @@
-import React from 'react'
-import { Navbar } from '../Common/Navbar'
-import { Outlet } from 'react-router-dom'
+import React from "react";
+import { Navbar } from "../Common/Navbar";
 
 export const PublicLayout = () => {
   return (
-    <div id="wrapper">
+    <div id="wrapper" className="public-layout">
       <div id="main">
         <div className="inner">
-            <Navbar></Navbar>
-            </div>
+          <Navbar />
         </div>
-        </div>
-  )
-}
+      </div>
+    </div>
+  );
+};

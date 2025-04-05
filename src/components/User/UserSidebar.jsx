@@ -32,6 +32,20 @@ export const UserSidebar = () => {
               </ul>
             </li>
             <li>
+              <span class="opener active">Income</span>
+              <ul>
+                <li>
+                  <Link to="/private/addincome">Add Income</Link>
+                </li>
+                <li>
+                  <Link to="/private/viewincome">View Income</Link>
+                </li>
+                <li>
+                  <Link to="/private/incomesummary">Income Summary</Link>
+                </li>
+              </ul>
+            </li>
+            <li>
               <span class="opener active">Budget</span>
               <ul>
                 <li>
@@ -42,9 +56,7 @@ export const UserSidebar = () => {
                 </li>
               </ul>
             </li>
-            <li>
-              <a href="elements.html">Income</a>
-            </li>
+           
 
             <li>
               <a href="#">Transactions</a>

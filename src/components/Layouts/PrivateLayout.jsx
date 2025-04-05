@@ -4,13 +4,13 @@ import { UserSidebar } from "../User/UserSidebar";
 
 export const PrivateLayout = () => {
   return (
-   <div id="wrapper">
-         <div id="main">
-           <div className="inner">
-               <UserNavbar></UserNavbar>
-               </div>
-           </div>
-               <UserSidebar></UserSidebar>
-           </div>
+    <div id="wrapper" className="user-layout">
+      <div id="main">
+        <div className="inner">
+          <UserNavbar></UserNavbar>
+        </div>
+      </div>
+      <UserSidebar></UserSidebar>
+    </div>
   );
 };

@@ -1,5 +1,4 @@
 import React from "react";
-import "/Users/patel/Desktop/Final Front end/Final Frontend/src/assets/css/Exepense.css";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -39,7 +38,7 @@ export const AllExpenses = () => {
         </div>
       ))
     ) : (
-      <p>Loading expenses...</p>
+      <p>No expenses Found...</p>
     )}
   </div>
 
