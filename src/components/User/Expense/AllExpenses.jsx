@@ -9,7 +9,7 @@ export const AllExpenses = () => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const res =await axios.get("http://localhost:3001/api/expenses"); 
+        const res =await axios.get("http://localhost:3001/api/expensesbyUserID/"+localStorage.getItem("id")); 
         setExpenses(res.data.data);
       } catch (error) {
         console.error("Error fetching expenses:", error);
