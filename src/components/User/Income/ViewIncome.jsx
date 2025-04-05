@@ -8,8 +8,9 @@ export const ViewIncome = () => {
   useEffect(() => {
     const fetchIncomes = async () => {
       try {
-        const res =await axios.get("http://localhost:3001/api/incomes"); 
+        const res =await axios.get("http://localhost:3001/api/incomesbyUserId/"+localStorage.getItem("id")); 
         setincomes(res.data.data);
+        console.log(res.data.data)
       } catch (error) {
         console.error("Error fetching Incomes:", error);
       }
@@ -19,7 +20,7 @@ export const ViewIncome = () => {
   }, []);
   return (
 <div>
-      <div style={{textAlign:"center",fontSize:"20px",color:"black"}}>All Expenses</div>
+      <div style={{textAlign:"center",fontSize:"20px",color:"black"}}>All Incomes</div>
     {incomes.length > 0 ? (
       incomes.map((income) => (
         <div key={income.id} className="expense-card">
@@ -36,7 +37,7 @@ export const ViewIncome = () => {
         </div>
       ))
     ) : (
-      <p>No expenses Found...</p>
+      <p>No Incomes Found...</p>
     )}
   </div>
   )
