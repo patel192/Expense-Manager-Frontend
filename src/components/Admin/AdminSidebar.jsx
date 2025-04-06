@@ -1,12 +1,8 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 export const AdminSidebar = () => {
   return (
-    <div
-      id="sidebar"
-      class="
-    "
-    >
+    <div id="sidebar" class="">
       <div class="inner">
         <section id="search" class="alt">
           <form method="post" action="#">
@@ -20,62 +16,22 @@ export const AdminSidebar = () => {
           </header>
           <ul>
             <li>
-              <a href="index.html">Homepage</a>
+              <Link to="/admin/accesscontrol">Access Control</Link>
             </li>
             <li>
-              <a href="generic.html">Generic</a>
+              <Link to="/admin/admindashboard">Dashboard</Link>
             </li>
             <li>
-              <a href="elements.html">Elements</a>
+              <Link to="/admin/managecategories">Manage Categories</Link>
             </li>
             <li>
-              <span class="opener">Submenu</span>
-              <ul>
-                <li>
-                  <a href="#">Lorem Dolor</a>
-                </li>
-                <li>
-                  <a href="#">Ipsum Adipiscing</a>
-                </li>
-                <li>
-                  <a href="#">Tempus Magna</a>
-                </li>
-                <li>
-                  <a href="#">Feugiat Veroeros</a>
-                </li>
-              </ul>
+              <Link to="/admin/manageusers">Manage Users</Link>
             </li>
             <li>
-              <a href="#">Etiam Dolore</a>
+              <Link to="/admin/reportadmins">Report Admins</Link>
             </li>
             <li>
-              <a href="#">Adipiscing</a>
-            </li>
-            <li>
-              <span class="opener">Another Submenu</span>
-              <ul>
-                <li>
-                  <a href="#">Lorem Dolor</a>
-                </li>
-                <li>
-                  <a href="#">Ipsum Adipiscing</a>
-                </li>
-                <li>
-                  <a href="#">Tempus Magna</a>
-                </li>
-                <li>
-                  <a href="#">Feugiat Veroeros</a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a href="#">Maximus Erat</a>
-            </li>
-            <li>
-              <a href="#">Sapien Mauris</a>
-            </li>
-            <li>
-              <a href="#">Amet Lacinia</a>
+              <Link to="/admin/systemlogs">System Logs</Link>
             </li>
           </ul>
         </nav>

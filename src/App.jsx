@@ -79,7 +79,7 @@ function App() {
           <Route path="managecategories" element={<ManageCategories />} />
           <Route path="manageusers" element={<ManageUsers />} />
           <Route path="reportadmins" element={<ReportAdmins />} />
-          <Route path="systemlog" element={<Systemlog />} />
+          <Route path="systemlogs" element={<Systemlog />} />
         </Route>
       </Route>
     </Routes>
