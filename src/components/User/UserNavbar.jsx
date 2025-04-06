@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-
+import { logout } from "../Utils/Logout";
 export const UserNavbar = () => {
   return (
     <div>
@@ -9,6 +9,9 @@ export const UserNavbar = () => {
           <strong>Hey</strong> Welcome
         </a>
         <ul class="icons">
+        <button onClick={logout}>
+          logout
+        </button>
           <li>
             <a href="#" class="icon brands fa-twitter">
               <span class="label">Twitter</span>

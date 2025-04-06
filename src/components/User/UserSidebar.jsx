@@ -56,19 +56,12 @@ export const UserSidebar = () => {
                 </li>
               </ul>
             </li>
-           
 
             <li>
-              <a href="#">Transactions</a>
+              <Link to="/private/transaction">Transactions</Link>
             </li>
             <li>
               <a href="#">Reports</a>
-            </li>
-            <li>
-              <a href="#">Sapien Mauris</a>
-            </li>
-            <li>
-              <a href="#">Amet Lacinia</a>
             </li>
           </ul>
         </nav>
