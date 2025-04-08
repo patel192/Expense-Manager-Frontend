@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useEffect } from "react";
-
+import { useState } from "react";
 
 export const AddExpense = () => {
   const {
@@ -12,6 +12,7 @@ export const AddExpense = () => {
     reset,
     formState: { errors },
   } = useForm();
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
     const storedUserId = localStorage.getItem("id");
     if (storedUserId) {
@@ -20,6 +21,17 @@ export const AddExpense = () => {
       console.warn("No userId found in localStorage");
     }
   }, [setValue]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get("/categories");
+        setCategories(res.data.data); // Adjust based on your backend response format
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      }
+    };
+    fetchCategories();
+  }, []);       
 
   const SubmitHandler = async (data) => {
     const finalData = {
@@ -51,21 +63,15 @@ export const AddExpense = () => {
           <select
             className="form-select"
             {...register("categoryID", {
-              required: "Please select an expense category",
+              required: "Please select a category",
             })}
           >
             <option value="">Select a category</option>
-            <option value="67ece00cbeaf3d07e559ccef">Rent</option>
-            <option value="67ece01bbeaf3d07e559ccf1">Marketing</option>
-            <option value="67ece027beaf3d07e559ccf3">Insurance</option>
-            <option value="67ece033beaf3d07e559ccf5">Utilities</option>
-            <option value="67ece056beaf3d07e559ccf7">Professional fees</option>
-            <option value="67ece061beaf3d07e559ccf9">Maintenance</option>
-            <option value="67ece068beaf3d07e559ccfb">Travel</option>
-            <option value="67ece073beaf3d07e559ccfd">Wages</option>
-            <option value="67ece08cbeaf3d07e559ccff">
-              Supplies and Materials
-            </option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
           </select>
           {errors.categoryID && (
             <p style={{ color: "red" }}>{errors.categoryID.message}</p>

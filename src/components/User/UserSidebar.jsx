@@ -61,7 +61,7 @@ export const UserSidebar = () => {
               <Link to="/private/transaction">Transactions</Link>
             </li>
             <li>
-              <a href="#">Reports</a>
+              <a href="/private/reports">Reports</a>
             </li>
           </ul>
         </nav>
