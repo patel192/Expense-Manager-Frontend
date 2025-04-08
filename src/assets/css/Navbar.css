@@ -1,56 +1,69 @@
+:root {
+  --primary: #2ecc71;
+  --secondary: #2c3e50;
+  --accent: #27ae60;
+  --light-bg: #f9f9f9;
+  --dark-text: #2c3e50;
+  --font: 'Poppins', sans-serif;
+  --border-radius: 8px;
+  --transition: all 0.3s ease-in-out;
+}
 body {
-    margin: 0;
-    font-family: 'Lato', sans-serif;
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
-  
-  .nav {
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 0.8rem 4rem;
-    background-color:rgb(0, 255, 8);
-    transition: top 500ms ease-in-out;
-    border-radius: 40px;
-    margin: 10px 15px auto 15px;
-  }
-  
-  .links {
-    display: flex;
-    margin: 0 -1em;
-    text-decoration: none;
-  }
-  
-  .links a {
-    display: inline-block;
-    margin: 0 1em;
-  }
-  
-  .logo {
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: white;
-  }
-  .logo:hover {
-    color: rgb(221, 27, 27);
-  }
-  
-  nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-  }
-  nav a:hover {
-    color: rgb(16, 113, 19);
-  }
-  
+  margin: 0;
+  font-family: var(--font); /* changed from 'Lato' to theme font */
+}
 
-  
+* {
+  box-sizing: border-box;
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0.8rem 4rem;
+  background-color: var(--primary); /* unified theme color */
+  transition: top 500ms ease-in-out;
+  border-radius: 40px;
+  margin: 10px 15px auto 15px;
+}
+
+.links {
+  display: flex;
+  margin: 0 -1em;
+  text-decoration: none;
+}
+
+.links a {
+  display: inline-block;
+  margin: 0 1em;
+}
+
+.logo {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: white;
+  font-family: var(--font);
+  transition: var(--transition);
+}
+
+.logo:hover {
+  color: var(--accent); /* hover effect from theme */
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-family: var(--font);
+  transition: var(--transition);
+}
+
+nav a:hover {
+  color: var(--accent); /* changed hover green to theme accent */
+}

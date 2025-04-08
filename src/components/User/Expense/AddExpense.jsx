@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useEffect } from "react";
 
+
 export const AddExpense = () => {
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
   useEffect(() => {
@@ -32,7 +34,7 @@ export const AddExpense = () => {
       const res = await axios.post("/expense", finalData);
       if (res.status == 201) {
         alert("expense added successfully");
-        window.location.reload();
+       reset();
       } else {
         alert("Error");
       }

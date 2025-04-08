@@ -24,6 +24,7 @@ export const Accesscontrol = () => {
             <th>Age</th>
             <th>Email</th>
             <th>Role</th>
+            <th>Is Active?</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@ export const Accesscontrol = () => {
             <td>{user.age}</td>
             <td>{user.email}</td>
             <td>{user.roleId.name}</td>
+            <td>{user.is_active === undefined ? 'N/A' : user.is_active ? 'Yes' : 'No'}</td>
           </tr>
 
             )
