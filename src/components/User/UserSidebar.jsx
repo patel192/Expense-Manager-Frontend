@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export const UserSidebar = () => {
+export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   return (
-    <div id="sidebar" class="">
+    <div id="sidebar" className={isOpen ? "" : "inactive"}>
       <div class="inner">
         <section id="search" class="alt">
           <form method="post" action="#">
@@ -139,7 +139,7 @@ export const UserSidebar = () => {
           </p>
         </footer>
       </div>
-      <a href="#sidebar" class="toggle">
+      <a href="#sidebar" class="toggle" onClick={toggleSidebar}>
         Toggle
       </a>
     </div>
