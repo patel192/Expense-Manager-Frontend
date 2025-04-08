@@ -1,69 +1,59 @@
-:root {
-  --primary: #2ecc71;
-  --secondary: #2c3e50;
-  --accent: #27ae60;
-  --light-bg: #f9f9f9;
-  --dark-text: #2c3e50;
-  --font: 'Poppins', sans-serif;
-  --border-radius: 8px;
-  --transition: all 0.3s ease-in-out;
-}
-body {
-  margin: 0;
-  font-family: var(--font); /* changed from 'Lato' to theme font */
-}
+/* Navbar.css */
 
-* {
-  box-sizing: border-box;
+#header {
+  width: 100%;
+  background-color: #1e293b; /* slate-800 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .nav {
-  position: sticky;
-  top: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  padding: 0.8rem 4rem;
-  background-color: var(--primary); /* unified theme color */
-  transition: top 500ms ease-in-out;
-  border-radius: 40px;
-  margin: 10px 15px auto 15px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.links {
-  display: flex;
-  margin: 0 -1em;
-  text-decoration: none;
-}
-
-.links a {
-  display: inline-block;
-  margin: 0 1em;
-}
-
-.logo {
+.nav .logo {
+  font-size: 1.5rem;
   font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: white;
-  font-family: var(--font);
-  transition: var(--transition);
+  color: #f1f5f9; /* slate-100 */
 }
 
-.logo:hover {
-  color: var(--accent); /* hover effect from theme */
+.nav .links {
+  display: flex;
+  gap: 1.2rem;
 }
 
-nav a {
-  color: white;
+.nav .links a {
   text-decoration: none;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-family: var(--font);
-  transition: var(--transition);
+  color: #f1f5f9; /* slate-100 */
+  font-size: 1rem;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
 }
 
-nav a:hover {
-  color: var(--accent); /* changed hover green to theme accent */
+.nav .links a:hover {
+  color: #38bdf8; /* sky-400 */
+  border-bottom: 2px solid #38bdf8;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav .links {
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    width: 100%;
+  }
 }

@@ -152,8 +152,8 @@ export const Signup = () => {
             </div>
           </div>
 
-          <div class="button">
-            <input type="submit" value="Sign Up" />
+          <div class="signup-button">
+            <input type="submit" className="signup-btn" value="Sign Up" />
           </div>
         </form>
       </div>

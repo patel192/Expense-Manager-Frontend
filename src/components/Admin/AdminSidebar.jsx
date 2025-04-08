@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
-    <div id="sidebar"  className={isOpen ? "" : "inactive"}>
+    <div id="sidebar" className={isOpen ? "" : "inactive"}>
       <div class="inner">
         <section id="search" class="alt">
           <form method="post" action="#">
@@ -38,44 +40,19 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
 
         <section>
           <header class="major">
-            <h2>Ante interdum</h2>
+            <h2>Admin Details</h2>
           </header>
           <div class="mini-posts">
-            <article>
-              <a href="#" class="image">
-                <img src="images/pic07.jpg" alt="" />
-              </a>
-              <p>
-                Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-                dolore aliquam.
-              </p>
-            </article>
-            <article>
-              <a href="#" class="image">
-                <img src="images/pic08.jpg" alt="" />
-              </a>
-              <p>
-                Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-                dolore aliquam.
-              </p>
-            </article>
-            <article>
-              <a href="#" class="image">
-                <img src="images/pic09.jpg" alt="" />
-              </a>
-              <p>
-                Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-                dolore aliquam.
-              </p>
-            </article>
+            <p>
+              <strong>Name:</strong> {user?.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {user?.email}
+            </p>
+            <p>
+              <strong>Role:</strong> {user?.role}
+            </p>
           </div>
-          <ul class="actions">
-            <li>
-              <a href="#" class="button">
-                More
-              </a>
-            </li>
-          </ul>
         </section>
 
         <section>
@@ -83,33 +60,27 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
             <h2>Get in touch</h2>
           </header>
           <p>
-            Sed varius enim lorem ullamcorper dolore aliquam aenean ornare velit
-            lacus, ac varius enim lorem ullamcorper dolore. Proin sed aliquam
-            facilisis ante interdum. Sed nulla amet lorem feugiat tempus
-            aliquam.
+            Hello, I'm <strong>Muhammad Patel</strong>, a passionate web
+            developer currently pursuing my degree in Computer Science at Neo
+            Tech Institute of Technology. I enjoy building responsive web
+            applications and constantly exploring new technologies. Let's
+            connect and build something great together!
           </p>
+
           <ul class="contact">
             <li class="icon solid fa-envelope">
-              <a href="#">information@untitled.tld</a>
+              <a href="#">patelmuhammad192@gmail.com</a>
             </li>
-            <li class="icon solid fa-phone">(000) 000-0000</li>
-            <li class="icon solid fa-home">
-              1234 Somewhere Road #8254
-              <br />
-              Nashville, TN 00000-0000
+            <li class="icon solid fa-phone">+91 8980380280</li>
+            <li class="icon brands fa-github">
+              <a href="https://github.com/patel192" target="blank">
+                patel192
+              </a>
             </li>
           </ul>
         </section>
-
-        <footer id="footer">
-          <p class="copyright">
-            © Untitled. All rights reserved. Demo Images:{" "}
-            <a href="https://unsplash.com">Unsplash</a>. Design:{" "}
-            <a href="https://html5up.net">HTML5 UP</a>.
-          </p>
-        </footer>
       </div>
-      <a href="#sidebar" class="toggle" onClick={toggleSidebar}>
+      <a href="#sidebar" className="toggle red-hover" onClick={toggleSidebar}>
         Toggle
       </a>
     </div>

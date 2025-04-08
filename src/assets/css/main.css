@@ -2317,3 +2317,39 @@ button,
     border-top: 0;
     margin-top: 0;
     padding-top: 0; }
+
+/* additional css by me  */
+.logout-btn{
+  background-color: white; /* red */
+  color: red !important;
+  font-weight: bold;
+  margin-right: 15px;
+}
+.logout-btn:hover{
+  background-color: red;
+  color: white !important;
+}
+.red-hover:hover {
+  background-color: #ffffff;
+  transition: background-color 0.3s ease;
+}
+.content-button.big {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  background: #1e293b;
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.content-button.big:hover {
+  background: var(--secondary);
+}
+
+.content-button.alt {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}

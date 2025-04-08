@@ -136,23 +136,24 @@ form .button {
   margin: 35px 0;
 }
 
-form .button input {
-  height: 100%;
-  width: 100%;
-  border-radius: var(--border-radius);
-  border: none;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: var(--transition);
-  background: linear-gradient(135deg, var(--primary), var(--primary));
+form .signup-button .signup-btn {
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: var(--border-radius) !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  background: linear-gradient(135deg, var(--primary), var(--primary)) !important;
 }
 
-form .button input:hover {
-  background: linear-gradient(-135deg, var(--primary), var(--primary));
+form .button .signup-btn:hover {
+  background: linear-gradient(-135deg, var(--primary), var(--primary)) !important;
 }
+
 
 /* Responsive media query code for mobile devices */
 @media (max-width: 584px) {

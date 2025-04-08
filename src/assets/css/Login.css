@@ -37,7 +37,7 @@
   color: #fff;
   user-select: none;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
-  background: linear-gradient(-135deg, var(--primary), var(--primary));
+  background: #1e293b;
 }
 
 .wrapper form {
@@ -119,7 +119,7 @@ form .content .pass-link {
   color: var(--accent);
 }
 
-form .field input[type="submit"] {
+form .login-field .login-btn {
   color: #fff;
   border: none;
   padding-left: 0;
@@ -131,10 +131,26 @@ form .field input[type="submit"] {
   transition: var(--transition);
 }
 
-form .field input[type="submit"]:active {
+form .login-field .login-btn :active {
   transform: scale(0.95);
 }
+form .signup-button .signup-btn {
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: var(--border-radius) !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  background: #1e293b !important;
+}
 
+form .button .signup-btn:hover {
+  background: linear-gradient(-135deg, var(--primary), var(--primary)) !important;
+}
 form .signup-link {
   color: #262626;
   margin-top: 20px;

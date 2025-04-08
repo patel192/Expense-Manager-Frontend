@@ -1,15 +1,13 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
-export const Navbar = ({ toggleSidebar }) => {
+export const Navbar = () => {
   return (
     <div>
       <header id="header">
         <nav class="nav">
-          <div>
-            <a href="#sidebar" class="toggle" onClick={toggleSidebar}>
-              <i class="fa-solid fa-bars"></i>
-            </a>
-          </div>
+         <div>
+
+         </div>
           <div class="links">
             <Link to="/">Home</Link>
             <Link to="#">Contact</Link>

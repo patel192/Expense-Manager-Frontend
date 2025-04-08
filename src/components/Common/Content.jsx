@@ -3,195 +3,183 @@ export const Content = () => {
   return (
     <div>
       <section id="banner">
-        <div class="content">
+        <div className="content">
           <header>
             <h1>
-              Hi, I’m Editorial
+              Welcome to ExpenseTracker
               <br />
-              by HTML5 UP
+              Your Personal Finance Companion
             </h1>
-            <p>A free and fully responsive site template</p>
+            <p>
+              Simplify budgeting, track expenses, and take control of your
+              finances—all in one place.
+            </p>
           </header>
           <p>
-            Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin
-            aliquam facilisis ante interdum congue. Integer mollis, nisl amet
-            convallis, porttitor magna ullamcorper, amet egestas mauris. Ut
-            magna finibus nisi nec lacinia. Nam maximus erat id euismod egestas.
-            Pellentesque sapien ac quam. Lorem ipsum dolor sit nullam.
+            ExpenseTracker is a powerful, user-friendly web application built to
+            help individuals and families manage their daily financial
+            activities. Add income and expenses, analyze spending habits, and
+            generate monthly reports to stay on top of your financial goals.
           </p>
-          <ul class="actions">
+          <ul className="actions">
             <li>
-              <a href="#" class="button big">
-                Learn More
+              <a href="/signup" className="content-button big">
+                Get Started
+              </a>
+            </li>
+            <li>
+              <a href="/features" className="content-button big">
+                Explore Features
               </a>
             </li>
           </ul>
         </div>
+
         <span class="image object">
-          <img src="src\assets\Images\614y4xnqgdL.png" alt="" />
+          <img
+            src="src\assets\Images\istockphoto-1424757003-612x612.jpg"
+            alt=""
+          />
         </span>
       </section>
       <section>
-        <header class="major">
-          <h2>Erat lacinia</h2>
+        <header className="major">
+          <h2>Powerful Features to Manage Your Finances</h2>
         </header>
-        <div class="features">
+        <div className="features">
           <article>
-            <span class="icon fa-gem"></span>
-            <div class="content">
-              <h3>Portitor ullamcorper</h3>
+            <span className="icon solid fa-wallet"></span>
+            <div className="content">
+              <h3>Track Income & Expenses</h3>
               <p>
-                Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-                dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-                lorem feugiat tempus aliquam.
+                Easily log your daily transactions, categorize them, and stay
+                aware of your cash flow in real time.
               </p>
             </div>
           </article>
           <article>
-            <span class="icon solid fa-paper-plane"></span>
-            <div class="content">
-              <h3>Sapien veroeros</h3>
+            <span className="icon solid fa-chart-pie"></span>
+            <div className="content">
+              <h3>Visual Reports</h3>
               <p>
-                Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-                dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-                lorem feugiat tempus aliquam.
+                Understand your financial health with clean, visual breakdowns
+                of your spending habits and monthly summaries.
               </p>
             </div>
           </article>
           <article>
-            <span class="icon solid fa-rocket"></span>
-            <div class="content">
-              <h3>Quam lorem ipsum</h3>
+            <span className="icon solid fa-bullseye"></span>
+            <div className="content">
+              <h3>Set Budgets</h3>
               <p>
-                Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-                dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-                lorem feugiat tempus aliquam.
+                Create monthly or category-based budgets and get alerts when
+                you’re close to overspending.
               </p>
             </div>
           </article>
           <article>
-            <span class="icon solid fa-signal"></span>
-            <div class="content">
-              <h3>Sed magna finibus</h3>
+            <span className="icon solid fa-user-shield"></span>
+            <div className="content">
+              <h3>Secure & Private</h3>
               <p>
-                Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-                dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-                lorem feugiat tempus aliquam.
+                Your data is securely stored and protected. Only you have access
+                to your financial details.
               </p>
             </div>
           </article>
         </div>
       </section>
+
       <section>
         <header class="major">
-          <h2>Ipsum sed dolor</h2>
+          <h2>Explore App Modules</h2>
         </header>
         <div class="posts">
           <article>
-            <a href="#" class="image">
-              <img src="images/pic01.jpg" alt="" />
-            </a>
-            <h3>Interdum aenean</h3>
+            
+            <h3>Income Tracker</h3>
             <p>
-              Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-              dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-              lorem feugiat tempus aliquam.
+              Log and categorize income sources to stay on top of all earnings.
+              View monthly summaries for better planning.
             </p>
             <ul class="actions">
               <li>
                 <a href="#" class="button">
-                  More
+                  View
                 </a>
               </li>
             </ul>
           </article>
           <article>
-            <a href="#" class="image">
-              <img src="images/pic02.jpg" alt="" />
-            </a>
-            <h3>Nulla amet dolore</h3>
+            
+            <h3>Expense Tracker</h3>
             <p>
-              Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-              dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-              lorem feugiat tempus aliquam.
+              Monitor daily spending across categories. See where your money
+              goes and avoid unnecessary expenses.
             </p>
             <ul class="actions">
               <li>
                 <a href="#" class="button">
-                  More
+                  View
                 </a>
               </li>
             </ul>
           </article>
           <article>
-            <a href="#" class="image">
-              <img src="images/pic03.jpg" alt="" />
-            </a>
-            <h3>Tempus ullamcorper</h3>
+           
+            <h3>Budget Planner</h3>
             <p>
-              Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-              dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-              lorem feugiat tempus aliquam.
+              Set monthly budgets and track spending. Stay within limits and
+              receive alerts for overspending.
             </p>
             <ul class="actions">
               <li>
                 <a href="#" class="button">
-                  More
+                  View
                 </a>
               </li>
             </ul>
           </article>
           <article>
-            <a href="#" class="image">
-              <img src="images/pic04.jpg" alt="" />
-            </a>
-            <h3>Sed etiam facilis</h3>
+            
+            <h3>Reports & Insights</h3>
             <p>
-              Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-              dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-              lorem feugiat tempus aliquam.
+              Analyze your income and expenses through graphical reports. Gain
+              insights to improve your financial decisions.
             </p>
             <ul class="actions">
               <li>
                 <a href="#" class="button">
-                  More
+                  View
                 </a>
               </li>
             </ul>
           </article>
           <article>
-            <a href="#" class="image">
-              <img src="images/pic05.jpg" alt="" />
-            </a>
-            <h3>Feugiat lorem aenean</h3>
+           
+            <h3>Account Management</h3>
             <p>
-              Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-              dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-              lorem feugiat tempus aliquam.
+              Edit your profile, change password, manage preferences, and
+              control who sees your data with privacy tools.
             </p>
             <ul class="actions">
               <li>
                 <a href="#" class="button">
-                  More
+                  View
                 </a>
               </li>
             </ul>
           </article>
           <article>
-            <a href="#" class="image">
-              <img src="images/pic06.jpg" alt="" />
-            </a>
-            <h3>Amet varius aliquam</h3>
+            
+            <h3>Secure Access</h3>
             <p>
-              Aenean ornare velit lacus, ac varius enim lorem ullamcorper
-              dolore. Proin aliquam facilisis ante interdum. Sed nulla amet
-              lorem feugiat tempus aliquam.
+              Login with secure credentials and ensure your financial data is
+              encrypted and safe from prying eyes.
             </p>
             <ul class="actions">
               <li>
-                <a href="#" class="button">
-                  More
-                </a>
+             
               </li>
             </ul>
           </article>

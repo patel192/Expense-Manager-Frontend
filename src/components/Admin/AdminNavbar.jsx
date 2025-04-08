@@ -5,11 +5,13 @@ export const AdminNavbar = () => {
   return (
     <div>
       <header id="header">
-        <a href="index.html" class="logo">
-          <strong>Editorial</strong> by HTML5 UP
+        <a href="/" class="logo">
+          <strong>Trackit</strong> | Expense App
         </a>
         <ul class="icons">
-          <button onClick={logout}>logout</button>
+          <button className="logout-btn" onClick={logout}>
+            logout
+          </button>
           <li>
             <a href="#" class="icon brands fa-twitter">
               <span class="label">Twitter</span>
