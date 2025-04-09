@@ -39,7 +39,8 @@ export const AddIncome = () => {
     }
   };
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="add-expense-container ">
+      <div className="add-expense-title">Income</div>
       <form onSubmit={handleSubmit(SubmitHandler)}>
         <div className="form-group">
           <label>Amount</label>

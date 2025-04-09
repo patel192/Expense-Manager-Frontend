@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import "/Users/patel/Desktop/Expense-Manager-Frontend/src/assets/css/addexpense.css"; // Import the custom CSS
 
 export const AddExpense = () => {
   const {
@@ -12,41 +11,43 @@ export const AddExpense = () => {
     reset,
     formState: { errors },
   } = useForm();
+
   const [categories, setCategories] = useState([]);
+
   useEffect(() => {
     const storedUserId = localStorage.getItem("id");
     if (storedUserId) {
-      setValue("userID", storedUserId); 
+      setValue("userID", storedUserId);
     } else {
       console.warn("No userId found in localStorage");
     }
   }, [setValue]);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await axios.get("/categories");
-        setCategories(res.data.data); // Adjust based on your backend response format
+        setCategories(res.data.data);
       } catch (error) {
         console.error("Failed to fetch categories", error);
       }
     };
     fetchCategories();
-  }, []);       
+  }, []);
 
   const SubmitHandler = async (data) => {
     const finalData = {
-      userID: data.userID, // Explicitly place userId first
+      userID: data.userID,
       categoryID: data.categoryID,
       amount: data.amount,
       date: data.date,
       description: data.description,
     };
     try {
-      console.log("Final Form Data Submitted:", finalData);
       const res = await axios.post("/expense", finalData);
-      if (res.status == 201) {
-        alert("expense added successfully");
-       reset();
+      if (res.status === 201) {
+        alert("Expense added successfully");
+        reset();
       } else {
         alert("Error");
       }
@@ -56,16 +57,12 @@ export const AddExpense = () => {
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <form onSubmit={handleSubmit(SubmitHandler)}>
+    <div className="add-expense-container">
+      <h2 className="add-expense-title">Add New Expense</h2>
+      <form onSubmit={handleSubmit(SubmitHandler)} className="form">
         <div className="form-group">
           <label>Category</label>
-          <select
-            className="form-select"
-            {...register("categoryID", {
-              required: "Please select a category",
-            })}
-          >
+          <select {...register("categoryID", { required: "Please select a category" })}>
             <option value="">Select a category</option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
@@ -73,49 +70,33 @@ export const AddExpense = () => {
               </option>
             ))}
           </select>
-          {errors.categoryID && (
-            <p style={{ color: "red" }}>{errors.categoryID.message}</p>
-          )}
+          {errors.categoryID && <p className="error-msg">{errors.categoryID.message}</p>}
         </div>
 
         <div className="form-group">
           <label>Amount</label>
-          <input
-            type="number"
-            className="form-control"
-            {...register("amount", { required: "Amount is required" })}
-          />
-          {errors.amount && (
-            <p style={{ color: "red" }}>{errors.amount.message}</p>
-          )}
+          <input type="number" {...register("amount", { required: "Amount is required" })} />
+          {errors.amount && <p className="error-msg">{errors.amount.message}</p>}
         </div>
 
         <div className="form-group">
           <label>Date</label>
-          <input
-            type="date"
-            className="form-control"
-            {...register("date", { required: "Date is required" })}
-          />
-          {errors.date && <p style={{ color: "red" }}>{errors.date.message}</p>}
+          <input type="date" {...register("date", { required: "Date is required" })} />
+          {errors.date && <p className="error-msg">{errors.date.message}</p>}
         </div>
 
         <div className="form-group">
           <label>Description</label>
           <input
             type="text"
-            className="form-control"
-            {...register("description", {
-              required: "Description is required",
-            })}
+            placeholder="e.g., Grocery shopping"
+            {...register("description", { required: "Description is required" })}
           />
-          {errors.description && (
-            <p style={{ color: "red" }}>{errors.description.message}</p>
-          )}
+          {errors.description && <p className="error-msg">{errors.description.message}</p>}
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Add
+        <button type="submit" className="button">
+          Add Expense
         </button>
       </form>
     </div>

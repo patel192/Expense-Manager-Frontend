@@ -12,6 +12,7 @@ import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateLayout } from "./components/Layouts/PrivateLayout";
 import { AddExpense } from "./components/User/Expense/AddExpense";
 import { AdminLayout } from "./components/Layouts/AdminLayout";
+import "../src/app.css"
 
 import { Reports } from "./components/User/Reports";
 

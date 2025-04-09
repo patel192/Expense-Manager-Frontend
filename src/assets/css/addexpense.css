@@ -1,0 +1,76 @@
+.add-expense-container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: #1e293b; /* Dark slate */
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #f8fafc;
+}
+
+.add-expense-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #f1f5f9;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: black;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 16px;
+  background-color: #334155;
+  color: #f1f5f9;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.form-group input::placeholder,
+.form-group select option {
+  color: #94a3b8;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #3b82f6;
+  outline: none;
+  background-color: #475569;
+}
+
+.error-msg {
+  color: #f87171;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #2563eb;
+}

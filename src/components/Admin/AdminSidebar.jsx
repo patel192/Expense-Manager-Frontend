@@ -14,10 +14,10 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
 
         <nav id="menu">
           <header class="major">
-            <h2>Menu</h2>
+            <h2 style={{color:"white"}}>Menu</h2>
           </header>
-          <ul>
-            <li>
+          <ul style={{color:"white"}}>
+            <li >
               <Link to="/admin/accesscontrol">Access Control</Link>
             </li>
             <li>
@@ -38,29 +38,29 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
           </ul>
         </nav>
 
-        <section>
+        <section style={{color:"white"}}>
           <header class="major">
-            <h2>Admin Details</h2>
+            <h2 style={{color:"white"}}>Admin Details</h2>
           </header>
           <div class="mini-posts">
             <p>
-              <strong>Name:</strong> {user?.name}
+              <strong style={{color:"#f56a6a"}}>Name:</strong> {user?.name}
             </p>
             <p>
-              <strong>Email:</strong> {user?.email}
+              <strong style={{color:"#f56a6a"}}>Email:</strong> {user?.email}
             </p>
             <p>
-              <strong>Role:</strong> {user?.role}
+              <strong style={{color:"#f56a6a"}}>Role:</strong> {user?.role}
             </p>
           </div>
         </section>
 
-        <section>
+        <section style={{color:"white"}}>
           <header class="major">
-            <h2>Get in touch</h2>
+            <h2 style={{color:"white"}}>Get in touch</h2>
           </header>
           <p>
-            Hello, I'm <strong>Muhammad Patel</strong>, a passionate web
+            Hello, I'm <strong style={{color:"#f56a6a"}}>Muhammad Patel</strong>, a passionate web
             developer currently pursuing my degree in Computer Science at Neo
             Tech Institute of Technology. I enjoy building responsive web
             applications and constantly exploring new technologies. Let's

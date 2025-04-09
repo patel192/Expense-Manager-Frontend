@@ -69,14 +69,14 @@ form .input-box span.details {
   font-size: 16px;
   border-radius: var(--border-radius);
   padding-left: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid #1e293b;
   border-bottom-width: 2px;
   transition: var(--transition);
 }
 
 .user-details .input-box input:focus,
 .user-details .input-box input:valid {
-  border-color: var(--primary);
+  border-color: #1e293b;
 }
 
 form .Role-details .Role-title {
@@ -111,7 +111,7 @@ form .category label .dot {
 #dot-2:checked ~ .category label .two,
 #dot-3:checked ~ .category label .three {
   background: var(--accent);
-  border-color: #d9d9d9;
+  border-color: #1e293b;
 }
 
 form input[type="radio"] {
@@ -147,7 +147,7 @@ form .signup-button .signup-btn {
   letter-spacing: 1px !important;
   cursor: pointer !important;
   transition: var(--transition) !important;
-  background: linear-gradient(135deg, var(--primary), var(--primary)) !important;
+  background: #1e293b !important;
 }
 
 form .button .signup-btn:hover {

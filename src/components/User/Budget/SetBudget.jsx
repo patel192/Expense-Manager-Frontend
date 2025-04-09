@@ -41,10 +41,11 @@ export const SetBudget = () => {
     }
   };
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="add-expense-container">
+      <div className="add-expense-title">Add Budget</div>
       <form onSubmit={handleSubmit(SubmitHandler)}>
         <div className="form-group">
-          <label>Add Budget</label>
+          <label>Category</label>
           <select
             className="form-select"
             {...register("categoryID", {

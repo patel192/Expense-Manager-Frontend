@@ -6,7 +6,7 @@ export const AdminNavbar = () => {
     <div>
       <header id="header">
         <a href="/" class="logo">
-          <strong>Trackit</strong> | Expense App
+          <strong style={{color:"white"}}>Trackit</strong> | Expense App
         </a>
         <ul class="icons">
           <button className="logout-btn" onClick={logout}>
