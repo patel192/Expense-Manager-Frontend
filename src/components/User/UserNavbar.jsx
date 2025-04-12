@@ -5,13 +5,13 @@ export const UserNavbar = () => {
   return (
     <div>
       <header id="header">
-        <a href="index.html" class="logo">
-          <strong>Hey</strong> Welcome
+        <a href="/" class="logo">
+          <strong style={{ color: "white" }}>Trackit</strong> | Expense App
         </a>
         <ul class="icons">
-        <button onClick={logout}>
-          logout
-        </button>
+          <button className="logout-btn" onClick={logout}>
+            logout
+          </button>
           <li>
             <a href="#" class="icon brands fa-twitter">
               <span class="label">Twitter</span>
@@ -39,11 +39,10 @@ export const UserNavbar = () => {
           </li>
         </ul>
       </header>
-      
-        <div className="middle">
-       <Outlet></Outlet>   
-        </div>
-      
+
+      <div className="middle">
+        <Outlet></Outlet>
+      </div>
     </div>
   );
 };

@@ -3,6 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import "./assets/css/Login.css";
+import { ToastContainer, toast,Bounce} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export const Login = () => {
   const Navigate = useNavigate();
   const {
@@ -21,7 +24,13 @@ export const Login = () => {
 
       // Check if response is successful
       if (res.status >= 200 && res.status < 300) {
-        alert("Login Success");
+        toast.success("Login Success", {
+          style: {
+            backgroundColor: "#1e293b", // green
+            color: "white",
+          },
+        });
+        
 
         // Debugging: Check if res.data contains necessary fields
         console.log("User ID:", res.data?.data?._id);
@@ -41,11 +50,14 @@ export const Login = () => {
           );
 
           // Navigate to appropriate dashboard
-          if (res.data.data.roleId.name === "User") {
-            Navigate("/private/userdashboard");
-          } else if (res.data.data.roleId.name === "Admin") {
-            Navigate("/admin/admindashboard");
-          }
+
+          setTimeout(() => {
+            if (res.data.data.roleId.name === "User") {
+              Navigate("/private/userdashboard");
+            } else if (res.data.data.roleId.name === "Admin") {
+              Navigate("/admin/admindashboard");
+            }
+          }, 2000);
         } else {
           console.error("Invalid response structure, missing required fields.");
           alert("Login failed: Missing user details in response.");
@@ -53,13 +65,10 @@ export const Login = () => {
         return;
       }
     } catch (error) {
-      console.error("Login error:", error);
-
-      if (error.response) {
-        alert("Login Failed: " + error.response.data.message);
-      } else {
-        alert("Login Failed: Server is unreachable");
-      }
+      toast.error(
+        "Login Failed: " +
+          (error.response?.data?.message || "Server is unreachable")
+      );
     }
   };
 
@@ -83,6 +92,19 @@ export const Login = () => {
   };
   return (
     <div>
+      <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="colored"
+      transition={Bounce}
+      />
       <div class="wrapper">
         <div class="title">Login Form</div>
         <form onSubmit={handleSubmit(SubmitHandler)}>

@@ -70,7 +70,7 @@ input::-moz-focus-inner {
 }
 
 .admin-layout #main {
-  margin-left: 250px; /* Ensure space for sidebar */
+  margin-left: 95px; /* Ensure space for sidebar */
 }
 
 /* User Layout */
@@ -79,7 +79,7 @@ input::-moz-focus-inner {
 }
 
 .user-layout #main {
-  margin-left: 220px; /* Adjust if sidebar differs */
+  margin-left: 95px; /* Adjust if sidebar differs */
 }
 
 /* Public Layout */

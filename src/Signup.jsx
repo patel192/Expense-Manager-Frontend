@@ -3,6 +3,9 @@ import "../src/assets/css/Signup.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 export const Signup = () => {
   const {
@@ -14,12 +17,17 @@ export const Signup = () => {
 
   const submitHandler = async (data) => {
     try {
-       const res = await axios.post("/user", data); // Correct API path
+      const res = await axios.post("/user", data); // Correct API path
 
       if (res.status === 201) {
-        alert("User created successfully");
+        toast.success("User Created Successfully", {
+          position: "top-center",
+          autoClose: 3000,
+        });
         console.log(res.data);
-        navigate("/login");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       } else {
         alert("User not created");
       }
@@ -78,6 +86,7 @@ export const Signup = () => {
   };
   return (
     <div class="container">
+      <ToastContainer/>
       <div class="content">
         <form onSubmit={handleSubmit(submitHandler)}>
           <div class="user-details">
