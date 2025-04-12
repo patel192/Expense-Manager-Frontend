@@ -2,6 +2,8 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import axios from 'axios'
+import { ToastContainer, toast,Bounce} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export const ManageUsers = () => {
   const [users, setusers] = useState([])
   useEffect(()=>{
@@ -20,13 +22,32 @@ export const ManageUsers = () => {
     try {
       await axios.delete(`/user/${userId}`);
       setusers(users.filter((user) => user._id !== userId));
-      alert("User Deleted Successfully") // remove from state
+      toast.success("User Deleted Successfully", {
+        autoClose: 3000,
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+      
     } catch (error) {
       alert("Error deleting user");
     }
   };
   return (
     <div>
+      <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="colored"
+      transition={Bounce}/>
       <table>
         <thead>
           <tr>
