@@ -17,14 +17,14 @@ export const Accesscontrol = () => {
   },[])
   return (
     <div>
-      <table>
+      <table class="table table-striped table-dark">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Is Active?</th>
+            <th style={{color:"white"}}>Name</th>
+            <th style={{color:"white"}}>Age</th>
+            <th style={{color:"white"}}>Email</th>
+            <th style={{color:"white"}}>Role</th>
+            <th style={{color:"white"}}>Is Active?</th>
           </tr>
         </thead>
         <tbody>

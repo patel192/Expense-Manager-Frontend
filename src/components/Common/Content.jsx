@@ -96,91 +96,63 @@ export const Content = () => {
         </header>
         <div class="posts">
           <article>
-            
             <h3>Income Tracker</h3>
             <p>
               Log and categorize income sources to stay on top of all earnings.
               View monthly summaries for better planning.
             </p>
             <ul class="actions">
-              <li>
-                <a href="#" class="button">
-                  View
-                </a>
-              </li>
+              <li></li>
             </ul>
           </article>
           <article>
-            
             <h3>Expense Tracker</h3>
             <p>
               Monitor daily spending across categories. See where your money
               goes and avoid unnecessary expenses.
             </p>
             <ul class="actions">
-              <li>
-                <a href="#" class="button">
-                  View
-                </a>
-              </li>
+              <li></li>
             </ul>
           </article>
           <article>
-           
             <h3>Budget Planner</h3>
             <p>
               Set monthly budgets and track spending. Stay within limits and
               receive alerts for overspending.
             </p>
             <ul class="actions">
-              <li>
-                <a href="#" class="button">
-                  View
-                </a>
-              </li>
+              <li></li>
             </ul>
           </article>
           <article>
-            
             <h3>Reports & Insights</h3>
             <p>
               Analyze your income and expenses through graphical reports. Gain
               insights to improve your financial decisions.
             </p>
             <ul class="actions">
-              <li>
-                <a href="#" class="button">
-                  View
-                </a>
-              </li>
+              <li></li>
             </ul>
           </article>
           <article>
-           
             <h3>Account Management</h3>
             <p>
               Edit your profile, change password, manage preferences, and
               control who sees your data with privacy tools.
             </p>
             <ul class="actions">
-              <li>
-                <a href="#" class="button">
-                  View
-                </a>
-              </li>
+              <li></li>
             </ul>
           </article>
           <article>
-            
             <h3>Secure Access</h3>
             <p>
               Login with secure credentials and ensure your financial data is
               encrypted and safe from prying eyes.
             </p>
             <ul class="actions">
-              <li>
-             
-              </li>
+              <li></li>
             </ul>
           </article>
         </div>
