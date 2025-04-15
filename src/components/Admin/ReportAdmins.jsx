@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../Common/Card";
 import { motion } from "framer-motion";
+import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -14,47 +15,51 @@ import {
   Legend,
 } from "recharts";
 
+const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042"];
+
 export const ReportAdmins = () => {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    const fetchReport = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/api/adminreport");
+        setStats(res.data);
+        console.log("Admin Report:", res.data);
+      } catch (error) {
+        console.error("Failed to fetch report data", error);
+      }
+    };
+
+    fetchReport();
+  }, []);
+
+  if (!stats) return <div className="text-center mt-10">Loading report...</div>;
+
   const reportStats = [
-    { title: "Total Users", value: 15 },
-    { title: "Active Users", value: 13 },
-    { title: "Deactivated Users", value: 2 },
-    { title: "Total Categories", value: 9 },
-    { title: "Total Income (₹)", value: "₹55,000" },
-    { title: "Total Expenses (₹)", value: "₹38,000" },
-    { title: "Top Category", value: "Marketing" },
-    { title: "Most Active User", value: "Patel Muhammad" },
+    { title: "Total Users", value: stats.totalUsers },
+    { title: "Active Users", value: stats.activeUsers },
+    { title: "Deactivated Users", value: stats.deactivatedUsers },
+    { title: "Total Income (₹)", value: `₹${stats.totalIncome}` },
+    { title: "Total Expenses (₹)", value: `₹${stats.totalExpense}` },
+    { title: "Most Active User", value: stats.mostActiveUser || "N/A" },
   ];
 
   const barData = [
-    { name: "Income", amount: 55000 },
-    { name: "Expenses", amount: 38000 },
+    { name: "Income", amount: stats.totalIncome },
+    { name: "Expenses", amount: stats.totalExpense }, // not totalExpenses
   ];
 
-  const pieData = [
-    { name: "Marketing", value: 30000 },
-    { name: "Rent", value: 12000 },
-    { name: "Travel", value: 8000 },
-    { name: "Maintenance", value: 6000 },
-  ];
-
-  const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042"];
-
+  const pieData = stats.categoryDistribution || [];
+  console.log(stats.categoryDistribution);
   return (
-    <div style={{ padding: "30px" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "25px" }}>
+    <div className="p-6">
+      <h2 className="text-center text-2xl font-bold mb-6">
         📊 Admin Report Dashboard
       </h2>
 
-      {/* Cards */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "20px",
-        }}
-      >
+      {/* Stat Cards */}
+      <div className="flex flex-wrap justify-center gap-4 mb-10">
         {reportStats.map((item, idx) => (
           <motion.div
             key={idx}
@@ -68,8 +73,10 @@ export const ReportAdmins = () => {
       </div>
 
       {/* Bar Chart */}
-      <div style={{ marginTop: "40px", textAlign: "center" }}>
-        <h3>💰 Income vs Expenses</h3>
+      <div className="bg-white rounded-xl shadow-md p-4 mb-10">
+        <h3 className="text-xl font-semibold text-center mb-4">
+          💰 Income vs Expenses
+        </h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={barData}>
             <XAxis dataKey="name" />
@@ -81,27 +88,38 @@ export const ReportAdmins = () => {
       </div>
 
       {/* Pie Chart */}
-      <div style={{ marginTop: "40px", textAlign: "center" }}>
-        <h3>📂 Category-wise Distribution</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={pieData}
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="value"
-              label
-            >
-              {pieData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+      <div className="bg-white rounded-xl shadow-md p-4">
+        <h3 className="text-xl font-semibold text-center mb-4">
+          📂 Category-wise Distribution
+        </h3>
+        {pieData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+                label
+              >
+                {pieData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-center text-gray-500">
+            No category data available.
+          </p>
+        )}
       </div>
     </div>
   );

@@ -66,11 +66,11 @@ export const ManageCategories = () => {
     {/* Display List */}
     <div>
       <h3 className="text-lg font-semibold mb-2">Existing Categories</h3>
-      <table className="table-auto w-full border">
+      <table class="table table-striped table-dark">
         <thead>
           <tr className="bg-gray-200">
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Type</th>
+            <th className="px-4 py-2" style={{color:"white"}}>Name</th>
+            <th className="px-4 py-2" style={{color:"white"}}>Type</th>
           </tr>
         </thead>
         <tbody>
