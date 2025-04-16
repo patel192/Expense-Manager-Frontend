@@ -25,8 +25,8 @@ export const ViewIncome = () => {
       incomes.map((income) => (
         <div key={income.id} className="expense-card">
           <div className="expense-info">
-            <h3 className="expense-title">Incomes</h3>
-            <p className="expense-category">{income.source}</p>
+            <h3 className="expense-title" style={{color:"white"}}>Incomes</h3>
+            <p className="expense-category" style={{color:"white"}}>{income.source}</p>
           </div>
           <div className="expense-figure">
             <div className="expense-amount">₹{income.amount}</div>

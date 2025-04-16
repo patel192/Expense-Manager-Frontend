@@ -19,12 +19,12 @@ export const ViewBudget = () => {
 
   return (
     <div>
-      <div style={{textAlign:"center",fontSize:"20px",color:"black"}}>Budgets</div>
+      <div style={{textAlign:"center",fontSize:"20px",fontFamily:"sans-serif",fontWeight:"bolder"}}>Budgets</div>
       {budgets.length > 0 ? (
         budgets?.map((budget) => (
           <div key={budget.id} className="expense-card">
           <div className="expense-info">
-            <h3 className="expense-title">Budget</h3>
+            <h3 className="expense-title" style={{color:"white"}}>Budget</h3>
             <p className="expense-category">{budget.description}</p>
           </div>
           <div className="expense-figure">
