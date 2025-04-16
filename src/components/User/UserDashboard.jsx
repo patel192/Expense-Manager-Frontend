@@ -1,19 +1,138 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+
+const COLORS = [
+  "#00C49F",
+  "#FF8042",
+  "#8884d8",
+  "#FFBB28",
+  "#FF4560",
+  "#0088FE",
+];
 
 export const UserDashboard = () => {
-  const userName = "Muhammad"; // hardcoded username
-  const income = 10000;
-  const expense = 6000;
+  const [income, setIncome] = useState(0);
+  const [expense, setExpense] = useState(0);
+  const [transactions, setTransactions] = useState([]);
+  const [expenseCategoryData, setExpenseCategoryData] = useState([]);
+  const [incomeSourceData, setIncomeSourceData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const userId = localStorage.getItem("id");
+  const userName = localStorage.getItem("userName") || "User";
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      if (!userId) {
+        console.error("User ID not found in localStorage");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const [incomeRes, expenseRes] = await Promise.all([
+          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`),
+          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
+        ]);
+
+        const incomeData = incomeRes.data.data || [];
+        const expenseData = expenseRes.data.data || [];
+
+        // Totals
+        const totalIncome = incomeData.reduce(
+          (sum, item) => sum + item.amount,
+          0
+        );
+        const totalExpense = expenseData.reduce(
+          (sum, item) => sum + item.amount,
+          0
+        );
+
+        setIncome(totalIncome);
+        setExpense(totalExpense);
+
+        // Transactions
+        const formattedIncomes = incomeData.map((inc) => ({
+          id: inc._id,
+          type: "Income",
+          description: inc.source,
+          amount: inc.amount,
+          date: inc.date,
+        }));
+
+        const formattedExpenses = expenseData.map((exp) => ({
+          id: exp._id,
+          type: "Expense",
+          description: exp.description,
+          amount: exp.amount,
+          date: exp.date,
+        }));
+
+        const allTransactions = [
+          ...formattedIncomes,
+          ...formattedExpenses,
+        ].sort((a, b) => new Date(b.date) - new Date(a.date));
+        setTransactions(allTransactions.slice(0, 5));
+
+        // Expense Category Chart
+        const categoryMap = {};
+        expenseData.forEach((exp) => {
+          const category = exp.category || "Other";
+          categoryMap[category] = (categoryMap[category] || 0) + exp.amount;
+        });
+        const categoryData = Object.keys(categoryMap).map((key) => ({
+          name: key,
+          value: categoryMap[key],
+        }));
+        setExpenseCategoryData(categoryData);
+
+        // Income Source Chart
+        const sourceMap = {};
+        incomeData.forEach((inc) => {
+          const source = inc.source || "Other";
+          sourceMap[source] = (sourceMap[source] || 0) + inc.amount;
+        });
+        const sourceData = Object.keys(sourceMap).map((key) => ({
+          name: key,
+          value: sourceMap[key],
+        }));
+        setIncomeSourceData(sourceData);
+
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading dashboard:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [userId]);
+
   const balance = income - expense;
 
-  const recentTransactions = [
-    { id: 1, type: "Income", description: "Freelance Work", amount: 3000, date: "2025-04-01" },
-    { id: 2, type: "Expense", description: "Groceries", amount: 1000, date: "2025-04-02" },
-    { id: 3, type: "Expense", description: "Rent", amount: 4000, date: "2025-04-03" },
-  ];
+  if (loading) {
+    return (
+      <div className="bg-gray-900 min-h-screen flex items-center justify-center text-lg">
+        Loading dashboard...
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white p-6">
+    <div className="bg-gray-900 min-h-screen  p-6">
       <h1 className="text-3xl font-bold mb-6">Welcome, {userName} 👋</h1>
 
       {/* Summary Cards */}
@@ -32,9 +151,45 @@ export const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Chart Placeholder */}
-      <div className="bg-gray-800 p-6 rounded-xl mb-8 shadow-md text-center text-gray-400">
-        📊 Expense Overview Chart (Coming Soon)
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+          <h3 className="text-xl font-semibold mb-4">Expense by Category</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={expenseCategoryData}>
+              <XAxis dataKey="name" stroke="#ccc" />
+              <YAxis stroke="#ccc" />
+              <Tooltip />
+              <Bar dataKey="value" fill="#FF8042" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+          <h3 className="text-xl font-semibold mb-4">Income by Source</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={incomeSourceData}
+                cx="50%"
+                cy="50%"
+                label
+                outerRadius={100}
+                fill="#00C49F"
+                dataKey="value"
+              >
+                {incomeSourceData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Legend />
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* Recent Transactions */}
@@ -50,30 +205,36 @@ export const UserDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {recentTransactions.map((tx) => (
+            {transactions.map((tx) => (
               <tr key={tx.id} className="border-b border-gray-700">
                 <td className="py-2">{tx.type}</td>
                 <td className="py-2">{tx.description}</td>
-                <td className={`py-2 ${tx.type === "Income" ? "text-green-400" : "text-red-400"}`}>
+                <td
+                  className={`py-2 ${
+                    tx.type === "Income" ? "text-green-400" : "text-red-400"
+                  }`}
+                >
                   ₹{tx.amount}
                 </td>
-                <td className="py-2">{tx.date}</td>
+                <td className="py-2">
+                  {new Date(tx.date).toLocaleDateString()}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Action Buttons */}
+      {/* Actions */}
       <div className="flex flex-wrap gap-4">
         <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-sm">
-          ➕ Add Income
+          <Link to="/private/addincome">➕ Add Income</Link>
         </button>
         <button className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm">
-          ➖ Add Expense
+          <Link to="/private/addexpense">➖ Add Expense</Link>
         </button>
         <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm">
-          📊 View Reports
+          <Link to="/private/reports">📊 View Reports</Link>
         </button>
       </div>
     </div>
