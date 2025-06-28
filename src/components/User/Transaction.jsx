@@ -22,7 +22,6 @@ export const Transaction = () => {
         console.error("Failed to fetch transactions", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -51,7 +50,6 @@ export const Transaction = () => {
           </tbody>
         </table>
       </div>
-
       <div className="table-wrapper">
         <h3 className="table-title">Incomes</h3>
         <table className="styled-table">
