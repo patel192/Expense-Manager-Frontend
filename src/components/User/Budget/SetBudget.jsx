@@ -101,7 +101,6 @@ export const SetBudget = () => {
            {errors.end_date && <p style={{ color: "red" }}>{errors.end_date.message}</p>}
            
         </div>
-
         <button type="submit" className="btn btn-primary">
           Add
         </button>

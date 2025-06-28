@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [searchTerm, setSearchTerm] = useState("");
+  const [expandedItems, setExpandedItems] = useState({});
 
-  // Menu items data
   const menuItems = [
     { label: "Dashboard", path: "/private/userdashboard" },
     {
@@ -34,16 +34,22 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
     { label: "Reports", path: "/private/reports" },
   ];
 
-  const filterMenu = (item) => {
+  const toggleExpand = (label) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
+
+  const matchesSearch = (item) => {
     if (!searchTerm) return true;
-    const label = item.label.toLowerCase();
-    if (label.includes(searchTerm.toLowerCase())) return true;
-    if (item.children) {
-      return item.children.some((child) =>
+    const labelMatch = item.label.toLowerCase().includes(searchTerm.toLowerCase());
+    const childMatch =
+      item.children &&
+      item.children.some((child) =>
         child.label.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    }
-    return false;
+    return labelMatch || childMatch;
   };
 
   return (
@@ -65,30 +71,43 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
             <h2 style={{ color: "white" }}>Menu</h2>
           </header>
           <ul style={{ color: "white" }}>
-            {menuItems.filter(filterMenu).map((item, index) =>
-              item.children ? (
-                <li key={index}>
-                  <span className="opener active">{item.label}</span>
-                  <ul>
-                    {item.children
-                      .filter((child) =>
-                        child.label
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      )
-                      .map((child, idx) => (
-                        <li key={idx}>
-                          <Link to={child.path}>{child.label}</Link>
-                        </li>
-                      ))}
-                  </ul>
-                </li>
-              ) : (
-                <li key={index}>
-                  <Link to={item.path}>{item.label}</Link>
-                </li>
-              )
-            )}
+            {menuItems.filter(matchesSearch).map((item, index) => {
+              const isExpanded = expandedItems[item.label] || searchTerm !== "";
+
+              if (item.children) {
+                const childMatches = item.children.filter((child) =>
+                  child.label.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                const shouldShowChildren = searchTerm ? childMatches.length > 0 : isExpanded;
+
+                return (
+                  <li key={index}>
+                    <span
+                      className={`opener ${shouldShowChildren ? "active" : ""}`}
+                      onClick={() => toggleExpand(item.label)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {item.label}
+                    </span>
+                    {shouldShowChildren && (
+                      <ul>
+                        {childMatches.map((child, idx) => (
+                          <li key={idx}>
+                            <Link to={child.path}>{child.label}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              } else {
+                return (
+                  <li key={index}>
+                    <Link to={item.path}>{item.label}</Link>
+                  </li>
+                );
+              }
+            })}
           </ul>
         </nav>
 
