@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "/Users/patel/Desktop/Expense-Manager-Frontend/src/assets/css/allexpenses.css"; // Import the new CSS
+
 
 export const AllExpenses = () => {
   const [expenses, setExpenses] = useState([]);

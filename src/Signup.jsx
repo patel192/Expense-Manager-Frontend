@@ -1,5 +1,5 @@
 import React from "react";
-import "../src/assets/css/Signup.css";
+
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";

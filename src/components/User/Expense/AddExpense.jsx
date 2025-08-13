@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import "/Users/patel/Desktop/Expense-Manager-Frontend/src/assets/css/addexpense.css"; // Import the custom CSS
+
 
 export const AddExpense = () => {
   const {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import "/Users/patel/Desktop/Expense-Manager-Frontend/src/assets/css/Transaction.css"; // Dark mode styles here
+
 
 export const Transaction = () => {
   const [Expenses, setExpenses] = useState([]);
