@@ -1,241 +1,154 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import React from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
+  PieChart, Pie, Cell, ResponsiveContainer,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend
 } from "recharts";
+import { FaArrowUp, FaArrowDown, FaWallet, FaRupeeSign } from "react-icons/fa";
 
-const COLORS = [
-  "#00C49F",
-  "#FF8042",
-  "#8884d8",
-  "#FFBB28",
-  "#FF4560",
-  "#0088FE",
-];
 
 export const UserDashboard = () => {
-  const [income, setIncome] = useState(0);
-  const [expense, setExpense] = useState(0);
-  const [transactions, setTransactions] = useState([]);
-  const [expenseCategoryData, setExpenseCategoryData] = useState([]);
-  const [incomeSourceData, setIncomeSourceData] = useState([]);
-  const [loading, setLoading] = useState(true);
+   const summary = {
+    balance: 45000,
+    income: 80000,
+    expenses: 35000,
+    savingsGoal: 60000
+  };
 
-  const userId = localStorage.getItem("id");
-  const userName = localStorage.getItem("userName") || "User";
+  const categoryData = [
+    { name: "Food", value: 12000 },
+    { name: "Transport", value: 5000 },
+    { name: "Shopping", value: 8000 },
+    { name: "Bills", value: 10000 },
+  ];
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      if (!userId) {
-        console.error("User ID not found in localStorage");
-        setLoading(false);
-        return;
-      }
+  const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50"];
 
-      try {
-        const [incomeRes, expenseRes] = await Promise.all([
-          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
-        ]);
+  const monthlyTrends = [
+    { month: "Jan", income: 70000, expenses: 30000 },
+    { month: "Feb", income: 80000, expenses: 35000 },
+    { month: "Mar", income: 75000, expenses: 40000 },
+    { month: "Apr", income: 82000, expenses: 38000 },
+  ];
 
-        const incomeData = incomeRes.data.data || [];
-        const expenseData = expenseRes.data.data || [];
+  const transactions = [
+    { id: 1, name: "Zomato Order", amount: -500, category: "Food" },
+    { id: 2, name: "Salary Credit", amount: 80000, category: "Income" },
+    { id: 3, name: "Uber Ride", amount: -250, category: "Transport" },
+    { id: 4, name: "Electricity Bill", amount: -1500, category: "Bills" },
+  ];
 
-        // Totals
-        const totalIncome = incomeData.reduce(
-          (sum, item) => sum + item.amount,
-          0
-        );
-        const totalExpense = expenseData.reduce(
-          (sum, item) => sum + item.amount,
-          0
-        );
-
-        setIncome(totalIncome);
-        setExpense(totalExpense);
-
-        // Transactions
-        const formattedIncomes = incomeData.map((inc) => ({
-          id: inc._id,
-          type: "Income",
-          description: inc.source,
-          amount: inc.amount,
-          date: inc.date,
-        }));
-
-        const formattedExpenses = expenseData.map((exp) => ({
-          id: exp._id,
-          type: "Expense",
-          description: exp.description,
-          amount: exp.amount,
-          date: exp.date,
-        }));
-
-        const allTransactions = [
-          ...formattedIncomes,
-          ...formattedExpenses,
-        ].sort((a, b) => new Date(b.date) - new Date(a.date));
-        setTransactions(allTransactions.slice(0, 5));
-
-        // Expense Category Chart
-        const categoryMap = {};
-        expenseData.forEach((exp) => {
-          const category = exp.category || "Other";
-          categoryMap[category] = (categoryMap[category] || 0) + exp.amount;
-        });
-        const categoryData = Object.keys(categoryMap).map((key) => ({
-          name: key,
-          value: categoryMap[key],
-        }));
-        setExpenseCategoryData(categoryData);
-
-        // Income Source Chart
-        const sourceMap = {};
-        incomeData.forEach((inc) => {
-          const source = inc.source || "Other";
-          sourceMap[source] = (sourceMap[source] || 0) + inc.amount;
-        });
-        const sourceData = Object.keys(sourceMap).map((key) => ({
-          name: key,
-          value: sourceMap[key],
-        }));
-        setIncomeSourceData(sourceData);
-
-        setLoading(false);
-      } catch (err) {
-        console.error("Error loading dashboard:", err);
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, [userId]);
-
-  const balance = income - expense;
-
-  if (loading) {
-    return (
-      <div className="bg-gray-900 min-h-screen flex items-center justify-center text-lg">
-        Loading dashboard...
-      </div>
-    );
-  }
+  const upcomingBills = [
+    { id: 1, name: "Netflix", due: "2025-08-15", amount: 499 },
+    { id: 2, name: "Rent", due: "2025-08-30", amount: 12000 },
+  ];
 
   return (
-    <div className="bg-gray-900 min-h-screen  p-6">
-      <h1 className="text-3xl font-bold mb-6">Welcome, {userName} 👋</h1>
-
+    <div className="p-6 bg-gray-50 min-h-screen">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold text-gray-400">Total Income</h2>
-          <p className="text-2xl font-bold text-green-400 mt-2">₹{income}</p>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="bg-white p-4 shadow rounded-lg flex items-center gap-4">
+          <FaWallet className="text-purple-500 text-3xl" />
+          <div>
+            <p className="text-gray-500">Total Balance</p>
+            <h3 className="text-xl font-bold">₹{summary.balance.toLocaleString()}</h3>
+          </div>
         </div>
-        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold text-gray-400">Total Expense</h2>
-          <p className="text-2xl font-bold text-red-400 mt-2">₹{expense}</p>
+        <div className="bg-white p-4 shadow rounded-lg flex items-center gap-4">
+          <FaArrowUp className="text-green-500 text-3xl" />
+          <div>
+            <p className="text-gray-500">Income</p>
+            <h3 className="text-xl font-bold">₹{summary.income.toLocaleString()}</h3>
+          </div>
         </div>
-        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold text-gray-400">Balance</h2>
-          <p className="text-2xl font-bold text-blue-400 mt-2">₹{balance}</p>
+        <div className="bg-white p-4 shadow rounded-lg flex items-center gap-4">
+          <FaArrowDown className="text-red-500 text-3xl" />
+          <div>
+            <p className="text-gray-500">Expenses</p>
+            <h3 className="text-xl font-bold">₹{summary.expenses.toLocaleString()}</h3>
+          </div>
+        </div>
+        <div className="bg-white p-4 shadow rounded-lg">
+          <p className="text-gray-500">Savings Goal</p>
+          <div className="w-full bg-gray-200 h-3 rounded-lg mt-2">
+            <div
+              className="bg-purple-500 h-3 rounded-lg"
+              style={{ width: `${(summary.balance / summary.savingsGoal) * 100}%` }}
+            ></div>
+          </div>
+          <p className="mt-1 text-sm">{Math.round((summary.balance / summary.savingsGoal) * 100)}% achieved</p>
         </div>
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Expense by Category</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={expenseCategoryData}>
-              <XAxis dataKey="name" stroke="#ccc" />
-              <YAxis stroke="#ccc" />
-              <Tooltip />
-              <Bar dataKey="value" fill="#FF8042" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Income by Source</h3>
-          <ResponsiveContainer width="100%" height={300}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Spending by Category */}
+        <div className="bg-white p-4 shadow rounded-lg">
+          <h3 className="text-lg font-bold mb-4">Spending by Category</h3>
+          <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
-                data={incomeSourceData}
+                data={categoryData}
                 cx="50%"
                 cy="50%"
-                label
-                outerRadius={100}
-                fill="#00C49F"
+                outerRadius={80}
                 dataKey="value"
+                label
               >
-                {incomeSourceData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
+                {categoryData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Legend />
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
         </div>
+
+        {/* Monthly Trends */}
+        <div className="bg-white p-4 shadow rounded-lg">
+          <h3 className="text-lg font-bold mb-4">Monthly Trends</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={monthlyTrends}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="income" stroke="#4CAF50" />
+              <Line type="monotone" dataKey="expenses" stroke="#F44336" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      {/* Recent Transactions */}
-      <div className="bg-gray-800 p-6 rounded-xl shadow-md mb-8">
-        <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
-        <table className="w-full text-sm text-gray-300">
-          <thead>
-            <tr className="text-left border-b border-gray-600">
-              <th className="py-2">Type</th>
-              <th className="py-2">Description</th>
-              <th className="py-2">Amount</th>
-              <th className="py-2">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((tx) => (
-              <tr key={tx.id} className="border-b border-gray-700">
-                <td className="py-2">{tx.type}</td>
-                <td className="py-2">{tx.description}</td>
-                <td
-                  className={`py-2 ${
-                    tx.type === "Income" ? "text-green-400" : "text-red-400"
-                  }`}
-                >
-                  ₹{tx.amount}
-                </td>
-                <td className="py-2">
-                  {new Date(tx.date).toLocaleDateString()}
-                </td>
-              </tr>
+      {/* Bottom Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Recent Transactions */}
+        <div className="bg-white p-4 shadow rounded-lg">
+          <h3 className="text-lg font-bold mb-4">Recent Transactions</h3>
+          <ul>
+            {transactions.map((t) => (
+              <li key={t.id} className="flex justify-between py-2 border-b">
+                <span>{t.name}</span>
+                <span className={t.amount < 0 ? "text-red-500" : "text-green-500"}>
+                  ₹{t.amount.toLocaleString()}
+                </span>
+              </li>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </ul>
+        </div>
 
-      {/* Actions */}
-      <div className="flex flex-wrap gap-4">
-        <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-sm">
-          <Link to="/private/addincome">➕ Add Income</Link>
-        </button>
-        <button className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm">
-          <Link to="/private/addexpense">➖ Add Expense</Link>
-        </button>
-        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm">
-          <Link to="/private/reports">📊 View Reports</Link>
-        </button>
+        {/* Upcoming Bills */}
+        <div className="bg-white p-4 shadow rounded-lg">
+          <h3 className="text-lg font-bold mb-4">Upcoming Bills</h3>
+          <ul>
+            {upcomingBills.map((b) => (
+              <li key={b.id} className="flex justify-between py-2 border-b">
+                <span>{b.name} - <small className="text-gray-500">{b.due}</small></span>
+                <span className="text-red-500">₹{b.amount}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
