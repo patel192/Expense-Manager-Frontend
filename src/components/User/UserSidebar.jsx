@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaEnvelope, FaPhone, FaGithub } from "react-icons/fa";
 
 export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -53,47 +54,57 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   return (
-    <div id="sidebar" className={isOpen ? "" : "inactive"}>
-      <div className="inner">
-        <section id="search" className="alt">
-          <form>
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </form>
+    <div
+      id="sidebar"
+      className={`transition-all duration-300 bg-gradient-to-b from-gray-900 via-purple-900 to-pink-900 text-white fixed top-0 left-0 h-full z-50 w-64 overflow-y-auto shadow-lg transform ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
+      <div className="inner p-4">
+        {/* Search */}
+        <section id="search" className="mb-4">
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-full p-2 rounded bg-gray-800 text-white focus:outline-none"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </section>
 
+        {/* Menu */}
         <nav id="menu">
-          <header className="major">
-            <h2 style={{ color: "white" }}>Menu</h2>
+          <header className="major mb-2">
+            <h2 className="text-white">Menu</h2>
           </header>
-          <ul style={{ color: "white" }}>
+          <ul>
             {menuItems.filter(matchesSearch).map((item, index) => {
               const isExpanded = expandedItems[item.label] || searchTerm !== "";
-
               if (item.children) {
                 const childMatches = item.children.filter((child) =>
                   child.label.toLowerCase().includes(searchTerm.toLowerCase())
                 );
                 const shouldShowChildren = searchTerm ? childMatches.length > 0 : isExpanded;
-
                 return (
                   <li key={index}>
                     <span
-                      className={`opener ${shouldShowChildren ? "active" : ""}`}
+                      className={`block py-2 px-3 rounded cursor-pointer hover:bg-purple-700 transition-colors ${
+                        shouldShowChildren ? "bg-purple-800" : ""
+                      }`}
                       onClick={() => toggleExpand(item.label)}
-                      style={{ cursor: "pointer" }}
                     >
                       {item.label}
                     </span>
                     {shouldShowChildren && (
-                      <ul>
+                      <ul className="ml-4">
                         {childMatches.map((child, idx) => (
                           <li key={idx}>
-                            <Link to={child.path}>{child.label}</Link>
+                            <Link
+                              to={child.path}
+                              className="block py-1 px-2 rounded hover:bg-pink-700 transition-colors"
+                            >
+                              {child.label}
+                            </Link>
                           </li>
                         ))}
                       </ul>
@@ -103,7 +114,12 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
               } else {
                 return (
                   <li key={index}>
-                    <Link to={item.path}>{item.label}</Link>
+                    <Link
+                      to={item.path}
+                      className="block py-2 px-3 rounded hover:bg-purple-700 transition-colors"
+                    >
+                      {item.label}
+                    </Link>
                   </li>
                 );
               }
@@ -112,55 +128,31 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
         </nav>
 
         {/* Admin Details */}
-        <section style={{ color: "white" }}>
+        <section className="mt-6">
           <header className="major">
-            <h2 style={{ color: "white" }}>Admin Details</h2>
+            <h2 className="text-white">Admin Details</h2>
           </header>
-          <div className="mini-posts">
-            <p>
-              <strong style={{ color: "#f56a6a" }}>Name:</strong> {user?.name}
-            </p>
-            <p>
-              <strong style={{ color: "#f56a6a" }}>Email:</strong> {user?.email}
-            </p>
-            <p>
-              <strong style={{ color: "#f56a6a" }}>Role:</strong> {user?.role}
-            </p>
-          </div>
+          <p><strong className="text-pink-400">Name:</strong> {user?.name}</p>
+          <p><strong className="text-pink-400">Email:</strong> {user?.email}</p>
+          <p><strong className="text-pink-400">Role:</strong> {user?.role}</p>
         </section>
 
         {/* Contact Info */}
-        <section style={{ color: "white" }}>
+        <section className="mt-6">
           <header className="major">
-            <h2 style={{ color: "white" }}>Get in touch</h2>
+            <h2 className="text-white">Get in touch</h2>
           </header>
           <p>
-            Hello, I'm <strong style={{ color: "#f56a6a" }}>Muhammad Patel</strong>, a passionate web
-            developer currently pursuing my degree in Computer Science at Neo
-            Tech Institute of Technology. I enjoy building responsive web
-            applications and constantly exploring new technologies. Let's
-            connect and build something great together!
+            Hello, I'm <strong className="text-pink-400">Muhammad Patel</strong>, a passionate web
+            developer currently pursuing my degree in Computer Science.
           </p>
-          <ul className="contact">
-            <li className="icon solid fa-envelope">
-              <a href="#">patelmuhammad192@gmail.com</a>
-            </li>
-            <li className="icon solid fa-phone">+91 8980380280</li>
-            <li className="icon brands fa-github">
-              <a
-                href="https://github.com/patel192"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                patel192
-              </a>
-            </li>
+          <ul className="contact space-y-2 mt-2">
+            <li className="flex items-center gap-2"><FaEnvelope /> <a href="mailto:patelmuhammad192@gmail.com">patelmuhammad192@gmail.com</a></li>
+            <li className="flex items-center gap-2"><FaPhone /> +91 8980380280</li>
+            <li className="flex items-center gap-2"><FaGithub /> <a href="https://github.com/patel192" target="_blank" rel="noopener noreferrer">patel192</a></li>
           </ul>
         </section>
       </div>
-      <a href="#sidebar" className="toggle" onClick={toggleSidebar}>
-        Toggle
-      </a>
     </div>
   );
 };
