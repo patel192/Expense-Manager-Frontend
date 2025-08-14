@@ -32,6 +32,8 @@ import { ViewIncome } from "./components/User/Income/ViewIncome";
 import { IncomeSummary } from "./components/User/Income/IncomeSummary";
 import { useEffect } from "react";
 
+import { RecurringExpenses } from "./components/User/RecurringExpenses";
+
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
   const location = useLocation();
@@ -67,6 +69,7 @@ function App() {
           <Route path="viewincome" element={<ViewIncome />} />
           <Route path="incomesummary" element={<IncomeSummary />} />
           <Route path="reports" element={<Reports />} />
+          <Route path="recurring" element={<RecurringExpenses />} />
           <Route path="transaction" element={<Transaction />} />
           <Route path="userdashboard" element={<UserDashboard />} />
         </Route>

@@ -14,6 +14,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
       children: [
         { label: "Add Expense", path: "/private/addexpense" },
         { label: "All Expenses", path: "/private/allexpenses" },
+        { label: "Recurring Expenses", path: "/private/recurring" },
       ],
     },
     {
