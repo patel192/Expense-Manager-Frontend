@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaEnvelope, FaPhone, FaGithub } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaPhone,
+  FaGithub,
+  FaTachometerAlt,
+  FaMoneyBillWave,
+  FaWallet,
+  FaChartPie,
+  FaExchangeAlt,
+  FaFileAlt,
+} from "react-icons/fa";
 
 export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -8,9 +18,10 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const [expandedItems, setExpandedItems] = useState({});
 
   const menuItems = [
-    { label: "Dashboard", path: "/private/userdashboard" },
+    { label: "Dashboard", path: "/private/userdashboard", icon: <FaTachometerAlt /> },
     {
       label: "Expenses",
+      icon: <FaMoneyBillWave />,
       children: [
         { label: "Add Expense", path: "/private/addexpense" },
         { label: "All Expenses", path: "/private/allexpenses" },
@@ -19,6 +30,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
     },
     {
       label: "Income",
+      icon: <FaWallet />,
       children: [
         { label: "Add Income", path: "/private/addincome" },
         { label: "View Income", path: "/private/viewincome" },
@@ -27,13 +39,14 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
     },
     {
       label: "Budget",
+      icon: <FaChartPie />,
       children: [
         { label: "Add Budget", path: "/private/addbudget" },
         { label: "View Budget", path: "/private/allbudget" },
       ],
     },
-    { label: "Transactions", path: "/private/transaction" },
-    { label: "Reports", path: "/private/reports" },
+    { label: "Transactions", path: "/private/transaction", icon: <FaExchangeAlt /> },
+    { label: "Reports", path: "/private/reports", icon: <FaFileAlt /> },
   ];
 
   const toggleExpand = (label) => {
@@ -89,15 +102,15 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                 return (
                   <li key={index}>
                     <span
-                      className={`block py-2 px-3 rounded cursor-pointer hover:bg-purple-700 transition-colors ${
+                      className={`flex items-center gap-2 py-2 px-3 rounded cursor-pointer hover:bg-purple-700 transition-colors ${
                         shouldShowChildren ? "bg-purple-800" : ""
                       }`}
                       onClick={() => toggleExpand(item.label)}
                     >
-                      {item.label}
+                      {item.icon} {item.label}
                     </span>
                     {shouldShowChildren && (
-                      <ul className="ml-4">
+                      <ul className="ml-6">
                         {childMatches.map((child, idx) => (
                           <li key={idx}>
                             <Link
@@ -117,9 +130,9 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                   <li key={index}>
                     <Link
                       to={item.path}
-                      className="block py-2 px-3 rounded hover:bg-purple-700 transition-colors"
+                      className="flex items-center gap-2 py-2 px-3 rounded hover:bg-purple-700 transition-colors"
                     >
-                      {item.label}
+                      {item.icon} {item.label}
                     </Link>
                   </li>
                 );
