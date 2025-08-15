@@ -21,18 +21,20 @@ export const Accesscontrol = () => {
     fetchUsers();
   }, []);
 
+  // Role badge colors
   const roleColors = {
-    Admin: "bg-yellow-500 text-black",
-    User: "bg-blue-500 text-white",
+    Admin: "bg-yellow-400 text-gray-900",
+    User: "bg-blue-400 text-white",
     Manager: "bg-purple-500 text-white",
   };
 
+  // Filtering logic
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole =
-      filterRole === "All" || user.roleId.name === filterRole;
+      filterRole === "All" || user.roleId?.name === filterRole;
     return matchesSearch && matchesRole;
   });
 
@@ -43,9 +45,9 @@ export const Accesscontrol = () => {
   );
 
   return (
-    <div className="p-6 bg-gray-900 min-h-screen">
-      <div className="bg-gray-800 rounded-xl shadow-lg p-5 border border-gray-700">
-        <h2 className="text-white text-2xl font-semibold mb-5">
+    <div className="p-6 bg-gray-950 min-h-screen">
+      <div className="bg-gray-900 rounded-xl shadow-xl p-5 border border-gray-800">
+        <h2 className="text-gray-100 text-2xl font-bold mb-5">
           User Access Control
         </h2>
 
@@ -56,7 +58,7 @@ export const Accesscontrol = () => {
             <input
               type="text"
               placeholder="Search by name or email..."
-              className="pl-10 pr-3 py-2 rounded-lg w-full bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-10 pr-3 py-2 rounded-lg w-full bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -65,7 +67,7 @@ export const Accesscontrol = () => {
             />
           </div>
           <select
-            className="px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600"
+            className="px-3 py-2 rounded-lg bg-gray-800 text-gray-100 border border-gray-700"
             value={filterRole}
             onChange={(e) => {
               setFilterRole(e.target.value);
@@ -80,10 +82,10 @@ export const Accesscontrol = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto rounded-lg border border-gray-700">
-          <table className="min-w-full text-white">
+        <div className="overflow-x-auto rounded-lg border border-gray-800">
+          <table className="min-w-full text-gray-200">
             <thead>
-              <tr className="bg-gray-700 text-sm uppercase">
+              <tr className="bg-gray-800 text-sm uppercase text-gray-300">
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">Age</th>
                 <th className="p-3 text-left">Email</th>
@@ -98,14 +100,14 @@ export const Accesscontrol = () => {
                 paginatedUsers.map((user) => (
                   <tr
                     key={user._id}
-                    className="border-b border-gray-700 hover:bg-gray-700 transition"
+                    className="border-b border-gray-800 hover:bg-gray-850 transition-colors"
                   >
                     <td className="p-3">{user.name}</td>
                     <td className="p-3">{user.age || "N/A"}</td>
                     <td className="p-3">{user.email}</td>
                     <td className="p-3">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs ${
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           roleColors[user.roleId?.name] ||
                           "bg-gray-500 text-white"
                         }`}
@@ -120,20 +122,20 @@ export const Accesscontrol = () => {
                     </td>
                     <td className="p-3">
                       {user.is_active ? (
-                        <span className="px-2 py-1 text-xs bg-green-600 rounded-full">
+                        <span className="px-2 py-1 text-xs font-semibold bg-green-500 text-white rounded-full">
                           Active
                         </span>
                       ) : (
-                        <span className="px-2 py-1 text-xs bg-red-600 rounded-full">
+                        <span className="px-2 py-1 text-xs font-semibold bg-red-500 text-white rounded-full">
                           Inactive
                         </span>
                       )}
                     </td>
                     <td className="p-3 text-center space-x-2">
-                      <button className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full">
+                      <button className="p-2 bg-blue-500 hover:bg-blue-600 rounded-full text-white">
                         <FaEdit size={14} />
                       </button>
-                      <button className="p-2 bg-red-600 hover:bg-red-700 rounded-full">
+                      <button className="p-2 bg-red-500 hover:bg-red-600 rounded-full text-white">
                         <FaTrash size={14} />
                       </button>
                     </td>
@@ -143,7 +145,7 @@ export const Accesscontrol = () => {
                 <tr>
                   <td
                     colSpan="7"
-                    className="p-4 text-center text-gray-400 italic"
+                    className="p-4 text-center text-gray-500 italic"
                   >
                     No users found
                   </td>
@@ -160,10 +162,10 @@ export const Accesscontrol = () => {
               <button
                 key={idx}
                 onClick={() => setCurrentPage(idx + 1)}
-                className={`px-3 py-1 rounded ${
+                className={`px-3 py-1 rounded font-semibold transition ${
                   currentPage === idx + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-700 text-gray-300"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                 }`}
               >
                 {idx + 1}
