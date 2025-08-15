@@ -15,7 +15,7 @@ import {
   Legend,
 } from "recharts";
 
-const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042"];
+const COLORS = ["#4e79a7", "#59a14f", "#f28e2b", "#e15759"];
 
 export const ReportAdmins = () => {
   const [stats, setStats] = useState(null);
@@ -25,16 +25,23 @@ export const ReportAdmins = () => {
       try {
         const res = await axios.get("http://localhost:3001/api/adminreport");
         setStats(res.data);
-        console.log("Admin Report:", res.data);
       } catch (error) {
         console.error("Failed to fetch report data", error);
       }
     };
-
     fetchReport();
   }, []);
 
-  if (!stats) return <div className="text-center mt-10">Loading report...</div>;
+  if (!stats)
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center mt-10 text-lg font-semibold text-gray-600"
+      >
+        Loading report...
+      </motion.div>
+    );
 
   const reportStats = [
     { title: "Total Users", value: stats.totalUsers },
@@ -47,79 +54,111 @@ export const ReportAdmins = () => {
 
   const barData = [
     { name: "Income", amount: stats.totalIncome },
-    { name: "Expenses", amount: stats.totalExpense }, // not totalExpenses
+    { name: "Expenses", amount: stats.totalExpense },
   ];
 
   const pieData = stats.categoryDistribution || [];
-  console.log(stats.categoryDistribution);
+
   return (
-    <div className="p-6">
-      <h2 className="text-center text-2xl font-bold mb-6">
-        📊 Admin Report Dashboard
-      </h2>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Page Title */}
+      <motion.h2
+        initial={{ y: -15, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="text-center text-4xl font-extrabold text-gray-800 mb-10"
+      >
+        📊 Admin Analytics Dashboard
+      </motion.h2>
 
       {/* Stat Cards */}
-      <div className="flex flex-wrap justify-center gap-4 mb-10">
+      <div className="flex flex-wrap justify-center gap-6 mb-12">
         {reportStats.map((item, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+            }}
+            className="bg-white rounded-2xl p-5 shadow-md w-56 text-center"
           >
-            <Card title={item.title} value={item.value} />
+            <p className="text-sm text-gray-500">{item.title}</p>
+            <p className="text-2xl font-bold text-gray-800 mt-2">
+              {item.value}
+            </p>
           </motion.div>
         ))}
       </div>
 
-      {/* Bar Chart */}
-      <div className="bg-white rounded-xl shadow-md p-4 mb-10">
-        <h3 className="text-xl font-semibold text-center mb-4">
-          💰 Income vs Expenses
-        </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={barData}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="amount" fill="#2e7d32" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Pie Chart */}
-      <div className="bg-white rounded-xl shadow-md p-4">
-        <h3 className="text-xl font-semibold text-center mb-4">
-          📂 Category-wise Distribution
-        </h3>
-        {pieData.length > 0 ? (
+      {/* Charts Section */}
+      <div className="grid lg:grid-cols-2 gap-10">
+        {/* Bar Chart */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-xl shadow-md p-6"
+        >
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+            💰 Income vs Expenses
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-                label
-              >
-                {pieData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
+            <BarChart data={barData}>
+              <XAxis dataKey="name" stroke="#6b7280" />
+              <YAxis stroke="#6b7280" />
               <Tooltip />
-              <Legend />
-            </PieChart>
+              <Bar
+                dataKey="amount"
+                fill="#4e79a7"
+                radius={[6, 6, 0, 0]}
+                barSize={50}
+              />
+            </BarChart>
           </ResponsiveContainer>
-        ) : (
-          <p className="text-center text-gray-500">
-            No category data available.
-          </p>
-        )}
+        </motion.div>
+
+        {/* Pie Chart */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-xl shadow-md p-6"
+        >
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+            📂 Category-wise Distribution
+          </h3>
+          {pieData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#4e79a7"
+                  dataKey="value"
+                  label
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center text-gray-400">
+              No category data available.
+            </p>
+          )}
+        </motion.div>
       </div>
     </div>
   );
