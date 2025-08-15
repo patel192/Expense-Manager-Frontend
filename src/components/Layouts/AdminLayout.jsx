@@ -1,21 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import { AdminNavbar } from "../Admin/AdminNavbar";
 import { AdminSidebar } from "../Admin/AdminSidebar";
-import { useState } from "react";
-export const AdminLayout = () => {
+
+export const AdminLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  
-    const toggleSidebar = () => {
-      setIsSidebarOpen((prev) => !prev);
-    };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+
   return (
-    <div id="wrapper" className={`admin-layout ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
-      <div id="main">
-        <div className="inner">
-          <AdminNavbar></AdminNavbar>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "#f4f4f4",
+      }}
+    >
+      {/* Sidebar */}
+      <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+      {/* Main content area */}
+      <div
+        style={{
+          flex: 1,
+          marginLeft: isSidebarOpen ? "260px" : "60px", // Matches sidebar width
+          transition: "margin-left 0.3s ease",
+        }}
+      >
+        {/* Navbar */}
+        <div
+          style={{
+            background: "white",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+            padding: "10px 20px",
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+          }}
+        >
+          <AdminNavbar />
+        </div>
+
+        {/* Page Content */}
+        <div style={{ padding: "20px" }}>
+          {children || <h2>Welcome to the Admin Dashboard</h2>}
         </div>
       </div>
-      <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}></AdminSidebar>
     </div>
   );
 };

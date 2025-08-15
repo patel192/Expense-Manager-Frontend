@@ -1,47 +1,61 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { logout } from "../Utils/Logout";
+import { FaTwitter, FaFacebookF, FaSnapchatGhost, FaInstagram, FaMediumM } from "react-icons/fa";
+
 export const AdminNavbar = () => {
   return (
     <div>
-      <header id="header">
-        <a href="/" class="logo">
-          <strong style={{color:"white"}}>Trackit</strong> | Expense App
-        </a>
-        <ul class="icons">
-          <button className="logout-btn" onClick={logout}>
-            logout
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "10px 20px",
+          backgroundColor: "#1e1e2f",
+          color: "white",
+        }}
+      >
+        <Link to="/" style={{ textDecoration: "none", color: "white", fontWeight: "bold", fontSize: "1.2rem" }}>
+          Trackit | Expense App
+        </Link>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          <button
+            onClick={logout}
+            style={{
+              padding: "6px 14px",
+              backgroundColor: "#ff4d4d",
+              border: "none",
+              borderRadius: "6px",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            Logout
           </button>
-          <li>
-            <a href="#" class="icon brands fa-twitter">
-              <span class="label">Twitter</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="icon brands fa-facebook-f">
-              <span class="label">Facebook</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="icon brands fa-snapchat-ghost">
-              <span class="label">Snapchat</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="icon brands fa-instagram">
-              <span class="label">Instagram</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="icon brands fa-medium-m">
-              <span class="label">Medium</span>
-            </a>
-          </li>
-        </ul>
+
+          <a href="#" style={{ color: "white", fontSize: "1.2rem" }}>
+            <FaTwitter />
+          </a>
+          <a href="#" style={{ color: "white", fontSize: "1.2rem" }}>
+            <FaFacebookF />
+          </a>
+          <a href="#" style={{ color: "white", fontSize: "1.2rem" }}>
+            <FaSnapchatGhost />
+          </a>
+          <a href="#" style={{ color: "white", fontSize: "1.2rem" }}>
+            <FaInstagram />
+          </a>
+          <a href="#" style={{ color: "white", fontSize: "1.2rem" }}>
+            <FaMediumM />
+          </a>
+        </div>
       </header>
 
-      <div className="middle">
-        <Outlet></Outlet>
+      <div className="middle" style={{ padding: "20px" }}>
+        <Outlet />
       </div>
     </div>
   );
