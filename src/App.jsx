@@ -33,6 +33,7 @@ import { IncomeSummary } from "./components/User/Income/IncomeSummary";
 import { useEffect } from "react";
 
 import { RecurringExpenses } from "./components/User/RecurringExpenses";
+import { UserDetails } from "./components/Admin/UserDetails";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
@@ -84,6 +85,7 @@ function App() {
           <Route path="manageusers" element={<ManageUsers />} />
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
+          <Route path="user/:userId" element={<UserDetails/>} />
         </Route>
       </Route>
     </Routes>

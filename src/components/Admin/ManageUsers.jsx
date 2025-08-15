@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 export const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,7 @@ export const ManageUsers = () => {
   const [roleFilter, setRoleFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -129,7 +131,16 @@ export const ManageUsers = () => {
                     <td className="p-3">{user.age || "N/A"}</td>
                     <td className="p-3">{user.email}</td>
                     <td className="p-3">{user.roleId?.name || "N/A"}</td>
-                    <td className="p-3 text-center">
+                    <td className="p-3 flex justify-center gap-2">
+                      {/* View Details Button */}
+                      <button
+                        onClick={() => navigate(`/admin/user/${user._id}`)}
+                        className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full"
+                        title="View Details"
+                      >
+                        <FaEye size={14} />
+                      </button>
+                      {/* Delete Button */}
                       <button
                         onClick={() => handleDelete(user._id)}
                         className="p-2 bg-red-600 hover:bg-red-700 rounded-full"
