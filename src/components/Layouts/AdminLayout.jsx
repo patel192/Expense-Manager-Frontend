@@ -44,7 +44,7 @@ export const AdminLayout = ({ children }) => {
 
         {/* Page Content */}
         <div style={{ padding: "20px" }}>
-          {children || <h2>Welcome to the Admin Dashboard</h2>}
+          {children}
         </div>
       </div>
     </div>

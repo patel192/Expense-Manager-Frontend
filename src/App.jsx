@@ -34,6 +34,7 @@ import { useEffect } from "react";
 
 import { RecurringExpenses } from "./components/User/RecurringExpenses";
 import { UserDetails } from "./components/Admin/UserDetails";
+import { Account } from "./components/Admin/Account";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
@@ -86,6 +87,7 @@ function App() {
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
           <Route path="user/:userId" element={<UserDetails/>} />
+          <Route path="account/:userId" element={<Account/>} />
         </Route>
       </Route>
     </Routes>

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaTachometerAlt, FaUsersCog, FaUserShield, FaFileAlt, FaClipboardList, FaBars, FaTimes, FaSearch } from "react-icons/fa";
+import { FaTachometerAlt, FaUsersCog, FaUserShield, FaFileAlt, FaClipboardList, FaBars, FaTimes, FaSearch,FaUser } from "react-icons/fa";
 
 export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
+  const userId = localStorage.getItem("id")
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
 
@@ -14,6 +15,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
     { label: "Manage Users", path: "/admin/manageusers", icon: <FaUsersCog /> },
     { label: "Report Admins", path: "/admin/reportadmins", icon: <FaFileAlt /> },
     { label: "System Logs", path: "/admin/systemlogs", icon: <FaFileAlt /> },
+    { label: "Account", path: `/admin/account/${userId}`, icon: <FaUser /> }
   ];
 
   const filteredMenu = menuItems.filter((item) =>
