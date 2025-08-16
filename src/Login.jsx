@@ -36,27 +36,27 @@ const SubmitHandler = async (data) => {
 
         // Debugging: Check if res.data contains necessary fields
         console.log("User ID:", res.data?.data?._id);
-        console.log("Role:", res.data?.data?.roleId?.name);
+        console.log("Role:", res.data?.data?.role);
 
         // Ensure data exists before storing
-        if (res.data?.data?._id && res.data?.data?.roleId?.name) {
+        if (res.data?.data?._id && res.data?.data?.role) {
           localStorage.setItem("id", res.data.data._id);
-          localStorage.setItem("role", res.data.data.roleId.name);
+          localStorage.setItem("role", res.data.data.role);
           localStorage.setItem(
             "user",
             JSON.stringify({
               name: res.data.data.name,
               email: res.data.data.email,
-              role: res.data.data.roleId.name,
+              role: res.data.data.role,
             })
           );
 
           // Navigate to appropriate dashboard
 
           setTimeout(() => {
-            if (res.data.data.roleId.name === "User") {
+            if (res.data.data.role === "User") {
               Navigate("/private/userdashboard");
-            } else if (res.data.data.roleId.name === "Admin") {
+            } else if (res.data.data.role === "Admin") {
               Navigate("/admin/admindashboard");
             }
           }, 2000);

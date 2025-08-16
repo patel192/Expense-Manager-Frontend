@@ -17,7 +17,7 @@ export const Signup = () => {
 
   const submitHandler = async (data) => {
     try {
-      const res = await axios.post("/user", data);
+      const res = await axios.post("/user", { ...data, role: "User" });
       console.log(data);
 
       if (res.status === 201) {
@@ -32,11 +32,14 @@ export const Signup = () => {
       }
     } catch (error) {
       console.error("Signup Error:", error);
-      toast.error("Signup Failed: " + (error.response?.data?.message || "Server error"), {
-        position: "top-center",
-        autoClose: 3000,
-        theme: "colored",
-      });
+      toast.error(
+        "Signup Failed: " + (error.response?.data?.message || "Server error"),
+        {
+          position: "top-center",
+          autoClose: 3000,
+          theme: "colored",
+        }
+      );
     }
   };
 
@@ -58,7 +61,8 @@ export const Signup = () => {
       minLength: { value: 8, message: "Minimum length is 8" },
       maxLength: { value: 20, message: "Maximum length is 20" },
       pattern: {
-        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        value:
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         message: "Use a strong password",
       },
     },
@@ -90,7 +94,9 @@ export const Signup = () => {
 
         {/* Right side */}
         <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">Create Account</h2>
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
+            Create Account
+          </h2>
 
           <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
             {/* Name */}
@@ -102,7 +108,9 @@ export const Signup = () => {
                 {...register("name", ErrorHandler.NameHandler)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name.message}</p>
+              )}
             </div>
 
             {/* Age */}
@@ -114,7 +122,9 @@ export const Signup = () => {
                 {...register("age", ErrorHandler.AgeHandler)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
-              {errors.age && <p className="text-sm text-red-500">{errors.age.message}</p>}
+              {errors.age && (
+                <p className="text-sm text-red-500">{errors.age.message}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -126,7 +136,9 @@ export const Signup = () => {
                 {...register("email", ErrorHandler.EmailHandler)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
-              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -138,33 +150,12 @@ export const Signup = () => {
                 {...register("password", ErrorHandler.PasswordHandler)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
-              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
-
-            {/* Role */}
-            <div>
-              <span className="block text-gray-600 mb-1">Role</span>
-              <div className="flex gap-6">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    value="689d7675cbde9bb399e714e9"
-                    {...register("roleId", { required: "Role selection is required" })}
-                  />
-                  User
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    value="689d7697cbde9bb399e714eb"
-                    {...register("roleId", { required: "Role selection is required" })}
-                  />
-                  Admin
-                </label>
-              </div>
-              {errors.roleId && <p className="text-sm text-red-500">{errors.roleId.message}</p>}
-            </div>
-
             {/* Submit */}
             <motion.button
               type="submit"
