@@ -74,6 +74,7 @@ function App() {
           <Route path="recurring" element={<RecurringExpenses />} />
           <Route path="transaction" element={<Transaction />} />
           <Route path="userdashboard" element={<UserDashboard />} />
+          <Route path="account/:userId" element={<Account />} />
         </Route>
       </Route>
 

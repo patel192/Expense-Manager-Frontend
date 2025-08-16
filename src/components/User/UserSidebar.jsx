@@ -10,14 +10,18 @@ import {
   FaChartPie,
   FaExchangeAlt,
   FaFileAlt,
+  FaUser,
 } from "react-icons/fa";
 
 export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
+  const userId = localStorage.getItem("id")
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedItems, setExpandedItems] = useState({});
 
   const menuItems = [
+
+    { label: "Account", path: `/private/account/${userId}`, icon: <FaUser /> },
     { label: "Dashboard", path: "/private/userdashboard", icon: <FaTachometerAlt /> },
     {
       label: "Expenses",
