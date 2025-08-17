@@ -1,153 +1,226 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
-  PieChart, Pie, Cell, ResponsiveContainer,
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  ResponsiveContainer,
 } from "recharts";
-import { FaArrowUp, FaArrowDown, FaWallet, FaRupeeSign } from "react-icons/fa";
-
 
 export const UserDashboard = () => {
-   const summary = {
-    balance: 45000,
-    income: 80000,
-    expenses: 35000,
-    savingsGoal: 60000
-  };
+  const [budget, setBudget] = useState(null);
+  const [income, setIncome] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [bills, setBills] = useState([]);
+  const [recurring, setRecurring] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
-  const categoryData = [
-    { name: "Food", value: 12000 },
-    { name: "Transport", value: 5000 },
-    { name: "Shopping", value: 8000 },
-    { name: "Bills", value: 10000 },
-  ];
+  // Colors for charts
+  const COLORS = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444", "#3B82F6"];
+  const userId = localStorage.getItem("id");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [
+          budgetRes,
+          incomeRes,
+          expenseRes,
+          billsRes,
+          recurringRes,
+          txnRes,
+        ] = await Promise.all([
+          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`),
+          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`),
+          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
+          axios.get(`http://localhost:3001/api/billByuserId/${userId}`),
+          axios.get(`http://localhost:3001/api/recurring/${userId}`),
+          axios.get(`http://localhost:3001/api/transactionsByUserID/${userId}`),
+        ]);
 
-  const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50"];
+        setBudget(budgetRes.data.data);
+        setIncome(incomeRes.data.data);
+        setExpenses(expenseRes.data.data);
+        setBills(billsRes.data.data);
+        setRecurring(recurringRes.data.data);
+        setTransactions(txnRes.data.data);
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      }
+    };
 
-  const monthlyTrends = [
-    { month: "Jan", income: 70000, expenses: 30000 },
-    { month: "Feb", income: 80000, expenses: 35000 },
-    { month: "Mar", income: 75000, expenses: 40000 },
-    { month: "Apr", income: 82000, expenses: 38000 },
-  ];
-
-  const transactions = [
-    { id: 1, name: "Zomato Order", amount: -500, category: "Food" },
-    { id: 2, name: "Salary Credit", amount: 80000, category: "Income" },
-    { id: 3, name: "Uber Ride", amount: -250, category: "Transport" },
-    { id: 4, name: "Electricity Bill", amount: -1500, category: "Bills" },
-  ];
-
-  const upcomingBills = [
-    { id: 1, name: "Netflix", due: "2025-08-15", amount: 499 },
-    { id: 2, name: "Rent", due: "2025-08-30", amount: 12000 },
-  ];
+    fetchData();
+  }, [userId]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white p-4 shadow rounded-lg flex items-center gap-4">
-          <FaWallet className="text-purple-500 text-3xl" />
-          <div>
-            <p className="text-gray-500">Total Balance</p>
-            <h3 className="text-xl font-bold">₹{summary.balance.toLocaleString()}</h3>
-          </div>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">User Dashboard</h1>
+
+      {/* Budget Overview */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-2">Budget</h2>
+          <p className="text-2xl font-bold text-indigo-600">
+            ₹{budget ? budget.amount : "0"}
+          </p>
         </div>
-        <div className="bg-white p-4 shadow rounded-lg flex items-center gap-4">
-          <FaArrowUp className="text-green-500 text-3xl" />
-          <div>
-            <p className="text-gray-500">Income</p>
-            <h3 className="text-xl font-bold">₹{summary.income.toLocaleString()}</h3>
-          </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+            Total Income
+          </h2>
+          <p className="text-2xl font-bold text-green-600">
+            ₹{income.reduce((acc, i) => acc + i.amount, 0)}
+          </p>
         </div>
-        <div className="bg-white p-4 shadow rounded-lg flex items-center gap-4">
-          <FaArrowDown className="text-red-500 text-3xl" />
-          <div>
-            <p className="text-gray-500">Expenses</p>
-            <h3 className="text-xl font-bold">₹{summary.expenses.toLocaleString()}</h3>
-          </div>
-        </div>
-        <div className="bg-white p-4 shadow rounded-lg">
-          <p className="text-gray-500">Savings Goal</p>
-          <div className="w-full bg-gray-200 h-3 rounded-lg mt-2">
-            <div
-              className="bg-purple-500 h-3 rounded-lg"
-              style={{ width: `${(summary.balance / summary.savingsGoal) * 100}%` }}
-            ></div>
-          </div>
-          <p className="mt-1 text-sm">{Math.round((summary.balance / summary.savingsGoal) * 100)}% achieved</p>
+
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-2">
+            Total Expenses
+          </h2>
+          <p className="text-2xl font-bold text-red-600">
+            ₹{expenses.reduce((acc, e) => acc + e.amount, 0)}
+          </p>
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* Spending by Category */}
-        <div className="bg-white p-4 shadow rounded-lg">
-          <h3 className="text-lg font-bold mb-4">Spending by Category</h3>
-          <ResponsiveContainer width="100%" height={250}>
+      {/* Charts Section */}
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Income vs Expense Bar Chart */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">
+            Income vs Expenses
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={[
+                {
+                  name: "Income",
+                  amount: income.reduce((acc, i) => acc + i.amount, 0),
+                },
+                {
+                  name: "Expenses",
+                  amount: expenses.reduce((acc, e) => acc + e.amount, 0),
+                },
+              ]}
+            >
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="amount" fill="#4F46E5" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Expense Breakdown Pie Chart */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">
+            Expense Breakdown
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={categoryData}
+                data={expenses.map((e) => ({
+                  name: e.category,
+                  value: e.amount,
+                }))}
+                dataKey="value"
                 cx="50%"
                 cy="50%"
-                outerRadius={80}
-                dataKey="value"
+                outerRadius={100}
                 label
               >
-                {categoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                {expenses.map((_, i) => (
+                  <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
+              <Legend />
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
         </div>
-
-        {/* Monthly Trends */}
-        <div className="bg-white p-4 shadow rounded-lg">
-          <h3 className="text-lg font-bold mb-4">Monthly Trends</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={monthlyTrends}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="income" stroke="#4CAF50" />
-              <Line type="monotone" dataKey="expenses" stroke="#F44336" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
       </div>
 
-      {/* Bottom Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Recent Transactions */}
-        <div className="bg-white p-4 shadow rounded-lg">
-          <h3 className="text-lg font-bold mb-4">Recent Transactions</h3>
-          <ul>
-            {transactions.map((t) => (
-              <li key={t.id} className="flex justify-between py-2 border-b">
-                <span>{t.name}</span>
-                <span className={t.amount < 0 ? "text-red-500" : "text-green-500"}>
-                  ₹{t.amount.toLocaleString()}
+      {/* Bills & Recurring Expenses */}
+      <div className="grid lg:grid-cols-2 gap-8 mt-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">
+            Upcoming Bills
+          </h2>
+          <ul className="space-y-3">
+            {bills.slice(0, 5).map((bill) => (
+              <li
+                key={bill._id}
+                className="flex justify-between items-center p-3 border rounded-lg"
+              >
+                <span>{bill.name}</span>
+                <span className="font-semibold text-red-500">
+                  ₹{bill.amount}
                 </span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Upcoming Bills */}
-        <div className="bg-white p-4 shadow rounded-lg">
-          <h3 className="text-lg font-bold mb-4">Upcoming Bills</h3>
-          <ul>
-            {upcomingBills.map((b) => (
-              <li key={b.id} className="flex justify-between py-2 border-b">
-                <span>{b.name} - <small className="text-gray-500">{b.due}</small></span>
-                <span className="text-red-500">₹{b.amount}</span>
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">
+            Recurring Expenses
+          </h2>
+          <ul className="space-y-3">
+            {recurring.slice(0, 5).map((item) => (
+              <li
+                key={item._id}
+                className="flex justify-between items-center p-3 border rounded-lg"
+              >
+                <span>{item.name}</span>
+                <span className="font-semibold text-indigo-500">
+                  ₹{item.amount}
+                </span>
               </li>
             ))}
           </ul>
+        </div>
+      </div>
+
+      {/* Transactions Table */}
+      <div className="bg-white rounded-2xl shadow-lg p-6 mt-8">
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">
+          Recent Transactions
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700">
+                <th className="p-3">Name</th>
+                <th className="p-3">Type</th>
+                <th className="p-3">Amount</th>
+                <th className="p-3">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.slice(0, 6).map((txn) => (
+                <tr key={txn._id} className="border-b">
+                  <td className="p-3">{txn.name}</td>
+                  <td className="p-3 capitalize">{txn.type}</td>
+                  <td
+                    className={`p-3 font-semibold ${
+                      txn.type === "income" ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    ₹{txn.amount}
+                  </td>
+                  <td className="p-3">
+                    {new Date(txn.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
