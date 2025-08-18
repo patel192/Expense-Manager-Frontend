@@ -14,7 +14,7 @@ import {
 } from "recharts";
 
 export const UserDashboard = () => {
-  const [budget, setBudget] = useState(null);
+  const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [bills, setBills] = useState([]);
@@ -44,11 +44,17 @@ export const UserDashboard = () => {
         ]);
 
         setBudget(budgetRes.data.data);
+        console.log(budgetRes.data.data)
         setIncome(incomeRes.data.data);
+        console.log(incomeRes.data.data);
         setExpenses(expenseRes.data.data);
+        console.log(expenseRes.data.data);
         setBills(billsRes.data.data);
+        console.log(billsRes.data.data);
         setRecurring(recurringRes.data.data);
+        console.log(recurringRes.data.data);
         setTransactions(txnRes.data.data);
+        console.log(txnRes.data.data);
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
@@ -66,7 +72,7 @@ export const UserDashboard = () => {
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-2">Budget</h2>
           <p className="text-2xl font-bold text-indigo-600">
-            ₹{budget ? budget.amount : "0"}
+            ₹{budget.reduce((acc,i)=> acc+i.amount,0)}
           </p>
         </div>
 
@@ -205,7 +211,7 @@ export const UserDashboard = () => {
             <tbody>
               {transactions.slice(0, 6).map((txn) => (
                 <tr key={txn._id} className="border-b">
-                  <td className="p-3">{txn.name}</td>
+                  <td className="p-3">{txn.description}</td>
                   <td className="p-3 capitalize">{txn.type}</td>
                   <td
                     className={`p-3 font-semibold ${
