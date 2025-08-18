@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { motion } from "framer-motion";
+import { FaChartLine } from "react-icons/fa";
 export const IncomeSummary = () => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -71,7 +72,9 @@ export const IncomeSummary = () => {
 
         setChartData(
           months.map((m, idx) => ({
-            month: new Date(0, idx).toLocaleString("default", { month: "short" }),
+            month: new Date(0, idx).toLocaleString("default", {
+              month: "short",
+            }),
             income: m.income,
             expense: m.expense,
           }))
@@ -109,16 +112,37 @@ export const IncomeSummary = () => {
 
   const [chartData, setChartData] = useState([]);
   return (
-     <div className="p-6 space-y-8">
-      <h2 className="text-3xl font-bold text-center">📊 Finance Dashboard</h2>
+    <div className="p-6 space-y-8">
+      <div className="flex justify-center gap-3">
+        <div className="p-1">
+          <FaChartLine size={30} />
+        </div>
+        <div className="text-3xl font-bold text-center">Finance Dashboard</div>
+      </div>
 
       {/* Pocket Summary Cards */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Total Income", value: stats.totalIncome, color: "bg-green-500" },
-          { label: "Total Expenses", value: stats.totalExpense, color: "bg-red-500" },
-          { label: "Net Savings", value: stats.netSavings, color: "bg-blue-500" },
-          { label: "Savings Rate", value: `${stats.savingsRate}%`, color: "bg-purple-500" },
+          {
+            label: "Total Income",
+            value: stats.totalIncome,
+            color: "bg-green-500",
+          },
+          {
+            label: "Total Expenses",
+            value: stats.totalExpense,
+            color: "bg-red-500",
+          },
+          {
+            label: "Net Savings",
+            value: stats.netSavings,
+            color: "bg-blue-500",
+          },
+          {
+            label: "Savings Rate",
+            value: `${stats.savingsRate}%`,
+            color: "bg-purple-500",
+          },
         ].map((card, idx) => (
           <motion.div
             key={idx}
@@ -165,5 +189,5 @@ export const IncomeSummary = () => {
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
