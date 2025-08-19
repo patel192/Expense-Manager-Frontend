@@ -1,23 +1,42 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-
 export const Transaction = () => {
-  const [Expenses, setExpenses] = useState([]);
-  const [Incomes, setIncomes] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [activeTab, setActiveTab] = useState("All"); // "All" | "Expenses" | "Incomes"
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ExpenseRes = await axios.get(
-          "http://localhost:3001/api/expensesbyUserID/" + localStorage.getItem("id")
-        );
-        const IncomeRes = await axios.get(
-          "http://localhost:3001/api/incomesbyUserID/" + localStorage.getItem("id")
-        );
+        const userId = localStorage.getItem("id");
 
-        setExpenses(ExpenseRes.data.data);
-        setIncomes(IncomeRes.data.data);
+        const [expenseRes, incomeRes, budgetRes] = await Promise.all([
+          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
+          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`),
+          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`),
+        ]);
+
+        const expenses = expenseRes.data.data.map((e) => ({
+          ...e,
+          type: "Expense",
+        }));
+        const incomes = incomeRes.data.data.map((i) => ({
+          ...i,
+          type: "Income",
+        }));
+        const budgets = budgetRes.data.data;
+
+        const merged = [...expenses, ...incomes].map((t) => {
+          if (t.type === "Expense") {
+            const hasBudget = budgets.some(
+              (b) => b.categoryID._id === t.categoryID._id
+            );
+            return { ...t, hasBudget };
+          }
+          return t;
+        });
+
+        setTransactions(merged);
       } catch (error) {
         console.error("Failed to fetch transactions", error);
       }
@@ -26,52 +45,72 @@ export const Transaction = () => {
     fetchData();
   }, []);
 
-  return (
-    <div className="transaction-container">
-      <h2 className="section-title">Transactions</h2>
+  const filtered =
+    activeTab === "All"
+      ? transactions
+      : transactions.filter((t) => t.type === activeTab.slice(0, -1));
 
-      <div className="table-wrapper">
-        <h3 className="table-title">Expenses</h3>
-        <table className="styled-table">
-          <thead>
-            <tr>
-              <th>Amount</th>
-              <th>Description</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Expenses.map((expense) => (
-              <tr key={expense._id}>
-                <td>₹{expense.amount}</td>
-                <td>{expense.description}</td>
-                <td>{new Date(expense.date).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  return (
+    <div className="p-6 space-y-6">
+      <h2 className="text-2xl font-bold text-gray-800">Transactions</h2>
+
+      {/* Tabs */}
+      <div className="flex space-x-4 border-b pb-2">
+        {["All", "Expenses", "Incomes"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 rounded-t-lg font-medium ${
+              activeTab === tab
+                ? "bg-blue-500 text-white"
+                : "text-gray-600 hover:text-gray-800"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
 
-      <div className="table-wrapper">
-        <h3 className="table-title">Incomes</h3>
-        <table className="styled-table">
-          <thead>
-            <tr>
-              <th>Amount</th>
-              <th>Source</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Incomes.map((income) => (
-              <tr key={income._id}>
-                <td>₹{income.amount}</td>
-                <td>{income.source}</td>
-                <td>{new Date(income.date).toLocaleDateString()}</td>
-              </tr>
+      {/* Transaction List */}
+      <div className="bg-white rounded-xl shadow-md p-4">
+        {filtered.length > 0 ? (
+          <ul className="divide-y">
+            {filtered.map((t, i) => (
+              <li
+                key={i}
+                className="flex justify-between items-center py-3 hover:bg-gray-50 px-2 rounded-lg"
+              >
+                <div>
+                  <p className="font-medium text-gray-800">
+                    {t.description || t.source || "No description"}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {t.categoryID?.name || "Uncategorized"} •{" "}
+                    {new Date(t.date).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p
+                    className={`font-semibold ${
+                      t.type === "Expense" ? "text-red-600" : "text-green-600"
+                    }`}
+                  >
+                    {t.type === "Expense" ? "-" : "+"}₹{t.amount}
+                  </p>
+                  {t.type === "Expense" && !t.hasBudget && (
+                    <button className="mt-1 px-3 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600">
+                      Plan Budget
+                    </button>
+                  )}
+                </div>
+              </li>
             ))}
-          </tbody>
-        </table>
+          </ul>
+        ) : (
+          <p className="text-gray-500 italic text-center py-6">
+            No {activeTab.toLowerCase()} transactions found
+          </p>
+        )}
       </div>
     </div>
   );
