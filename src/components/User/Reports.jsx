@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   PieChart,
   Pie,
@@ -13,10 +13,14 @@ import {
   LineChart,
   Line,
   Legend,
-} from 'recharts';
-import { motion } from 'framer-motion';
+} from "recharts";
+import { motion } from "framer-motion";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28CF5', '#FF66CC'];
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28CF5", "#FF66CC"];
 
 export const Reports = () => {
   const [incomeData, setIncomeData] = useState([]);
@@ -24,7 +28,7 @@ export const Reports = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userId = localStorage.getItem('id');
+    const userId = localStorage.getItem("id");
 
     const fetchData = async () => {
       try {
@@ -37,7 +41,7 @@ export const Reports = () => {
         setExpenseData(expenseRes.data.data || []);
         setLoading(false);
       } catch (err) {
-        console.error('Failed to fetch report data:', err);
+        console.error("Failed to fetch report data:", err);
         setLoading(false);
       }
     };
@@ -55,51 +59,137 @@ export const Reports = () => {
 
   // Bar Chart Data
   const barData = [
-    { name: 'Income', amount: totalIncome },
-    { name: 'Expense', amount: totalExpense },
+    { name: "Income", amount: totalIncome },
+    { name: "Expense", amount: totalExpense },
   ];
 
-  // Pie Chart Data - Category Distribution
+  // Pie Chart Data (category-wise expense)
   const categoryMap = {};
   expenseData.forEach((item) => {
-    const categoryName = item.categoryID?.name || 'Uncategorized';
+    const categoryName = item.categoryID?.name || "Uncategorized";
     if (!categoryMap[categoryName]) {
       categoryMap[categoryName] = 0;
     }
     categoryMap[categoryName] += item.amount;
   });
-
   const pieData = Object.entries(categoryMap).map(([category, value]) => ({
     category,
     value,
   }));
 
-  // Line Chart Data - Monthly Trend
+  // Line Chart Data (monthly trend)
   const monthMap = {};
-
-  // Income
   incomeData.forEach((item) => {
     const date = new Date(item.date);
-    const month = date.toLocaleString('default', { month: 'short' });
+    const month = date.toLocaleString("default", { month: "short" });
     if (!monthMap[month]) monthMap[month] = { month, income: 0, expense: 0 };
     monthMap[month].income += item.amount;
   });
-
-  // Expense
   expenseData.forEach((item) => {
     const date = new Date(item.date);
-    const month = date.toLocaleString('default', { month: 'short' });
+    const month = date.toLocaleString("default", { month: "short" });
     if (!monthMap[month]) monthMap[month] = { month, income: 0, expense: 0 };
     monthMap[month].expense += item.amount;
   });
-
-  const lineData = Object.values(monthMap).sort((a, b) =>
-    new Date(`1 ${a.month} 2025`) - new Date(`1 ${b.month} 2025`)
+  const lineData = Object.values(monthMap).sort(
+    (a, b) => new Date(`1 ${a.month} 2025`) - new Date(`1 ${b.month} 2025`)
   );
+
+  // 🔽 Export Functions (PDF, Excel, CSV)
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Financial Report", 14, 16);
+
+    doc.autoTable({
+      head: [["Summary", "Amount"]],
+      body: [
+        ["Total Income", `₹${totalIncome}`],
+        ["Total Expense", `₹${totalExpense}`],
+        ["Remaining Balance", `₹${balance}`],
+      ],
+      startY: 25,
+    });
+
+    const allTransactions = [
+      ...incomeData.map((t) => [
+        "Income",
+        t.source || t.description || "N/A",
+        `₹${t.amount}`,
+        new Date(t.date).toLocaleDateString(),
+      ]),
+      ...expenseData.map((t) => [
+        "Expense",
+        t.description || "N/A",
+        `₹${t.amount}`,
+        new Date(t.date).toLocaleDateString(),
+      ]),
+    ];
+    doc.autoTable({
+      head: [["Type", "Description", "Amount", "Date"]],
+      body: allTransactions,
+      startY: doc.lastAutoTable.finalY + 10,
+    });
+
+    doc.save("Financial_Report.pdf");
+  };
+
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet([
+      { Summary: "Total Income", Amount: totalIncome },
+      { Summary: "Total Expense", Amount: totalExpense },
+      { Summary: "Remaining Balance", Amount: balance },
+    ]);
+    const transactionSheet = XLSX.utils.json_to_sheet([
+      ...incomeData.map((t) => ({
+        Type: "Income",
+        Description: t.source || t.description || "N/A",
+        Amount: t.amount,
+        Date: new Date(t.date).toLocaleDateString(),
+      })),
+      ...expenseData.map((t) => ({
+        Type: "Expense",
+        Description: t.description || "N/A",
+        Amount: t.amount,
+        Date: new Date(t.date).toLocaleDateString(),
+      })),
+    ]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Summary");
+    XLSX.utils.book_append_sheet(workbook, transactionSheet, "Transactions");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), "Financial_Report.xlsx");
+  };
+
+  const exportCSV = () => {
+    const rows = [
+      ["Type", "Description", "Amount", "Date"],
+      ...incomeData.map((t) => [
+        "Income",
+        t.source || t.description || "N/A",
+        t.amount,
+        new Date(t.date).toLocaleDateString(),
+      ]),
+      ...expenseData.map((t) => [
+        "Expense",
+        t.description || "N/A",
+        t.amount,
+        new Date(t.date).toLocaleDateString(),
+      ]),
+    ];
+    const csvContent = "data:text/csv;charset=utf-8," + rows.map((e) => e.join(",")).join("\n");
+    saveAs(new Blob([decodeURIComponent(encodeURI(csvContent))], { type: "text/csv;charset=utf-8;" }), "Financial_Report.csv");
+  };
 
   return (
     <div className="p-6">
       <h2 className="text-center text-2xl font-bold mb-6">📊 Your Financial Report</h2>
+
+      {/* Export Buttons */}
+      <div className="flex justify-center gap-4 mb-6">
+        <button onClick={exportPDF} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Export PDF</button>
+        <button onClick={exportExcel} className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Export Excel</button>
+        <button onClick={exportCSV} className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Export CSV</button>
+      </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -137,20 +227,13 @@ export const Reports = () => {
           <h3 className="text-center font-semibold mb-4">Expenses by Category</h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
-              <Pie
-                data={pieData}
-                dataKey="value"
-                nameKey="category"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-              >
+              <Pie data={pieData} dataKey="value" nameKey="category" cx="50%" cy="50%" outerRadius={80} label>
                 {pieData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <Legend />
+              <Tooltip />
             </PieChart>
           </ResponsiveContainer>
         </div>
