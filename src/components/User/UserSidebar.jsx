@@ -47,6 +47,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
       children: [
         { label: "Add Budget", path: "/private/addbudget" },
         { label: "View Budget", path: "/private/allbudget" },
+        { label: "Budget Summary", path: "/private/budgetsummary" },
       ],
     },
     { label: "Transactions", path: "/private/transaction", icon: <FaExchangeAlt /> },

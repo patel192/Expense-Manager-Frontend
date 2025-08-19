@@ -35,6 +35,7 @@ import { useEffect } from "react";
 import { RecurringExpenses } from "./components/User/RecurringExpenses";
 import { UserDetails } from "./components/Admin/UserDetails";
 import { Account } from "./components/Admin/Account";
+import { BudgetSummary } from "./components/User/Budget/BudgetSummary";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
@@ -67,6 +68,7 @@ function App() {
           <Route path="allexpenses" element={<AllExpenses />} />
           <Route path="addbudget" element={<SetBudget />} />
           <Route path="allbudget" element={<ViewBudget />} />
+          <Route path="budgetsummary" element={<BudgetSummary/>} />
           <Route path="addincome" element={<AddIncome />} />
           <Route path="viewincome" element={<ViewIncome />} />
           <Route path="incomesummary" element={<IncomeSummary />} />
