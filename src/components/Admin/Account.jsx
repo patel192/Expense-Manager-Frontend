@@ -2,17 +2,24 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+
 export const Account = () => {
-    const { userId } = useParams();
+  const { userId } = useParams();
   const [user, setUser] = useState({
     name: "",
     email: "",
     bio: "",
-    profilePic: "", // profile picture URL
+    profilePic: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
+  // Cloudinary config
+  const CLOUD_NAME = "dfaou6haj";
+  const UPLOAD_PRESET = "My_Images";
+
+  // Fetch user
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -25,35 +32,53 @@ export const Account = () => {
     fetchUser();
   }, [userId]);
 
-  // Handle input changes
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  // Handle profile pic selection
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
-  // Save updates (including profile pic)
+  // Save profile (upload to Cloudinary first if file selected)
   const handleSave = async () => {
     try {
-      const formData = new FormData();
-      formData.append("name", user.name);
-      formData.append("email", user.email);
-      formData.append("bio", user.bio);
+      let uploadedImageUrl = user.profilePic;
 
       if (selectedFile) {
-        formData.append("profilePic", selectedFile);
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+        const uploadRes = await axios.post(
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          formData
+        );
+
+        uploadedImageUrl = uploadRes.data.secure_url; // Cloudinary hosted URL
       }
 
-      await axios.put(`http://localhost:3001/api/user/${userId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Update user in backend with new profilePic URL
+      const res = await axios.put(
+        `http://localhost:3001/api/user/${userId}`,
+        {
+          name: user.name,
+          email: user.email,
+          bio: user.bio,
+          profilePic: uploadedImageUrl,
+        }
+      );
 
+      setUser(res.data.data);
+      setPreview(null);
       setIsEditing(false);
+      setSelectedFile(null);
     } catch (err) {
-      console.error("Error updating profile:", err);
+      console.error("Error saving profile:", err);
     }
   };
 
@@ -61,9 +86,15 @@ export const Account = () => {
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
       <h2 className="text-2xl font-semibold mb-4">Profile</h2>
 
-      {/* Profile Picture Section */}
+      {/* Profile Picture */}
       <div className="flex justify-center mb-6 relative">
-        {user.profilePic ? (
+        {preview ? (
+          <img
+            src={preview}
+            alt="Preview"
+            className="w-24 h-24 rounded-full object-cover border-2 border-blue-400"
+          />
+        ) : user.profilePic ? (
           <img
             src={user.profilePic}
             alt="Profile"
@@ -73,7 +104,6 @@ export const Account = () => {
           <FaUserCircle className="w-24 h-24 text-gray-400" />
         )}
 
-        {/* Upload button overlay */}
         {isEditing && (
           <label className="absolute bottom-0 right-10 bg-gray-700 text-white px-2 py-1 text-xs rounded cursor-pointer">
             Change
@@ -87,7 +117,7 @@ export const Account = () => {
         )}
       </div>
 
-      {/* Profile Details */}
+      {/* Fields */}
       <div className="space-y-4">
         <div>
           <label className="block text-gray-600">Name</label>
@@ -131,7 +161,7 @@ export const Account = () => {
         </div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Buttons */}
       <div className="flex justify-end mt-6 space-x-3">
         {!isEditing ? (
           <button
@@ -143,7 +173,11 @@ export const Account = () => {
         ) : (
           <>
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={() => {
+                setIsEditing(false);
+                setPreview(null);
+                setSelectedFile(null);
+              }}
               className="px-4 py-2 bg-gray-400 text-white rounded-lg"
             >
               Cancel
