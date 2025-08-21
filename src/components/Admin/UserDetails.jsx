@@ -7,8 +7,10 @@ import {
   CardContent,
   Typography,
   Skeleton,
-  Divider,
   Box,
+  Avatar,
+  Divider,
+  Chip,
 } from "@mui/material";
 import {
   BarChart,
@@ -16,12 +18,13 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  PieChart,
-  Pie,
-  Cell,
+  LineChart,
   Legend,
   ResponsiveContainer,
+  Line,
+  CartesianGrid,
 } from "recharts";
+import { Person } from "@mui/icons-material";
 
 export const UserDetails = () => {
   const { userId } = useParams();
@@ -66,41 +69,93 @@ export const UserDetails = () => {
     .reduce((sum, exp) => sum + exp.amount, 0);
 
   return (
-    <Box sx={{ padding: 4, bgcolor: "#f9fafb", minHeight: "100vh" }}>
+    <Box sx={{ padding: 4, bgcolor: "#f3f4f6", minHeight: "100vh" }}>
       {loading ? (
         <>
           <Skeleton variant="text" width={300} height={50} />
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            {[...Array(3)].map((_, i) => (
-              <Grid item xs={12} md={4} key={i}>
-                <Skeleton variant="rectangular" width="100%" height={120} />
-              </Grid>
-            ))}
-          </Grid>
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            <Grid item xs={12} md={6}>
-              <Skeleton variant="rectangular" width="100%" height={320} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Skeleton variant="rectangular" width="100%" height={320} />
-            </Grid>
-          </Grid>
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height={200}
+            sx={{ mt: 2 }}
+          />
         </>
       ) : (
         <>
-          {/* User Info */}
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            {user?.name} – Dashboard
-          </Typography>
-          <Typography variant="body1">📧 {user?.email}</Typography>
-          <Typography variant="body1">👤 Role: {user?.roleId?.name}</Typography>
+          {/* Profile Section */}
+          <Card
+            elevation={3}
+            sx={{
+              borderRadius: 3,
+              mb: 4,
+              p: 4,
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              alignItems: { xs: "center", md: "flex-start" },
+            }}
+          >
+            <Avatar
+              src={user?.profilePic || ""}
+              sx={{
+                width: 100,
+                height: 100,
+                bgcolor: "primary.main",
+                mr: { md: 4, xs: 0 },
+                mb: { xs: 2, md: 0 },
+              }}
+            >
+              {!user?.profilePic && <Person fontSize="large" />}
+            </Avatar>
 
-          <Divider sx={{ my: 3 }} />
+            <Box flex={1}>
+              <Typography variant="h5" fontWeight="bold">
+                {user?.name}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                📧 {user?.email}
+              </Typography>
+              <Chip
+                label={user?.roleId?.name || "User"}
+                color={user?.roleId?.name === "Admin" ? "error" : "primary"}
+                sx={{ mt: 1 }}
+              />
+
+              <Divider sx={{ my: 2 }} />
+
+              {/* Extra Details */}
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Joined On
+                  </Typography>
+                  <Typography variant="body1">
+                    {new Date(user?.createdAt).toLocaleDateString()}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Total Transactions
+                  </Typography>
+                  <Typography variant="body1">{transactions.length}</Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Bio
+                  </Typography>
+                  <Typography variant="body1">
+                    {user?.bio || "No bio provided."}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          </Card>
 
           {/* Stats Overview */}
           <Grid container spacing={3}>
             <Grid item xs={12} md={4}>
-              <Card elevation={3} sx={{ borderRadius: 3 }}>
+              <Card elevation={3} sx={{ borderRadius: 3, bgcolor: "#eef2ff" }}>
                 <CardContent>
                   <Typography variant="subtitle2" color="textSecondary">
                     Total Income
@@ -113,7 +168,7 @@ export const UserDetails = () => {
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <Card elevation={3} sx={{ borderRadius: 3 }}>
+              <Card elevation={3} sx={{ borderRadius: 3, bgcolor: "#ecfdf5" }}>
                 <CardContent>
                   <Typography variant="subtitle2" color="textSecondary">
                     Total Budget
@@ -130,7 +185,7 @@ export const UserDetails = () => {
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <Card elevation={3} sx={{ borderRadius: 3 }}>
+              <Card elevation={3} sx={{ borderRadius: 3, bgcolor: "#fef2f2" }}>
                 <CardContent>
                   <Typography variant="subtitle2" color="textSecondary">
                     Total Expenses
@@ -145,13 +200,14 @@ export const UserDetails = () => {
 
           {/* Charts Section */}
           <Grid container spacing={3} sx={{ mt: 3 }}>
-            <Grid item xs={12} md={12}>
+            {/* Income vs Expense Summary */}
+            <Grid item xs={12} md={6}>
               <Card elevation={3} sx={{ borderRadius: 3 }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Income vs Expense
                   </Typography>
-                  <ResponsiveContainer width={500} height={350}>
+                  <ResponsiveContainer width={500} height={300}>
                     <BarChart
                       data={[
                         { name: "Income", amount: totalIncome },
@@ -172,40 +228,115 @@ export const UserDetails = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={12}>
+            {/* Monthly Income & Expense (Bar) */}
+            <Grid item xs={12} md={6}>
               <Card elevation={3} sx={{ borderRadius: 3 }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Expense by Category
+                    Monthly Income & Expenses
                   </Typography>
-                  <ResponsiveContainer width={400} height={350}>
-                    <PieChart>
-                      <Pie
-                        data={transactions
-                          .filter((t) => t.type === "expense")
-                          .reduce((acc, t) => {
-                            const cat = t.categoryId?.name || "Other";
-                            const existing = acc.find((a) => a.name === cat);
-                            if (existing) existing.value += t.amount;
-                            else acc.push({ name: cat, value: t.amount });
-                            return acc;
-                          }, [])}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={120}
-                        label
-                        dataKey="value"
-                      >
-                        {transactions.map((_, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
+                  <ResponsiveContainer width={400} height={300}>
+                    <BarChart
+                      data={(() => {
+                        const grouped = {};
+                        transactions.forEach((t) => {
+                          const date = new Date(t.date);
+                          const month = date.toLocaleString("default", {
+                            month: "short",
+                          });
+                          if (!grouped[month])
+                            grouped[month] = { month, expense: 0, income: 0 };
+                          if (t.type === "expense")
+                            grouped[month].expense += t.amount;
+                          else grouped[month].income += t.amount;
+                        });
+                        return Object.values(grouped);
+                      })()}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
                       <Tooltip />
                       <Legend />
-                    </PieChart>
+                      <Bar
+                        dataKey="income"
+                        fill="#16A34A"
+                        radius={[6, 6, 0, 0]}
+                      />
+                      <Bar
+                        dataKey="expense"
+                        fill="#EF4444"
+                        radius={[6, 6, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Yearly Trend (Line Chart) */}
+            <Grid item xs={12}>
+              <Card elevation={3} sx={{ borderRadius: 3 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Yearly Trend (All Months)
+                  </Typography>
+                  <ResponsiveContainer width={1000} height={350}>
+                    <LineChart
+                      data={(() => {
+                        // Initialize all months
+                        const months = [
+                          "Jan",
+                          "Feb",
+                          "Mar",
+                          "Apr",
+                          "May",
+                          "Jun",
+                          "Jul",
+                          "Aug",
+                          "Sep",
+                          "Oct",
+                          "Nov",
+                          "Dec",
+                        ];
+                        const grouped = months.map((m) => ({
+                          month: m,
+                          expense: 0,
+                          income: 0,
+                        }));
+
+                        transactions.forEach((t) => {
+                          const date = new Date(t.date);
+                          const month = date.toLocaleString("default", {
+                            month: "short",
+                          });
+                          const entry = grouped.find((g) => g.month === month);
+                          if (t.type === "expense") entry.expense += t.amount;
+                          else entry.income += t.amount;
+                        });
+                        return grouped;
+                      })()}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="income"
+                        stroke="#16A34A"
+                        strokeWidth={3}
+                        dot
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="expense"
+                        stroke="#EF4444"
+                        strokeWidth={3}
+                        dot
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
