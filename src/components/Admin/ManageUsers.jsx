@@ -41,7 +41,7 @@ export const ManageUsers = () => {
       );
     }
     if (roleFilter !== "all") {
-      filtered = filtered.filter((u) => u.roleId?.name === roleFilter);
+      filtered = filtered.filter((u) => u.role === roleFilter);
     }
     setDisplayedUsers(filtered);
     setCurrentPage(1);
@@ -130,7 +130,7 @@ export const ManageUsers = () => {
                     <td className="p-3">{user.name}</td>
                     <td className="p-3">{user.age || "N/A"}</td>
                     <td className="p-3">{user.email}</td>
-                    <td className="p-3">{user.roleId?.name || "N/A"}</td>
+                    <td className="p-3">{user.role || "N/A"}</td>
                     <td className="p-3 flex justify-center gap-2">
                       {/* View Details Button */}
                       <button

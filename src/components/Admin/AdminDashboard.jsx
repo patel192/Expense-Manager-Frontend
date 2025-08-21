@@ -169,7 +169,7 @@ export const AdminDashboard = () => {
             <tbody>
               {transactions.slice(0, 5).map((tx, idx) => (
                 <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="p-3">{tx.user?.name || "Unknown"}</td>
+                  <td className="p-3">{tx.userID?.name || "Unknown"}</td>
                   <td className="p-3 font-semibold text-green-600">₹{tx.amount}</td>
                   <td className="p-3">{new Date(tx.createdAt).toLocaleDateString()}</td>
                 </tr>
