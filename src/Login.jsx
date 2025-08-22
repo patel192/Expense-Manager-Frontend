@@ -15,64 +15,36 @@ export const Login = () => {
   } = useForm();
   const Navigate = useNavigate();
 
-const SubmitHandler = async (data) => {
-    console.log("Login form submitted with data:", data);
-    try {
-      const res = await axios.post("user/login", data);
-      console.log("Response received:", res);
+ const SubmitHandler = async (data) => {
+  try {
+    const res = await axios.post("/user/login", data);
 
-      // Debugging: Log response data
-      console.log("Response Data:", res.data);
+    if (res.status >= 200 && res.status < 300) {
+      toast.success("Login Success");
 
-      // Check if response is successful
-      if (res.status >= 200 && res.status < 300) {
-        toast.success("Login Success", {
-          style: {
-            backgroundColor: "#1e293b", // green
-            color: "white",
-          },
-        });
-        
+      // ✅ Store token
+      localStorage.setItem("token", res.data.token);
 
-        // Debugging: Check if res.data contains necessary fields
-        console.log("User ID:", res.data?.data?._id);
-        console.log("Role:", res.data?.data?.role);
+      // ✅ Store user details
+      localStorage.setItem("id", res.data.data._id);
+      localStorage.setItem("role", res.data.data.role);
 
-        // Ensure data exists before storing
-        if (res.data?.data?._id && res.data?.data?.role) {
-          localStorage.setItem("id", res.data.data._id);
-          localStorage.setItem("role", res.data.data.role);
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              name: res.data.data.name,
-              email: res.data.data.email,
-              role: res.data.data.role,
-            })
-          );
-
-          // Navigate to appropriate dashboard
-
-          setTimeout(() => {
-            if (res.data.data.role === "User") {
-              Navigate("/private/userdashboard");
-            } else if (res.data.data.role === "Admin") {
-              Navigate("/admin/admindashboard");
-            }
-          }, 2000);
-        } else {
-          console.error("Invalid response structure, missing required fields.");
-          alert("Login failed: Missing user details in response.");
+      // Redirect based on role
+      setTimeout(() => {
+        if (res.data.data.role === "User") {
+          Navigate("/private/userdashboard");
+        } else if (res.data.data.role === "Admin") {
+          Navigate("/admin/admindashboard");
         }
-        return;
-      }
-    } catch (error) {
-      toast.error(
-        "Login Failed: " +
-          (error.response?.data?.message || "Server is unreachable")
-      );
+      }, 2000);
     }
-  };
+  } catch (error) {
+    toast.error(
+      "Login Failed: " +
+        (error.response?.data?.message || "Server is unreachable")
+    );
+  }
+};
 
 
   return (
@@ -101,7 +73,9 @@ const SubmitHandler = async (data) => {
 
         {/* Right Side */}
         <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">Login</h2>
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
+            Login
+          </h2>
 
           <form onSubmit={handleSubmit(SubmitHandler)} className="space-y-5">
             {/* Email */}
@@ -119,7 +93,9 @@ const SubmitHandler = async (data) => {
                 })}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
-              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -134,7 +110,11 @@ const SubmitHandler = async (data) => {
                 })}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
-              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
