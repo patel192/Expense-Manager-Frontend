@@ -86,7 +86,7 @@ const token = localStorage.getItem("token")
           <Route path="admindashboard" element={<AdminDashboard token={token} />} />
           <Route path="accesscontrol" element={<Accesscontrol />} />
           <Route path="managecategories" element={<ManageCategories />} />
-          <Route path="manageusers" element={<ManageUsers />} />
+          <Route path="manageusers" element={<ManageUsers token={token} />} />
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
           <Route path="user/:userId" element={<UserDetails/>} />

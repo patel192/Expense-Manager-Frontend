@@ -6,7 +6,7 @@ import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
-export const ManageUsers = () => {
+export const ManageUsers = ({token}) => {
   const [users, setUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,11 @@ export const ManageUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("/users");
+        const res = await axios.get("/users",{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
         const fetchedUsers = res.data.data || [];
         setUsers(fetchedUsers);
         setDisplayedUsers(fetchedUsers);
