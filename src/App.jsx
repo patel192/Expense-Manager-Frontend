@@ -40,7 +40,7 @@ import { BudgetSummary } from "./components/User/Budget/BudgetSummary";
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
   const location = useLocation();
-
+const token = localStorage.getItem("token")
   useEffect(() => {
     if (location.pathname === "/login" || location.pathname === "/signup") {
       document.body.className = "auth-page";
@@ -83,7 +83,7 @@ function App() {
       {/* Protected admin routes */}
       <Route element={<PrivateRoutes />}>
         <Route path="/admin" element={<AdminLayout />}>
-          <Route path="admindashboard" element={<AdminDashboard />} />
+          <Route path="admindashboard" element={<AdminDashboard token={token} />} />
           <Route path="accesscontrol" element={<Accesscontrol />} />
           <Route path="managecategories" element={<ManageCategories />} />
           <Route path="manageusers" element={<ManageUsers />} />

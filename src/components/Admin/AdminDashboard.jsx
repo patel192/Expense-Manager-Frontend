@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import { Users, UserCog, CreditCard } from "lucide-react";
 
-export const AdminDashboard = () => {
+export const AdminDashboard = ({token}) => {
   const [users, setUsers] = useState([]);
   const [userCountsPerMonth, setUserCountsPerMonth] = useState([]);
   const [roleDistribution, setRoleDistribution] = useState([]);
@@ -16,7 +16,11 @@ export const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch users
-        const userRes = await axios.get("/users");
+        const userRes = await axios.get("/users",{
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        });
         const allUsers = userRes.data.data || [];
 
         setUsers(allUsers);
