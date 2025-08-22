@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import { Token } from "@mui/icons-material";
 
-export const Account = () => {
+export const Account = ({token}) => {
   const { userId } = useParams();
   const [user, setUser] = useState({
     name: "",
@@ -23,7 +24,11 @@ export const Account = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/user/${userId}`);
+        const res = await axios.get(`http://localhost:3001/api/user/${userId}`,{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
         setUser(res.data.data);
       } catch (err) {
         console.error("Error fetching user:", err);

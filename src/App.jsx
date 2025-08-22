@@ -90,7 +90,7 @@ const token = localStorage.getItem("token")
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
           <Route path="user/:userId" element={<UserDetails/>} />
-          <Route path="account/:userId" element={<Account/>} />
+          <Route path="account/:userId" element={<Account token={token} />} />
         </Route>
       </Route>
     </Routes>
