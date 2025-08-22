@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 
-export const Accesscontrol = () => {
+export const Accesscontrol = ({token}) => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");
@@ -12,7 +12,11 @@ export const Accesscontrol = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("/users");
+        const res = await axios.get("/users",{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
         setUsers(res.data.data || []);
       } catch (error) {
         alert("Error fetching users");

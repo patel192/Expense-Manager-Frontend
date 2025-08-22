@@ -15,14 +15,17 @@ import {
 
 export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const userId = localStorage.getItem("id")
+  const userId = localStorage.getItem("id");
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedItems, setExpandedItems] = useState({});
 
   const menuItems = [
-
     { label: "Account", path: `/private/account/${userId}`, icon: <FaUser /> },
-    { label: "Dashboard", path: "/private/userdashboard", icon: <FaTachometerAlt /> },
+    {
+      label: "Dashboard",
+      path: "/private/userdashboard",
+      icon: <FaTachometerAlt />,
+    },
     {
       label: "Expenses",
       icon: <FaMoneyBillWave />,
@@ -50,7 +53,11 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
         { label: "Budget Summary", path: "/private/budgetsummary" },
       ],
     },
-    { label: "Transactions", path: "/private/transaction", icon: <FaExchangeAlt /> },
+    {
+      label: "Transactions",
+      path: "/private/transaction",
+      icon: <FaExchangeAlt />,
+    },
     { label: "Reports", path: "/private/reports", icon: <FaFileAlt /> },
   ];
 
@@ -63,7 +70,9 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
 
   const matchesSearch = (item) => {
     if (!searchTerm) return true;
-    const labelMatch = item.label.toLowerCase().includes(searchTerm.toLowerCase());
+    const labelMatch = item.label
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const childMatch =
       item.children &&
       item.children.some((child) =>
@@ -103,7 +112,9 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                 const childMatches = item.children.filter((child) =>
                   child.label.toLowerCase().includes(searchTerm.toLowerCase())
                 );
-                const shouldShowChildren = searchTerm ? childMatches.length > 0 : isExpanded;
+                const shouldShowChildren = searchTerm
+                  ? childMatches.length > 0
+                  : isExpanded;
                 return (
                   <li key={index}>
                     <span
@@ -146,29 +157,36 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
           </ul>
         </nav>
 
-        {/* Admin Details */}
-        <section className="mt-6">
-          <header className="major">
-            <h2 className="text-white">Admin Details</h2>
-          </header>
-          <p><strong className="text-pink-400">Name:</strong> {user?.name}</p>
-          <p><strong className="text-pink-400">Email:</strong> {user?.email}</p>
-          <p><strong className="text-pink-400">Role:</strong> {user?.role}</p>
-        </section>
-
         {/* Contact Info */}
         <section className="mt-6">
           <header className="major">
             <h2 className="text-white">Get in touch</h2>
           </header>
           <p>
-            Hello, I'm <strong className="text-pink-400">Muhammad Patel</strong>, a passionate web
-            developer currently pursuing my degree in Computer Science.
+            Hello, I'm <strong className="text-pink-400">Muhammad Patel</strong>
+            , a passionate web developer currently pursuing my degree in
+            Computer Science.
           </p>
           <ul className="contact space-y-2 mt-2">
-            <li className="flex items-center gap-2"><FaEnvelope /> <a href="mailto:patelmuhammad192@gmail.com">patelmuhammad192@gmail.com</a></li>
-            <li className="flex items-center gap-2"><FaPhone /> +91 8980380280</li>
-            <li className="flex items-center gap-2"><FaGithub /> <a href="https://github.com/patel192" target="_blank" rel="noopener noreferrer">patel192</a></li>
+            <li className="flex items-center gap-2">
+              <FaEnvelope />{" "}
+              <a href="mailto:patelmuhammad192@gmail.com">
+                patelmuhammad192@gmail.com
+              </a>
+            </li>
+            <li className="flex items-center gap-2">
+              <FaPhone /> +91 8980380280
+            </li>
+            <li className="flex items-center gap-2">
+              <FaGithub />{" "}
+              <a
+                href="https://github.com/patel192"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                patel192
+              </a>
+            </li>
           </ul>
         </section>
       </div>

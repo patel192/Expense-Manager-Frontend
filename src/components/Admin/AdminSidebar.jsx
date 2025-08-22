@@ -1,21 +1,47 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaTachometerAlt, FaUsersCog, FaUserShield, FaFileAlt, FaClipboardList, FaBars, FaTimes, FaSearch,FaUser } from "react-icons/fa";
+import {
+  FaTachometerAlt,
+  FaUsersCog,
+  FaUserShield,
+  FaFileAlt,
+  FaClipboardList,
+  FaBars,
+  FaTimes,
+  FaSearch,
+  FaUser,
+} from "react-icons/fa";
 
 export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const userId = localStorage.getItem("id")
+  const userId = localStorage.getItem("id");
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
 
   const menuItems = [
-    { label: "Access Control", path: "/admin/accesscontrol", icon: <FaUserShield /> },
-    { label: "Dashboard", path: "/admin/admindashboard", icon: <FaTachometerAlt /> },
-    { label: "Manage Categories", path: "/admin/managecategories", icon: <FaClipboardList /> },
+    {
+      label: "Access Control",
+      path: "/admin/accesscontrol",
+      icon: <FaUserShield />,
+    },
+    {
+      label: "Dashboard",
+      path: "/admin/admindashboard",
+      icon: <FaTachometerAlt />,
+    },
+    {
+      label: "Manage Categories",
+      path: "/admin/managecategories",
+      icon: <FaClipboardList />,
+    },
     { label: "Manage Users", path: "/admin/manageusers", icon: <FaUsersCog /> },
-    { label: "Report Admins", path: "/admin/reportadmins", icon: <FaFileAlt /> },
+    {
+      label: "Report Admins",
+      path: "/admin/reportadmins",
+      icon: <FaFileAlt />,
+    },
     { label: "System Logs", path: "/admin/systemlogs", icon: <FaFileAlt /> },
-    { label: "Account", path: `/admin/account/${userId}`, icon: <FaUser /> }
+    { label: "Account", path: `/admin/account/${userId}`, icon: <FaUser /> },
   ];
 
   const filteredMenu = menuItems.filter((item) =>
@@ -38,7 +64,14 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
         overflowY: "auto",
       }}
     >
-      <div style={{ padding: "10px", display: "flex", justifyContent: isOpen ? "space-between" : "center", alignItems: "center" }}>
+      <div
+        style={{
+          padding: "10px",
+          display: "flex",
+          justifyContent: isOpen ? "space-between" : "center",
+          alignItems: "center",
+        }}
+      >
         {isOpen && <h2 style={{ fontSize: "1.2rem" }}>Admin Panel</h2>}
         <button
           onClick={toggleSidebar}
@@ -95,9 +128,11 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                   gap: "12px",
                   padding: "10px 15px",
                   color: location.pathname === item.path ? "#f56a6a" : "white",
-                  background: location.pathname === item.path ? "#2d2d44" : "transparent",
+                  background:
+                    location.pathname === item.path ? "#2d2d44" : "transparent",
                   textDecoration: "none",
-                  fontWeight: location.pathname === item.path ? "bold" : "normal",
+                  fontWeight:
+                    location.pathname === item.path ? "bold" : "normal",
                 }}
               >
                 {item.icon}
@@ -111,16 +146,13 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
       {isOpen && (
         <>
           <div style={{ padding: "15px" }}>
-            <h4 style={{ marginBottom: "5px", color: "#f56a6a" }}>Admin Details</h4>
-            <p><strong>Name:</strong> {user?.name}</p>
-            <p><strong>Email:</strong> {user?.email}</p>
-            <p><strong>Role:</strong> {user?.role}</p>
-          </div>
-
-          <div style={{ padding: "15px" }}>
-            <h4 style={{ marginBottom: "5px", color: "#f56a6a" }}>Get in Touch</h4>
+            <h4 style={{ marginBottom: "5px", color: "#f56a6a" }}>
+              Get in Touch
+            </h4>
             <p style={{ fontSize: "0.9rem", lineHeight: "1.4" }}>
-              Hello, I'm <strong style={{ color: "#f56a6a" }}>Muhammad Patel</strong>, a passionate web developer.
+              Hello, I'm{" "}
+              <strong style={{ color: "#f56a6a" }}>Muhammad Patel</strong>, a
+              passionate web developer.
             </p>
             <ul style={{ listStyle: "none", padding: 0, fontSize: "0.85rem" }}>
               <li>Email: patelmuhammad192@gmail.com</li>
