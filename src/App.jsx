@@ -76,7 +76,7 @@ const token = localStorage.getItem("token")
           <Route path="recurring" element={<RecurringExpenses />} />
           <Route path="transaction" element={<Transaction />} />
           <Route path="userdashboard" element={<UserDashboard token={token} />} />
-          <Route path="account/:userId" element={<Account />} />
+          <Route path="account/:userId" element={<Account token={token} />} />
         </Route>
       </Route>
 
