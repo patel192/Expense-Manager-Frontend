@@ -26,7 +26,7 @@ import {
 } from "recharts";
 import { Person } from "@mui/icons-material";
 
-export const UserDetails = () => {
+export const UserDetails = ({ token }) => {
   const { userId } = useParams();
   const [user, setUser] = useState(null);
   const [income, setIncome] = useState([]);
@@ -40,10 +40,26 @@ export const UserDetails = () => {
     try {
       const [incomeRes, budgetRes, transactionRes, userRes] = await Promise.all(
         [
-          axios.get(`/incomesbyUserID/${userId}`),
-          axios.get(`/budgetsbyUserID/${userId}`),
-          axios.get(`/transactionsByUserId/${userId}`),
-          axios.get(`/user/${userId}`),
+          axios.get(`/incomesbyUserID/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          axios.get(`/budgetsbyUserID/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          axios.get(`/transactionsByUserId/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          axios.get(`/user/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
         ]
       );
 
@@ -115,8 +131,8 @@ export const UserDetails = () => {
                 📧 {user?.email}
               </Typography>
               <Chip
-                label={user?.roleId?.name || "User"}
-                color={user?.roleId?.name === "Admin" ? "error" : "primary"}
+                label={user?.role || "User"}
+                color={user?.role === "Admin" ? "error" : "primary"}
                 sx={{ mt: 1 }}
               />
 

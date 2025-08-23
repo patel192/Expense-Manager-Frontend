@@ -61,7 +61,11 @@ export const ManageUsers = ({token}) => {
     if (!window.confirm("Delete this user permanently?")) return;
 
     try {
-      await axios.delete(`/user/${userId}`);
+      await axios.delete(`/user/${userId}`,{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
       setUsers((prev) => prev.filter((u) => u._id !== userId));
       toast.success("✅ User deleted", {
         autoClose: 3000,

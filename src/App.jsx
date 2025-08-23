@@ -75,7 +75,7 @@ const token = localStorage.getItem("token")
           <Route path="reports" element={<Reports />} />
           <Route path="recurring" element={<RecurringExpenses />} />
           <Route path="transaction" element={<Transaction />} />
-          <Route path="userdashboard" element={<UserDashboard />} />
+          <Route path="userdashboard" element={<UserDashboard token={token} />} />
           <Route path="account/:userId" element={<Account />} />
         </Route>
       </Route>
@@ -89,7 +89,7 @@ const token = localStorage.getItem("token")
           <Route path="manageusers" element={<ManageUsers token={token} />} />
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
-          <Route path="user/:userId" element={<UserDetails/>} />
+          <Route path="user/:userId" element={<UserDetails token={token}/>} />
           <Route path="account/:userId" element={<Account token={token} />} />
         </Route>
       </Route>

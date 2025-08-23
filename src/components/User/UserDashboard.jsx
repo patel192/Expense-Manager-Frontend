@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export const UserDashboard = () => {
+export const UserDashboard = ({token}) => {
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -35,12 +35,36 @@ export const UserDashboard = () => {
           recurringRes,
           txnRes,
         ] = await Promise.all([
-          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/billByuserId/${userId}`),
-          axios.get(`http://localhost:3001/api/recurring/${userId}`),
-          axios.get(`http://localhost:3001/api/transactionsByUserID/${userId}`),
+          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
+          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
+          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
+          axios.get(`http://localhost:3001/api/billByuserId/${userId}`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
+          axios.get(`http://localhost:3001/api/recurring/${userId}`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
+          axios.get(`http://localhost:3001/api/transactionsByUserID/${userId}`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
         ]);
 
         setBudget(budgetRes.data.data);
