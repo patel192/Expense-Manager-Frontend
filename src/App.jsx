@@ -103,7 +103,7 @@ function App() {
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
           <Route path="user/:userId" element={<UserDetails token={token} />} />
-          <Route path="account/:userId" element={<Account token={token} />} />
+          <Route path="account/:userId" element={<Account config={config} />} />
         </Route>
       </Route>
     </Routes>
