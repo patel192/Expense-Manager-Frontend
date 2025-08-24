@@ -13,7 +13,6 @@ import { PrivateLayout } from "./components/Layouts/PrivateLayout";
 import { AddExpense } from "./components/User/Expense/AddExpense";
 import { AdminLayout } from "./components/Layouts/AdminLayout";
 
-
 import { Reports } from "./components/User/Reports";
 
 import { Transaction } from "./components/User/Transaction";
@@ -40,7 +39,12 @@ import { BudgetSummary } from "./components/User/Budget/BudgetSummary";
 function App() {
   axios.defaults.baseURL = "http://localhost:3001/api";
   const location = useLocation();
-const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
   useEffect(() => {
     if (location.pathname === "/login" || location.pathname === "/signup") {
       document.body.className = "auth-page";
@@ -68,14 +72,17 @@ const token = localStorage.getItem("token")
           <Route path="allexpenses" element={<AllExpenses />} />
           <Route path="addbudget" element={<SetBudget />} />
           <Route path="allbudget" element={<ViewBudget />} />
-          <Route path="budgetsummary" element={<BudgetSummary/>} />
+          <Route path="budgetsummary" element={<BudgetSummary />} />
           <Route path="addincome" element={<AddIncome />} />
           <Route path="viewincome" element={<ViewIncome />} />
           <Route path="incomesummary" element={<IncomeSummary />} />
           <Route path="reports" element={<Reports />} />
           <Route path="recurring" element={<RecurringExpenses />} />
           <Route path="transaction" element={<Transaction />} />
-          <Route path="userdashboard" element={<UserDashboard token={token} />} />
+          <Route
+            path="userdashboard"
+            element={<UserDashboard config={config} />}
+          />
           <Route path="account/:userId" element={<Account token={token} />} />
         </Route>
       </Route>
@@ -83,13 +90,19 @@ const token = localStorage.getItem("token")
       {/* Protected admin routes */}
       <Route element={<PrivateRoutes />}>
         <Route path="/admin" element={<AdminLayout />}>
-          <Route path="admindashboard" element={<AdminDashboard token={token} />} />
-          <Route path="accesscontrol" element={<Accesscontrol token={token} />} />
+          <Route
+            path="admindashboard"
+            element={<AdminDashboard token={token} />}
+          />
+          <Route
+            path="accesscontrol"
+            element={<Accesscontrol token={token} />}
+          />
           <Route path="managecategories" element={<ManageCategories />} />
           <Route path="manageusers" element={<ManageUsers token={token} />} />
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
-          <Route path="user/:userId" element={<UserDetails token={token}/>} />
+          <Route path="user/:userId" element={<UserDetails token={token} />} />
           <Route path="account/:userId" element={<Account token={token} />} />
         </Route>
       </Route>

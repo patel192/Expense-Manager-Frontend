@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export const UserDashboard = ({token}) => {
+export const UserDashboard = ({config}) => {
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -35,36 +35,12 @@ export const UserDashboard = ({token}) => {
           recurringRes,
           txnRes,
         ] = await Promise.all([
-          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`,{
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
-          }),
-          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`,{
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
-          }),
-          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`,{
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
-          }),
-          axios.get(`http://localhost:3001/api/billByuserId/${userId}`,{
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
-          }),
-          axios.get(`http://localhost:3001/api/recurring/${userId}`,{
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
-          }),
-          axios.get(`http://localhost:3001/api/transactionsByUserID/${userId}`,{
-            headers:{
-              Authorization:`Bearer ${token}`
-            }
-          }),
+          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`,config),
+          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`,config),
+          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`,config),
+          axios.get(`http://localhost:3001/api/billByuserId/${userId}`,config),
+          axios.get(`http://localhost:3001/api/recurring/${userId}`,config),
+          axios.get(`http://localhost:3001/api/transactionsByUserID/${userId}`,config),
         ]);
 
         setBudget(budgetRes.data.data);
