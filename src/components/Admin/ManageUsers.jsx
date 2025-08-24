@@ -6,7 +6,7 @@ import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
-export const ManageUsers = ({token}) => {
+export const ManageUsers = ({config}) => {
   const [users, setUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,11 +19,7 @@ export const ManageUsers = ({token}) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("/users",{
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        });
+        const res = await axios.get("/users",config);
         const fetchedUsers = res.data.data || [];
         setUsers(fetchedUsers);
         setDisplayedUsers(fetchedUsers);
@@ -61,11 +57,7 @@ export const ManageUsers = ({token}) => {
     if (!window.confirm("Delete this user permanently?")) return;
 
     try {
-      await axios.delete(`/user/${userId}`,{
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        });
+      await axios.delete(`/user/${userId}`,config);
       setUsers((prev) => prev.filter((u) => u._id !== userId));
       toast.success("✅ User deleted", {
         autoClose: 3000,

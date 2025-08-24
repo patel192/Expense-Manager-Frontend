@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import { Users, UserCog, CreditCard } from "lucide-react";
 
-export const AdminDashboard = ({token}) => {
+export const AdminDashboard = ({config}) => {
   const [users, setUsers] = useState([]);
   const [userCountsPerMonth, setUserCountsPerMonth] = useState([]);
   const [roleDistribution, setRoleDistribution] = useState([]);
@@ -16,11 +16,7 @@ export const AdminDashboard = ({token}) => {
     const fetchData = async () => {
       try {
         // Fetch users
-        const userRes = await axios.get("/users",{
-          headers:{
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const userRes = await axios.get("/users",config);
         const allUsers = userRes.data.data || [];
 
         setUsers(allUsers);
@@ -54,7 +50,7 @@ export const AdminDashboard = ({token}) => {
         setRecentUsers(recent);
 
         // Fetch transactions
-        const txRes = await axios.get("/transactions");
+        const txRes = await axios.get("/transactions",config);
         setTransactions(txRes.data.data || []);
       } catch (error) {
         console.error("Failed to load dashboard data:", error);

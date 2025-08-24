@@ -92,14 +92,14 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route
             path="admindashboard"
-            element={<AdminDashboard token={token} />}
+            element={<AdminDashboard config={config} />}
           />
           <Route
             path="accesscontrol"
             element={<Accesscontrol token={token} />}
           />
           <Route path="managecategories" element={<ManageCategories />} />
-          <Route path="manageusers" element={<ManageUsers token={token} />} />
+          <Route path="manageusers" element={<ManageUsers config={config} />} />
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
           <Route path="user/:userId" element={<UserDetails token={token} />} />
