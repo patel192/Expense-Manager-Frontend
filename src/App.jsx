@@ -98,7 +98,7 @@ function App() {
             path="accesscontrol"
             element={<Accesscontrol token={token} />}
           />
-          <Route path="managecategories" element={<ManageCategories />} />
+          <Route path="managecategories" element={<ManageCategories config={config} />} />
           <Route path="manageusers" element={<ManageUsers config={config} />} />
           <Route path="reportadmins" element={<ReportAdmins />} />
           <Route path="systemlogs" element={<Systemlog />} />
