@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 
-export const ViewIncome = () => {
+export const ViewIncome = ({config}) => {
   const [incomes, setIncomes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [monthlyData, setMonthlyData] = useState([]);
@@ -25,7 +25,7 @@ export const ViewIncome = () => {
         setLoading(true);
         const res = await axios.get(
           "http://localhost:3001/api/incomesbyUserId/" +
-            localStorage.getItem("id")
+            localStorage.getItem("id"),config
         );
         setIncomes(res.data.data);
 
@@ -61,7 +61,7 @@ export const ViewIncome = () => {
     if (!window.confirm("Are you sure you want to delete this income?")) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/incomes/${id}`);
+      await axios.delete(`http://localhost:3001/api/incomes/${id}`,config);
       setIncomes((prev) => prev.filter((income) => income._id !== id));
     } catch (error) {
       console.error("Error deleting income:", error);

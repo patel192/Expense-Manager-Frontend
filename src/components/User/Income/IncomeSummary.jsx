@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 import { FaChartLine } from "react-icons/fa";
-export const IncomeSummary = () => {
+export const IncomeSummary = ({config}) => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [stats, setStats] = useState({});
@@ -24,8 +24,8 @@ export const IncomeSummary = () => {
         const userId = localStorage.getItem("id");
 
         const [incomeRes, expenseRes] = await Promise.all([
-          axios.get(`http://localhost:3001/api/incomesbyUserId/${userId}`),
-          axios.get(`http://localhost:3001/api/expensesbyUserId/${userId}`),
+          axios.get(`http://localhost:3001/api/incomesbyUserId/${userId}`,config),
+          axios.get(`http://localhost:3001/api/expensesbyUserId/${userId}`,config),
         ]);
 
         setIncomes(incomeRes.data.data);

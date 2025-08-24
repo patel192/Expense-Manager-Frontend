@@ -73,9 +73,9 @@ function App() {
           <Route path="addbudget" element={<SetBudget />} />
           <Route path="allbudget" element={<ViewBudget />} />
           <Route path="budgetsummary" element={<BudgetSummary />} />
-          <Route path="addincome" element={<AddIncome />} />
-          <Route path="viewincome" element={<ViewIncome />} />
-          <Route path="incomesummary" element={<IncomeSummary />} />
+          <Route path="addincome" element={<AddIncome />} config={config}/>
+          <Route path="viewincome" element={<ViewIncome config={config}/>} />
+          <Route path="incomesummary" element={<IncomeSummary config={config} />} />
           <Route path="reports" element={<Reports />} />
           <Route path="recurring" element={<RecurringExpenses config={config} />} />
           <Route path="transaction" element={<Transaction />} />

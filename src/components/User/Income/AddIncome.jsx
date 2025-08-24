@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
-export const AddIncome = () => {
+export const AddIncome = ({config}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +28,7 @@ export const AddIncome = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post("/income", finalData);
+      const res = await axios.post("/income",config, finalData);
       if (res.status === 201) {
         alert("✅ Income Added Successfully!");
         setIsOpen(false);
