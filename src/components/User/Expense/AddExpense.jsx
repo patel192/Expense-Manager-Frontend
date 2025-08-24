@@ -5,7 +5,7 @@ import {
   FaPlus, FaTags, FaRupeeSign, FaCalendarAlt, FaRegStickyNote, FaReceipt
 } from "react-icons/fa";
 
-export const AddExpense = () => {
+export const AddExpense = ({config}) => {
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +34,7 @@ export const AddExpense = () => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const res = await axios.get(`/recent-expense/${localStorage.getItem("id")}`); // API should return last 5 expenses for the user
+        const res = await axios.get(`/recent-expense/${localStorage.getItem("id")}`,config); // API should return last 5 expenses for the user
         setRecentExpenses(res.data.data || []);
       } catch (error) {
         console.error("Failed to fetch expenses", error);
@@ -58,7 +58,7 @@ export const AddExpense = () => {
         reset();
         setIsModalOpen(false);
         // Refresh list after adding
-        const updated = await axios.get(`/recent-expense/${localStorage.getItem("id")}`);
+        const updated = await axios.get(`/recent-expense/${localStorage.getItem("id")}`,config);
         setRecentExpenses(updated.data.data || []);
       } else {
         alert("Error");

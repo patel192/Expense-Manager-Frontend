@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { FaSyncAlt, FaTrashAlt, FaPlusCircle, FaPauseCircle } from "react-icons/fa";
-export const RecurringExpenses = () => {
+export const RecurringExpenses = ({config}) => {
     const [payments, setPayments] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -22,7 +22,7 @@ export const RecurringExpenses = () => {
 
   const fetchPayments = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/api/recurring/${userId}`);
+      const res = await axios.get(`http://localhost:3001/api/recurring/${userId}`,config);
       setPayments(res.data.data || []);
     } catch (err) {
       console.error("Error fetching recurring payments:", err);

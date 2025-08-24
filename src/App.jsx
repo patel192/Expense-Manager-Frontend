@@ -68,8 +68,8 @@ function App() {
       {/* Protected user routes */}
       <Route element={<PrivateRoutes />}>
         <Route path="/private" element={<PrivateLayout />}>
-          <Route path="addexpense" element={<AddExpense />} />
-          <Route path="allexpenses" element={<AllExpenses />} />
+          <Route path="addexpense" element={<AddExpense config={config} />} />
+          <Route path="allexpenses" element={<AllExpenses config={config} />} />
           <Route path="addbudget" element={<SetBudget />} />
           <Route path="allbudget" element={<ViewBudget />} />
           <Route path="budgetsummary" element={<BudgetSummary />} />
@@ -77,7 +77,7 @@ function App() {
           <Route path="viewincome" element={<ViewIncome />} />
           <Route path="incomesummary" element={<IncomeSummary />} />
           <Route path="reports" element={<Reports />} />
-          <Route path="recurring" element={<RecurringExpenses />} />
+          <Route path="recurring" element={<RecurringExpenses config={config} />} />
           <Route path="transaction" element={<Transaction />} />
           <Route
             path="userdashboard"
