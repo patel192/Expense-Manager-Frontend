@@ -83,7 +83,7 @@ function App() {
             path="userdashboard"
             element={<UserDashboard config={config} />}
           />
-          <Route path="account/:userId" element={<Account token={token} />} />
+          <Route path="account/:userId" element={<Account config={config}/>} />
         </Route>
       </Route>
 
