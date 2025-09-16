@@ -1,6 +1,5 @@
 import { Route, Routes, useLocation } from "react-router-dom";
-import "./App.css";
-
+import "./App.css"
 import { Login } from "./Login";
 import axios from "axios";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
