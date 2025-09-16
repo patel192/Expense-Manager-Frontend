@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 
-export const Accesscontrol = ({token}) => {
+export const AccessControl = ({token}) => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");

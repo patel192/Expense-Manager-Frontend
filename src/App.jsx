@@ -17,7 +17,7 @@ import { Reports } from "./components/User/Reports";
 import { Transaction } from "./components/User/Transaction";
 import { UserDashboard } from "./components/User/UserDashboard";
 import { AdminDashboard } from "./components/Admin/AdminDashboard";
-import { Accesscontrol } from "./components/Admin/Accesscontrol";
+import { AccessControl } from "./components/Admin/AccessControl";
 import { ManageCategories } from "./components/Admin/ManageCategories";
 import { ManageUsers } from "./components/Admin/ManageUsers";
 import { ReportAdmins } from "./components/Admin/ReportAdmins";
@@ -95,7 +95,7 @@ function App() {
           />
           <Route
             path="accesscontrol"
-            element={<Accesscontrol token={token} />}
+            element={<AccessControl token={token} />}
           />
           <Route path="managecategories" element={<ManageCategories config={config} />} />
           <Route path="manageusers" element={<ManageUsers config={config} />} />
