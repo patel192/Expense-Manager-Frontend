@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -14,11 +14,12 @@ export const Signup = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (data) => {
+    setLoading(true);
     try {
-      const res = await axios.post("/user", { ...data, role: "User" });
-      console.log(data);
+      const res = await axios.post("/user", { ...data, role: "User" }); // ✅ baseURL already set in App.jsx
 
       if (res.status === 201) {
         toast.success("User Created Successfully", {
@@ -28,7 +29,7 @@ export const Signup = () => {
         });
         setTimeout(() => navigate("/login"), 2000);
       } else {
-        alert("User not created");
+        toast.error("User not created", { theme: "colored" });
       }
     } catch (error) {
       console.error("Signup Error:", error);
@@ -40,6 +41,8 @@ export const Signup = () => {
           theme: "colored",
         }
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -156,14 +159,20 @@ export const Signup = () => {
                 </p>
               )}
             </div>
+
             {/* Submit */}
             <motion.button
               type="submit"
-              className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold shadow-lg hover:bg-purple-700 transition-all"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              disabled={loading}
+              className={`w-full text-white py-3 rounded-lg font-semibold shadow-lg transition-all ${
+                loading
+                  ? "bg-purple-400 cursor-not-allowed"
+                  : "bg-purple-600 hover:bg-purple-700"
+              }`}
+              whileHover={!loading ? { scale: 1.03 } : {}}
+              whileTap={!loading ? { scale: 0.97 } : {}}
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Sign Up"}
             </motion.button>
 
             {/* Link */}
