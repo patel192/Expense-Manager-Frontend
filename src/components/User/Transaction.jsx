@@ -102,7 +102,8 @@ export const Transaction = () => {
                       Plan Budget
                     </button>
                   )}
-    
+                </div>
+              </li>
             ))}
           </ul>
         ) : (
