@@ -2,189 +2,76 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast, Bounce } from "react-toastify";
+import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { motion } from "framer-motion";
-import { FaUserPlus } from "react-icons/fa";
 
 export const Signup = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const submitHandler = async (data) => {
     setLoading(true);
     try {
-      const res = await axios.post("/user", { ...data, role: "User" }); // ✅ baseURL already set in App.jsx
+      const res = await axios.post("/user", { ...data, role: "User" });
 
       if (res.status === 201) {
-        toast.success("User Created Successfully", {
-          position: "top-center",
-          autoClose: 3000,
-          theme: "colored",
-        });
+        toast.success("User created successfully!", { position: "top-center", autoClose: 3000 });
         setTimeout(() => navigate("/login"), 2000);
-      } else {
-        toast.error("User not created", { theme: "colored" });
       }
     } catch (error) {
-      console.error("Signup Error:", error);
-      toast.error(
-        "Signup Failed: " + (error.response?.data?.message || "Server error"),
-        {
-          position: "top-center",
-          autoClose: 3000,
-          theme: "colored",
-        }
-      );
+      toast.error(error.response?.data?.message || "Signup failed. Try again.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const ErrorHandler = {
-    NameHandler: { required: { value: true, message: "The name is required" } },
-    AgeHandler: {
-      required: { value: true, message: "The age is required" },
-      min: { value: 18, message: "Minimum age is 18" },
-    },
-    EmailHandler: {
-      required: { value: true, message: "The email is required" },
-      pattern: {
-        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        message: "Enter a valid email",
-      },
-    },
-    PasswordHandler: {
-      required: { value: true, message: "The password is required" },
-      minLength: { value: 8, message: "Minimum length is 8" },
-      maxLength: { value: 20, message: "Maximum length is 20" },
-      pattern: {
-        value:
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        message: "Use a strong password",
-      },
-    },
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-200 px-4">
       <ToastContainer transition={Bounce} />
+      <div className="bg-white shadow-xl rounded-lg w-full max-w-md p-8">
+        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Sign Up</h2>
+        <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
+          <input
+            type="text"
+            placeholder="Full Name"
+            {...register("name", { required: "Name is required" })}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
 
-      <motion.div
-        className="bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col md:flex-row w-full max-w-5xl"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        {/* Left side */}
-        <motion.div
-          className="hidden md:flex flex-col justify-center items-center bg-gradient-to-br from-purple-600 to-indigo-600 text-white w-1/2 p-10"
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <FaUserPlus className="text-6xl mb-4 drop-shadow-lg" />
-          <h2 className="text-3xl font-bold mb-2">Join Our Platform</h2>
-          <p className="text-center text-purple-100">
-            Unlock exclusive features and connect with amazing people.
-          </p>
-        </motion.div>
+          <input
+            type="number"
+            placeholder="Age"
+            {...register("age", { required: "Age is required", min: 18 })}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
+          {errors.age && <p className="text-red-500 text-sm">{errors.age.message}</p>}
 
-        {/* Right side */}
-        <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
-            Create Account
-          </h2>
+          <input
+            type="email"
+            placeholder="Email"
+            {...register("email", { required: "Email is required" })}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
 
-          <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
-            {/* Name */}
-            <div>
-              <label className="block text-gray-600 mb-1">Full Name</label>
-              <input
-                type="text"
-                placeholder="Enter your name"
-                {...register("name", ErrorHandler.NameHandler)}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
+          <input
+            type="password"
+            placeholder="Password"
+            {...register("password", { required: "Password is required", minLength: 8 })}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
+          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
 
-            {/* Age */}
-            <div>
-              <label className="block text-gray-600 mb-1">Age</label>
-              <input
-                type="number"
-                placeholder="Enter your age"
-                {...register("age", ErrorHandler.AgeHandler)}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-              {errors.age && (
-                <p className="text-sm text-red-500">{errors.age.message}</p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-gray-600 mb-1">Email</label>
-              <input
-                type="text"
-                placeholder="Enter your email"
-                {...register("email", ErrorHandler.EmailHandler)}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-gray-600 mb-1">Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                {...register("password", ErrorHandler.PasswordHandler)}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-
-            {/* Submit */}
-            <motion.button
-              type="submit"
-              disabled={loading}
-              className={`w-full text-white py-3 rounded-lg font-semibold shadow-lg transition-all ${
-                loading
-                  ? "bg-purple-400 cursor-not-allowed"
-                  : "bg-purple-600 hover:bg-purple-700"
-              }`}
-              whileHover={!loading ? { scale: 1.03 } : {}}
-              whileTap={!loading ? { scale: 0.97 } : {}}
-            >
-              {loading ? "Creating Account..." : "Sign Up"}
-            </motion.button>
-
-            {/* Link */}
-            <p className="text-center text-gray-600 text-sm mt-4">
-              Already have an account?{" "}
-              <a href="/login" className="text-purple-500 hover:underline">
-                Log in
-              </a>
-            </p>
-          </form>
-        </div>
-      </motion.div>
+          <button type="submit" disabled={loading} className={`w-full py-3 text-white rounded-lg font-semibold shadow-md transition-all ${loading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}`}>
+            {loading ? "Creating..." : "Sign Up"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
