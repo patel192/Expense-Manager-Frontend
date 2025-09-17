@@ -22,7 +22,7 @@ export const RecurringExpenses = ({config}) => {
 
   const fetchPayments = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/api/recurring/${userId}`,config);
+      const res = await axios.get(`/recurring/${userId}`,config);
       setPayments(res.data.data || []);
     } catch (err) {
       console.error("Error fetching recurring payments:", err);
@@ -39,7 +39,7 @@ export const RecurringExpenses = ({config}) => {
 
     try {
       setLoading(true);
-      await axios.post(`http://localhost:3001/api/recurring`, { ...form, userId });
+      await axios.post(`/recurring`, { ...form, userId });
       setForm({ name: "", amount: "", frequency: "Monthly", startDate: "", category: "" });
       fetchPayments();
     } catch (err) {
@@ -51,7 +51,7 @@ export const RecurringExpenses = ({config}) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/recurring/${id}`);
+      await axios.delete(`/recurring/${id}`);
       fetchPayments();
     } catch (err) {
       console.error("Error deleting payment:", err);

@@ -33,8 +33,8 @@ export const Reports = () => {
     const fetchData = async () => {
       try {
         const [incomeRes, expenseRes] = await Promise.all([
-          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
+          axios.get(`/incomesbyUserID/${userId}`),
+          axios.get(`/expensesbyUserID/${userId}`),
         ]);
 
         setIncomeData(incomeRes.data.data || []);

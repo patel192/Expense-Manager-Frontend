@@ -42,8 +42,8 @@ export const BudgetSummary = () => {
       try {
         setLoading(true);
         const [budgetRes, expenseRes] = await Promise.all([
-          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
+          axios.get(`/budgetsbyUserID/${userId}`),
+          axios.get(`/expensesbyUserID/${userId}`),
         ]);
 
         const budgetsArr = budgetRes?.data?.data ?? [];

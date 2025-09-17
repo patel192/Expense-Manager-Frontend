@@ -24,7 +24,7 @@ export const ViewIncome = ({config}) => {
       try {
         setLoading(true);
         const res = await axios.get(
-          "http://localhost:3001/api/incomesbyUserId/" +
+          "/incomesbyUserId/" +
             localStorage.getItem("id"),config
         );
         setIncomes(res.data.data);
@@ -61,7 +61,7 @@ export const ViewIncome = ({config}) => {
     if (!window.confirm("Are you sure you want to delete this income?")) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/incomes/${id}`,config);
+      await axios.delete(`/incomes/${id}`,config);
       setIncomes((prev) => prev.filter((income) => income._id !== id));
     } catch (error) {
       console.error("Error deleting income:", error);

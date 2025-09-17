@@ -24,8 +24,8 @@ export const IncomeSummary = ({config}) => {
         const userId = localStorage.getItem("id");
 
         const [incomeRes, expenseRes] = await Promise.all([
-          axios.get(`http://localhost:3001/api/incomesbyUserId/${userId}`,config),
-          axios.get(`http://localhost:3001/api/expensesbyUserId/${userId}`,config),
+          axios.get(`/incomesbyUserId/${userId}`,config),
+          axios.get(`/expensesbyUserId/${userId}`,config),
         ]);
 
         setIncomes(incomeRes.data.data);

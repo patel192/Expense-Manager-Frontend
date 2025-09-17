@@ -23,7 +23,7 @@ export const ReportAdmins = () => {
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/api/adminreport");
+        const res = await axios.get("/adminreport");
         setStats(res.data);
       } catch (error) {
         console.error("Failed to fetch report data", error);

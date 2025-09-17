@@ -29,7 +29,7 @@ export const SetBudget = () => {
     try {
       console.log(finalData);
       const res = await axios.post(
-        "http://localhost:3001/api/budget",
+        "/budget",
         finalData
       );
       if (res.status == 201) {

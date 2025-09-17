@@ -24,7 +24,7 @@ export const Account = ({config}) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/user/${userId}`,config);
+        const res = await axios.get(`/user/${userId}`,config);
         setUser(res.data.data);
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -65,7 +65,7 @@ export const Account = ({config}) => {
 
       // Update user in backend with new profilePic URL
       const res = await axios.put(
-        `http://localhost:3001/api/user/${userId}`,
+        `/user/${userId}`,
         {
           name: user.name,
           email: user.email,

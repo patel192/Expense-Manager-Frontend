@@ -10,7 +10,7 @@ export const AllExpenses = ({config}) => {
     const fetchExpenses = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3001/api/expensesbyUserID/${localStorage.getItem("id")}`,config
+          `/expensesbyUserID/${localStorage.getItem("id")}`,config
         );
         setExpenses(res.data.data);
       } catch (error) {
@@ -24,7 +24,7 @@ export const AllExpenses = ({config}) => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
       try {
-        await axios.delete(`http://localhost:3001/api/expense/${id}`,config);
+        await axios.delete(`/expense/${id}`,config);
         setExpenses((prev) => prev.filter((e) => e._id !== id));
       } catch (error) {
         console.error("Error deleting expense:", error);

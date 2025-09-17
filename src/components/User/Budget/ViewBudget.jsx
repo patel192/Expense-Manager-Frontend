@@ -7,7 +7,7 @@ export const ViewBudget = () => {
   useEffect(() => {
     const Viewbudgets = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/api/budgetsbyUserID/"+localStorage.getItem("id"));
+        const res = await axios.get("/budgetsbyUserID/"+localStorage.getItem("id"));
         setbudgets(res.data.data)
         console.log(res.data.data)
       } catch (error) {

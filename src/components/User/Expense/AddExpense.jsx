@@ -21,7 +21,7 @@ export const AddExpense = ({config}) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("categories");
+        const res = await axios.get("/categories");
         setCategories(res.data.data);
       } catch (error) {
         console.error("Failed to fetch categories", error);

@@ -11,9 +11,9 @@ export const Transaction = () => {
         const userId = localStorage.getItem("id");
 
         const [expenseRes, incomeRes, budgetRes] = await Promise.all([
-          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`),
-          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`),
+          axios.get(`/expensesbyUserID/${userId}`),
+          axios.get(`/incomesbyUserID/${userId}`),
+          axios.get(`/budgetsbyUserID/${userId}`),
         ]);
 
         const expenses = expenseRes.data.data.map((e) => ({
@@ -102,8 +102,7 @@ export const Transaction = () => {
                       Plan Budget
                     </button>
                   )}
-                </div>
-              </li>
+    
             ))}
           </ul>
         ) : (

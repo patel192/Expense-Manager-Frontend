@@ -31,16 +31,15 @@ export const UserDashboard = ({config}) => {
           budgetRes,
           incomeRes,
           expenseRes,
-          billsRes,
-          recurringRes,
+          billsRes
           txnRes,
         ] = await Promise.all([
-          axios.get(`http://localhost:3001/api/budgetsbyUserID/${userId}`,config),
-          axios.get(`http://localhost:3001/api/incomesbyUserID/${userId}`,config),
-          axios.get(`http://localhost:3001/api/expensesbyUserID/${userId}`,config),
-          axios.get(`http://localhost:3001/api/billByuserId/${userId}`,config),
-          axios.get(`http://localhost:3001/api/recurring/${userId}`,config),
-          axios.get(`http://localhost:3001/api/transactionsByUserID/${userId}`,config),
+          axios.get(`/budgetsbyUserID/${userId}`,config),
+          axios.get(`/incomesbyUserID/${userId}`,config),
+          axios.get(`/expensesbyUserID/${userId}`,config),
+          axios.get(`/billByuserId/${userId}`,config),
+          axios.get(`/recurring/${userId}`,config),
+          axios.get(`/transactionsByUserID/${userId}`,config),
         ]);
 
         setBudget(budgetRes.data.data);
