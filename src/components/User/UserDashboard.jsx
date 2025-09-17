@@ -31,8 +31,9 @@ export const UserDashboard = ({config}) => {
           budgetRes,
           incomeRes,
           expenseRes,
-          billsRes
-          txnRes,
+          billsRes,
+          recurringRes,
+          txnRes
         ] = await Promise.all([
           axios.get(`/budgetsbyUserID/${userId}`,config),
           axios.get(`/incomesbyUserID/${userId}`,config),
