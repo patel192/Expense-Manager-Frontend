@@ -36,7 +36,7 @@ import { Account } from "./components/Admin/Account";
 import { BudgetSummary } from "./components/User/Budget/BudgetSummary";
 
 function App() {
-  axios.defaults.baseURL = "https://expense-manager-backend-vfjk.onrender.com/api";
+  axios.defaults.baseURL = "https://learn-25-node.onrender.com/api";
   const location = useLocation();
   const token = localStorage.getItem("token");
   const config = {
