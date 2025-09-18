@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
-export const AddIncome = ({config}) => {
+export const AddIncome = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +28,7 @@ export const AddIncome = ({config}) => {
 
     try {
       setLoading(true);
-      const res = await axios.post("/income",config, finalData);
+      const res = await axiosInstance.post("/income", finalData);
       if (res.status === 201) {
         alert("✅ Income Added Successfully!");
         setIsOpen(false);

@@ -1,8 +1,8 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
+import axiosInstance from "./api/axiosInstance";
 
-export const AccessControl = ({token}) => {
+export const AccessControl = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");
@@ -12,11 +12,7 @@ export const AccessControl = ({token}) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("/users",{
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        });
+        const res = await axiosInstance.get("/users"); // token auto-attached
         setUsers(res.data.data || []);
       } catch (error) {
         alert("Error fetching users");

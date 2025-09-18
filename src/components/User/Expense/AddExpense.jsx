@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import {
   FaPlus, FaTags, FaRupeeSign, FaCalendarAlt, FaRegStickyNote, FaReceipt
 } from "react-icons/fa";
 
-export const AddExpense = ({config}) => {
+export const AddExpense = () => {
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,7 +21,7 @@ export const AddExpense = ({config}) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("/categories");
+        const res = await axiosInstance.get("/categories");
         setCategories(res.data.data);
       } catch (error) {
         console.error("Failed to fetch categories", error);
@@ -34,7 +34,7 @@ export const AddExpense = ({config}) => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const res = await axios.get(`/recent-expense/${localStorage.getItem("id")}`,config); // API should return last 5 expenses for the user
+        const res = await axiosInstance.get(`/recent-expense/${localStorage.getItem("id")}`); // API should return last 5 expenses for the user
         setRecentExpenses(res.data.data || []);
       } catch (error) {
         console.error("Failed to fetch expenses", error);
@@ -52,13 +52,13 @@ export const AddExpense = ({config}) => {
       description: data.description,
     };
     try {
-      const res = await axios.post("/expense", finalData);
+      const res = await axiosInstance.post("/expense", finalData);
       if (res.status === 201) {
         alert("Expense added successfully");
         reset();
         setIsModalOpen(false);
         // Refresh list after adding
-        const updated = await axios.get(`/recent-expense/${localStorage.getItem("id")}`,config);
+        const updated = await axiosInstance.get(`/recent-expense/${localStorage.getItem("id")}`);
         setRecentExpenses(updated.data.data || []);
       } else {
         alert("Error");

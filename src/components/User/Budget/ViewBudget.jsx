@@ -1,13 +1,13 @@
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '@/api/axiosInstance';
 export const ViewBudget = () => {
   const [budgets, setbudgets] = useState([]);
   useEffect(() => {
     const Viewbudgets = async () => {
       try {
-        const res = await axios.get("/budgetsbyUserID/"+localStorage.getItem("id"));
+        const res = await axiosInstance.get("/budgetsbyUserID/"+localStorage.getItem("id"));
         setbudgets(res.data.data)
         console.log(res.data.data)
       } catch (error) {

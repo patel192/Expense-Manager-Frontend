@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { Token } from "@mui/icons-material";
 
-export const Account = ({config}) => {
+export const Account = () => {
   const { userId } = useParams();
   const [user, setUser] = useState({
     name: "",
@@ -24,7 +24,7 @@ export const Account = ({config}) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`/user/${userId}`,config);
+        const res = await axiosInstance.get(`/user/${userId}`);
         setUser(res.data.data);
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -55,24 +55,20 @@ export const Account = ({config}) => {
         formData.append("file", selectedFile);
         formData.append("upload_preset", UPLOAD_PRESET);
 
-        const uploadRes = await axios.post(
+        const uploadRes = await axiosInstance.post(
           `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
           formData
         );
 
-        uploadedImageUrl = uploadRes.data.secure_url; // Cloudinary hosted URL
+        uploadedImageUrl = uploadRes.data.secure_url;
       }
 
-      // Update user in backend with new profilePic URL
-      const res = await axios.put(
-        `/user/${userId}`,
-        {
-          name: user.name,
-          email: user.email,
-          bio: user.bio,
-          profilePic: uploadedImageUrl,
-        }
-      );
+      const res = await axiosInstance.put(`/user/${userId}`, {
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+        profilePic: uploadedImageUrl,
+      });
 
       setUser(res.data.data);
       setPreview(null);
@@ -82,6 +78,7 @@ export const Account = ({config}) => {
       console.error("Error saving profile:", err);
     }
   };
+
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">

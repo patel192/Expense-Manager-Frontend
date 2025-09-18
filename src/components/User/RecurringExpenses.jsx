@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import { motion } from "framer-motion";
 import { FaSyncAlt, FaTrashAlt, FaPlusCircle, FaPauseCircle } from "react-icons/fa";
-export const RecurringExpenses = ({config}) => {
+export const RecurringExpenses = () => {
     const [payments, setPayments] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -22,7 +22,7 @@ export const RecurringExpenses = ({config}) => {
 
   const fetchPayments = async () => {
     try {
-      const res = await axios.get(`/recurring/${userId}`,config);
+      const res = await axiosInstance.get(`/recurring/${userId}`);
       setPayments(res.data.data || []);
     } catch (err) {
       console.error("Error fetching recurring payments:", err);
@@ -39,7 +39,7 @@ export const RecurringExpenses = ({config}) => {
 
     try {
       setLoading(true);
-      await axios.post(`/recurring`, { ...form, userId });
+      await axiosInstance.post(`/recurring`, { ...form, userId });
       setForm({ name: "", amount: "", frequency: "Monthly", startDate: "", category: "" });
       fetchPayments();
     } catch (err) {
@@ -51,7 +51,7 @@ export const RecurringExpenses = ({config}) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/recurring/${id}`);
+      await axiosInstance.delete(`/recurring/${id}`);
       fetchPayments();
     } catch (err) {
       console.error("Error deleting payment:", err);

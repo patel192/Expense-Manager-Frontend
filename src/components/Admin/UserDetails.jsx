@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import {
   Grid,
   Card,
@@ -26,7 +26,7 @@ import {
 } from "recharts";
 import { Person } from "@mui/icons-material";
 
-export const UserDetails = ({ token }) => {
+export const UserDetails = () => {
   const { userId } = useParams();
   const [user, setUser] = useState(null);
   const [income, setIncome] = useState([]);
@@ -40,26 +40,10 @@ export const UserDetails = ({ token }) => {
     try {
       const [incomeRes, budgetRes, transactionRes, userRes] = await Promise.all(
         [
-          axios.get(`/incomesbyUserID/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          axios.get(`/budgetsbyUserID/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          axios.get(`/transactionsByUserId/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          axios.get(`/user/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
+          axiosInstance.get(`/incomesbyUserID/${userId}`),
+          axiosInstance.get(`/budgetsbyUserID/${userId}`),
+          axiosInstance.get(`/transactionsByUserId/${userId}`),
+          axiosInstance.get(`/user/${userId}`),
         ]
       );
 

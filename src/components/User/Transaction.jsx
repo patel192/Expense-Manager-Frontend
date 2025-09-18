@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import React, { useEffect, useState } from "react";
 
 export const Transaction = () => {
@@ -11,9 +11,9 @@ export const Transaction = () => {
         const userId = localStorage.getItem("id");
 
         const [expenseRes, incomeRes, budgetRes] = await Promise.all([
-          axios.get(`/expensesbyUserID/${userId}`),
-          axios.get(`/incomesbyUserID/${userId}`),
-          axios.get(`/budgetsbyUserID/${userId}`),
+          axiosInstance.get(`/expensesbyUserID/${userId}`),
+          axiosInstance.get(`/incomesbyUserID/${userId}`),
+          axiosInstance.get(`/budgetsbyUserID/${userId}`),
         ]);
 
         const expenses = expenseRes.data.data.map((e) => ({

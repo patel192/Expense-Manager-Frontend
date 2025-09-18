@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import {
   BarChart,
   Bar,
@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export const UserDashboard = ({config}) => {
+export const UserDashboard = () => {
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -35,12 +35,12 @@ export const UserDashboard = ({config}) => {
           recurringRes,
           txnRes
         ] = await Promise.all([
-          axios.get(`/budgetsbyUserID/${userId}`,config),
-          axios.get(`/incomesbyUserID/${userId}`,config),
-          axios.get(`/expensesbyUserID/${userId}`,config),
-          axios.get(`/billByuserId/${userId}`,config),
-          axios.get(`/recurring/${userId}`,config),
-          axios.get(`/transactionsByUserID/${userId}`,config),
+          axiosInstance.get(`/budgetsbyUserID/${userId}`),
+          axiosInstance.get(`/incomesbyUserID/${userId}`),
+          axiosInstance.get(`/expensesbyUserID/${userId}`),
+          axiosInstance.get(`/billByuserId/${userId}`),
+          axiosInstance.get(`/recurring/${userId}`),
+          axiosInstance.get(`/transactionsByUserID/${userId}`),
         ]);
 
         setBudget(budgetRes.data.data);

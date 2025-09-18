@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import {
   PieChart,
   Pie,
@@ -33,8 +33,8 @@ export const Reports = () => {
     const fetchData = async () => {
       try {
         const [incomeRes, expenseRes] = await Promise.all([
-          axios.get(`/incomesbyUserID/${userId}`),
-          axios.get(`/expensesbyUserID/${userId}`),
+          axiosInstance.get(`/incomesbyUserID/${userId}`),
+          axiosInstance.get(`/expensesbyUserID/${userId}`),
         ]);
 
         setIncomeData(incomeRes.data.data || []);

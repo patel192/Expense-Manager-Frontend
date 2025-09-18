@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdOutlineAttachMoney } from "react-icons/md";
 
-export const AllExpenses = ({config}) => {
+export const AllExpenses = () => {
   const [expenses, setExpenses] = useState([]);
 
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const res = await axios.get(
-          `/expensesbyUserID/${localStorage.getItem("id")}`,config
+        const res = await axiosInstance.get(
+          `/expensesbyUserID/${localStorage.getItem("id")}`
         );
         setExpenses(res.data.data);
       } catch (error) {
@@ -24,7 +24,7 @@ export const AllExpenses = ({config}) => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
       try {
-        await axios.delete(`/expense/${id}`,config);
+        await axiosInstance.delete(`/expense/${id}`);
         setExpenses((prev) => prev.filter((e) => e._id !== id));
       } catch (error) {
         console.error("Error deleting expense:", error);

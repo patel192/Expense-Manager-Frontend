@@ -1,5 +1,5 @@
 import React, { useEffect, useState,useMemo } from "react";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import { motion } from "framer-motion";
 import {
   PieChart,
@@ -42,8 +42,8 @@ export const BudgetSummary = () => {
       try {
         setLoading(true);
         const [budgetRes, expenseRes] = await Promise.all([
-          axios.get(`/budgetsbyUserID/${userId}`),
-          axios.get(`/expensesbyUserID/${userId}`),
+          axiosInstance.get(`/budgetsbyUserID/${userId}`),
+          axiosInstance.get(`/expensesbyUserID/${userId}`),
         ]);
 
         const budgetsArr = budgetRes?.data?.data ?? [];
@@ -146,11 +146,11 @@ export const BudgetSummary = () => {
         end_date: new Date(planForm.end_date),
       };
       // Adjust endpoint if your server differs:
-      const res = await axios.post("http://localhost:3001/api/budget", payload);
+      const res = await axiosInstance.post("/budget", payload);
       if (res.status === 201 || res.status === 200) {
         // Refresh budgets
-        const budRes = await axios.get(
-          `http://localhost:3001/api/budgetsbyUserID/${userId}`
+        const budRes = await axiosInstance.get(
+          `/budgetsbyUserID/${userId}`
         );
         setBudgets(budRes?.data?.data ?? []);
         setPlanFor(null);

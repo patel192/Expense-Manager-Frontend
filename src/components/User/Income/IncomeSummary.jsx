@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import {
   BarChart,
   Bar,
@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 import { FaChartLine } from "react-icons/fa";
-export const IncomeSummary = ({config}) => {
+export const IncomeSummary = () => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [stats, setStats] = useState({});
@@ -24,8 +24,8 @@ export const IncomeSummary = ({config}) => {
         const userId = localStorage.getItem("id");
 
         const [incomeRes, expenseRes] = await Promise.all([
-          axios.get(`/incomesbyUserId/${userId}`,config),
-          axios.get(`/expensesbyUserId/${userId}`,config),
+          axiosInstance.get(`/incomesbyUserId/${userId}`),
+          axiosInstance.get(`/expensesbyUserId/${userId}`),
         ]);
 
         setIncomes(incomeRes.data.data);

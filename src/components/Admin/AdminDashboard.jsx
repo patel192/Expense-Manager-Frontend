@@ -1,11 +1,11 @@
-import axios from "axios";
+
 import React, { useEffect, useState } from "react";
 import {
   BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid
 } from "recharts";
 import { Users, UserCog, CreditCard } from "lucide-react";
-
-export const AdminDashboard = ({config}) => {
+import axiosInstance from "@/api/axiosInstance";
+export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [userCountsPerMonth, setUserCountsPerMonth] = useState([]);
   const [roleDistribution, setRoleDistribution] = useState([]);
@@ -16,7 +16,7 @@ export const AdminDashboard = ({config}) => {
     const fetchData = async () => {
       try {
         // Fetch users
-        const userRes = await axios.get("/users",config);
+        const userRes = await axiosInstance.get("/users");
         const allUsers = userRes.data.data || [];
 
         setUsers(allUsers);
@@ -50,7 +50,7 @@ export const AdminDashboard = ({config}) => {
         setRecentUsers(recent);
 
         // Fetch transactions
-        const txRes = await axios.get("/transactions",config);
+        const txRes = await axiosInstance.get("/transactions");
         setTransactions(txRes.data.data || []);
       } catch (error) {
         console.error("Failed to load dashboard data:", error);

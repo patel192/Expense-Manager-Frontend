@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import axiosInstance from "@/api/axiosInstance";
 
-export const ManageCategories = ({config}) => {
+export const ManageCategories = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ export const ManageCategories = ({config}) => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/categories",config);
+      const res = await axiosInstance.get("/categories");
       setCategories(res.data.data || []);
     } catch {
       toast.error("Failed to fetch categories");
@@ -30,7 +31,7 @@ export const ManageCategories = ({config}) => {
 
   const submitHandler = async (data) => {
     try {
-      const res = await axios.post("/category",config, data);
+      const res = await axiosInstance.post("/category", data);
       if (res.status === 201) {
         toast.success("Category added!");
         reset();
@@ -44,7 +45,7 @@ export const ManageCategories = ({config}) => {
   const deleteCategory = async (id) => {
     if (!window.confirm("Delete this category?")) return;
     try {
-      await axios.delete(`/category/${id}`,config);
+      await axiosInstance.delete(`/category/${id}`);
       toast.success("Category deleted");
       fetchCategories();
     } catch {
@@ -59,7 +60,7 @@ export const ManageCategories = ({config}) => {
 
   const saveEdit = async (id) => {
     try {
-      await axios.put(`/category/${id}`,config, editedCategory);
+      await axiosInstance.put(`/category/${id}`, editedCategory);
       toast.success("Category updated");
       setEditingId(null);
       fetchCategories();

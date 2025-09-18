@@ -1,8 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import axios from "axios";
-
+import axiosInstance from "@/api/axiosInstance";
 export const SetBudget = () => {
   const {
     register,
@@ -28,7 +27,7 @@ export const SetBudget = () => {
     };
     try {
       console.log(finalData);
-      const res = await axios.post(
+      const res = await axiosInstance.post(
         "/budget",
         finalData
       );

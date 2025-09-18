@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
 import { FaClipboardList } from "react-icons/fa"; // <-- New icon
+import axiosInstance from "@/api/axiosInstance";
 
 export const Systemlog = () => {
   const [logs, setLogs] = useState([]);
@@ -11,7 +11,7 @@ export const Systemlog = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await axios.get("/logs");
+        const res = await axiosInstance.get("/logs");
         setLogs(res.data);
       } catch (error) {
         console.error("Failed to fetch system logs:", error);

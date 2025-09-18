@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import {
   LineChart,
@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 
-export const ViewIncome = ({config}) => {
+export const ViewIncome = () => {
   const [incomes, setIncomes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [monthlyData, setMonthlyData] = useState([]);
@@ -23,9 +23,9 @@ export const ViewIncome = ({config}) => {
     const fetchIncomes = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
+        const res = await axiosInstance.get(
           "/incomesbyUserId/" +
-            localStorage.getItem("id"),config
+            localStorage.getItem("id")
         );
         setIncomes(res.data.data);
 
@@ -61,7 +61,7 @@ export const ViewIncome = ({config}) => {
     if (!window.confirm("Are you sure you want to delete this income?")) return;
 
     try {
-      await axios.delete(`/incomes/${id}`,config);
+      await axiosInstance.delete(`/incomes/${id}`);
       setIncomes((prev) => prev.filter((income) => income._id !== id));
     } catch (error) {
       console.error("Error deleting income:", error);
