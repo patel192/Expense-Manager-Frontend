@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../../Utils/axiosInstance";
 import {
   FaPlus, FaTags, FaRupeeSign, FaCalendarAlt, FaRegStickyNote, FaReceipt
 } from "react-icons/fa";

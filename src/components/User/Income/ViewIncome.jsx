@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../../Utils/axiosInstance";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import {
   LineChart,

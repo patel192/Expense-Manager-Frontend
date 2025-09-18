@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "../Common/Card";
 import { motion } from "framer-motion";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../Utils/axiosInstance";
 import {
   BarChart,
   Bar,

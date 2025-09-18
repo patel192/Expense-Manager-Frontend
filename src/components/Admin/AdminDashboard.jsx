@@ -4,7 +4,7 @@ import {
   BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid
 } from "recharts";
 import { Users, UserCog, CreditCard } from "lucide-react";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../Utils/axiosInstance";
 export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [userCountsPerMonth, setUserCountsPerMonth] = useState([]);

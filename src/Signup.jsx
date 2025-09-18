@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "./components/Utils/axiosInstance";
 export const Signup = () => {
   const {
     register,

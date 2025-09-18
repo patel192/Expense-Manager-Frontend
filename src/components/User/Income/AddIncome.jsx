@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../../Utils/axiosInstance";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export const AddIncome = () => {

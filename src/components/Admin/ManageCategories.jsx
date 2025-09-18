@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../Utils/axiosInstance";
 
 export const ManageCategories = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();

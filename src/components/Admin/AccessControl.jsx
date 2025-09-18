@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../Utils/axiosInstance";
 
 export const AccessControl = () => {
   const [users, setUsers] = useState([]);
