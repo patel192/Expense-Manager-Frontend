@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import axiosInstance from "./api/axiosInstance";
 export const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -13,11 +12,15 @@ export const Login = () => {
   const submitHandler = async (data) => {
     setLoading(true);
     try {
-      const res = await axios.post("/user/login", data);
+      const res = await axiosInstance.post("/user/login", data);
 
       if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
-        toast.success("Login successful!", { position: "top-center", autoClose: 3000 });
+
+        toast.success("Login successful!", {
+          position: "top-center",
+          autoClose: 3000,
+        });
 
         if (res.data.data.role === "Admin") {
           navigate("/admin/admindashboard");
@@ -26,7 +29,10 @@ export const Login = () => {
         }
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed", { position: "top-center", autoClose: 3000 });
+      toast.error(error.response?.data?.message || "Login failed", {
+        position: "top-center",
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -36,7 +42,9 @@ export const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-200 px-4">
       <ToastContainer transition={Bounce} />
       <div className="bg-white shadow-xl rounded-lg w-full max-w-md p-8">
-        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Login</h2>
+        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
+          Login
+        </h2>
         <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
           <input
             type="email"
@@ -52,7 +60,15 @@ export const Login = () => {
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
 
-          <button type="submit" disabled={loading} className={`w-full py-3 text-white rounded-lg font-semibold shadow-md transition-all ${loading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}`}>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 text-white rounded-lg font-semibold shadow-md transition-all ${
+              loading
+                ? "bg-purple-400 cursor-not-allowed"
+                : "bg-purple-600 hover:bg-purple-700"
+            }`}
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
