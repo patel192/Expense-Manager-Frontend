@@ -7,7 +7,6 @@ import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateLayout } from "./components/Layouts/PrivateLayout";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
 import { AdminLayout } from "./components/Layouts/AdminLayout";
-import "./api/axios"
 import { AddExpense } from "./components/User/Expense/AddExpense";
 import { AllExpenses } from "./components/User/Expense/AllExpenses";
 import { SetBudget } from "./components/User/Budget/SetBudget";
