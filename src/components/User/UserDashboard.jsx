@@ -57,10 +57,10 @@ export const UserDashboard = () => {
   }, [userId]);
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-indigo-900 via-gray-900 to-black text-white">
+    <div className="p-6 min-h-screen bg-gray-50">
       <motion.h1
-        className="text-4xl font-extrabold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-500"
-        initial={{ opacity: 0, y: -30 }}
+        className="text-3xl font-bold mb-8 text-gray-800"
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
         User Dashboard
@@ -69,17 +69,17 @@ export const UserDashboard = () => {
       {/* Budget Overview */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {[
-          { title: "Budget", value: budget.reduce((a, i) => a + i.amount, 0), color: "text-indigo-400" },
-          { title: "Total Income", value: income.reduce((a, i) => a + i.amount, 0), color: "text-green-400" },
-          { title: "Total Expenses", value: expenses.reduce((a, e) => a + e.amount, 0), color: "text-red-400" },
+          { title: "Budget", value: budget.reduce((a, i) => a + i.amount, 0), color: "text-indigo-600", border: "border-indigo-200" },
+          { title: "Total Income", value: income.reduce((a, i) => a + i.amount, 0), color: "text-green-600", border: "border-green-200" },
+          { title: "Total Expenses", value: expenses.reduce((a, e) => a + e.amount, 0), color: "text-red-600", border: "border-red-200" },
         ].map((item, idx) => (
           <motion.div
             key={idx}
-            whileHover={{ scale: 1.05 }}
-            className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-lg p-6"
+            whileHover={{ scale: 1.03 }}
+            className={`bg-white border ${item.border} rounded-xl shadow-sm p-6 transition`}
           >
-            <h2 className="text-lg font-medium">{item.title}</h2>
-            <p className={`text-2xl font-bold ${item.color}`}>
+            <h2 className="text-lg font-medium text-gray-700">{item.title}</h2>
+            <p className={`text-2xl font-bold mt-2 ${item.color}`}>
               ₹{item.value}
             </p>
           </motion.div>
@@ -89,11 +89,11 @@ export const UserDashboard = () => {
       {/* Charts Section */}
       <div className="grid lg:grid-cols-2 gap-8">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
+          initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
-          className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6"
+          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6"
         >
-          <h2 className="text-lg font-semibold mb-4">Income vs Expenses</h2>
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Income vs Expenses</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={[
@@ -101,20 +101,20 @@ export const UserDashboard = () => {
                 { name: "Expenses", amount: expenses.reduce((a, e) => a + e.amount, 0) },
               ]}
             >
-              <XAxis dataKey="name" stroke="#fff" />
-              <YAxis stroke="#fff" />
+              <XAxis dataKey="name" stroke="#374151" />
+              <YAxis stroke="#374151" />
               <Tooltip />
-              <Bar dataKey="amount" fill="#818CF8" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="amount" fill="#4F46E5" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
+          initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6"
+          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6"
         >
-          <h2 className="text-lg font-semibold mb-4">Expense Breakdown</h2>
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Expense Breakdown</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
