@@ -65,7 +65,7 @@ export const Content = () => {
   {/* Banner Image */}
   <div className="flex-shrink-0">
     <img
-      src="src/assets/Images/istockphoto-1424757003-612x612.jpg"
+      src="public\Expense Manager.png"
       alt="Finance Illustration"
       className="rounded-xl shadow-lg w-full max-w-md"
     />

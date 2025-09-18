@@ -16,17 +16,21 @@ export const Login = () => {
 
       if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("id", res.data.data._id); // ✅ save id
+        localStorage.setItem("role", res.data.data.role); // ✅ save role
 
         toast.success("Login successful!", {
           position: "top-center",
           autoClose: 3000,
         });
 
-        if (res.data.data.role === "Admin") {
-          navigate("/admin/admindashboard");
-        } else {
-          navigate("/private/userdashboard");
-        }
+        setTimeout(() => {
+          if (res.data.data.role === "Admin") {
+            navigate("/admin/admindashboard");
+          } else {
+            navigate("/private/userdashboard");
+          }
+        }, 500);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed", {
