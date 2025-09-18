@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { motion } from "framer-motion";
 
 export const UserDashboard = () => {
   const [budget, setBudget] = useState([]);
@@ -21,9 +22,9 @@ export const UserDashboard = () => {
   const [recurring, setRecurring] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
-  // Colors for charts
   const COLORS = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444", "#3B82F6"];
   const userId = localStorage.getItem("id");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,7 +34,7 @@ export const UserDashboard = () => {
           expenseRes,
           billsRes,
           recurringRes,
-          txnRes
+          txnRes,
         ] = await Promise.all([
           axiosInstance.get(`/budgetsbyUserID/${userId}`),
           axiosInstance.get(`/incomesbyUserID/${userId}`),
@@ -42,99 +43,82 @@ export const UserDashboard = () => {
           axiosInstance.get(`/recurring/${userId}`),
           axiosInstance.get(`/transactionsByUserID/${userId}`),
         ]);
-
         setBudget(budgetRes.data.data);
-        console.log(budgetRes.data.data)
         setIncome(incomeRes.data.data);
-        console.log(incomeRes.data.data);
         setExpenses(expenseRes.data.data);
-        console.log(expenseRes.data.data);
         setBills(billsRes.data.data);
-        console.log(billsRes.data.data);
         setRecurring(recurringRes.data.data);
-        console.log(recurringRes.data.data);
         setTransactions(txnRes.data.data);
-        console.log(txnRes.data.data);
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
     };
-
     fetchData();
   }, [userId]);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">User Dashboard</h1>
+    <div className="p-6 min-h-screen bg-gradient-to-br from-indigo-900 via-gray-900 to-black text-white">
+      <motion.h1
+        className="text-4xl font-extrabold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-500"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        User Dashboard
+      </motion.h1>
 
       {/* Budget Overview */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Budget</h2>
-          <p className="text-2xl font-bold text-indigo-600">
-            ₹{budget.reduce((acc,i)=> acc+i.amount,0)}
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">
-            Total Income
-          </h2>
-          <p className="text-2xl font-bold text-green-600">
-            ₹{income.reduce((acc, i) => acc + i.amount, 0)}
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">
-            Total Expenses
-          </h2>
-          <p className="text-2xl font-bold text-red-600">
-            ₹{expenses.reduce((acc, e) => acc + e.amount, 0)}
-          </p>
-        </div>
+        {[
+          { title: "Budget", value: budget.reduce((a, i) => a + i.amount, 0), color: "text-indigo-400" },
+          { title: "Total Income", value: income.reduce((a, i) => a + i.amount, 0), color: "text-green-400" },
+          { title: "Total Expenses", value: expenses.reduce((a, e) => a + e.amount, 0), color: "text-red-400" },
+        ].map((item, idx) => (
+          <motion.div
+            key={idx}
+            whileHover={{ scale: 1.05 }}
+            className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-lg p-6"
+          >
+            <h2 className="text-lg font-medium">{item.title}</h2>
+            <p className={`text-2xl font-bold ${item.color}`}>
+              ₹{item.value}
+            </p>
+          </motion.div>
+        ))}
       </div>
 
       {/* Charts Section */}
       <div className="grid lg:grid-cols-2 gap-8">
-        {/* Income vs Expense Bar Chart */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Income vs Expenses
-          </h2>
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6"
+        >
+          <h2 className="text-lg font-semibold mb-4">Income vs Expenses</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={[
-                {
-                  name: "Income",
-                  amount: income.reduce((acc, i) => acc + i.amount, 0),
-                },
-                {
-                  name: "Expenses",
-                  amount: expenses.reduce((acc, e) => acc + e.amount, 0),
-                },
+                { name: "Income", amount: income.reduce((a, i) => a + i.amount, 0) },
+                { name: "Expenses", amount: expenses.reduce((a, e) => a + e.amount, 0) },
               ]}
             >
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="name" stroke="#fff" />
+              <YAxis stroke="#fff" />
               <Tooltip />
-              <Bar dataKey="amount" fill="#4F46E5" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="amount" fill="#818CF8" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
-        {/* Expense Breakdown Pie Chart */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Expense Breakdown
-          </h2>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6"
+        >
+          <h2 className="text-lg font-semibold mb-4">Expense Breakdown</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={expenses.map((e) => ({
-                  name: e.category,
-                  value: e.amount,
-                }))}
+                data={expenses.map((e) => ({ name: e.category, value: e.amount }))}
                 dataKey="value"
                 cx="50%"
                 cy="50%"
@@ -142,92 +126,14 @@ export const UserDashboard = () => {
                 label
               >
                 {expenses.map((_, i) => (
-                  <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
               <Legend />
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Bills & Recurring Expenses */}
-      <div className="grid lg:grid-cols-2 gap-8 mt-8">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Upcoming Bills
-          </h2>
-          <ul className="space-y-3">
-            {bills.slice(0, 5).map((bill) => (
-              <li
-                key={bill._id}
-                className="flex justify-between items-center p-3 border rounded-lg"
-              >
-                <span>{bill.name}</span>
-                <span className="font-semibold text-red-500">
-                  ₹{bill.amount}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Recurring Expenses
-          </h2>
-          <ul className="space-y-3">
-            {recurring.slice(0, 5).map((item) => (
-              <li
-                key={item._id}
-                className="flex justify-between items-center p-3 border rounded-lg"
-              >
-                <span>{item.name}</span>
-                <span className="font-semibold text-indigo-500">
-                  ₹{item.amount}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Transactions Table */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 mt-8">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">
-          Recent Transactions
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-100 text-gray-700">
-                <th className="p-3">Name</th>
-                <th className="p-3">Type</th>
-                <th className="p-3">Amount</th>
-                <th className="p-3">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.slice(0, 6).map((txn) => (
-                <tr key={txn._id} className="border-b">
-                  <td className="p-3">{txn.description}</td>
-                  <td className="p-3 capitalize">{txn.type}</td>
-                  <td
-                    className={`p-3 font-semibold ${
-                      txn.type === "income" ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    ₹{txn.amount}
-                  </td>
-                  <td className="p-3">
-                    {new Date(txn.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
