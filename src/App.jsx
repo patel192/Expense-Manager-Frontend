@@ -5,8 +5,6 @@ import axios from "axios";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
 import { Signup } from "./Signup";
 import { Content } from "./components/Common/Content";
-import { ForgotPassword } from "./ForgotPassword";
-import { ResetPassword } from "./ResetPassword";
 import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateLayout } from "./components/Layouts/PrivateLayout";
 import { AddExpense } from "./components/User/Expense/AddExpense";
@@ -61,8 +59,6 @@ function App() {
         <Route path="/" element={<Content />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/resetpassword/:token" element={<ResetPassword />} />
       </Route>
       {/* Protected user routes */}
       <Route element={<PrivateRoutes />}>
