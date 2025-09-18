@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import axiosInstance from '@/api/axiosInstance';
+import axiosInstance from "./api/axiosInstance";
 export const ViewBudget = () => {
   const [budgets, setbudgets] = useState([]);
   useEffect(() => {

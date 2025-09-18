@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import axiosInstance from "@/api/axiosInstance";
+import axiosInstance from "./api/axiosInstance";
 export const SetBudget = () => {
   const {
     register,

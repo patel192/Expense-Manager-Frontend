@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "@/api/axiosInstance";
+import axiosInstance from "./api/axiosInstance";
 import {
   BarChart,
   Bar,

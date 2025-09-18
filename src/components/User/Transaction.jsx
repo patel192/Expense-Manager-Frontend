@@ -1,4 +1,4 @@
-import axiosInstance from "@/api/axiosInstance";
+import axiosInstance from "./api/axiosInstance";
 import React, { useEffect, useState } from "react";
 
 export const Transaction = () => {

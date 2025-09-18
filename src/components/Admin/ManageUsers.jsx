@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "@/api/axiosInstance";
+import axiosInstance from "./api/axiosInstance";
 export const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);

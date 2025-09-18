@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaClipboardList } from "react-icons/fa"; // <-- New icon
-import axiosInstance from "@/api/axiosInstance";
+import axiosInstance from "./api/axiosInstance";
 
 export const Systemlog = () => {
   const [logs, setLogs] = useState([]);

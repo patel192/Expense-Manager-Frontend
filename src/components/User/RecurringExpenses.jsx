@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from "@/api/axiosInstance";
+import axiosInstance from "./api/axiosInstance";
 import { motion } from "framer-motion";
 import { FaSyncAlt, FaTrashAlt, FaPlusCircle, FaPauseCircle } from "react-icons/fa";
 export const RecurringExpenses = () => {
