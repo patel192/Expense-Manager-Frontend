@@ -9,21 +9,16 @@ export const AddExpense = () => {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recentExpenses, setRecentExpenses] = useState([]);
-
   const userId = localStorage.getItem("id");
 
-  useEffect(() => {
-    if (userId) setValue("userID", userId);
-  }, [setValue, userId]);
+  useEffect(() => { if (userId) setValue("userID", userId); }, [setValue, userId]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await axiosInstance.get("/categories");
         setCategories(res.data.data);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) { console.error(error); }
     };
     fetchCategories();
   }, []);
@@ -33,9 +28,7 @@ export const AddExpense = () => {
       try {
         const res = await axiosInstance.get(`/recent-expense/${userId}`);
         setRecentExpenses(res.data.data || []);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) { console.error(error); }
     };
     fetchRecentExpenses();
   }, [userId]);
@@ -56,15 +49,14 @@ export const AddExpense = () => {
         const updated = await axiosInstance.get(`/recent-expense/${userId}`);
         setRecentExpenses(updated.data.data || []);
       }
-    } catch (error) {
-      alert(error.message);
-    }
+    } catch (error) { alert(error.message); }
   };
 
   return (
     <div className="p-6 flex flex-col gap-6">
+
       {/* Recent Expenses */}
-      <div className="bg-white rounded-lg shadow p-4 max-h-96 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-md p-4 max-h-96 overflow-y-auto">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
           <FaReceipt className="text-pink-600" /> Recent Expenses
         </h3>
@@ -74,7 +66,7 @@ export const AddExpense = () => {
           <ul className="divide-y">
             {recentExpenses.map((exp) => (
               <li key={exp._id} className="py-2 flex justify-between">
-                <span>{exp.description}</span>
+                <span className="text-gray-700">{exp.description}</span>
                 <span className="text-pink-600 font-semibold">₹{exp.amount}</span>
               </li>
             ))}
@@ -82,7 +74,7 @@ export const AddExpense = () => {
         )}
       </div>
 
-      {/* Add Button */}
+      {/* Add Expense Button */}
       <button
         onClick={() => setIsModalOpen(true)}
         className="fixed bottom-6 right-6 bg-pink-600 hover:bg-pink-700 text-white rounded-full p-4 shadow-lg transition flex items-center gap-2"
@@ -96,7 +88,7 @@ export const AddExpense = () => {
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"
+            className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative"
           >
             <button
               onClick={() => setIsModalOpen(false)}
@@ -105,9 +97,10 @@ export const AddExpense = () => {
               ✕
             </button>
 
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Add New Expense</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Expense</h2>
 
             <form onSubmit={handleSubmit(SubmitHandler)} className="space-y-4">
+
               {/* Category */}
               <div className="flex items-center border rounded-lg overflow-hidden">
                 <span className="bg-gray-100 p-3 text-gray-500"><FaTags /></span>

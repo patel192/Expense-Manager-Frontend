@@ -87,22 +87,43 @@ export const ViewIncome = () => {
   };
 
   return (
-    <div className="p-6 space-y-10">
+    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white space-y-10">
       <h2 className="text-center text-2xl font-bold">💰 All Incomes</h2>
 
       {/* Monthly Income Trend Chart */}
-      <div className="w-full h-80 bg-white rounded-xl shadow-lg p-4">
+      <div className="w-full h-80 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl shadow-lg p-4">
         <h3 className="text-lg font-semibold mb-4 text-center">
           📈 Monthly Income Trend
         </h3>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={monthlyData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <ReferenceLine y={avg} stroke="#3b82f6" strokeDasharray="3 3" label="Avg" />
-            <Line type="monotone" dataKey="amount" stroke="#3b82f6" strokeWidth={2} dot={false} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(255,255,255,0.2)"
+            />
+            <XAxis dataKey="month" stroke="white" />
+            <YAxis stroke="white" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "rgba(0,0,0,0.8)",
+                border: "none",
+                color: "white",
+              }}
+              itemStyle={{ color: "white" }}
+            />
+            <ReferenceLine
+              y={avg}
+              stroke="#3b82f6"
+              strokeDasharray="3 3"
+              label="Avg"
+            />
+            <Line
+              type="monotone"
+              dataKey="amount"
+              stroke="#3b82f6"
+              strokeWidth={2}
+              dot={false}
+            />
           </LineChart>
         </ResponsiveContainer>
         <div className="flex justify-around mt-2">
@@ -116,7 +137,7 @@ export const ViewIncome = () => {
 
       {/* Income Cards */}
       {loading ? (
-        <p className="text-center text-gray-500">Loading incomes...</p>
+        <p className="text-center text-white/70">Loading incomes...</p>
       ) : incomes.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {incomes.map((income, idx) => (
@@ -129,12 +150,14 @@ export const ViewIncome = () => {
             >
               <div>
                 <h3 className="text-xl font-bold">{income.source}</h3>
-                <p className="text-sm opacity-80">
+                <p className="text-sm text-white/70">
                   {new Date(income.date).toLocaleDateString()}
                 </p>
               </div>
               <div className="flex justify-between items-center mt-6">
-                <span className="text-2xl font-extrabold">₹{income.amount}</span>
+                <span className="text-2xl font-extrabold">
+                  ₹{income.amount}
+                </span>
                 <button
                   onClick={() => handleDelete(income._id)}
                   className="p-2 rounded-full bg-red-500 hover:bg-red-600 transition"
@@ -146,7 +169,7 @@ export const ViewIncome = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500">No incomes found.</p>
+        <p className="text-center text-white/70">No incomes found.</p>
       )}
     </div>
   );

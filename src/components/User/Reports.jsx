@@ -20,7 +20,14 @@ import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28CF5", "#FF66CC"];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#A28CF5",
+  "#FF66CC",
+];
 
 export const Reports = () => {
   const [incomeData, setIncomeData] = useState([]);
@@ -63,7 +70,10 @@ export const Reports = () => {
     const category = item.categoryID?.name || "Uncategorized";
     categoryMap[category] = (categoryMap[category] || 0) + item.amount;
   });
-  const pieData = Object.entries(categoryMap).map(([category, value]) => ({ category, value }));
+  const pieData = Object.entries(categoryMap).map(([category, value]) => ({
+    category,
+    value,
+  }));
 
   const monthMap = {};
   [...incomeData, ...expenseData].forEach((item) => {
@@ -151,25 +161,33 @@ export const Reports = () => {
     XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
     XLSX.utils.book_append_sheet(workbook, transactionSheet, "Transactions");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), "Financial_Report.xlsx");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    saveAs(
+      new Blob([excelBuffer], { type: "application/octet-stream" }),
+      "Financial_Report.xlsx"
+    );
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-center text-2xl font-bold mb-6">📊 Your Financial Report</h2>
+    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      <h2 className="text-center text-2xl font-bold mb-6">
+        📊 Your Financial Report
+      </h2>
 
       {/* Export Buttons */}
       <div className="flex justify-end gap-4 mb-6">
         <button
           onClick={exportPDF}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600"
+          className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg shadow-lg hover:scale-105 transition-transform"
         >
           Export PDF
         </button>
         <button
           onClick={exportExcel}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600"
+          className="px-4 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg shadow-lg hover:scale-105 transition-transform"
         >
           Export Excel
         </button>
@@ -177,43 +195,81 @@ export const Reports = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <motion.div whileHover={{ scale: 1.05 }} className="bg-green-100 rounded-2xl p-4 shadow-md text-center">
-          <h3 className="text-lg font-semibold text-green-800">Total Income</h3>
-          <p className="text-2xl font-bold">₹{totalIncome}</p>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.05 }} className="bg-red-100 rounded-2xl p-4 shadow-md text-center">
-          <h3 className="text-lg font-semibold text-red-800">Total Expense</h3>
-          <p className="text-2xl font-bold">₹{totalExpense}</p>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.05 }} className="bg-blue-100 rounded-2xl p-4 shadow-md text-center">
-          <h3 className="text-lg font-semibold text-blue-800">Remaining Balance</h3>
-          <p className="text-2xl font-bold">₹{balance}</p>
-        </motion.div>
+        {[
+          {
+            title: "Total Income",
+            value: totalIncome,
+            color: "text-green-400",
+          },
+          {
+            title: "Total Expense",
+            value: totalExpense,
+            color: "text-red-400",
+          },
+          {
+            title: "Remaining Balance",
+            value: balance,
+            color: "text-blue-400",
+          },
+        ].map((item, idx) => (
+          <motion.div
+            key={idx}
+            whileHover={{ scale: 1.05 }}
+            className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 shadow-lg text-center"
+          >
+            <h3 className="text-lg font-semibold text-white/80">
+              {item.title}
+            </h3>
+            <p className={`text-2xl font-bold mt-2 ${item.color}`}>
+              ₹{item.value}
+            </p>
+          </motion.div>
+        ))}
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Bar Chart */}
-        <div className="bg-white rounded-xl shadow-md p-4">
-          <h3 className="text-center font-semibold mb-4">Income vs Expense</h3>
+        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-4">
+          <h3 className="text-center font-semibold mb-4 text-white">
+            Income vs Expense
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={barData}>
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="name" stroke="#e5e7eb" />
+              <YAxis stroke="#e5e7eb" />
               <Tooltip />
-              <Bar dataKey="amount" fill="#8884d8" barSize={50} />
+              <Bar
+                dataKey="amount"
+                fill="#4F46E5"
+                barSize={50}
+                radius={[6, 6, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Pie Chart */}
-        <div className="bg-white rounded-xl shadow-md p-4">
-          <h3 className="text-center font-semibold mb-4">Expenses by Category</h3>
+        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-4">
+          <h3 className="text-center font-semibold mb-4 text-white">
+            Expenses by Category
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
-              <Pie data={pieData} dataKey="value" nameKey="category" cx="50%" cy="50%" outerRadius={80} label>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="category"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                label
+              >
                 {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
                 ))}
               </Pie>
               <Legend />
@@ -222,15 +278,17 @@ export const Reports = () => {
         </div>
 
         {/* Line Chart */}
-        <div className="col-span-1 lg:col-span-2 bg-white rounded-xl shadow-md p-4">
-          <h3 className="text-center font-semibold mb-4">Monthly Trend</h3>
+        <div className="col-span-1 lg:col-span-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-4">
+          <h3 className="text-center font-semibold mb-4 text-white">
+            Monthly Trend
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
-              <XAxis dataKey="month" />
-              <YAxis />
+              <XAxis dataKey="month" stroke="#e5e7eb" />
+              <YAxis stroke="#e5e7eb" />
               <Tooltip />
-              <Line type="monotone" dataKey="income" stroke="#00C49F" />
-              <Line type="monotone" dataKey="expense" stroke="#FF8042" />
+              <Line type="monotone" dataKey="income" stroke="#10B981" />
+              <Line type="monotone" dataKey="expense" stroke="#EF4444" />
               <Legend />
             </LineChart>
           </ResponsiveContainer>

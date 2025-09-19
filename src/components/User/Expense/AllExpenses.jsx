@@ -9,10 +9,8 @@ export const AllExpenses = () => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const res = await axiosInstance.get(
-          `/expensesbyUserID/${localStorage.getItem("id")}`
-        );
-        setExpenses(res.data.data);
+        const res = await axiosInstance.get(`/expensesbyUserID/${localStorage.getItem("id")}`);
+        setExpenses(res.data.data || []);
       } catch (error) {
         console.error("Error fetching expenses:", error);
       }
@@ -21,152 +19,57 @@ export const AllExpenses = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this expense?")) {
-      try {
-        await axiosInstance.delete(`/expense/${id}`);
-        setExpenses((prev) => prev.filter((e) => e._id !== id));
-      } catch (error) {
-        console.error("Error deleting expense:", error);
-      }
+    if (!window.confirm("Are you sure you want to delete this expense?")) return;
+    try {
+      await axiosInstance.delete(`/expense/${id}`);
+      setExpenses((prev) => prev.filter((e) => e._id !== id));
+    } catch (error) {
+      console.error("Error deleting expense:", error);
     }
   };
 
   return (
-    <div className="expenses-container" style={styles.container}>
-      <h2 style={styles.title}>All Expenses</h2>
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <h2 className="text-3xl font-bold text-center text-white">💸 All Expenses</h2>
 
       {expenses.length > 0 ? (
-        <div style={styles.list}>
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           {expenses.map((expense) => (
             <div
               key={expense._id}
-              style={styles.card}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.02)";
-                e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.1)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.05)";
-              }}
+              className="flex justify-between items-center bg-gray-800 rounded-xl p-4 shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer"
             >
-              <div style={styles.left}>
-                <div style={styles.iconWrapper}>
-                  <MdOutlineAttachMoney size={28} color="#4CAF50" />
+              <div className="flex items-center gap-4">
+                <div className="bg-red-900/20 p-3 rounded-full">
+                  <MdOutlineAttachMoney size={28} className="text-red-500" />
                 </div>
                 <div>
-                  <h3 style={styles.desc}>{expense.description}</h3>
-                  <p style={styles.date}>
+                  <h3 className="text-white font-medium text-lg">{expense.description}</h3>
+                  <p className="text-gray-400 text-sm">
                     {new Date(expense.date).toLocaleDateString()}
                   </p>
                 </div>
               </div>
 
-              <div style={styles.right}>
-                <div style={styles.amount}>
+              <div className="flex items-center gap-4">
+                <span className="text-red-400 font-semibold text-lg">
                   ₹{Number(expense.amount).toLocaleString("en-IN")}
-                </div>
+                </span>
                 <button
-                  style={styles.deleteBtn}
                   onClick={() => handleDelete(expense._id)}
+                  className="bg-red-500/20 hover:bg-red-500 p-2 rounded-lg transition-colors"
                 >
-                  <FaTrashAlt />
+                  <FaTrashAlt className="text-red-600" />
                 </button>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div style={styles.emptyState}>
-          <p style={styles.emptyText}>No expenses found...</p>
+        <div className="bg-gray-800 rounded-xl p-8 text-center">
+          <p className="text-gray-400 text-lg">No expenses found...</p>
         </div>
       )}
     </div>
   );
-};
-
-// Inline styles for simplicity (can be moved to CSS file)
-const styles = {
-  container: {
-    padding: "20px",
-    maxWidth: "800px",
-    margin: "0 auto",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#333",
-  },
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-    maxHeight: "70vh",
-    overflowY: "auto",
-  },
-  card: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    background: "#fff",
-    borderRadius: "10px",
-    padding: "12px 16px",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-    cursor: "pointer",
-  },
-  left: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-  },
-  iconWrapper: {
-    background: "#f0fdf4",
-    padding: "8px",
-    borderRadius: "50%",
-  },
-  desc: {
-    fontSize: "16px",
-    fontWeight: "500",
-    margin: 0,
-  },
-  date: {
-    fontSize: "14px",
-    color: "#777",
-    margin: 0,
-  },
-  right: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-  },
-  amount: {
-    fontSize: "16px",
-    fontWeight: "600",
-    color: "#e53935",
-  },
-  deleteBtn: {
-    background: "#ffebee",
-    border: "none",
-    padding: "8px",
-    borderRadius: "8px",
-    cursor: "pointer",
-    color: "#e53935",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    transition: "background 0.2s ease",
-  },
-  emptyState: {
-    textAlign: "center",
-    padding: "40px",
-    background: "#f9f9f9",
-    borderRadius: "10px",
-  },
-  emptyText: {
-    fontSize: "18px",
-    color: "#777",
-  },
 };
