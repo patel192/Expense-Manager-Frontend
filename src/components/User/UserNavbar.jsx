@@ -12,85 +12,74 @@ import {
 
 export const UserNavbar = ({ toggleSidebar }) => {
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       {/* Navbar */}
-      <header className="bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 text-white shadow-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/10 border-b border-white/10 shadow-md">
+        <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
           {/* Left: Sidebar Toggle + Logo */}
           <div className="flex items-center gap-4">
             <button
               onClick={toggleSidebar}
-              className="p-2 rounded-md hover:bg-white hover:text-pink-600 transition-colors shadow-sm"
+              className="p-2 rounded-md hover:bg-white/20 hover:text-pink-500 transition-all"
             >
               <FaBars size={22} />
             </button>
 
             <Link
               to="/"
-              className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+              className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform"
             >
-              <strong className="text-lg font-bold tracking-wide">Trackit</strong>
-              <span className="hidden sm:inline font-medium">| Expense App</span>
+              Trackit | Expense App
             </Link>
           </div>
 
-          {/* Right: Logout + Social Icons */}
-          <div className="flex items-center gap-4">
+          {/* Right Side: Logout + Socials */}
+          <div className="flex items-center gap-5">
             <button
               onClick={logout}
-              className="px-4 py-1 bg-white text-pink-600 hover:bg-pink-100 rounded-lg font-semibold shadow-md transition-colors"
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
             >
               Logout
             </button>
 
-            <ul className="flex items-center gap-3">
-              <li>
-                <Link
-                  to="#"
-                  className="hover:text-blue-300 transition-colors p-1 rounded-full hover:bg-white/20"
-                >
-                  <FaTwitter size={20} />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#"
-                  className="hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-white/20"
-                >
-                  <FaFacebookF size={20} />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#"
-                  className="hover:text-yellow-300 transition-colors p-1 rounded-full hover:bg-white/20"
-                >
-                  <FaSnapchatGhost size={20} />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#"
-                  className="hover:text-pink-300 transition-colors p-1 rounded-full hover:bg-white/20"
-                >
-                  <FaInstagram size={20} />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#"
-                  className="hover:text-green-300 transition-colors p-1 rounded-full hover:bg-white/20"
-                >
-                  <FaMediumM size={20} />
-                </Link>
-              </li>
-            </ul>
+            <div className="flex gap-4 text-xl">
+              <a
+                href="#"
+                className="hover:text-blue-400 hover:scale-110 transition-transform"
+              >
+                <FaTwitter />
+              </a>
+              <a
+                href="#"
+                className="hover:text-blue-600 hover:scale-110 transition-transform"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href="#"
+                className="hover:text-yellow-400 hover:scale-110 transition-transform"
+              >
+                <FaSnapchatGhost />
+              </a>
+              <a
+                href="#"
+                className="hover:text-pink-500 hover:scale-110 transition-transform"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                href="#"
+                className="hover:text-green-400 hover:scale-110 transition-transform"
+              >
+                <FaMediumM />
+              </a>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="bg-gray-50 min-h-screen p-4">
+      <main className="p-6 max-w-7xl mx-auto">
         <Outlet />
       </main>
     </div>
