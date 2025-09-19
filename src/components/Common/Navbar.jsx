@@ -15,14 +15,14 @@ export const Navbar = () => {
   return (
     <div>
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-gray-900/30 border-b border-gray-700/30 shadow-lg">
         <nav className="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
           {/* Logo Section */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-3"
           >
             <img
               src="src/assets/Images/Expense Manager.png"
@@ -30,7 +30,7 @@ export const Navbar = () => {
               className="h-10 w-10 object-contain drop-shadow-lg"
             />
             <span className="text-2xl font-extrabold text-white tracking-wide">
-              ExpenseManager
+              MyWebsite
             </span>
           </motion.div>
 
@@ -39,13 +39,13 @@ export const Navbar = () => {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="hidden md:flex gap-6 font-semibold text-gray-200"
+            className="flex gap-6 font-semibold text-gray-200"
           >
             {navLinks.map((link, idx) => (
               <Link
                 key={idx}
                 to={link.to}
-                className="relative group transition-colors duration-200"
+                className="relative group transition"
               >
                 <span className="transition-colors duration-200 group-hover:text-white">
                   {link.name}
@@ -55,22 +55,13 @@ export const Navbar = () => {
               </Link>
             ))}
           </motion.div>
-
-          {/* Mobile Hamburger */}
-          <div className="md:hidden flex items-center">
-            <button className="p-2 rounded-md bg-white/10 hover:bg-white/20 transition">
-              <span className="block w-6 h-0.5 bg-white mb-1"></span>
-              <span className="block w-6 h-0.5 bg-white mb-1"></span>
-              <span className="block w-6 h-0.5 bg-white"></span>
-            </button>
-          </div>
         </nav>
       </header>
 
       {/* Main Content Wrapper */}
-      <main className="p-6 bg-gradient-to-b from-gray-900 to-gray-950 min-h-screen text-white">
+      <div className="p-6 bg-gradient-to-b from-gray-900 to-gray-950 min-h-screen text-white">
         <Outlet />
-      </main>
+      </div>
     </div>
   );
 };
