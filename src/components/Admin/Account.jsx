@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { Token } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
 export const Account = () => {
   const { userId } = useParams();
@@ -79,116 +79,137 @@ export const Account = () => {
     }
   };
 
-
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-semibold mb-4">Profile</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-950 to-black p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8"
+      >
+        <h2 className="text-2xl font-bold text-white mb-6 text-center">
+          User Profile
+        </h2>
 
-      {/* Profile Picture */}
-      <div className="flex justify-center mb-6 relative">
-        {preview ? (
-          <img
-            src={preview}
-            alt="Preview"
-            className="w-24 h-24 rounded-full object-cover border-2 border-blue-400"
-          />
-        ) : user.profilePic ? (
-          <img
-            src={user.profilePic}
-            alt="Profile"
-            className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
-          />
-        ) : (
-          <FaUserCircle className="w-24 h-24 text-gray-400" />
-        )}
-
-        {isEditing && (
-          <label className="absolute bottom-0 right-10 bg-gray-700 text-white px-2 py-1 text-xs rounded cursor-pointer">
-            Change
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
+        {/* Profile Picture */}
+        <div className="flex justify-center mb-6 relative">
+          {preview ? (
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-28 h-28 rounded-full object-cover border-4 border-blue-400 shadow-md"
             />
-          </label>
-        )}
-      </div>
+          ) : user.profilePic ? (
+            <img
+              src={user.profilePic}
+              alt="Profile"
+              className="w-28 h-28 rounded-full object-cover border-4 border-gray-300 shadow-md"
+            />
+          ) : (
+            <FaUserCircle className="w-28 h-28 text-gray-500" />
+          )}
 
-      {/* Fields */}
-      <div className="space-y-4">
-        <div>
-          <label className="block text-gray-600">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={user.name}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className={`w-full p-2 border rounded-md ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
+          {isEditing && (
+            <label className="absolute bottom-0 right-10 bg-blue-600/80 hover:bg-blue-700 text-white px-3 py-1 text-xs rounded-lg cursor-pointer shadow-md">
+              Change
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+          )}
         </div>
 
-        <div>
-          <label className="block text-gray-600">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className={`w-full p-2 border rounded-md ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
+        {/* Fields */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-gray-300 mb-1">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={user.name}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`w-full px-3 py-2 rounded-lg border ${
+                isEditing
+                  ? "bg-white/90 text-gray-900 border-blue-400 focus:ring-2 focus:ring-blue-500"
+                  : "bg-white/20 text-gray-200 border-gray-500"
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`w-full px-3 py-2 rounded-lg border ${
+                isEditing
+                  ? "bg-white/90 text-gray-900 border-blue-400 focus:ring-2 focus:ring-blue-500"
+                  : "bg-white/20 text-gray-200 border-gray-500"
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Bio</label>
+            <textarea
+              name="bio"
+              value={user.bio}
+              onChange={handleChange}
+              disabled={!isEditing}
+              rows={3}
+              className={`w-full px-3 py-2 rounded-lg border resize-none ${
+                isEditing
+                  ? "bg-white/90 text-gray-900 border-blue-400 focus:ring-2 focus:ring-blue-500"
+                  : "bg-white/20 text-gray-200 border-gray-500"
+              }`}
+            />
+          </div>
         </div>
 
-        <div>
-          <label className="block text-gray-600">Bio</label>
-          <textarea
-            name="bio"
-            value={user.bio}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className={`w-full p-2 border rounded-md ${
-              isEditing ? "bg-white" : "bg-gray-100"
-            }`}
-          />
-        </div>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex justify-end mt-6 space-x-3">
-        {!isEditing ? (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
-            Edit
-          </button>
-        ) : (
-          <>
-            <button
-              onClick={() => {
-                setIsEditing(false);
-                setPreview(null);
-                setSelectedFile(null);
-              }}
-              className="px-4 py-2 bg-gray-400 text-white rounded-lg"
+        {/* Buttons */}
+        <div className="flex justify-end mt-6 space-x-3">
+          {!isEditing ? (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsEditing(true)}
+              className="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md"
             >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg"
-            >
-              Save
-            </button>
-          </>
-        )}
-      </div>
+              Edit
+            </motion.button>
+          ) : (
+            <>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  setIsEditing(false);
+                  setPreview(null);
+                  setSelectedFile(null);
+                }}
+                className="px-5 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg shadow-md"
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSave}
+                className="px-5 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md"
+              >
+                Save
+              </motion.button>
+            </>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
 };

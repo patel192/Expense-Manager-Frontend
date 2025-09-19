@@ -10,42 +10,24 @@ export const AdminLayout = ({ children }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#f4f4f4",
-      }}
-    >
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       {/* Sidebar */}
       <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main content area */}
       <div
+        className="flex-1 transition-all duration-300"
         style={{
-          flex: 1,
           marginLeft: isSidebarOpen ? "260px" : "60px", // Matches sidebar width
-          transition: "margin-left 0.3s ease",
         }}
       >
         {/* Navbar */}
-        <div
-          style={{
-            background: "white",
-            boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-            padding: "10px 20px",
-            position: "sticky",
-            top: 0,
-            zIndex: 10,
-          }}
-        >
+        <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg px-6 py-3">
           <AdminNavbar />
         </div>
 
         {/* Page Content */}
-        <div style={{ padding: "20px" }}>
-          {children}
-        </div>
+        <div className="p-6">{children}</div>
       </div>
     </div>
   );

@@ -1,22 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
+
 export const SetBudget = () => {
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm();
+
+  const startDate = watch("start_date");
+
   useEffect(() => {
     const storedUserId = localStorage.getItem("id");
     if (storedUserId) {
-      setValue("userID", storedUserId); // Pre-fill userId inside form data
+      setValue("userID", storedUserId); // Pre-fill userId
     } else {
       console.warn("No userId found in localStorage");
     }
   }, [setValue]);
+
   const SubmitHandler = async (data) => {
     const finalData = {
       userID: data.userID,
@@ -25,28 +32,30 @@ export const SetBudget = () => {
       start_date: data.start_date,
       end_date: data.end_date,
     };
+
     try {
-      console.log(finalData);
-      const res = await axiosInstance.post(
-        "/budget",
-        finalData
-      );
-      if (res.status == 201) {
-        alert("Budget added successfully");
+      setLoading(true);
+      const res = await axiosInstance.post("/budget", finalData);
+      if (res.status === 201) {
+        alert("✅ Budget added successfully!");
         window.location.reload();
       }
-    } catch(error) {
-      alert(error.message);
+    } catch (error) {
+      alert("❌ " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
-    <div className="add-expense-container">
-      <div className="add-expense-title">Add Budget</div>
-      <form onSubmit={handleSubmit(SubmitHandler)}>
-        <div className="form-group">
-          <label>Category</label>
+    <div className="max-w-md mx-auto bg-white p-6 shadow rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Add Budget</h2>
+      <form onSubmit={handleSubmit(SubmitHandler)} className="space-y-4">
+        {/* Category */}
+        <div>
+          <label className="block font-medium">Category</label>
           <select
-            className="form-select"
+            className="w-full border p-2 rounded"
             {...register("categoryID", {
               required: "Please select Budget category",
             })}
@@ -60,48 +69,63 @@ export const SetBudget = () => {
             <option value="67ece061beaf3d07e559ccf9">Maintenance</option>
             <option value="67ece068beaf3d07e559ccfb">Travel</option>
             <option value="67ece073beaf3d07e559ccfd">Wages</option>
-            <option value="67ece08cbeaf3d07e559ccff">
-              Supplies and Materials
-            </option>
+            <option value="67ece08cbeaf3d07e559ccff">Supplies & Materials</option>
           </select>
           {errors.categoryID && (
-            <p style={{ color: "red" }}>{errors.categoryID.message}</p>
+            <p className="text-red-500 text-sm">{errors.categoryID.message}</p>
           )}
         </div>
 
-        <div className="form-group">
-          <label>Amount</label>
+        {/* Amount */}
+        <div>
+          <label className="block font-medium">Amount</label>
           <input
             type="number"
-            className="form-control"
+            className="w-full border p-2 rounded"
             {...register("amount", { required: "Amount is required" })}
           />
           {errors.amount && (
-            <p style={{ color: "red" }}>{errors.amount.message}</p>
+            <p className="text-red-500 text-sm">{errors.amount.message}</p>
           )}
         </div>
 
-        <div className="form-group">
-          <label>Start Date</label>
+        {/* Start Date */}
+        <div>
+          <label className="block font-medium">Start Date</label>
           <input
             type="date"
-            className="form-control"
+            className="w-full border p-2 rounded"
             {...register("start_date", { required: "Start Date is required" })}
-            />
-            {errors.start_date && <p style={{ color: "red" }}>{errors.start_date.message}</p>}
+          />
+          {errors.start_date && (
+            <p className="text-red-500 text-sm">{errors.start_date.message}</p>
+          )}
         </div>
-        <div className="form-group">
-          <label>End Date</label>
+
+        {/* End Date */}
+        <div>
+          <label className="block font-medium">End Date</label>
           <input
             type="date"
-            className="form-control"
-            {...register("end_date", { required: "End Date is required" })}
+            className="w-full border p-2 rounded"
+            {...register("end_date", {
+              required: "End Date is required",
+              validate: (value) =>
+                !startDate || value >= startDate || "End Date must be after Start Date",
+            })}
           />
-           {errors.end_date && <p style={{ color: "red" }}>{errors.end_date.message}</p>}
-           
+          {errors.end_date && (
+            <p className="text-red-500 text-sm">{errors.end_date.message}</p>
+          )}
         </div>
-        <button type="submit" className="btn btn-primary">
-          Add
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+        >
+          {loading ? "Adding..." : "Add Budget"}
         </button>
       </form>
     </div>

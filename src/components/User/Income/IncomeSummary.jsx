@@ -12,75 +12,59 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 import { FaChartLine } from "react-icons/fa";
+
 export const IncomeSummary = () => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [stats, setStats] = useState({});
   const [tips, setTips] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userId = localStorage.getItem("id");
-
         const [incomeRes, expenseRes] = await Promise.all([
           axiosInstance.get(`/incomesbyUserId/${userId}`),
           axiosInstance.get(`/expensesbyUserId/${userId}`),
         ]);
 
-        setIncomes(incomeRes.data.data);
-        setExpenses(expenseRes.data.data);
+        const incomesData = incomeRes.data.data || [];
+        const expensesData = expenseRes.data.data || [];
 
-        // 📊 Calculate pocket stats
-        const totalIncome = incomeRes.data.data.reduce(
-          (acc, cur) => acc + cur.amount,
-          0
-        );
-        const totalExpense = expenseRes.data.data.reduce(
-          (acc, cur) => acc + cur.amount,
-          0
-        );
+        setIncomes(incomesData);
+        setExpenses(expensesData);
+
+        // Calculate totals
+        const totalIncome = incomesData.reduce((sum, i) => sum + i.amount, 0);
+        const totalExpense = expensesData.reduce((sum, e) => sum + e.amount, 0);
         const netSavings = totalIncome - totalExpense;
-        const savingsRate =
-          totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(2) : 0;
+        const savingsRate = totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(2) : 0;
 
-        setStats({
-          totalIncome,
-          totalExpense,
-          netSavings,
-          savingsRate,
+        setStats({ totalIncome, totalExpense, netSavings, savingsRate });
+
+        // Monthly income vs expense
+        const months = Array.from({ length: 12 }, () => ({ income: 0, expense: 0 }));
+
+        incomesData.forEach((inc) => {
+          const month = new Date(inc.date).getMonth();
+          months[month].income += inc.amount;
         });
 
-        // 📈 Monthly Income vs Expense
-        const months = Array(12).fill({ income: 0, expense: 0 });
-
-        incomeRes.data.data.forEach((inc) => {
-          const m = new Date(inc.date).getMonth();
-          months[m] = {
-            ...months[m],
-            income: months[m].income + inc.amount,
-          };
-        });
-
-        expenseRes.data.data.forEach((exp) => {
-          const m = new Date(exp.date).getMonth();
-          months[m] = {
-            ...months[m],
-            expense: months[m].expense + exp.amount,
-          };
+        expensesData.forEach((exp) => {
+          const month = new Date(exp.date).getMonth();
+          months[month].expense += exp.amount;
         });
 
         setChartData(
           months.map((m, idx) => ({
-            month: new Date(0, idx).toLocaleString("default", {
-              month: "short",
-            }),
+            month: new Date(0, idx).toLocaleString("default", { month: "short" }),
             income: m.income,
             expense: m.expense,
           }))
         );
 
-        // 💡 Finance Tips
+        // Financial tips
         let suggestedTips = [];
         if (savingsRate < 20) {
           suggestedTips = [
@@ -88,17 +72,17 @@ export const IncomeSummary = () => {
             "Avoid impulse purchases – wait 24hrs before buying.",
             "Try cooking at home instead of eating out.",
           ];
-        } else if (savingsRate >= 20 && savingsRate < 40) {
+        } else if (savingsRate < 40) {
           suggestedTips = [
-            "Good job saving! Consider building an emergency fund (6 months).",
-            "Start automating monthly investments (SIP / index funds).",
+            "Good job saving! Build an emergency fund (6 months).",
+            "Automate monthly investments (SIP / index funds).",
             "Review subscriptions and cancel unused ones.",
           ];
         } else {
           suggestedTips = [
             "Excellent savings rate! Focus on long-term investments.",
             "Diversify into stocks, ETFs, or retirement funds.",
-            "Think about passive income opportunities.",
+            "Explore passive income opportunities.",
           ];
         }
         setTips(suggestedTips);
@@ -110,39 +94,21 @@ export const IncomeSummary = () => {
     fetchData();
   }, []);
 
-  const [chartData, setChartData] = useState([]);
   return (
     <div className="p-6 space-y-8">
-      <div className="flex justify-center gap-3">
-        <div className="p-1">
-          <FaChartLine size={30} />
-        </div>
-        <div className="text-3xl font-bold text-center">Finance Dashboard</div>
+      {/* Header */}
+      <div className="flex justify-center gap-3 items-center">
+        <FaChartLine size={30} />
+        <h2 className="text-3xl font-bold text-center">Finance Dashboard</h2>
       </div>
 
-      {/* Pocket Summary Cards */}
+      {/* Summary Cards */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          {
-            label: "Total Income",
-            value: stats.totalIncome,
-            color: "bg-green-500",
-          },
-          {
-            label: "Total Expenses",
-            value: stats.totalExpense,
-            color: "bg-red-500",
-          },
-          {
-            label: "Net Savings",
-            value: stats.netSavings,
-            color: "bg-blue-500",
-          },
-          {
-            label: "Savings Rate",
-            value: `${stats.savingsRate}%`,
-            color: "bg-purple-500",
-          },
+          { label: "Total Income", value: stats.totalIncome, color: "bg-green-500" },
+          { label: "Total Expenses", value: stats.totalExpense, color: "bg-red-500" },
+          { label: "Net Savings", value: stats.netSavings, color: "bg-blue-500" },
+          { label: "Savings Rate", value: `${stats.savingsRate}%`, color: "bg-purple-500" },
         ].map((card, idx) => (
           <motion.div
             key={idx}
@@ -177,14 +143,12 @@ export const IncomeSummary = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Finance Tips */}
+      {/* Financial Tips */}
       <div className="bg-yellow-100 rounded-xl shadow-md p-6">
         <h3 className="text-xl font-bold mb-4">💡 Financial Tips for You</h3>
         <ul className="list-disc pl-6 space-y-2">
           {tips.map((tip, idx) => (
-            <li key={idx} className="text-gray-800">
-              {tip}
-            </li>
+            <li key={idx} className="text-gray-800">{tip}</li>
           ))}
         </ul>
       </div>

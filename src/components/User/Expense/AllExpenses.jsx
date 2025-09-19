@@ -17,7 +17,6 @@ export const AllExpenses = () => {
         console.error("Error fetching expenses:", error);
       }
     };
-
     fetchExpenses();
   }, []);
 
@@ -39,7 +38,18 @@ export const AllExpenses = () => {
       {expenses.length > 0 ? (
         <div style={styles.list}>
           {expenses.map((expense) => (
-            <div key={expense._id} style={styles.card}>
+            <div
+              key={expense._id}
+              style={styles.card}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.05)";
+              }}
+            >
               <div style={styles.left}>
                 <div style={styles.iconWrapper}>
                   <MdOutlineAttachMoney size={28} color="#4CAF50" />
@@ -53,7 +63,9 @@ export const AllExpenses = () => {
               </div>
 
               <div style={styles.right}>
-                <div style={styles.amount}>₹{expense.amount}</div>
+                <div style={styles.amount}>
+                  ₹{Number(expense.amount).toLocaleString("en-IN")}
+                </div>
                 <button
                   style={styles.deleteBtn}
                   onClick={() => handleDelete(expense._id)}
@@ -91,6 +103,8 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "12px",
+    maxHeight: "70vh",
+    overflowY: "auto",
   },
   card: {
     display: "flex",
@@ -101,6 +115,7 @@ const styles = {
     padding: "12px 16px",
     boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    cursor: "pointer",
   },
   left: {
     display: "flex",

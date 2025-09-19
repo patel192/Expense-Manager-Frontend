@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../Utils/axiosInstance";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -13,13 +12,11 @@ export const AddIncome = () => {
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("id");
-    if (storedUserId) {
-      setValue("userID", storedUserId);
-    }
+    if (storedUserId) setValue("userID", storedUserId);
   }, [setValue]);
 
   const SubmitHandler = async (data) => {
-    const finalData = {
+    const payload = {
       userID: data.userID,
       amount: data.amount,
       source: data.source,
@@ -28,7 +25,7 @@ export const AddIncome = () => {
 
     try {
       setLoading(true);
-      const res = await axiosInstance.post("/income", finalData);
+      const res = await axiosInstance.post("/income", payload);
       if (res.status === 201) {
         alert("✅ Income Added Successfully!");
         setIsOpen(false);
@@ -78,7 +75,7 @@ export const AddIncome = () => {
               leaveTo="opacity-0 scale-90"
             >
               <Dialog.Panel className="w-full max-w-md bg-white rounded-2xl p-6 shadow-lg">
-                {/* Modal Header */}
+                {/* Header */}
                 <div className="flex justify-between items-center mb-4">
                   <Dialog.Title className="text-xl font-semibold">➕ Add Income</Dialog.Title>
                   <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
@@ -88,7 +85,6 @@ export const AddIncome = () => {
 
                 {/* Form */}
                 <form onSubmit={handleSubmit(SubmitHandler)} className="space-y-4">
-                  {/* Amount */}
                   <div>
                     <label className="block text-sm font-medium">Amount</label>
                     <input
@@ -100,7 +96,6 @@ export const AddIncome = () => {
                     {errors.amount && <p className="text-red-500 text-sm">{errors.amount.message}</p>}
                   </div>
 
-                  {/* Source */}
                   <div>
                     <label className="block text-sm font-medium">Source</label>
                     <select
@@ -116,7 +111,6 @@ export const AddIncome = () => {
                     {errors.source && <p className="text-red-500 text-sm">{errors.source.message}</p>}
                   </div>
 
-                  {/* Date */}
                   <div>
                     <label className="block text-sm font-medium">Date</label>
                     <input
@@ -127,7 +121,6 @@ export const AddIncome = () => {
                     {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
                   </div>
 
-                  {/* Submit */}
                   <button
                     type="submit"
                     disabled={loading}

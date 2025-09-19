@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../Utils/axiosInstance";
-import {
-  FaPlus, FaTags, FaRupeeSign, FaCalendarAlt, FaRegStickyNote, FaReceipt
-} from "react-icons/fa";
+import { FaPlus, FaTags, FaRupeeSign, FaCalendarAlt, FaRegStickyNote, FaReceipt } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 export const AddExpense = () => {
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
@@ -11,57 +10,51 @@ export const AddExpense = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recentExpenses, setRecentExpenses] = useState([]);
 
-  // Fetch userId
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("id");
-    if (storedUserId) setValue("userID", storedUserId);
-  }, [setValue]);
+  const userId = localStorage.getItem("id");
 
-  // Fetch categories
+  useEffect(() => {
+    if (userId) setValue("userID", userId);
+  }, [setValue, userId]);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await axiosInstance.get("/categories");
         setCategories(res.data.data);
       } catch (error) {
-        console.error("Failed to fetch categories", error);
+        console.error(error);
       }
     };
     fetchCategories();
   }, []);
 
-  // Fetch recent expenses
   useEffect(() => {
-    const fetchExpenses = async () => {
+    const fetchRecentExpenses = async () => {
       try {
-        const res = await axiosInstance.get(`/recent-expense/${localStorage.getItem("id")}`); // API should return last 5 expenses for the user
+        const res = await axiosInstance.get(`/recent-expense/${userId}`);
         setRecentExpenses(res.data.data || []);
       } catch (error) {
-        console.error("Failed to fetch expenses", error);
+        console.error(error);
       }
     };
-    fetchExpenses();
-  }, []);
+    fetchRecentExpenses();
+  }, [userId]);
 
   const SubmitHandler = async (data) => {
-    const finalData = {
-      userID: data.userID,
-      categoryID: data.categoryID,
-      amount: data.amount,
-      date: data.date,
-      description: data.description,
-    };
     try {
-      const res = await axiosInstance.post("/expense", finalData);
+      const res = await axiosInstance.post("/expense", {
+        userID: data.userID,
+        categoryID: data.categoryID,
+        amount: data.amount,
+        date: data.date,
+        description: data.description,
+      });
       if (res.status === 201) {
         alert("Expense added successfully");
         reset();
         setIsModalOpen(false);
-        // Refresh list after adding
-        const updated = await axiosInstance.get(`/recent-expense/${localStorage.getItem("id")}`);
+        const updated = await axiosInstance.get(`/recent-expense/${userId}`);
         setRecentExpenses(updated.data.data || []);
-      } else {
-        alert("Error");
       }
     } catch (error) {
       alert(error.message);
@@ -70,39 +63,41 @@ export const AddExpense = () => {
 
   return (
     <div className="p-6 flex flex-col gap-6">
-      {/* Recent Expenses Section */}
-      <div className="bg-white rounded-lg shadow p-4">
+      {/* Recent Expenses */}
+      <div className="bg-white rounded-lg shadow p-4 max-h-96 overflow-y-auto">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
           <FaReceipt className="text-pink-600" /> Recent Expenses
         </h3>
         {recentExpenses.length === 0 ? (
-          <p className="text-gray-500 italic">No expenses added yet. Click the button to add one!</p>
+          <p className="text-gray-500 italic">No expenses yet. Click the button to add one!</p>
         ) : (
           <ul className="divide-y">
             {recentExpenses.map((exp) => (
               <li key={exp._id} className="py-2 flex justify-between">
                 <span>{exp.description}</span>
-                <span className="text-pink-600 font-semibold">
-                  ₹{exp.amount}
-                </span>
+                <span className="text-pink-600 font-semibold">₹{exp.amount}</span>
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      {/* Floating Add Button */}
+      {/* Add Button */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-6 right-6 bg-pink-600 hover:bg-pink-700 text-white rounded-full p-4 shadow-lg transition-all flex items-center gap-2"
+        className="fixed bottom-6 right-6 bg-pink-600 hover:bg-pink-700 text-white rounded-full p-4 shadow-lg transition flex items-center gap-2"
       >
         <FaPlus /> Add Expense
       </button>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative animate-fadeIn">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"
+          >
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl"
@@ -115,18 +110,14 @@ export const AddExpense = () => {
             <form onSubmit={handleSubmit(SubmitHandler)} className="space-y-4">
               {/* Category */}
               <div className="flex items-center border rounded-lg overflow-hidden">
-                <span className="bg-gray-100 p-3 text-gray-500">
-                  <FaTags />
-                </span>
+                <span className="bg-gray-100 p-3 text-gray-500"><FaTags /></span>
                 <select
                   className="w-full p-3 outline-none"
-                  {...register("categoryID", { required: "Please select a category" })}
+                  {...register("categoryID", { required: "Select a category" })}
                 >
                   <option value="">Select a category</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
+                    <option key={cat._id} value={cat._id}>{cat.name}</option>
                   ))}
                 </select>
               </div>
@@ -134,54 +125,42 @@ export const AddExpense = () => {
 
               {/* Amount */}
               <div className="flex items-center border rounded-lg overflow-hidden">
-                <span className="bg-gray-100 p-3 text-gray-500">
-                  <FaRupeeSign />
-                </span>
+                <span className="bg-gray-100 p-3 text-gray-500"><FaRupeeSign /></span>
                 <input
                   type="number"
                   placeholder="Amount"
                   className="w-full p-3 outline-none"
-                  {...register("amount", { required: "Amount is required" })}
+                  {...register("amount", { required: "Amount required" })}
                 />
               </div>
               {errors.amount && <p className="text-red-500 text-sm">{errors.amount.message}</p>}
 
               {/* Date */}
               <div className="flex items-center border rounded-lg overflow-hidden">
-                <span className="bg-gray-100 p-3 text-gray-500">
-                  <FaCalendarAlt />
-                </span>
+                <span className="bg-gray-100 p-3 text-gray-500"><FaCalendarAlt /></span>
                 <input
                   type="date"
                   className="w-full p-3 outline-none"
-                  {...register("date", { required: "Date is required" })}
+                  {...register("date", { required: "Date required" })}
                 />
               </div>
               {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
 
               {/* Description */}
               <div className="flex items-center border rounded-lg overflow-hidden">
-                <span className="bg-gray-100 p-3 text-gray-500">
-                  <FaRegStickyNote />
-                </span>
+                <span className="bg-gray-100 p-3 text-gray-500"><FaRegStickyNote /></span>
                 <input
                   type="text"
-                  placeholder="e.g., Grocery shopping"
+                  placeholder="Description"
                   className="w-full p-3 outline-none"
-                  {...register("description", { required: "Description is required" })}
+                  {...register("description", { required: "Description required" })}
                 />
               </div>
               {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
 
-              {/* Submit */}
-              <button
-                type="submit"
-                className="w-full bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-lg shadow transition-all"
-              >
-                Save Expense
-              </button>
+              <button className="w-full bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-lg shadow transition">Save Expense</button>
             </form>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>

@@ -7,17 +7,17 @@ import {
   FaSnapchatGhost,
   FaInstagram,
   FaMediumM,
-  FaBars
+  FaBars,
 } from "react-icons/fa";
 
 export const UserNavbar = ({ toggleSidebar }) => {
   return (
     <div>
       {/* Navbar */}
-      <header className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white shadow-lg w-auto">
+      <header className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
           
-          {/* Left Side: Sidebar Toggle + Logo */}
+          {/* Left: Sidebar Toggle + Logo */}
           <div className="flex items-center gap-4">
             <button
               onClick={toggleSidebar}
@@ -30,16 +30,12 @@ export const UserNavbar = ({ toggleSidebar }) => {
               to="/"
               className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
-              <strong className="text-lg font-bold tracking-wide">
-                Trackit
-              </strong>
-              <span className="hidden sm:inline font-medium">
-                | Expense App
-              </span>
+              <strong className="text-lg font-bold tracking-wide">Trackit</strong>
+              <span className="hidden sm:inline font-medium">| Expense App</span>
             </Link>
           </div>
 
-          {/* Right side: Logout + Icons */}
+          {/* Right: Logout + Social Icons */}
           <div className="flex items-center gap-4">
             <button
               onClick={logout}
@@ -49,20 +45,40 @@ export const UserNavbar = ({ toggleSidebar }) => {
             </button>
 
             <ul className="flex items-center gap-3">
-              <li><Link to="#" className="hover:text-blue-300"><FaTwitter size={20} /></Link></li>
-              <li><Link to="#" className="hover:text-blue-800"><FaFacebookF size={20} /></Link></li>
-              <li><Link to="#" className="hover:text-yellow-300"><FaSnapchatGhost size={20} /></Link></li>
-              <li><Link to="#" className="hover:text-pink-300"><FaInstagram size={20} /></Link></li>
-              <li><Link to="#" className="hover:text-green-300"><FaMediumM size={20} /></Link></li>
+              <li>
+                <Link to="#" className="hover:text-blue-300 transition-colors">
+                  <FaTwitter size={20} />
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-blue-800 transition-colors">
+                  <FaFacebookF size={20} />
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-yellow-300 transition-colors">
+                  <FaSnapchatGhost size={20} />
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-pink-300 transition-colors">
+                  <FaInstagram size={20} />
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-green-300 transition-colors">
+                  <FaMediumM size={20} />
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
       </header>
 
-      {/* Main content */}
-      <div className=" bg-auto min-h-screen">
+      {/* Main Content */}
+      <main className="bg-auto min-h-screen">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

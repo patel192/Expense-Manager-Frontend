@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import axiosInstance from "../Utils/axiosInstance";
+import { motion } from "framer-motion";
 
 export const AccessControl = () => {
   const [users, setUsers] = useState([]);
@@ -12,7 +13,7 @@ export const AccessControl = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axiosInstance.get("/users"); // token auto-attached
+        const res = await axiosInstance.get("/users");
         setUsers(res.data.data || []);
       } catch (error) {
         alert("Error fetching users");
@@ -21,14 +22,12 @@ export const AccessControl = () => {
     fetchUsers();
   }, []);
 
-  // Role badge colors
   const roleColors = {
-    Admin: "bg-yellow-400 text-gray-900",
-    User: "bg-blue-400 text-white",
-    Manager: "bg-purple-500 text-white",
+    Admin: "bg-yellow-400/80 text-gray-900",
+    User: "bg-blue-500/80 text-white",
+    Manager: "bg-purple-500/80 text-white",
   };
 
-  // Filtering logic
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -45,9 +44,14 @@ export const AccessControl = () => {
   );
 
   return (
-    <div className="p-6 bg-gray-950 min-h-screen">
-      <div className="bg-gray-900 rounded-xl shadow-xl p-5 border border-gray-800">
-        <h2 className="text-gray-100 text-2xl font-bold mb-5">
+    <div className="p-6 min-h-screen bg-gradient-to-br from-indigo-900 via-gray-900 to-black text-white">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl p-6"
+      >
+        <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-500">
           User Access Control
         </h2>
 
@@ -58,7 +62,7 @@ export const AccessControl = () => {
             <input
               type="text"
               placeholder="Search by name or email..."
-              className="pl-10 pr-3 py-2 rounded-lg w-full bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-10 pr-3 py-2 rounded-lg w-full bg-white/5 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -67,7 +71,7 @@ export const AccessControl = () => {
             />
           </div>
           <select
-            className="px-3 py-2 rounded-lg bg-gray-800 text-gray-100 border border-gray-700"
+            className="px-3 py-2 rounded-lg bg-white/5 text-white border border-white/20 focus:ring-2 focus:ring-indigo-400"
             value={filterRole}
             onChange={(e) => {
               setFilterRole(e.target.value);
@@ -82,10 +86,10 @@ export const AccessControl = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto rounded-lg border border-gray-800">
-          <table className="min-w-full text-gray-200">
+        <div className="overflow-x-auto rounded-xl border border-white/20 backdrop-blur-lg">
+          <table className="min-w-full text-sm">
             <thead>
-              <tr className="bg-gray-800 text-sm uppercase text-gray-300">
+              <tr className="bg-white/10 text-gray-300 uppercase text-xs">
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">Age</th>
                 <th className="p-3 text-left">Email</th>
@@ -98,9 +102,10 @@ export const AccessControl = () => {
             <tbody>
               {paginatedUsers.length > 0 ? (
                 paginatedUsers.map((user) => (
-                  <tr
+                  <motion.tr
                     key={user._id}
-                    className="border-b border-gray-800 hover:bg-gray-850 transition-colors"
+                    whileHover={{ scale: 1.01, backgroundColor: "rgba(255,255,255,0.05)" }}
+                    className="border-b border-white/10 transition-colors"
                   >
                     <td className="p-3">{user.name}</td>
                     <td className="p-3">{user.age || "N/A"}</td>
@@ -108,8 +113,7 @@ export const AccessControl = () => {
                     <td className="p-3">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          roleColors[user.roleId?.name] ||
-                          "bg-gray-500 text-white"
+                          roleColors[user.roleId?.name] || "bg-gray-500/70 text-white"
                         }`}
                       >
                         {user.roleId?.name || "N/A"}
@@ -122,30 +126,30 @@ export const AccessControl = () => {
                     </td>
                     <td className="p-3">
                       {user.is_active ? (
-                        <span className="px-2 py-1 text-xs font-semibold bg-green-500 text-white rounded-full">
+                        <span className="px-2 py-1 text-xs font-semibold bg-green-500/80 text-white rounded-full">
                           Active
                         </span>
                       ) : (
-                        <span className="px-2 py-1 text-xs font-semibold bg-red-500 text-white rounded-full">
+                        <span className="px-2 py-1 text-xs font-semibold bg-red-500/80 text-white rounded-full">
                           Inactive
                         </span>
                       )}
                     </td>
                     <td className="p-3 text-center space-x-2">
-                      <button className="p-2 bg-blue-500 hover:bg-blue-600 rounded-full text-white">
+                      <button className="p-2 bg-indigo-500/80 hover:bg-indigo-600 rounded-full text-white transition">
                         <FaEdit size={14} />
                       </button>
-                      <button className="p-2 bg-red-500 hover:bg-red-600 rounded-full text-white">
+                      <button className="p-2 bg-red-500/80 hover:bg-red-600 rounded-full text-white transition">
                         <FaTrash size={14} />
                       </button>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))
               ) : (
                 <tr>
                   <td
                     colSpan="7"
-                    className="p-4 text-center text-gray-500 italic"
+                    className="p-4 text-center text-gray-400 italic"
                   >
                     No users found
                   </td>
@@ -164,8 +168,8 @@ export const AccessControl = () => {
                 onClick={() => setCurrentPage(idx + 1)}
                 className={`px-3 py-1 rounded font-semibold transition ${
                   currentPage === idx + 1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                    ? "bg-indigo-500 text-white"
+                    : "bg-white/10 text-gray-300 hover:bg-white/20"
                 }`}
               >
                 {idx + 1}
@@ -173,7 +177,7 @@ export const AccessControl = () => {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };

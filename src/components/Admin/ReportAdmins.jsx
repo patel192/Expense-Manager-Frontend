@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Card from "../Common/Card";
 import { motion } from "framer-motion";
 import axiosInstance from "../Utils/axiosInstance";
 import {
@@ -15,7 +14,7 @@ import {
   Legend,
 } from "recharts";
 
-const COLORS = ["#4e79a7", "#59a14f", "#f28e2b", "#e15759"];
+const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444"];
 
 export const ReportAdmins = () => {
   const [stats, setStats] = useState(null);
@@ -37,7 +36,7 @@ export const ReportAdmins = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-center mt-10 text-lg font-semibold text-gray-600"
+        className="flex items-center justify-center h-[70vh] text-xl font-semibold text-gray-400"
       >
         Loading report...
       </motion.div>
@@ -60,19 +59,19 @@ export const ReportAdmins = () => {
   const pieData = stats.categoryDistribution || [];
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gray-900 min-h-screen text-white">
       {/* Page Title */}
       <motion.h2
-        initial={{ y: -15, opacity: 0 }}
+        initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="text-center text-4xl font-extrabold text-gray-800 mb-10"
+        transition={{ duration: 0.5 }}
+        className="text-center text-3xl md:text-4xl font-extrabold mb-10 text-indigo-400"
       >
-        📊 Admin Analytics Dashboard
+        Admin Analytics Dashboard
       </motion.h2>
 
       {/* Stat Cards */}
-      <div className="flex flex-wrap justify-center gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {reportStats.map((item, idx) => (
           <motion.div
             key={idx}
@@ -81,12 +80,12 @@ export const ReportAdmins = () => {
             transition={{ delay: idx * 0.1 }}
             whileHover={{
               scale: 1.05,
-              boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             }}
-            className="bg-white rounded-2xl p-5 shadow-md w-56 text-center"
+            className="bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700"
           >
-            <p className="text-sm text-gray-500">{item.title}</p>
-            <p className="text-2xl font-bold text-gray-800 mt-2">
+            <p className="text-sm text-gray-400">{item.title}</p>
+            <p className="text-2xl font-bold text-indigo-400 mt-2">
               {item.value}
             </p>
           </motion.div>
@@ -100,20 +99,20 @@ export const ReportAdmins = () => {
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white rounded-xl shadow-md p-6"
+          className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700"
         >
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-            💰 Income vs Expenses
+          <h3 className="text-lg font-semibold text-gray-300 mb-4 text-center">
+            Income vs Expenses
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barData}>
-              <XAxis dataKey="name" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
-              <Tooltip />
+              <XAxis dataKey="name" stroke="#9ca3af" />
+              <YAxis stroke="#9ca3af" />
+              <Tooltip contentStyle={{ background: "#1f2937", color: "white" }} />
               <Bar
                 dataKey="amount"
-                fill="#4e79a7"
-                radius={[6, 6, 0, 0]}
+                fill="#6366f1"
+                radius={[8, 8, 0, 0]}
                 barSize={50}
               />
             </BarChart>
@@ -125,10 +124,10 @@ export const ReportAdmins = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white rounded-xl shadow-md p-6"
+          className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700"
         >
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
-            📂 Category-wise Distribution
+          <h3 className="text-lg font-semibold text-gray-300 mb-4 text-center">
+            Category-wise Distribution
           </h3>
           {pieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
@@ -137,8 +136,7 @@ export const ReportAdmins = () => {
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  outerRadius={100}
-                  fill="#4e79a7"
+                  outerRadius={110}
                   dataKey="value"
                   label
                 >
@@ -149,7 +147,7 @@ export const ReportAdmins = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={{ background: "#1f2937", color: "white" }} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>

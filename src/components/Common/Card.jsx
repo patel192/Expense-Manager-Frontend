@@ -5,24 +5,12 @@ const Card = ({ title, value }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
-      style={{
-        background: "#fdfdfd",
-        border: "1px solid #ddd",
-        borderRadius: "12px",
-        padding: "20px",
-        width: "200px",
-        textAlign: "center",
-        boxShadow: "0 4px 10px rgba(0,0,0,0.06)",
-        cursor: "pointer",
-        transition: "0.3s",
-      }}
+      className="backdrop-blur-xl bg-white/10 border border-white/20 
+                 rounded-2xl shadow-lg p-6 w-52 text-center cursor-pointer 
+                 transition duration-300"
     >
-      <div style={{ fontSize: "14px", color: "#555", marginBottom: "8px" }}>
-        {title}
-      </div>
-      <div style={{ fontSize: "22px", fontWeight: "bold", color: "#2e7d32" }}>
-        {value}
-      </div>
+      <div className="text-sm text-gray-300 mb-2">{title}</div>
+      <div className="text-2xl font-bold text-green-400">{value}</div>
     </motion.div>
   );
 };

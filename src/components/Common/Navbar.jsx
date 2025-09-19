@@ -1,13 +1,29 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export const Navbar = () => {
+  const navLinks = [
+    { name: "Home", to: "/" },
+    { name: "Features", to: "#" },
+    { name: "About", to: "#" },
+    { name: "Contact", to: "#" },
+    { name: "Login", to: "/login" },
+    { name: "Signup", to: "/signup" },
+  ];
+
   return (
     <div>
-      <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 shadow-lg">
-        <nav className="flex justify-between items-center max-w-7xl mx-auto px-4 py-4 flex-row">
+      {/* Navbar */}
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg">
+        <nav className="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
           {/* Logo Section */}
-          <div className="flex items-center gap-3 w-1/3">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex items-center gap-3"
+          >
             <img
               src="src/assets/Images/Expense Manager.png"
               alt="Logo"
@@ -16,51 +32,34 @@ export const Navbar = () => {
             <span className="text-2xl font-extrabold text-white tracking-wide">
               MyWebsite
             </span>
-          </div>
+          </motion.div>
 
           {/* Links Section */}
-          <div className="flex gap-6 text-gray-300 font-bold flex-row-reverse">
-            <Link
-              to="/"
-              className="hover:text-white hover:underline underline-offset-4 transition-colors duration-200"
-            >
-              Home
-            </Link>
-            <Link
-              to="#"
-              className="hover:text-white hover:underline underline-offset-4 transition-colors duration-200"
-            >
-              Contact
-            </Link>
-            <Link
-              to="#"
-              className="hover:text-white hover:underline underline-offset-4 transition-colors duration-200"
-            >
-              About
-            </Link>
-            <Link
-              to="#"
-              className="hover:text-white hover:underline underline-offset-4 transition-colors duration-200"
-            >
-              Features
-            </Link>
-            <Link
-              to="/login"
-              className="hover:text-white hover:underline underline-offset-4 transition-colors duration-200"
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="hover:text-white hover:underline underline-offset-4 transition-colors duration-200"
-            >
-              Signup
-            </Link>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex gap-6 font-semibold text-gray-200"
+          >
+            {navLinks.map((link, idx) => (
+              <Link
+                key={idx}
+                to={link.to}
+                className="relative group transition"
+              >
+                <span className="transition-colors duration-200 group-hover:text-white">
+                  {link.name}
+                </span>
+                {/* Underline animation */}
+                <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            ))}
+          </motion.div>
         </nav>
       </header>
 
-      <div className="p-4 bg-gray-50 min-h-screen">
+      {/* Main Content Wrapper */}
+      <div className="p-6 bg-gradient-to-b from-gray-900 to-gray-950 min-h-screen text-white">
         <Outlet />
       </div>
     </div>

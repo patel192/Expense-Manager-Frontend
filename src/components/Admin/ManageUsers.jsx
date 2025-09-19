@@ -5,6 +5,8 @@ import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../Utils/axiosInstance";
+import { motion } from "framer-motion";
+
 export const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
@@ -31,7 +33,6 @@ export const ManageUsers = () => {
     fetchUsers();
   }, []);
 
-  // Search & filter logic
   useEffect(() => {
     let filtered = [...users];
     if (search) {
@@ -46,7 +47,6 @@ export const ManageUsers = () => {
     setCurrentPage(1);
   }, [search, roleFilter, users]);
 
-  // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = displayedUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -71,26 +71,32 @@ export const ManageUsers = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-900 min-h-screen">
+    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100">
       <ToastContainer theme="colored" transition={Bounce} />
 
-      <div className="bg-gray-800 rounded-xl shadow-lg p-5 border border-gray-700">
-        <h2 className="text-white text-2xl font-semibold mb-5">Manage Users</h2>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl p-6 shadow-xl bg-white/10 backdrop-blur-md border border-white/20"
+      >
+        <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          Manage Users
+        </h2>
 
         {/* Filters */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
-          <div className="relative">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div className="relative w-full md:w-1/2">
             <IoSearch className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
               placeholder="Search by name..."
-              className="pl-10 pr-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none"
+              className="pl-10 pr-4 py-2 w-full rounded-lg bg-white/5 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <select
-            className="bg-gray-700 text-white p-2 rounded-lg border border-gray-600"
+            className="p-2 rounded-lg bg-white/5 backdrop-blur-md border border-white/20 text-white focus:ring-2 focus:ring-purple-500 outline-none"
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
           >
@@ -105,14 +111,12 @@ export const ManageUsers = () => {
         {loading ? (
           <p className="text-gray-400">Loading users...</p>
         ) : displayedUsers.length === 0 ? (
-          <div className="text-center text-gray-400 py-10">
-            No users found.
-          </div>
+          <div className="text-center text-gray-400 py-10">No users found.</div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-gray-700">
+          <div className="overflow-x-auto rounded-xl border border-white/20 bg-white/5 backdrop-blur-md shadow-lg">
             <table className="min-w-full text-white">
               <thead>
-                <tr className="bg-gray-700 text-sm uppercase">
+                <tr className="bg-gradient-to-r from-blue-600 to-purple-600 text-sm uppercase">
                   <th className="p-3 text-left">Name</th>
                   <th className="p-3 text-left">Age</th>
                   <th className="p-3 text-left">Email</th>
@@ -122,33 +126,44 @@ export const ManageUsers = () => {
               </thead>
               <tbody>
                 {currentUsers.map((user) => (
-                  <tr
+                  <motion.tr
                     key={user._id}
-                    className="border-b border-gray-700 hover:bg-gray-700 transition"
+                    whileHover={{ scale: 1.01, backgroundColor: "rgba(255,255,255,0.05)" }}
+                    className="border-t border-white/10"
                   >
                     <td className="p-3">{user.name}</td>
                     <td className="p-3">{user.age || "N/A"}</td>
                     <td className="p-3">{user.email}</td>
-                    <td className="p-3">{user.role || "N/A"}</td>
+                    <td className="p-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          user.role === "Admin"
+                            ? "bg-purple-400/20 text-purple-300"
+                            : user.role === "Manager"
+                            ? "bg-blue-400/20 text-blue-300"
+                            : "bg-green-400/20 text-green-300"
+                        }`}
+                      >
+                        {user.role || "N/A"}
+                      </span>
+                    </td>
                     <td className="p-3 flex justify-center gap-2">
-                      {/* View Details Button */}
                       <button
                         onClick={() => navigate(`/admin/user/${user._id}`)}
-                        className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full"
+                        className="p-2 bg-blue-500 hover:bg-blue-600 rounded-full shadow-md"
                         title="View Details"
                       >
                         <FaEye size={14} />
                       </button>
-                      {/* Delete Button */}
                       <button
                         onClick={() => handleDelete(user._id)}
-                        className="p-2 bg-red-600 hover:bg-red-700 rounded-full"
+                        className="p-2 bg-red-500 hover:bg-red-600 rounded-full shadow-md"
                         title="Delete User"
                       >
                         <FaTrash size={14} />
                       </button>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
@@ -157,14 +172,14 @@ export const ManageUsers = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-5">
+          <div className="flex justify-center items-center gap-2 mt-6">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i}
-                className={`px-3 py-1 rounded ${
+                className={`px-3 py-1 rounded-lg font-medium transition ${
                   currentPage === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                    : "bg-white/5 text-gray-300 hover:bg-white/10"
                 }`}
                 onClick={() => setCurrentPage(i + 1)}
               >
@@ -173,7 +188,7 @@ export const ManageUsers = () => {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };

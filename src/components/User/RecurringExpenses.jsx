@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 import { FaSyncAlt, FaTrashAlt, FaPlusCircle, FaPauseCircle } from "react-icons/fa";
+
 export const RecurringExpenses = () => {
-    const [payments, setPayments] = useState([]);
+  const [payments, setPayments] = useState([]);
   const [form, setForm] = useState({
     name: "",
     amount: "",
@@ -12,10 +13,8 @@ export const RecurringExpenses = () => {
     category: "",
   });
   const [loading, setLoading] = useState(false);
-
   const userId = localStorage.getItem("id");
 
-  // Fetch existing recurring payments
   useEffect(() => {
     fetchPayments();
   }, []);
@@ -29,14 +28,13 @@ export const RecurringExpenses = () => {
     }
   };
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.amount || !form.startDate) return alert("Please fill required fields");
-
+    if (!form.name || !form.amount || !form.startDate) {
+      return alert("Please fill required fields");
+    }
     try {
       setLoading(true);
       await axiosInstance.post(`/recurring`, { ...form, userId });
@@ -50,6 +48,7 @@ export const RecurringExpenses = () => {
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm("Delete this recurring payment?")) return;
     try {
       await axiosInstance.delete(`/recurring/${id}`);
       fetchPayments();
@@ -57,8 +56,9 @@ export const RecurringExpenses = () => {
       console.error("Error deleting payment:", err);
     }
   };
+
   return (
-     <div className="bg-gray-900 min-h-screen p-6 text-white">
+    <div className="bg-gray-900 min-h-screen p-6 text-white">
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
         <FaSyncAlt /> Recurring Payments
       </h1>
@@ -172,5 +172,5 @@ export const RecurringExpenses = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};

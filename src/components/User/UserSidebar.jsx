@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaEnvelope,
   FaPhone,
@@ -13,7 +14,8 @@ import {
   FaUser,
 } from "react-icons/fa";
 
-export const UserSidebar = ({ isOpen, toggleSidebar }) => {
+export const UserSidebar = ({ isOpen }) => {
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = localStorage.getItem("id");
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,11 +23,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
 
   const menuItems = [
     { label: "Account", path: `/private/account/${userId}`, icon: <FaUser /> },
-    {
-      label: "Dashboard",
-      path: "/private/userdashboard",
-      icon: <FaTachometerAlt />,
-    },
+    { label: "Dashboard", path: "/private/userdashboard", icon: <FaTachometerAlt /> },
     {
       label: "Expenses",
       icon: <FaMoneyBillWave />,
@@ -53,26 +51,17 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
         { label: "Budget Summary", path: "/private/budgetsummary" },
       ],
     },
-    {
-      label: "Transactions",
-      path: "/private/transaction",
-      icon: <FaExchangeAlt />,
-    },
+    { label: "Transactions", path: "/private/transaction", icon: <FaExchangeAlt /> },
     { label: "Reports", path: "/private/reports", icon: <FaFileAlt /> },
   ];
 
   const toggleExpand = (label) => {
-    setExpandedItems((prev) => ({
-      ...prev,
-      [label]: !prev[label],
-    }));
+    setExpandedItems((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
   const matchesSearch = (item) => {
     if (!searchTerm) return true;
-    const labelMatch = item.label
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const labelMatch = item.label.toLowerCase().includes(searchTerm.toLowerCase());
     const childMatch =
       item.children &&
       item.children.some((child) =>
@@ -82,29 +71,24 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   return (
-    <div
-      id="sidebar"
-      className={`transition-all duration-300 bg-gradient-to-b from-gray-900 via-purple-900 to-pink-900 text-white fixed top-0 left-0 h-full z-50 w-64 overflow-y-auto shadow-lg transform ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
+    <motion.div
+      initial={{ x: -300 }}
+      animate={{ x: isOpen ? 0 : -300 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="fixed top-0 left-0 h-full z-50 w-64 sm:w-56 md:w-64 lg:w-72 overflow-y-auto bg-gradient-to-b from-gray-900 via-purple-900 to-pink-900 text-white shadow-lg"
     >
-      <div className="inner p-4">
+      <div className="p-4">
         {/* Search */}
-        <section id="search" className="mb-4">
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-full p-2 rounded bg-gray-800 text-white focus:outline-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </section>
+        <input
+          type="text"
+          placeholder="Search..."
+          className="w-full p-2 mb-4 rounded bg-gray-800 text-white focus:outline-none"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
 
         {/* Menu */}
-        <nav id="menu">
-          <header className="major mb-2">
-            <h2 className="text-white">Menu</h2>
-          </header>
+        <nav>
           <ul>
             {menuItems.filter(matchesSearch).map((item, index) => {
               const isExpanded = expandedItems[item.label] || searchTerm !== "";
@@ -112,41 +96,56 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                 const childMatches = item.children.filter((child) =>
                   child.label.toLowerCase().includes(searchTerm.toLowerCase())
                 );
-                const shouldShowChildren = searchTerm
-                  ? childMatches.length > 0
-                  : isExpanded;
+                const shouldShowChildren = searchTerm ? childMatches.length > 0 : isExpanded;
+
                 return (
-                  <li key={index}>
-                    <span
+                  <li key={index} className="mb-1">
+                    <div
                       className={`flex items-center gap-2 py-2 px-3 rounded cursor-pointer hover:bg-purple-700 transition-colors ${
-                        shouldShowChildren ? "bg-purple-800" : ""
+                        shouldShowChildren ? "bg-purple-800 font-semibold" : ""
                       }`}
                       onClick={() => toggleExpand(item.label)}
                     >
                       {item.icon} {item.label}
-                    </span>
-                    {shouldShowChildren && (
-                      <ul className="ml-6">
-                        {childMatches.map((child, idx) => (
-                          <li key={idx}>
-                            <Link
-                              to={child.path}
-                              className="block py-1 px-2 rounded hover:bg-pink-700 transition-colors"
-                            >
-                              {child.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    </div>
+
+                    <AnimatePresence>
+                      {shouldShowChildren && (
+                        <motion.ul
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="ml-6 overflow-hidden"
+                        >
+                          {childMatches.map((child, idx) => (
+                            <li key={idx}>
+                              <Link
+                                to={child.path}
+                                className={`block py-1 px-2 rounded transition-colors ${
+                                  location.pathname === child.path
+                                    ? "bg-pink-800 font-semibold"
+                                    : "hover:bg-pink-700"
+                                }`}
+                              >
+                                {child.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
                   </li>
                 );
               } else {
                 return (
-                  <li key={index}>
+                  <li key={index} className="mb-1">
                     <Link
                       to={item.path}
-                      className="flex items-center gap-2 py-2 px-3 rounded hover:bg-purple-700 transition-colors"
+                      className={`flex items-center gap-2 py-2 px-3 rounded transition-colors ${
+                        location.pathname === item.path
+                          ? "bg-purple-800 font-semibold"
+                          : "hover:bg-purple-700"
+                      }`}
                     >
                       {item.icon} {item.label}
                     </Link>
@@ -157,20 +156,16 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
           </ul>
         </nav>
 
-        {/* Contact Info */}
-        <section className="mt-6">
-          <header className="major">
-            <h2 className="text-white">Get in touch</h2>
-          </header>
-          <p>
-            Hello, I'm <strong className="text-pink-400">Muhammad Patel</strong>
-            , a passionate web developer currently pursuing my degree in
-            Computer Science.
+        {/* Contact Section */}
+        <div className="mt-6 border-t border-gray-700 pt-4">
+          <h3 className="text-white mb-2">Get in touch</h3>
+          <p className="text-gray-300 mb-2">
+            Hello, I'm <strong className="text-pink-400">Muhammad Patel</strong>, a passionate web developer.
           </p>
-          <ul className="contact space-y-2 mt-2">
+          <ul className="space-y-2 text-gray-300">
             <li className="flex items-center gap-2">
               <FaEnvelope />{" "}
-              <a href="mailto:patelmuhammad192@gmail.com">
+              <a href="mailto:patelmuhammad192@gmail.com" className="hover:underline">
                 patelmuhammad192@gmail.com
               </a>
             </li>
@@ -183,13 +178,14 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                 href="https://github.com/patel192"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="hover:underline"
               >
                 patel192
               </a>
             </li>
           </ul>
-        </section>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

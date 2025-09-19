@@ -1,42 +1,65 @@
-import React from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
+
 export const ViewBudget = () => {
-  const [budgets, setbudgets] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+  const userId = localStorage.getItem("id");
+
+  // Fetch budgets
   useEffect(() => {
-    const Viewbudgets = async () => {
+    const fetchBudgets = async () => {
       try {
-        const res = await axiosInstance.get("/budgetsbyUserID/"+localStorage.getItem("id"));
-        setbudgets(res.data.data)
-        console.log(res.data.data)
+        const res = await axiosInstance.get(`/budgetsbyUserID/${userId}`);
+        setBudgets(res.data.data || []);
       } catch (error) {
         alert(error.message);
       }
     };
-    Viewbudgets();
-  },[]);
+    fetchBudgets();
+  }, [userId]);
+
+  // Delete budget
+  const handleDelete = async (budgetId) => {
+    if (!window.confirm("Are you sure you want to delete this budget?")) return;
+    try {
+      await axiosInstance.delete(`/budget/${budgetId}`);
+      setBudgets((prev) => prev.filter((b) => b._id !== budgetId));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
-    <div>
-      <div style={{textAlign:"center",fontSize:"20px",fontFamily:"sans-serif",fontWeight:"bolder"}}>Budgets</div>
-      {budgets.length > 0 ? (
-        budgets?.map((budget) => (
-          <div key={budget.id} className="expense-card">
-          <div className="expense-info">
-            <h3 className="expense-title" style={{color:"white"}}>Budget</h3>
-            <p className="expense-category">{budget.description}</p>
+    <div className="max-w-3xl mx-auto p-4 space-y-4">
+      <h2 className="text-2xl font-bold text-center mb-4">Budgets</h2>
+
+      {budgets.length === 0 ? (
+        <p className="text-center text-gray-600">No Budget Found</p>
+      ) : (
+        budgets.map((budget) => (
+          <div
+            key={budget._id}
+            className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-lg shadow-md"
+          >
+            <div>
+              <h3 className="font-semibold">{budget.description || "Budget"}</h3>
+              <p className="text-sm">
+                {new Date(budget.start_date).toLocaleDateString()} -{" "}
+                {new Date(budget.end_date).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="font-bold text-lg">₹{budget.amount}</div>
+              <button
+                onClick={() => handleDelete(budget._id)}
+                className="mt-2 px-3 py-1 bg-red-500 rounded hover:bg-red-600 transition"
+              >
+                Delete
+              </button>
+            </div>
           </div>
-          <div className="expense-figure">
-            <div className="expense-amount">₹{budget.amount}</div>
-            <div className="expense-date">{new Date(budget.start_date).toLocaleDateString()+ "-" + new Date(budget.end_date).toLocaleDateString()}</div>
-          </div>
-          <div>
-            <button style={{color:'white'}}>Delete</button></div>
-        </div>
         ))
-      ):(<p>No Budget Found</p>)
-    }
+      )}
     </div>
-  )
-}
+  );
+};
