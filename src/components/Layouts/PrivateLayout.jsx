@@ -10,7 +10,7 @@ export const PrivateLayout = () => {
   };
 
   return (
-    <div className="h-screen flex bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+    <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       {/* Sidebar */}
       <UserSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
@@ -26,7 +26,7 @@ export const PrivateLayout = () => {
         </div>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className=" min-h-screen bg-transparent flex-1 overflow-y-auto p-6">
           {/* Routed pages here */}
         </main>
       </div>
