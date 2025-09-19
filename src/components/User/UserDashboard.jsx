@@ -57,9 +57,9 @@ export const UserDashboard = () => {
   }, [userId]);
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
+    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       <motion.h1
-        className="text-3xl font-bold mb-8 text-gray-800"
+        className="text-3xl font-bold mb-8 text-white"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -69,16 +69,28 @@ export const UserDashboard = () => {
       {/* Budget Overview */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {[
-          { title: "Budget", value: budget.reduce((a, i) => a + i.amount, 0), color: "text-indigo-600", border: "border-indigo-200" },
-          { title: "Total Income", value: income.reduce((a, i) => a + i.amount, 0), color: "text-green-600", border: "border-green-200" },
-          { title: "Total Expenses", value: expenses.reduce((a, e) => a + e.amount, 0), color: "text-red-600", border: "border-red-200" },
+          {
+            title: "Budget",
+            value: budget.reduce((a, i) => a + i.amount, 0),
+            color: "text-indigo-400",
+          },
+          {
+            title: "Total Income",
+            value: income.reduce((a, i) => a + i.amount, 0),
+            color: "text-green-400",
+          },
+          {
+            title: "Total Expenses",
+            value: expenses.reduce((a, e) => a + e.amount, 0),
+            color: "text-red-400",
+          },
         ].map((item, idx) => (
           <motion.div
             key={idx}
             whileHover={{ scale: 1.03 }}
-            className={`bg-white border ${item.border} rounded-xl shadow-sm p-6 transition`}
+            className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-6 transition-all duration-200`}
           >
-            <h2 className="text-lg font-medium text-gray-700">{item.title}</h2>
+            <h2 className="text-lg font-medium text-white/80">{item.title}</h2>
             <p className={`text-2xl font-bold mt-2 ${item.color}`}>
               ₹{item.value}
             </p>
@@ -91,19 +103,33 @@ export const UserDashboard = () => {
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
-          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6"
+          className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-6"
         >
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Income vs Expenses</h2>
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Income vs Expenses
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={[
-                { name: "Income", amount: income.reduce((a, i) => a + i.amount, 0) },
-                { name: "Expenses", amount: expenses.reduce((a, e) => a + e.amount, 0) },
+                {
+                  name: "Income",
+                  amount: income.reduce((a, i) => a + i.amount, 0),
+                },
+                {
+                  name: "Expenses",
+                  amount: expenses.reduce((a, e) => a + e.amount, 0),
+                },
               ]}
             >
-              <XAxis dataKey="name" stroke="#374151" />
-              <YAxis stroke="#374151" />
-              <Tooltip />
+              <XAxis dataKey="name" stroke="#D1D5DB" />
+              <YAxis stroke="#D1D5DB" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#1F2937",
+                  borderRadius: 8,
+                  color: "#fff",
+                }}
+              />
               <Bar dataKey="amount" fill="#4F46E5" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -112,25 +138,36 @@ export const UserDashboard = () => {
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6"
+          className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-6"
         >
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Expense Breakdown</h2>
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Expense Breakdown
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={expenses.map((e) => ({ name: e.category, value: e.amount }))}
+                data={expenses.map((e) => ({
+                  name: e.category,
+                  value: e.amount,
+                }))}
                 dataKey="value"
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                label
+                label={{ fill: "#fff" }}
               >
                 {expenses.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
-              <Legend />
-              <Tooltip />
+              <Legend wrapperStyle={{ color: "#fff" }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#1F2937",
+                  borderRadius: 8,
+                  color: "#fff",
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </motion.div>
