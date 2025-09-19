@@ -15,7 +15,7 @@ export const Navbar = () => {
   return (
     <div>
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-gray-900/40 border-b border-gray-700/30 shadow-lg">
+      <header className="sticky top-0 z-50 bg-gray-900 border-b border-gray-700 shadow-lg">
         <nav className="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
           {/* Logo Section */}
           <motion.div
@@ -27,7 +27,7 @@ export const Navbar = () => {
             <img
               src="src/assets/Images/Expense Manager.png"
               alt="Logo"
-              className="h-10 w-10 object-contain drop-shadow-lg"
+              className="h-10 w-10 object-contain"
             />
             <span className="text-2xl font-extrabold text-white tracking-wide">
               FinTrack
