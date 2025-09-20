@@ -24,7 +24,7 @@ export const Navbar = () => {
             className="flex items-center gap-3"
           >
             <img
-              src="src/assets/Images/Expense Manager.png"
+              src="/expense-colored-icon-design-good-for-web-or-mobile-app-vector.jpg"
               alt="Logo"
               className="h-10 w-10 object-contain"
             />
