@@ -92,7 +92,7 @@ export const Content = () => {
           className="flex-shrink-0"
         >
           <img
-            src="public/Expense Manager.png"
+            src="/download.jpeg"
             alt="Finance Illustration"
             className="rounded-2xl shadow-2xl w-full max-w-md border border-white/20 backdrop-blur-lg"
           />
