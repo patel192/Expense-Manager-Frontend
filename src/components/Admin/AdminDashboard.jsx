@@ -84,19 +84,19 @@ export const AdminDashboard = () => {
           {
             title: "Total Users",
             value: users.length,
-            icon: <Users size={28} className="sm:w-8 sm:h-8 md:w-10 md:h-10" />,
+            icon: <Users size={28} className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10" />,
             gradient: "from-blue-500/80 to-indigo-600/80",
           },
           {
             title: "Total Admins",
             value: users.filter((u) => u.role === "Admin").length,
-            icon: <UserCog size={28} className="sm:w-8 sm:h-8 md:w-10 md:h-10" />,
+            icon: <UserCog size={28} className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10" />,
             gradient: "from-green-500/80 to-emerald-600/80",
           },
           {
             title: "Transactions",
             value: transactions.length,
-            icon: <CreditCard size={28} className="sm:w-8 sm:h-8 md:w-10 md:h-10" />,
+            icon: <CreditCard size={28} className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10" />,
             gradient: "from-yellow-400/80 to-orange-500/80",
           },
         ].map((card, idx) => (
@@ -122,7 +122,7 @@ export const AdminDashboard = () => {
         className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
       >
         <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Users per Month</h3>
-        <ResponsiveContainer width="100%" height={200} className="sm:h-[300px] md:h-[350px]">
+        <ResponsiveContainer width="100%" height={200} className="h-[200px] sm:h-[300px] md:h-[350px]">
           <BarChart data={userCountsPerMonth}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="name" stroke="#9CA3AF" angle={-45} textAnchor="end" />
@@ -142,7 +142,7 @@ export const AdminDashboard = () => {
         className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
       >
         <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Role Distribution</h3>
-        <ResponsiveContainer width="100%" height={200} className="sm:h-[300px] md:h-[350px]">
+        <ResponsiveContainer width="100%" height={200} className="h-[200px] sm:h-[300px] md:h-[350px]">
           <PieChart>
             <Pie
               data={roleDistribution}
@@ -204,22 +204,28 @@ export const AdminDashboard = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9 }}
-        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
+        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl overflow-x-auto"
       >
         <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Recent Transactions</h3>
         {transactions.length > 0 ? (
-          <div className="flex flex-col sm:overflow-x-auto">
-            {transactions.slice(0, 5).map((tx, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 sm:py-3 px-3 mb-2 rounded-lg hover:bg-white/5 transition border border-white/10"
-              >
-                <p className="font-medium">{tx.userID?.name || "Unknown"}</p>
-                <p className="font-semibold text-green-400">₹{tx.amount}</p>
-                <p className="text-gray-400 text-sm sm:text-base">{new Date(tx.createdAt).toLocaleDateString()}</p>
-              </div>
-            ))}
-          </div>
+          <table className="w-full border-collapse text-sm sm:text-base md:text-base">
+            <thead>
+              <tr className="bg-white/10 text-gray-300">
+                <th className="p-2 sm:p-3 text-left">User</th>
+                <th className="p-2 sm:p-3 text-left">Amount</th>
+                <th className="p-2 sm:p-3 text-left">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.slice(0, 5).map((tx, idx) => (
+                <tr key={idx} className="hover:bg-white/5 transition border-b border-white/10">
+                  <td className="p-2 sm:p-3">{tx.userID?.name || "Unknown"}</td>
+                  <td className="p-2 sm:p-3 font-semibold text-green-400">₹{tx.amount}</td>
+                  <td className="p-2 sm:p-3">{new Date(tx.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <p className="text-gray-400">No transactions found.</p>
         )}
