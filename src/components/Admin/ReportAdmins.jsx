@@ -109,12 +109,7 @@ export const ReportAdmins = () => {
               <XAxis dataKey="name" stroke="#9ca3af" />
               <YAxis stroke="#9ca3af" />
               <Tooltip contentStyle={{ background: "#1f2937", color: "white" }} />
-              <Bar
-                dataKey="amount"
-                fill="#6366f1"
-                radius={[6, 6, 0, 0]}
-                barSize={40}
-              />
+              <Bar dataKey="amount" fill="#6366f1" radius={[6, 6, 0, 0]} barSize={40} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
@@ -132,19 +127,9 @@ export const ReportAdmins = () => {
           {pieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={250} minWidth={0}>
               <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={90}
-                  dataKey="value"
-                  label
-                >
+                <Pie data={pieData} cx="50%" cy="50%" outerRadius={90} dataKey="value" label>
                   {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip contentStyle={{ background: "#1f2937", color: "white" }} />
@@ -152,9 +137,7 @@ export const ReportAdmins = () => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-center text-gray-400 text-sm">
-              No category data available.
-            </p>
+            <p className="text-center text-gray-400 text-sm">No category data available.</p>
           )}
         </motion.div>
       </div>

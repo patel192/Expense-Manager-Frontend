@@ -24,7 +24,7 @@ export const ManageUsers = () => {
         const fetchedUsers = res.data.data || [];
         setUsers(fetchedUsers);
         setDisplayedUsers(fetchedUsers);
-      } catch (error) {
+      } catch {
         toast.error("Error fetching users");
       } finally {
         setLoading(false);
@@ -54,19 +54,12 @@ export const ManageUsers = () => {
 
   const handleDelete = async (userId) => {
     if (!window.confirm("Delete this user permanently?")) return;
-
     try {
       await axiosInstance.delete(`/user/${userId}`);
       setUsers((prev) => prev.filter((u) => u._id !== userId));
-      toast.success("✅ User deleted", {
-        autoClose: 3000,
-        style: { backgroundColor: "#16a34a", color: "white" },
-      });
-    } catch (error) {
-      toast.error("❌ Error deleting user", {
-        autoClose: 3000,
-        style: { backgroundColor: "#dc2626", color: "white" },
-      });
+      toast.success("✅ User deleted", { autoClose: 3000, style: { backgroundColor: "#16a34a", color: "white" } });
+    } catch {
+      toast.error("❌ Error deleting user", { autoClose: 3000, style: { backgroundColor: "#dc2626", color: "white" } });
     }
   };
 

@@ -48,11 +48,11 @@ export const UserDetails = () => {
     fetchData();
   }, [userId]);
 
-  const totalIncome = income.reduce((sum, inc) => sum + inc.amount, 0);
-  const totalBudget = budget.reduce((sum, b) => sum + b.amount, 0);
+  const totalIncome = income.reduce((sum, inc) => sum + (inc.amount || 0), 0);
+  const totalBudget = budget.reduce((sum, b) => sum + (b.amount || 0), 0);
   const totalExpense = transactions
     .filter((t) => t.type === "expense")
-    .reduce((sum, exp) => sum + exp.amount, 0);
+    .reduce((sum, exp) => sum + (exp.amount || 0), 0);
 
   return (
     <div className="p-4 md:p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
@@ -85,8 +85,8 @@ export const UserDetails = () => {
 
             {/* Details */}
             <div className="text-center sm:text-left flex-1">
-              <h2 className="text-xl md:text-2xl font-bold">{user?.name}</h2>
-              <p className="text-gray-300 text-sm md:text-base">{user?.email}</p>
+              <h2 className="text-xl md:text-2xl font-bold">{user?.name || "Unknown User"}</h2>
+              <p className="text-gray-300 text-sm md:text-base">{user?.email || "No Email"}</p>
               <span
                 className={`inline-block mt-2 px-3 py-1 text-xs md:text-sm rounded-full ${
                   user?.role === "Admin"
@@ -100,7 +100,7 @@ export const UserDetails = () => {
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs md:text-sm">
                 <div>
                   <p className="text-gray-400">Joined On</p>
-                  <p>{new Date(user?.createdAt).toLocaleDateString()}</p>
+                  <p>{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</p>
                 </div>
                 <div>
                   <p className="text-gray-400">Total Transactions</p>
@@ -173,8 +173,8 @@ export const UserDetails = () => {
                       const date = new Date(t.date);
                       const month = date.toLocaleString("default", { month: "short" });
                       if (!grouped[month]) grouped[month] = { month, expense: 0, income: 0 };
-                      if (t.type === "expense") grouped[month].expense += t.amount;
-                      else grouped[month].income += t.amount;
+                      if (t.type === "expense") grouped[month].expense += t.amount || 0;
+                      else grouped[month].income += t.amount || 0;
                     });
                     return Object.values(grouped);
                   })()}
@@ -204,13 +204,14 @@ export const UserDetails = () => {
                 data={(() => {
                   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
                   const grouped = months.map((m) => ({ month: m, expense: 0, income: 0 }));
-
                   transactions.forEach((t) => {
                     const date = new Date(t.date);
                     const month = date.toLocaleString("default", { month: "short" });
                     const entry = grouped.find((g) => g.month === month);
-                    if (t.type === "expense") entry.expense += t.amount;
-                    else entry.income += t.amount;
+                    if (entry) {
+                      if (t.type === "expense") entry.expense += t.amount || 0;
+                      else entry.income += t.amount || 0;
+                    }
                   });
                   return grouped;
                 })()}

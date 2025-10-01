@@ -5,9 +5,7 @@ import { AdminSidebar } from "../Admin/AdminSidebar";
 export const AdminLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
@@ -36,9 +34,9 @@ export const AdminLayout = ({ children }) => {
 
         {/* Page content */}
         <div
-          className={`p-4 md:p-6 transition-all duration-300
-                      ${isSidebarOpen ? "ml-64" : "ml-0"}
-                      md:ml-64`}
+          className={`p-4 md:p-6 transition-all duration-300 ${
+            isSidebarOpen ? "ml-64" : "ml-0"
+          } md:ml-64`}
         >
           {children}
         </div>

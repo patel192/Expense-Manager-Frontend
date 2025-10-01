@@ -11,6 +11,7 @@ export const ManageCategories = () => {
     reset,
     formState: { errors },
   } = useForm();
+
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -90,6 +91,7 @@ export const ManageCategories = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100 p-8">
       <Toaster position="top-right" />
 
+      {/* Header */}
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -101,26 +103,14 @@ export const ManageCategories = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {[
-          {
-            label: "Total",
-            value: totalCount,
-            color: "from-blue-400 to-purple-500",
-          },
-          {
-            label: "Income",
-            value: incomeCount,
-            color: "from-green-400 to-emerald-500",
-          },
-          {
-            label: "Expense",
-            value: expenseCount,
-            color: "from-pink-400 to-red-500",
-          },
+          { label: "Total", value: totalCount, color: "from-blue-400 to-purple-500" },
+          { label: "Income", value: incomeCount, color: "from-green-400 to-emerald-500" },
+          { label: "Expense", value: expenseCount, color: "from-pink-400 to-red-500" },
         ].map((card, idx) => (
           <motion.div
             key={idx}
             whileHover={{ scale: 1.05 }}
-            className={`p-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20`}
+            className="p-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20"
           >
             <p className="text-sm text-gray-300">{card.label}</p>
             <h3
@@ -132,7 +122,7 @@ export const ManageCategories = () => {
         ))}
       </div>
 
-      {/* Add Form */}
+      {/* Add Category Form */}
       <motion.form
         onSubmit={handleSubmit(submitHandler)}
         initial={{ opacity: 0, y: 30 }}
@@ -140,34 +130,28 @@ export const ManageCategories = () => {
         className="space-y-4 mb-10 p-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20"
       >
         <div>
-          <label className="block mb-2 text-sm font-medium">
-            Category Name
-          </label>
+          <label className="block mb-2 text-sm font-medium">Category Name</label>
           <input
+            {...register("name", { required: "Category name is required" })}
             className="border-none w-full p-3 rounded-lg bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-gray-400"
             placeholder="Enter category name"
-            {...register("name", { required: "Category name is required" })}
           />
-          {errors.name && (
-            <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
         </div>
+
         <div>
-          <label className="block mb-2 text-sm font-medium">
-            Category Type
-          </label>
+          <label className="block mb-2 text-sm font-medium">Category Type</label>
           <select
-            className="border-none w-full p-3 rounded-lg bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-purple-500 outline-none text-white"
             {...register("type", { required: "Please select a type" })}
+            className="border-none w-full p-3 rounded-lg bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-purple-500 outline-none text-white"
           >
             <option value="">Select Type</option>
             <option value="income">Income</option>
             <option value="expense">Expense</option>
           </select>
-          {errors.type && (
-            <p className="text-red-400 text-sm mt-1">{errors.type.message}</p>
-          )}
+          {errors.type && <p className="text-red-400 text-sm mt-1">{errors.type.message}</p>}
         </div>
+
         <button
           type="submit"
           className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-4 rounded-lg font-semibold shadow-md hover:opacity-90 transition"
@@ -177,7 +161,7 @@ export const ManageCategories = () => {
       </motion.form>
 
       {/* Search & Filter */}
-      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
+      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6 flex-wrap">
         <input
           type="text"
           placeholder="Search categories..."
@@ -196,14 +180,15 @@ export const ManageCategories = () => {
         </select>
       </div>
 
-      {/* Table */}
-      {/* Table / Card View */}
+      {/* Loading Spinner */}
       {loading ? (
-        <p className="text-gray-400">Loading categories...</p>
+        <div className="flex justify-center py-10">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
       ) : (
         <>
           {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto rounded-2xl shadow-lg border border-white/20 bg-white/5 backdrop-blur-md">
+          <div className="hidden md:block overflow-x-auto scrollbar-thin rounded-2xl shadow-lg border border-white/20 bg-white/5 backdrop-blur-md">
             <table className="w-full text-left">
               <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                 <tr>
@@ -216,10 +201,7 @@ export const ManageCategories = () => {
                 {filteredCategories.map((cat) => (
                   <motion.tr
                     key={cat._id}
-                    whileHover={{
-                      scale: 1.01,
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                    }}
+                    whileHover={{ scale: 1.01, backgroundColor: "rgba(255,255,255,0.05)" }}
                     className="border-t border-white/10"
                   >
                     <td className="px-6 py-3">
@@ -227,26 +209,23 @@ export const ManageCategories = () => {
                         <input
                           value={editedCategory.name}
                           onChange={(e) =>
-                            setEditedCategory({
-                              ...editedCategory,
-                              name: e.target.value,
-                            })
+                            setEditedCategory({ ...editedCategory, name: e.target.value })
                           }
                           className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
                         />
                       ) : (
-                        cat.name
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 font-semibold">
+                          {cat.name}
+                        </span>
                       )}
                     </td>
+
                     <td className="px-6 py-3">
                       {editingId === cat._id ? (
                         <select
                           value={editedCategory.type}
                           onChange={(e) =>
-                            setEditedCategory({
-                              ...editedCategory,
-                              type: e.target.value,
-                            })
+                            setEditedCategory({ ...editedCategory, type: e.target.value })
                           }
                           className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
                         >
@@ -265,28 +244,39 @@ export const ManageCategories = () => {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-3 flex gap-3 justify-center">
+
+                    <td className="px-6 py-3 flex gap-2 justify-center">
                       {editingId === cat._id ? (
-                        <button
-                          onClick={() => saveEdit(cat._id)}
-                          className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
-                        >
-                          Save
-                        </button>
+                        <>
+                          <button
+                            onClick={() => saveEdit(cat._id)}
+                            className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingId(null)}
+                            className="bg-gray-500 hover:bg-gray-600 px-3 py-1 rounded-lg text-white font-medium"
+                          >
+                            Cancel
+                          </button>
+                        </>
                       ) : (
-                        <button
-                          onClick={() => startEditing(cat)}
-                          className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
-                        >
-                          Edit
-                        </button>
+                        <>
+                          <button
+                            onClick={() => startEditing(cat)}
+                            className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => deleteCategory(cat._id)}
+                            className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
+                          >
+                            Delete
+                          </button>
+                        </>
                       )}
-                      <button
-                        onClick={() => deleteCategory(cat._id)}
-                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
-                      >
-                        Delete
-                      </button>
                     </td>
                   </motion.tr>
                 ))}
@@ -309,47 +299,74 @@ export const ManageCategories = () => {
                 whileHover={{ scale: 1.02 }}
                 className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur-md shadow-md"
               >
-                <h4 className="font-semibold">{cat.name}</h4>
-                <p
-                  className={`mt-1 inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                    cat.type === "income"
-                      ? "bg-green-400/20 text-green-300"
-                      : "bg-red-400/20 text-red-300"
-                  }`}
-                >
-                  {cat.type}
-                </p>
-
-                {/* Actions */}
-                <div className="mt-3 flex flex-col gap-2">
-                  {editingId === cat._id ? (
-                    <button
-                      onClick={() => saveEdit(cat._id)}
-                      className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
+                {editingId === cat._id ? (
+                  <>
+                    <input
+                      value={editedCategory.name}
+                      onChange={(e) =>
+                        setEditedCategory({ ...editedCategory, name: e.target.value })
+                      }
+                      className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none mb-2"
+                    />
+                    <select
+                      value={editedCategory.type}
+                      onChange={(e) =>
+                        setEditedCategory({ ...editedCategory, type: e.target.value })
+                      }
+                      className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none mb-2"
                     >
-                      Save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => startEditing(cat)}
-                      className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
+                      <option value="income">Income</option>
+                      <option value="expense">Expense</option>
+                    </select>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => saveEdit(cat._id)}
+                        className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="bg-gray-500 hover:bg-gray-600 px-3 py-1 rounded-lg text-white font-medium"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h4 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                      {cat.name}
+                    </h4>
+                    <p
+                      className={`mt-1 inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                        cat.type === "income"
+                          ? "bg-green-400/20 text-green-300"
+                          : "bg-red-400/20 text-red-300"
+                      }`}
                     >
-                      Edit
-                    </button>
-                  )}
-                  <button
-                    onClick={() => deleteCategory(cat._id)}
-                    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
-                  >
-                    Delete
-                  </button>
-                </div>
+                      {cat.type}
+                    </p>
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        onClick={() => startEditing(cat)}
+                        className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteCategory(cat._id)}
+                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </motion.div>
             ))}
             {filteredCategories.length === 0 && (
-              <p className="text-center py-6 text-gray-400">
-                No categories found
-              </p>
+              <p className="text-center py-6 text-gray-400">No categories found</p>
             )}
           </div>
         </>

@@ -101,9 +101,7 @@ export const Systemlog = () => {
                       } border-b border-gray-700`}
                     >
                       <td className="px-6 py-3 text-gray-300 whitespace-nowrap">
-                        {new Date(
-                          log.timestamp || log.createdAt
-                        ).toLocaleString()}
+                        {new Date(log.timestamp || log.createdAt).toLocaleString()}
                       </td>
                       <td className="px-6 py-3 text-gray-300">{log.user}</td>
                       <td className="px-6 py-3">
@@ -115,9 +113,7 @@ export const Systemlog = () => {
                           {log.action}
                         </span>
                       </td>
-                      <td className="px-6 py-3 text-gray-400">
-                        {log.description}
-                      </td>
+                      <td className="px-6 py-3 text-gray-400">{log.description}</td>
                     </motion.tr>
                   ))}
                 </tbody>
@@ -146,9 +142,7 @@ export const Systemlog = () => {
                   >
                     {log.action}
                   </p>
-                  <p className="mt-2 text-gray-300 text-sm">
-                    {log.description}
-                  </p>
+                  <p className="mt-2 text-gray-300 text-sm">{log.description}</p>
                 </motion.div>
               ))}
             </div>

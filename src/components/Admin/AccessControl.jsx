@@ -56,8 +56,8 @@ export const AccessControl = () => {
         </h2>
 
         {/* Search & Filters */}
-        <div className="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 mb-4 sm:mb-6 items-start md:items-center">
-          <div className="relative w-full md:w-1/3">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6 items-start sm:items-center">
+          <div className="relative w-full sm:w-1/2 md:w-1/3">
             <FaSearch className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
@@ -71,7 +71,7 @@ export const AccessControl = () => {
             />
           </div>
           <select
-            className="w-full md:w-auto px-3 py-2 rounded-lg bg-white/5 text-white border border-white/20 focus:ring-2 focus:ring-indigo-400"
+            className="w-full sm:w-auto px-3 py-2 rounded-lg bg-white/5 text-white border border-white/20 focus:ring-2 focus:ring-indigo-400"
             value={filterRole}
             onChange={(e) => {
               setFilterRole(e.target.value);
@@ -91,11 +91,11 @@ export const AccessControl = () => {
             <thead>
               <tr className="bg-white/10 text-gray-300 uppercase text-xs">
                 <th className="p-2 sm:p-3 text-left">Name</th>
-                <th className="p-2 sm:p-3 text-left">Age</th>
+                <th className="p-2 sm:p-3 text-left hidden sm:table-cell">Age</th>
                 <th className="p-2 sm:p-3 text-left">Email</th>
                 <th className="p-2 sm:p-3 text-left">Role</th>
-                <th className="p-2 sm:p-3 text-left">Joined</th>
-                <th className="p-2 sm:p-3 text-left">Status</th>
+                <th className="p-2 sm:p-3 text-left hidden md:table-cell">Joined</th>
+                <th className="p-2 sm:p-3 text-left hidden md:table-cell">Status</th>
                 <th className="p-2 sm:p-3 text-center">Actions</th>
               </tr>
             </thead>
@@ -111,24 +111,23 @@ export const AccessControl = () => {
                     className="border-b border-white/10 transition-colors"
                   >
                     <td className="p-2 sm:p-3">{user.name}</td>
-                    <td className="p-2 sm:p-3">{user.age || "N/A"}</td>
+                    <td className="p-2 sm:p-3 hidden sm:table-cell">{user.age || "N/A"}</td>
                     <td className="p-2 sm:p-3">{user.email}</td>
                     <td className="p-2 sm:p-3">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          roleColors[user.roleId?.name] ||
-                          "bg-gray-500/70 text-white"
+                          roleColors[user.roleId?.name] || "bg-gray-500/70 text-white"
                         }`}
                       >
                         {user.roleId?.name || "N/A"}
                       </span>
                     </td>
-                    <td className="p-2 sm:p-3">
+                    <td className="p-2 sm:p-3 hidden md:table-cell">
                       {user.createdAt
                         ? new Date(user.createdAt).toLocaleDateString()
                         : "N/A"}
                     </td>
-                    <td className="p-2 sm:p-3">
+                    <td className="p-2 sm:p-3 hidden md:table-cell">
                       {user.is_active ? (
                         <span className="px-2 py-1 text-xs font-semibold bg-green-500/80 text-white rounded-full">
                           Active
@@ -139,11 +138,11 @@ export const AccessControl = () => {
                         </span>
                       )}
                     </td>
-                    <td className="p-2 sm:p-3 text-center space-x-1 sm:space-x-2">
-                      <button className="p-2 sm:p-2 bg-indigo-500/80 hover:bg-indigo-600 rounded-full text-white transition">
+                    <td className="p-2 sm:p-3 text-center flex justify-center gap-1 sm:gap-2">
+                      <button className="p-2 bg-indigo-500/80 hover:bg-indigo-600 rounded-full text-white transition">
                         <FaEdit size={14} />
                       </button>
-                      <button className="p-2 sm:p-2 bg-red-500/80 hover:bg-red-600 rounded-full text-white transition">
+                      <button className="p-2 bg-red-500/80 hover:bg-red-600 rounded-full text-white transition">
                         <FaTrash size={14} />
                       </button>
                     </td>

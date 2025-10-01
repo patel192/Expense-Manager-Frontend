@@ -32,7 +32,6 @@ export const AdminDashboard = () => {
 
         const adminCount = allUsers.filter((u) => u.role === "Admin").length;
         const userCount = allUsers.length - adminCount;
-
         setRoleDistribution([
           { name: "Admins", value: adminCount },
           { name: "Users", value: userCount },
@@ -50,11 +49,10 @@ export const AdminDashboard = () => {
           "Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
         ];
-        const monthlyData = monthsOrder.map((m) => ({
+        setUserCountsPerMonth(monthsOrder.map((m) => ({
           name: m,
           users: monthlyCounts[m] || 0,
-        }));
-        setUserCountsPerMonth(monthlyData);
+        })));
 
         const recent = [...allUsers]
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -79,7 +77,7 @@ export const AdminDashboard = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-2xl sm:text-3xl font-bold text-center"
+        className="text-2xl sm:text-3xl md:text-4xl font-bold text-center"
       >
         Admin Dashboard
       </motion.h1>
@@ -90,45 +88,45 @@ export const AdminDashboard = () => {
           {
             title: "Total Users",
             value: users.length,
-            icon: <Users size={32} className="sm:w-9 sm:h-9" />,
+            icon: <Users size={32} className="sm:w-9 sm:h-9 md:w-10 md:h-10" />,
             gradient: "from-blue-500/80 to-indigo-600/80",
           },
           {
             title: "Total Admins",
             value: users.filter((u) => u.role === "Admin").length,
-            icon: <UserCog size={32} className="sm:w-9 sm:h-9" />,
+            icon: <UserCog size={32} className="sm:w-9 sm:h-9 md:w-10 md:h-10" />,
             gradient: "from-green-500/80 to-emerald-600/80",
           },
           {
             title: "Transactions",
             value: transactions.length,
-            icon: <CreditCard size={32} className="sm:w-9 sm:h-9" />,
+            icon: <CreditCard size={32} className="sm:w-9 sm:h-9 md:w-10 md:h-10" />,
             gradient: "from-yellow-400/80 to-orange-500/80",
           },
         ].map((card, idx) => (
           <motion.div
             key={idx}
             whileHover={{ scale: 1.05 }}
-            className={`p-4 sm:p-6 rounded-2xl shadow-lg backdrop-blur-lg bg-gradient-to-r ${card.gradient} border border-white/20`}
+            className={`p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg backdrop-blur-lg bg-gradient-to-r ${card.gradient} border border-white/20`}
           >
             <div className="flex items-center space-x-3 mb-2">
               <span className="text-white">{card.icon}</span>
-              <h2 className="text-base sm:text-lg font-semibold">{card.title}</h2>
+              <h2 className="text-base sm:text-lg md:text-xl font-semibold">{card.title}</h2>
             </div>
-            <p className="text-2xl sm:text-3xl font-bold">{card.value}</p>
+            <p className="text-2xl sm:text-3xl md:text-4xl font-bold">{card.value}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Users per Month (Bar Chart) */}
+      {/* Users per Month */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 rounded-2xl shadow-xl"
+        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
       >
-        <h3 className="text-base sm:text-lg font-semibold mb-4">Users per Month</h3>
-        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Users per Month</h3>
+        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px] md:h-[350px]">
           <BarChart data={userCountsPerMonth}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="name" stroke="#9CA3AF" />
@@ -140,15 +138,15 @@ export const AdminDashboard = () => {
         </ResponsiveContainer>
       </motion.div>
 
-      {/* Role Distribution (Pie Chart) */}
+      {/* Role Distribution */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 rounded-2xl shadow-xl"
+        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
       >
-        <h3 className="text-base sm:text-lg font-semibold mb-4">Role Distribution</h3>
-        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Role Distribution</h3>
+        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px] md:h-[350px]">
           <PieChart>
             <Pie
               data={roleDistribution}
@@ -157,9 +155,7 @@ export const AdminDashboard = () => {
               cx="50%"
               cy="50%"
               outerRadius={80}
-              label={({ name, percent }) =>
-                `${name} ${(percent * 100).toFixed(0)}%`
-              }
+              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             >
               {roleDistribution.map((entry, index) => (
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />
@@ -176,9 +172,9 @@ export const AdminDashboard = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 rounded-2xl shadow-xl"
+        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
       >
-        <h3 className="text-base sm:text-lg font-semibold mb-4">Recent Users</h3>
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Recent Users</h3>
         {recentUsers.length > 0 ? (
           <ul className="divide-y divide-white/10">
             {recentUsers.map((user, idx) => (
@@ -188,10 +184,10 @@ export const AdminDashboard = () => {
               >
                 <div>
                   <p className="font-medium">{user.name}</p>
-                  <p className="text-gray-400 text-sm">{user.email}</p>
+                  <p className="text-gray-400 text-sm sm:text-base">{user.email}</p>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold w-fit sm:w-auto ${
+                  className={`px-3 py-1 rounded-full text-xs sm:text-sm md:text-base font-semibold w-fit sm:w-auto ${
                     user.role === "Admin"
                       ? "bg-purple-500/30 text-purple-300"
                       : "bg-blue-500/30 text-blue-300"
@@ -212,11 +208,11 @@ export const AdminDashboard = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9 }}
-        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 rounded-2xl shadow-xl overflow-x-auto"
+        className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl overflow-x-auto"
       >
-        <h3 className="text-base sm:text-lg font-semibold mb-4">Recent Transactions</h3>
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Recent Transactions</h3>
         {transactions.length > 0 ? (
-          <table className="w-full border-collapse text-sm sm:text-base">
+          <table className="w-full border-collapse text-sm sm:text-base md:text-base">
             <thead>
               <tr className="bg-white/10 text-gray-300">
                 <th className="p-2 sm:p-3 text-left">User</th>
@@ -226,17 +222,12 @@ export const AdminDashboard = () => {
             </thead>
             <tbody>
               {transactions.slice(0, 5).map((tx, idx) => (
-                <tr
-                  key={idx}
-                  className="hover:bg-white/5 transition border-b border-white/10"
-                >
+                <tr key={idx} className="hover:bg-white/5 transition border-b border-white/10">
                   <td className="p-2 sm:p-3">{tx.userID?.name || "Unknown"}</td>
                   <td className="p-2 sm:p-3 font-semibold text-green-400">
                     ₹{tx.amount}
                   </td>
-                  <td className="p-2 sm:p-3">
-                    {new Date(tx.createdAt).toLocaleDateString()}
-                  </td>
+                  <td className="p-2 sm:p-3">{new Date(tx.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
