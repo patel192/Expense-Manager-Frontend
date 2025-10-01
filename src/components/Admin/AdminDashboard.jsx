@@ -16,33 +16,12 @@ import { Users, UserCog, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 import axiosInstance from "../Utils/axiosInstance";
 
-// Custom hook to track window width
-const useWindowWidth = () => {
-  const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return width;
-};
-
 export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [userCountsPerMonth, setUserCountsPerMonth] = useState([]);
   const [roleDistribution, setRoleDistribution] = useState([]);
   const [recentUsers, setRecentUsers] = useState([]);
   const [transactions, setTransactions] = useState([]);
-
-  const width = useWindowWidth();
-  const isMobile = width < 640;
-  const isTablet = width >= 640 && width < 1024;
-  const isDesktop = width >= 1024;
-
-  const chartHeight = isMobile ? 200 : isTablet ? 300 : 350;
-  const gridCols = isMobile ? 1 : isTablet ? 2 : 3;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,14 +39,20 @@ export const AdminDashboard = () => {
 
         const monthlyCounts = {};
         allUsers.forEach((user) => {
-          const month = new Date(user.createdAt).toLocaleString("default", { month: "short" });
+          const month = new Date(user.createdAt).toLocaleString("default", {
+            month: "short",
+          });
           monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
         });
 
         const monthsOrder = [
-          "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",
+          "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
         ];
-        setUserCountsPerMonth(monthsOrder.map((m) => ({ name: m, users: monthlyCounts[m] || 0 })));
+        setUserCountsPerMonth(monthsOrder.map((m) => ({
+          name: m,
+          users: monthlyCounts[m] || 0,
+        })));
 
         const recent = [...allUsers]
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -86,7 +71,7 @@ export const AdminDashboard = () => {
   const COLORS = ["#4F46E5", "#10B981"];
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 md:p-8 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-950 text-white space-y-6 sm:space-y-8 md:space-y-10">
+    <div className="p-4 sm:p-6 md:p-8 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-950 text-white space-y-8 sm:space-y-10">
       {/* Header */}
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
@@ -98,24 +83,24 @@ export const AdminDashboard = () => {
       </motion.h1>
 
       {/* Summary Cards */}
-      <div className={`grid grid-cols-${gridCols} gap-4 sm:gap-6`}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {[
           {
             title: "Total Users",
             value: users.length,
-            icon: <Users size={28} className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10" />,
+            icon: <Users size={32} className="sm:w-9 sm:h-9 md:w-10 md:h-10" />,
             gradient: "from-blue-500/80 to-indigo-600/80",
           },
           {
             title: "Total Admins",
             value: users.filter((u) => u.role === "Admin").length,
-            icon: <UserCog size={28} className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10" />,
+            icon: <UserCog size={32} className="sm:w-9 sm:h-9 md:w-10 md:h-10" />,
             gradient: "from-green-500/80 to-emerald-600/80",
           },
           {
             title: "Transactions",
             value: transactions.length,
-            icon: <CreditCard size={28} className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10" />,
+            icon: <CreditCard size={32} className="sm:w-9 sm:h-9 md:w-10 md:h-10" />,
             gradient: "from-yellow-400/80 to-orange-500/80",
           },
         ].map((card, idx) => (
@@ -125,7 +110,7 @@ export const AdminDashboard = () => {
             className={`p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg backdrop-blur-lg bg-gradient-to-r ${card.gradient} border border-white/20`}
           >
             <div className="flex items-center space-x-3 mb-2">
-              <span>{card.icon}</span>
+              <span className="text-white">{card.icon}</span>
               <h2 className="text-base sm:text-lg md:text-xl font-semibold">{card.title}</h2>
             </div>
             <p className="text-2xl sm:text-3xl md:text-4xl font-bold">{card.value}</p>
@@ -141,10 +126,10 @@ export const AdminDashboard = () => {
         className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
       >
         <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Users per Month</h3>
-        <ResponsiveContainer width="100%" height={chartHeight}>
+        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px] md:h-[350px]">
           <BarChart data={userCountsPerMonth}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis dataKey="name" stroke="#9CA3AF" angle={-45} textAnchor="end" />
+            <XAxis dataKey="name" stroke="#9CA3AF" />
             <YAxis stroke="#9CA3AF" />
             <Tooltip />
             <Legend />
@@ -161,7 +146,7 @@ export const AdminDashboard = () => {
         className="backdrop-blur-lg bg-white/10 border border-white/20 p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl"
       >
         <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-4">Role Distribution</h3>
-        <ResponsiveContainer width="100%" height={chartHeight}>
+        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px] md:h-[350px]">
           <PieChart>
             <Pie
               data={roleDistribution}
@@ -169,7 +154,7 @@ export const AdminDashboard = () => {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={isMobile ? 60 : isTablet ? 80 : 100}
+              outerRadius={80}
               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             >
               {roleDistribution.map((entry, index) => (
@@ -239,7 +224,9 @@ export const AdminDashboard = () => {
               {transactions.slice(0, 5).map((tx, idx) => (
                 <tr key={idx} className="hover:bg-white/5 transition border-b border-white/10">
                   <td className="p-2 sm:p-3">{tx.userID?.name || "Unknown"}</td>
-                  <td className="p-2 sm:p-3 font-semibold text-green-400">₹{tx.amount}</td>
+                  <td className="p-2 sm:p-3 font-semibold text-green-400">
+                    ₹{tx.amount}
+                  </td>
                   <td className="p-2 sm:p-3">{new Date(tx.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
