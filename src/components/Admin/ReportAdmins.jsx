@@ -36,7 +36,7 @@ export const ReportAdmins = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex items-center justify-center h-[70vh] text-xl font-semibold text-gray-400"
+        className="flex items-center justify-center h-[70vh] text-lg sm:text-xl font-semibold text-gray-400 px-4 text-center"
       >
         Loading report...
       </motion.div>
@@ -59,19 +59,19 @@ export const ReportAdmins = () => {
   const pieData = stats.categoryDistribution || [];
 
   return (
-    <div className="p-6 bg-gray-900 min-h-screen text-white">
+    <div className="p-4 sm:p-6 bg-gray-900 min-h-screen text-white">
       {/* Page Title */}
       <motion.h2
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="text-center text-3xl md:text-4xl font-extrabold mb-10 text-indigo-400"
+        className="text-center text-2xl sm:text-3xl md:text-4xl font-extrabold mb-8 sm:mb-10 text-indigo-400"
       >
         Admin Analytics Dashboard
       </motion.h2>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10 sm:mb-12">
         {reportStats.map((item, idx) => (
           <motion.div
             key={idx}
@@ -82,10 +82,10 @@ export const ReportAdmins = () => {
               scale: 1.05,
               boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             }}
-            className="bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700"
+            className="bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-700"
           >
-            <p className="text-sm text-gray-400">{item.title}</p>
-            <p className="text-2xl font-bold text-indigo-400 mt-2">
+            <p className="text-xs sm:text-sm text-gray-400">{item.title}</p>
+            <p className="text-lg sm:text-2xl font-bold text-indigo-400 mt-2 break-words">
               {item.value}
             </p>
           </motion.div>
@@ -93,18 +93,18 @@ export const ReportAdmins = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid lg:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10">
         {/* Bar Chart */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700"
+          className="bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 border border-gray-700 min-w-0"
         >
-          <h3 className="text-lg font-semibold text-gray-300 mb-4 text-center">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-300 mb-4 text-center">
             Income vs Expenses
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250} minWidth={0}>
             <BarChart data={barData}>
               <XAxis dataKey="name" stroke="#9ca3af" />
               <YAxis stroke="#9ca3af" />
@@ -112,8 +112,8 @@ export const ReportAdmins = () => {
               <Bar
                 dataKey="amount"
                 fill="#6366f1"
-                radius={[8, 8, 0, 0]}
-                barSize={50}
+                radius={[6, 6, 0, 0]}
+                barSize={40}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -124,19 +124,19 @@ export const ReportAdmins = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700"
+          className="bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 border border-gray-700 min-w-0"
         >
-          <h3 className="text-lg font-semibold text-gray-300 mb-4 text-center">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-300 mb-4 text-center">
             Category-wise Distribution
           </h3>
           {pieData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250} minWidth={0}>
               <PieChart>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  outerRadius={110}
+                  outerRadius={90}
                   dataKey="value"
                   label
                 >
@@ -152,7 +152,7 @@ export const ReportAdmins = () => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-center text-gray-400">
+            <p className="text-center text-gray-400 text-sm">
               No category data available.
             </p>
           )}

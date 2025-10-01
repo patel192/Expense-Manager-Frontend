@@ -71,15 +71,15 @@ export const ManageUsers = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100">
+    <div className="p-4 md:p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100">
       <ToastContainer theme="colored" transition={Bounce} />
 
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl p-6 shadow-xl bg-white/10 backdrop-blur-md border border-white/20"
+        className="rounded-2xl p-4 md:p-6 shadow-xl bg-white/10 backdrop-blur-md border border-white/20"
       >
-        <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
           Manage Users
         </h2>
 
@@ -114,9 +114,9 @@ export const ManageUsers = () => {
           <div className="text-center text-gray-400 py-10">No users found.</div>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-white/20 bg-white/5 backdrop-blur-md shadow-lg">
-            <table className="min-w-full text-white">
+            <table className="min-w-full text-white text-sm md:text-base">
               <thead>
-                <tr className="bg-gradient-to-r from-blue-600 to-purple-600 text-sm uppercase">
+                <tr className="bg-gradient-to-r from-blue-600 to-purple-600 text-xs md:text-sm uppercase">
                   <th className="p-3 text-left">Name</th>
                   <th className="p-3 text-left">Age</th>
                   <th className="p-3 text-left">Email</th>
@@ -136,7 +136,7 @@ export const ManageUsers = () => {
                     <td className="p-3">{user.email}</td>
                     <td className="p-3">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        className={`px-3 py-1 rounded-full text-xs md:text-sm font-medium ${
                           user.role === "Admin"
                             ? "bg-purple-400/20 text-purple-300"
                             : user.role === "Manager"
@@ -172,11 +172,11 @@ export const ManageUsers = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-6">
+          <div className="flex flex-wrap justify-center items-center gap-2 mt-6">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i}
-                className={`px-3 py-1 rounded-lg font-medium transition ${
+                className={`px-3 py-1 rounded-lg font-medium transition text-sm md:text-base ${
                   currentPage === i + 1
                     ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                     : "bg-white/5 text-gray-300 hover:bg-white/10"

@@ -5,7 +5,12 @@ import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 
 export const ManageCategories = () => {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,7 +75,9 @@ export const ManageCategories = () => {
   };
 
   const filteredCategories = categories.filter((cat) => {
-    const matchesSearch = cat.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = cat.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesType = filterType ? cat.type === filterType : true;
     return matchesSearch && matchesType;
   });
@@ -94,9 +101,21 @@ export const ManageCategories = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {[
-          { label: "Total", value: totalCount, color: "from-blue-400 to-purple-500" },
-          { label: "Income", value: incomeCount, color: "from-green-400 to-emerald-500" },
-          { label: "Expense", value: expenseCount, color: "from-pink-400 to-red-500" },
+          {
+            label: "Total",
+            value: totalCount,
+            color: "from-blue-400 to-purple-500",
+          },
+          {
+            label: "Income",
+            value: incomeCount,
+            color: "from-green-400 to-emerald-500",
+          },
+          {
+            label: "Expense",
+            value: expenseCount,
+            color: "from-pink-400 to-red-500",
+          },
         ].map((card, idx) => (
           <motion.div
             key={idx}
@@ -121,16 +140,22 @@ export const ManageCategories = () => {
         className="space-y-4 mb-10 p-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20"
       >
         <div>
-          <label className="block mb-2 text-sm font-medium">Category Name</label>
+          <label className="block mb-2 text-sm font-medium">
+            Category Name
+          </label>
           <input
             className="border-none w-full p-3 rounded-lg bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-gray-400"
             placeholder="Enter category name"
             {...register("name", { required: "Category name is required" })}
           />
-          {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>
+          )}
         </div>
         <div>
-          <label className="block mb-2 text-sm font-medium">Category Type</label>
+          <label className="block mb-2 text-sm font-medium">
+            Category Type
+          </label>
           <select
             className="border-none w-full p-3 rounded-lg bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-purple-500 outline-none text-white"
             {...register("type", { required: "Please select a type" })}
@@ -139,7 +164,9 @@ export const ManageCategories = () => {
             <option value="income">Income</option>
             <option value="expense">Expense</option>
           </select>
-          {errors.type && <p className="text-red-400 text-sm mt-1">{errors.type.message}</p>}
+          {errors.type && (
+            <p className="text-red-400 text-sm mt-1">{errors.type.message}</p>
+          )}
         </div>
         <button
           type="submit"
@@ -170,97 +197,162 @@ export const ManageCategories = () => {
       </div>
 
       {/* Table */}
+      {/* Table / Card View */}
       {loading ? (
         <p className="text-gray-400">Loading categories...</p>
       ) : (
-        <div className="overflow-hidden rounded-2xl shadow-lg border border-white/20 bg-white/5 backdrop-blur-md">
-          <table className="w-full text-left">
-            <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-              <tr>
-                <th className="px-6 py-3">Name</th>
-                <th className="px-6 py-3">Type</th>
-                <th className="px-6 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCategories.map((cat) => (
-                <motion.tr
-                  key={cat._id}
-                  whileHover={{ scale: 1.01, backgroundColor: "rgba(255,255,255,0.05)" }}
-                  className="border-t border-white/10"
-                >
-                  <td className="px-6 py-3">
-                    {editingId === cat._id ? (
-                      <input
-                        value={editedCategory.name}
-                        onChange={(e) =>
-                          setEditedCategory({ ...editedCategory, name: e.target.value })
-                        }
-                        className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
-                      />
-                    ) : (
-                      cat.name
-                    )}
-                  </td>
-                  <td className="px-6 py-3">
-                    {editingId === cat._id ? (
-                      <select
-                        value={editedCategory.type}
-                        onChange={(e) =>
-                          setEditedCategory({ ...editedCategory, type: e.target.value })
-                        }
-                        className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
-                      >
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                      </select>
-                    ) : (
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          cat.type === "income"
-                            ? "bg-green-400/20 text-green-300"
-                            : "bg-red-400/20 text-red-300"
-                        }`}
-                      >
-                        {cat.type}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-3 flex gap-3 justify-center">
-                    {editingId === cat._id ? (
-                      <button
-                        onClick={() => saveEdit(cat._id)}
-                        className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
-                      >
-                        Save
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => startEditing(cat)}
-                        className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
-                      >
-                        Edit
-                      </button>
-                    )}
-                    <button
-                      onClick={() => deleteCategory(cat._id)}
-                      className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </motion.tr>
-              ))}
-              {filteredCategories.length === 0 && (
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto rounded-2xl shadow-lg border border-white/20 bg-white/5 backdrop-blur-md">
+            <table className="w-full text-left">
+              <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                 <tr>
-                  <td colSpan="3" className="text-center py-6 text-gray-400">
-                    No categories found
-                  </td>
+                  <th className="px-6 py-3">Name</th>
+                  <th className="px-6 py-3">Type</th>
+                  <th className="px-6 py-3 text-center">Actions</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filteredCategories.map((cat) => (
+                  <motion.tr
+                    key={cat._id}
+                    whileHover={{
+                      scale: 1.01,
+                      backgroundColor: "rgba(255,255,255,0.05)",
+                    }}
+                    className="border-t border-white/10"
+                  >
+                    <td className="px-6 py-3">
+                      {editingId === cat._id ? (
+                        <input
+                          value={editedCategory.name}
+                          onChange={(e) =>
+                            setEditedCategory({
+                              ...editedCategory,
+                              name: e.target.value,
+                            })
+                          }
+                          className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
+                        />
+                      ) : (
+                        cat.name
+                      )}
+                    </td>
+                    <td className="px-6 py-3">
+                      {editingId === cat._id ? (
+                        <select
+                          value={editedCategory.type}
+                          onChange={(e) =>
+                            setEditedCategory({
+                              ...editedCategory,
+                              type: e.target.value,
+                            })
+                          }
+                          className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
+                        >
+                          <option value="income">Income</option>
+                          <option value="expense">Expense</option>
+                        </select>
+                      ) : (
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            cat.type === "income"
+                              ? "bg-green-400/20 text-green-300"
+                              : "bg-red-400/20 text-red-300"
+                          }`}
+                        >
+                          {cat.type}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-3 flex gap-3 justify-center">
+                      {editingId === cat._id ? (
+                        <button
+                          onClick={() => saveEdit(cat._id)}
+                          className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
+                        >
+                          Save
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => startEditing(cat)}
+                          className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
+                        >
+                          Edit
+                        </button>
+                      )}
+                      <button
+                        onClick={() => deleteCategory(cat._id)}
+                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </motion.tr>
+                ))}
+                {filteredCategories.length === 0 && (
+                  <tr>
+                    <td colSpan="3" className="text-center py-6 text-gray-400">
+                      No categories found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="block md:hidden space-y-4">
+            {filteredCategories.map((cat) => (
+              <motion.div
+                key={cat._id}
+                whileHover={{ scale: 1.02 }}
+                className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur-md shadow-md"
+              >
+                <h4 className="font-semibold">{cat.name}</h4>
+                <p
+                  className={`mt-1 inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                    cat.type === "income"
+                      ? "bg-green-400/20 text-green-300"
+                      : "bg-red-400/20 text-red-300"
+                  }`}
+                >
+                  {cat.type}
+                </p>
+
+                {/* Actions */}
+                <div className="mt-3 flex flex-col gap-2">
+                  {editingId === cat._id ? (
+                    <button
+                      onClick={() => saveEdit(cat._id)}
+                      className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
+                    >
+                      Save
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => startEditing(cat)}
+                      className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
+                    >
+                      Edit
+                    </button>
+                  )}
+                  <button
+                    onClick={() => deleteCategory(cat._id)}
+                    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+            {filteredCategories.length === 0 && (
+              <p className="text-center py-6 text-gray-400">
+                No categories found
+              </p>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

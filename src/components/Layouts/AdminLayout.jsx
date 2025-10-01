@@ -3,7 +3,7 @@ import { AdminNavbar } from "../Admin/AdminNavbar";
 import { AdminSidebar } from "../Admin/AdminSidebar";
 
 export const AdminLayout = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
@@ -16,18 +16,29 @@ export const AdminLayout = ({ children }) => {
 
       {/* Main content area */}
       <div
-        className="flex-1 transition-all duration-300"
-        style={{
-          marginLeft: isSidebarOpen ? "260px" : "60px", // Matches sidebar width
-        }}
+        className={`flex-1 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-16"
+        } md:ml-64`}
       >
         {/* Navbar */}
-        <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg px-6 py-3">
-          <AdminNavbar />
+        <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg px-4 md:px-6 py-3 flex justify-between items-center">
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20"
+          >
+            {/* Simple hamburger icon */}
+            <div className="w-5 h-0.5 bg-white mb-1"></div>
+            <div className="w-5 h-0.5 bg-white mb-1"></div>
+            <div className="w-5 h-0.5 bg-white"></div>
+          </button>
+
+          <div className="flex-1 flex justify-center md:justify-end">
+            <AdminNavbar />
+          </div>
         </div>
 
         {/* Page Content */}
-        <div className="p-6">{children}</div>
+        <div className="p-4 md:p-6">{children}</div>
       </div>
     </div>
   );

@@ -14,26 +14,26 @@ export const AdminNavbar = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       {/* Navbar */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-white/10 border-b border-white/10 shadow-md">
-        <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-3 sm:py-4 gap-3 sm:gap-0">
           {/* Logo */}
           <Link
             to="/"
-            className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform"
+            className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform text-center sm:text-left"
           >
             Trackit | Expense App
           </Link>
 
           {/* Right Side */}
-          <div className="flex items-center gap-5">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
             <button
               onClick={logout}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
+              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
             >
               Logout
             </button>
 
             {/* Socials */}
-            <div className="flex gap-4 text-xl">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-4 text-lg sm:text-xl">
               <a
                 href="#"
                 className="hover:text-blue-400 hover:scale-110 transition-transform"
@@ -70,7 +70,7 @@ export const AdminNavbar = () => {
       </header>
 
       {/* Content */}
-      <main className="p-6 max-w-7xl mx-auto">
+      <main className="p-4 sm:p-6 max-w-7xl mx-auto">
         <Outlet />
       </main>
     </div>
