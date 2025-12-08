@@ -22,7 +22,7 @@ export const UserDashboard = () => {
   const [recurring, setRecurring] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
-  const COLORS = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444", "#3B82F6"];
+  const COLORS = ["#4F46E5", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444"];
   const userId = localStorage.getItem("id");
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export const UserDashboard = () => {
           axiosInstance.get(`/recurring/${userId}`),
           axiosInstance.get(`/transactionsByUserID/${userId}`),
         ]);
+
         setBudget(budgetRes.data.data);
         setIncome(incomeRes.data.data);
         setExpenses(expenseRes.data.data);
@@ -56,116 +57,131 @@ export const UserDashboard = () => {
     fetchData();
   }, [userId]);
 
-  return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-      <motion.h1
-        className="text-3xl font-bold mb-8 text-white"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        User Dashboard
-      </motion.h1>
+  const totalBudget = budget.reduce((a, i) => a + i.amount, 0);
+  const totalIncome = income.reduce((a, i) => a + i.amount, 0);
+  const totalExpenses = expenses.reduce((a, e) => a + e.amount, 0);
 
-      {/* Budget Overview */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-800 px-4 sm:px-6 py-8">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mb-10"
+      >
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+          Financial Overview
+        </h1>
+        <p className="text-sm sm:text-base text-gray-500 mt-2">
+          A consolidated view of your current financial position.
+        </p>
+      </motion.div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {[
           {
-            title: "Budget",
-            value: budget.reduce((a, i) => a + i.amount, 0),
-            color: "text-indigo-400",
+            title: "Total Budget",
+            value: totalBudget,
+            color: "from-indigo-500/10 to-indigo-500/5 border-indigo-200",
           },
           {
             title: "Total Income",
-            value: income.reduce((a, i) => a + i.amount, 0),
-            color: "text-green-400",
+            value: totalIncome,
+            color: "from-emerald-500/10 to-emerald-500/5 border-emerald-200",
           },
           {
             title: "Total Expenses",
-            value: expenses.reduce((a, e) => a + e.amount, 0),
-            color: "text-red-400",
+            value: totalExpenses,
+            color: "from-rose-500/10 to-rose-500/5 border-rose-200",
           },
-        ].map((item, idx) => (
+        ].map((item, i) => (
           <motion.div
-            key={idx}
-            whileHover={{ scale: 1.03 }}
-            className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-6 transition-all duration-200`}
+            key={i}
+            whileHover={{ y: -3 }}
+            transition={{ duration: 0.25 }}
+            className={`rounded-2xl bg-gradient-to-br ${item.color} border shadow-sm hover:shadow-md backdrop-blur-xl p-6 transition-all`}
           >
-            <h2 className="text-lg font-medium text-white/80">{item.title}</h2>
-            <p className={`text-2xl font-bold mt-2 ${item.color}`}>
-              ₹{item.value}
+            <h2 className="text-sm text-gray-600 font-medium mb-2">
+              {item.title}
+            </h2>
+            <p className="text-3xl font-semibold text-gray-900">
+              ₹{item.value.toLocaleString()}
             </p>
           </motion.div>
         ))}
       </div>
 
       {/* Charts Section */}
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Income vs Expenses */}
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
+          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-6"
+          transition={{ duration: 0.5 }}
+          className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition-all"
         >
-          <h2 className="text-lg font-semibold text-white mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Income vs Expenses
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
+          </h3>
+          <ResponsiveContainer width="100%" height={280}>
             <BarChart
               data={[
-                {
-                  name: "Income",
-                  amount: income.reduce((a, i) => a + i.amount, 0),
-                },
-                {
-                  name: "Expenses",
-                  amount: expenses.reduce((a, e) => a + e.amount, 0),
-                },
+                { name: "Income", amount: totalIncome },
+                { name: "Expenses", amount: totalExpenses },
               ]}
             >
-              <XAxis dataKey="name" stroke="#D1D5DB" />
-              <YAxis stroke="#D1D5DB" />
+              <XAxis dataKey="name" stroke="#9CA3AF" />
+              <YAxis stroke="#9CA3AF" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#1F2937",
-                  borderRadius: 8,
-                  color: "#fff",
+                  backgroundColor: "#fff",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
                 }}
               />
-              <Bar dataKey="amount" fill="#4F46E5" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="amount" fill="#6366F1" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
 
+        {/* Expense Breakdown */}
         <motion.div
-          initial={{ opacity: 0, x: 40 }}
+          initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-6"
+          transition={{ duration: 0.5 }}
+          className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition-all"
         >
-          <h2 className="text-lg font-semibold text-white mb-4">
-            Expense Breakdown
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Expense Distribution
+          </h3>
+          <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
                 data={expenses.map((e) => ({
                   name: e.category,
                   value: e.amount,
                 }))}
-                dataKey="value"
                 cx="50%"
                 cy="50%"
-                outerRadius={100}
-                label={{ fill: "#fff" }}
+                outerRadius={95}
+                dataKey="value"
+                label
               >
                 {expenses.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
-              <Legend wrapperStyle={{ color: "#fff" }} />
+              <Legend
+                wrapperStyle={{ color: "#4B5563", fontSize: 12 }}
+                verticalAlign="bottom"
+              />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#1F2937",
+                  backgroundColor: "#fff",
+                  border: "1px solid #E5E7EB",
                   borderRadius: 8,
-                  color: "#fff",
                 }}
               />
             </PieChart>

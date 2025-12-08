@@ -28,7 +28,7 @@ export const ViewIncome = () => {
         const data = res.data.data || [];
         setIncomes(data);
 
-        // Process monthly income
+        // Monthly aggregation
         const months = Array(12).fill(0);
         data.forEach((income) => {
           const month = new Date(income.date).getMonth();
@@ -36,11 +36,9 @@ export const ViewIncome = () => {
         });
 
         const yearlyAvg = months.reduce((a, b) => a + b, 0) / 12;
-
         const chart = months.map((amt, idx) => ({
           month: new Date(0, idx).toLocaleString("default", { month: "short" }),
           amount: amt,
-          arrow: amt >= yearlyAvg ? "⬆️" : "⬇️",
           color: amt >= yearlyAvg ? "#22c55e" : "#ef4444",
         }));
 
@@ -61,12 +59,12 @@ export const ViewIncome = () => {
 
     try {
       await axiosInstance.delete(`/incomes/${id}`);
-      setIncomes((prev) => prev.filter((income) => income._id !== id));
+      const updated = incomes.filter((income) => income._id !== id);
+      setIncomes(updated);
 
-      // Recalculate monthly chart after deletion
-      const updatedIncomes = incomes.filter((income) => income._id !== id);
+      // Recalculate chart
       const months = Array(12).fill(0);
-      updatedIncomes.forEach((income) => {
+      updated.forEach((income) => {
         const month = new Date(income.date).getMonth();
         months[month] += income.amount;
       });
@@ -76,7 +74,6 @@ export const ViewIncome = () => {
         months.map((amt, idx) => ({
           month: new Date(0, idx).toLocaleString("default", { month: "short" }),
           amount: amt,
-          arrow: amt >= yearlyAvg ? "⬆️" : "⬇️",
           color: amt >= yearlyAvg ? "#22c55e" : "#ef4444",
         }))
       );
@@ -87,80 +84,94 @@ export const ViewIncome = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white space-y-10">
-      <h2 className="text-center text-2xl font-bold">💰 All Incomes</h2>
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white space-y-10">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          Income Overview
+        </h2>
+        <p className="text-sm sm:text-base text-gray-400">
+          Track your monthly growth and manage your income records
+        </p>
+      </div>
 
-      {/* Monthly Income Trend Chart */}
-      <div className="w-full h-80 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl shadow-lg p-4">
-        <h3 className="text-lg font-semibold mb-4 text-center">
-          📈 Monthly Income Trend
+      {/* Chart Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full h-80 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl p-4 sm:p-6"
+      >
+        <h3 className="text-lg sm:text-xl font-semibold text-center text-gray-100 mb-4">
+          Monthly Income Trend
         </h3>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={monthlyData}>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="rgba(255,255,255,0.2)"
-            />
-            <XAxis dataKey="month" stroke="white" />
-            <YAxis stroke="white" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.15)" />
+            <XAxis dataKey="month" stroke="white" fontSize={12} />
+            <YAxis stroke="white" fontSize={12} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "rgba(0,0,0,0.8)",
+                backgroundColor: "rgba(17, 24, 39, 0.9)",
                 border: "none",
+                borderRadius: "8px",
                 color: "white",
               }}
-              itemStyle={{ color: "white" }}
             />
             <ReferenceLine
               y={avg}
               stroke="#3b82f6"
               strokeDasharray="3 3"
-              label="Avg"
+              label={{
+                value: "Avg",
+                position: "right",
+                fill: "#3b82f6",
+                fontSize: 12,
+              }}
             />
             <Line
               type="monotone"
               dataKey="amount"
               stroke="#3b82f6"
               strokeWidth={2}
-              dot={false}
+              dot={{ r: 3, fill: "#60a5fa" }}
+              activeDot={{ r: 6 }}
             />
           </LineChart>
         </ResponsiveContainer>
-        <div className="flex justify-around mt-2">
-          {monthlyData.map((d, idx) => (
-            <span key={idx} style={{ color: d.color, fontSize: "18px" }}>
-              {d.arrow}
-            </span>
-          ))}
-        </div>
-      </div>
+      </motion.div>
 
-      {/* Income Cards */}
+      {/* Income List */}
       {loading ? (
-        <p className="text-center text-white/70">Loading incomes...</p>
+        <p className="text-center text-gray-400">Loading incomes...</p>
       ) : incomes.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {incomes.map((income, idx) => (
             <motion.div
               key={income._id}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 flex flex-col justify-between transform hover:scale-105 transition duration-300"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: idx * 0.05 }}
+              className="rounded-2xl bg-gradient-to-br from-blue-600/80 to-indigo-700/80 border border-white/10 shadow-lg p-6 flex flex-col justify-between hover:scale-105 transition-transform duration-300"
             >
               <div>
-                <h3 className="text-xl font-bold">{income.source}</h3>
-                <p className="text-sm text-white/70">
-                  {new Date(income.date).toLocaleDateString()}
+                <h3 className="text-lg font-semibold tracking-wide">
+                  {income.source}
+                </h3>
+                <p className="text-sm text-gray-300 mt-1">
+                  {new Date(income.date).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </p>
               </div>
+
               <div className="flex justify-between items-center mt-6">
-                <span className="text-2xl font-extrabold">
-                  ₹{income.amount}
-                </span>
+                <span className="text-2xl font-bold">₹{income.amount}</span>
                 <button
                   onClick={() => handleDelete(income._id)}
-                  className="p-2 rounded-full bg-red-500 hover:bg-red-600 transition"
+                  className="p-2 rounded-full bg-red-500/80 hover:bg-red-600 transition-all"
                 >
                   <TrashIcon className="h-5 w-5 text-white" />
                 </button>
@@ -169,7 +180,7 @@ export const ViewIncome = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-white/70">No incomes found.</p>
+        <p className="text-center text-gray-400">No income records found.</p>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 
@@ -12,12 +12,11 @@ export const Transaction = () => {
   });
 
   const tabTypes = { All: null, Expenses: "Expense", Incomes: "Income" };
+  const userId = useMemo(() => localStorage.getItem("id"), []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = localStorage.getItem("id");
-
         const [expenseRes, incomeRes, budgetRes] = await Promise.all([
           axiosInstance.get(`/expensesbyUserID/${userId}`),
           axiosInstance.get(`/incomesbyUserID/${userId}`),
@@ -46,7 +45,7 @@ export const Transaction = () => {
 
         setTransactions(merged);
 
-        // Calculate summary
+        // Summary
         const totalIncome = incomes.reduce((acc, i) => acc + i.amount, 0);
         const totalExpense = expenses.reduce((acc, e) => acc + e.amount, 0);
         setSummary({
@@ -60,35 +59,42 @@ export const Transaction = () => {
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
 
-  const filtered = tabTypes[activeTab]
-    ? transactions.filter((t) => t.type === tabTypes[activeTab])
-    : transactions;
+  // Filtered and sorted transactions
+  const filteredSorted = useMemo(() => {
+    const filtered = tabTypes[activeTab]
+      ? transactions.filter((t) => t.type === tabTypes[activeTab])
+      : transactions;
+    return [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [activeTab, transactions]);
 
-  const filteredSorted = filtered.sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
+  // Group by date
+  const groupedByDate = useMemo(() => {
+    return filteredSorted.reduce((acc, t) => {
+      const date = new Date(t.date).toLocaleDateString();
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(t);
+      return acc;
+    }, {});
+  }, [filteredSorted]);
+
+  const handlePlanBudget = (expense) => {
+    // TODO: Open modal and prefill category for adding budget
+    alert(`Plan budget for ${expense.categoryID?.name || "Uncategorized"}`);
+  };
 
   return (
     <div className="p-6 space-y-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-      <h2 className="text-2xl font-bold text-white text-center mb-6">
-        Transactions
+      <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+        💳 Transactions
       </h2>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          {
-            title: "Total Income",
-            value: summary.totalIncome,
-            color: "text-green-400",
-          },
-          {
-            title: "Total Expense",
-            value: summary.totalExpense,
-            color: "text-red-400",
-          },
+          { title: "Total Income", value: summary.totalIncome, color: "text-green-400" },
+          { title: "Total Expense", value: summary.totalExpense, color: "text-red-400" },
           { title: "Balance", value: summary.balance, color: "text-blue-400" },
         ].map((item, idx) => (
           <motion.div
@@ -96,9 +102,7 @@ export const Transaction = () => {
             whileHover={{ scale: 1.05 }}
             className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 shadow-lg text-center"
           >
-            <h3 className="text-lg font-semibold text-white/80">
-              {item.title}
-            </h3>
+            <h3 className="text-lg font-semibold text-white/80">{item.title}</h3>
             <p className={`text-2xl font-bold mt-2 ${item.color}`}>
               ₹{item.value.toLocaleString()}
             </p>
@@ -107,12 +111,12 @@ export const Transaction = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-4 border-b border-white/20 pb-2">
+      <div className="flex flex-wrap space-x-2 sm:space-x-4 border-b border-white/20 pb-2 mt-4">
         {Object.keys(tabTypes).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-t-lg font-medium transition-colors ${
+            className={`px-4 py-2 rounded-t-lg font-medium transition-colors cursor-pointer ${
               activeTab === tab
                 ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white shadow-lg"
                 : "text-gray-300 hover:text-white"
@@ -124,48 +128,48 @@ export const Transaction = () => {
       </div>
 
       {/* Transaction List */}
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-4">
+      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg p-4 mt-2">
         {filteredSorted.length > 0 ? (
-          <ul className="divide-y divide-white/10">
-            {filteredSorted.map((t) => (
-              <motion.li
-                key={t._id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                whileHover={{
-                  scale: 1.02,
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                }}
-                transition={{ duration: 0.2 }}
-                className="flex justify-between items-center py-3 px-2 rounded-lg"
-              >
-                <div>
-                  <p className="font-medium text-white">
-                    {t.description || t.source || "No description"}
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    {t.categoryID?.name || "Uncategorized"} •{" "}
-                    {new Date(t.date).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p
-                    className={`font-semibold ${
-                      t.type === "Expense" ? "text-red-400" : "text-green-400"
-                    }`}
+          Object.keys(groupedByDate).map((date) => (
+            <div key={date} className="mb-4">
+              <h4 className="text-sm text-gray-300 mb-2">{date}</h4>
+              <ul className="divide-y divide-white/10">
+                {groupedByDate[date].map((t) => (
+                  <motion.li
+                    key={t._id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    whileHover={{
+                      scale: 1.02,
+                      backgroundColor: "rgba(255,255,255,0.05)",
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-3 px-2 rounded-lg"
                   >
-                    {t.type === "Expense" ? "-" : "+"}₹
-                    {t.amount.toLocaleString()}
-                  </p>
-                  {t.type === "Expense" && !t.hasBudget && (
-                    <button className="mt-1 px-3 py-1 text-xs rounded bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white shadow hover:scale-105 transition-transform">
-                      Plan Budget
-                    </button>
-                  )}
-                </div>
-              </motion.li>
-            ))}
-          </ul>
+                    <div className="flex-1">
+                      <p className="font-medium text-white">{t.description || t.source || "No description"}</p>
+                      <p className="text-sm text-gray-300">
+                        {t.categoryID?.name || "Uncategorized"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:items-end mt-2 sm:mt-0">
+                      <p className={`font-semibold ${t.type === "Expense" ? "text-red-400" : "text-green-400"}`}>
+                        {t.type === "Expense" ? "-" : "+"}₹{t.amount.toLocaleString()}
+                      </p>
+                      {t.type === "Expense" && !t.hasBudget && (
+                        <button
+                          onClick={() => handlePlanBudget(t)}
+                          className="mt-1 px-3 py-1 text-xs rounded bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white shadow hover:scale-105 transition-transform"
+                        >
+                          Plan Budget
+                        </button>
+                      )}
+                    </div>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          ))
         ) : (
           <p className="text-gray-400 italic text-center py-6">
             No {activeTab.toLowerCase()} transactions found

@@ -35,16 +35,18 @@ export const IncomeSummary = () => {
         setIncomes(incomesData);
         setExpenses(expensesData);
 
-        // Calculate totals
         const totalIncome = incomesData.reduce((sum, i) => sum + i.amount, 0);
         const totalExpense = expensesData.reduce((sum, e) => sum + e.amount, 0);
         const netSavings = totalIncome - totalExpense;
-        const savingsRate = totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(2) : 0;
+        const savingsRate =
+          totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(2) : 0;
 
         setStats({ totalIncome, totalExpense, netSavings, savingsRate });
 
-        // Monthly income vs expense
-        const months = Array.from({ length: 12 }, () => ({ income: 0, expense: 0 }));
+        const months = Array.from({ length: 12 }, () => ({
+          income: 0,
+          expense: 0,
+        }));
 
         incomesData.forEach((inc) => {
           const month = new Date(inc.date).getMonth();
@@ -58,33 +60,35 @@ export const IncomeSummary = () => {
 
         setChartData(
           months.map((m, idx) => ({
-            month: new Date(0, idx).toLocaleString("default", { month: "short" }),
+            month: new Date(0, idx).toLocaleString("default", {
+              month: "short",
+            }),
             income: m.income,
             expense: m.expense,
           }))
         );
 
-        // Financial tips
         let suggestedTips = [];
         if (savingsRate < 20) {
           suggestedTips = [
-            "Track your daily expenses to cut unnecessary costs.",
-            "Avoid impulse purchases – wait 24hrs before buying.",
-            "Try cooking at home instead of eating out.",
+            "Track your expenses closely — small leaks sink big ships.",
+            "Avoid impulse spending; wait a day before making non-essential purchases.",
+            "Prepare home-cooked meals to reduce daily costs.",
           ];
         } else if (savingsRate < 40) {
           suggestedTips = [
-            "Good job saving! Build an emergency fund (6 months).",
-            "Automate monthly investments (SIP / index funds).",
-            "Review subscriptions and cancel unused ones.",
+            "You’re doing well! Build an emergency fund for 6 months of expenses.",
+            "Automate your savings or SIPs to stay consistent.",
+            "Revisit recurring subscriptions and cancel unused ones.",
           ];
         } else {
           suggestedTips = [
-            "Excellent savings rate! Focus on long-term investments.",
-            "Diversify into stocks, ETFs, or retirement funds.",
-            "Explore passive income opportunities.",
+            "Strong performance — consider diversifying investments.",
+            "Focus on long-term wealth growth through index funds or ETFs.",
+            "Explore low-effort passive income opportunities.",
           ];
         }
+
         setTips(suggestedTips);
       } catch (error) {
         console.error("Error fetching finance data:", error);
@@ -95,65 +99,99 @@ export const IncomeSummary = () => {
   }, []);
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white space-y-8">
-  {/* Header */}
-  <div className="flex justify-center gap-3 items-center mb-6">
-    <FaChartLine size={30} className="text-blue-400" />
-    <h2 className="text-3xl font-bold text-center">Finance Dashboard</h2>
-  </div>
+    <div className="p-6 min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-white space-y-10">
+      {/* Header */}
+      <div className="flex justify-center items-center gap-3">
+        <FaChartLine size={28} className="text-blue-400" />
+        <h2 className="text-3xl font-semibold tracking-tight">
+          Finance Overview
+        </h2>
+      </div>
 
-  {/* Summary Cards */}
-  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-    {[
-      { label: "Total Income", value: stats.totalIncome, color: "from-green-500 to-green-600" },
-      { label: "Total Expenses", value: stats.totalExpense, color: "from-red-500 to-red-600" },
-      { label: "Net Savings", value: stats.netSavings, color: "from-blue-500 to-blue-600" },
-      { label: "Savings Rate", value: `${stats.savingsRate}%`, color: "from-purple-500 to-purple-600" },
-    ].map((card, idx) => (
+      {/* Stats Grid */}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          {
+            label: "Total Income",
+            value: stats.totalIncome,
+            color: "from-green-500 to-emerald-600",
+          },
+          {
+            label: "Total Expenses",
+            value: stats.totalExpense,
+            color: "from-red-500 to-rose-600",
+          },
+          {
+            label: "Net Savings",
+            value: stats.netSavings,
+            color: "from-blue-500 to-indigo-600",
+          },
+          {
+            label: "Savings Rate",
+            value: `${stats.savingsRate}%`,
+            color: "from-purple-500 to-violet-600",
+          },
+        ].map((card, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: idx * 0.15 }}
+            className={`rounded-2xl p-6 bg-gradient-to-br ${card.color} shadow-xl hover:shadow-2xl hover:scale-105 transition-all`}
+          >
+            <h3 className="text-sm uppercase text-white/70 tracking-wide">
+              {card.label}
+            </h3>
+            <p className="text-3xl font-bold mt-2">
+              {typeof card.value === "number" ? `₹${card.value}` : card.value}
+            </p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Chart Section */}
+      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold text-center mb-4">
+          Monthly Income vs Expense
+        </h3>
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={chartData}>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(255,255,255,0.15)"
+            />
+            <XAxis dataKey="month" stroke="white" />
+            <YAxis stroke="white" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "rgba(20,20,20,0.9)",
+                border: "none",
+                color: "white",
+              }}
+            />
+            <Legend wrapperStyle={{ color: "white" }} />
+            <Bar dataKey="income" fill="#22c55e" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="expense" fill="#ef4444" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Financial Tips */}
       <motion.div
-        key={idx}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: idx * 0.2 }}
-        className={`rounded-2xl shadow-lg p-6 text-center bg-gradient-to-r ${card.color} hover:scale-105 transform transition`}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-yellow-400/20 to-amber-500/10 backdrop-blur-md rounded-2xl border border-yellow-300/20 p-6 shadow-lg"
       >
-        <h3 className="text-lg font-semibold">{card.label}</h3>
-        <p className="text-2xl font-bold mt-2">
-          {typeof card.value === "number" ? `₹${card.value}` : card.value}
-        </p>
+        <h3 className="text-xl font-semibold text-yellow-300 mb-4">
+          Smart Finance Insights
+        </h3>
+        <ul className="list-disc pl-6 space-y-2 text-white/80 leading-relaxed">
+          {tips.map((tip, idx) => (
+            <li key={idx}>{tip}</li>
+          ))}
+        </ul>
       </motion.div>
-    ))}
-  </div>
-
-  {/* Income vs Expense Chart */}
-  <div className="w-full h-96 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl shadow-lg p-4">
-    <h3 className="text-lg font-semibold mb-4 text-center">Income vs Expense (Monthly)</h3>
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
-        <XAxis dataKey="month" stroke="white" />
-        <YAxis stroke="white" />
-        <Tooltip
-          contentStyle={{ backgroundColor: "rgba(0,0,0,0.8)", border: "none", color: "white" }}
-          itemStyle={{ color: "white" }}
-        />
-        <Legend wrapperStyle={{ color: "white" }} />
-        <Bar dataKey="income" fill="#22c55e" />
-        <Bar dataKey="expense" fill="#ef4444" />
-      </BarChart>
-    </ResponsiveContainer>
-  </div>
-
-  {/* Financial Tips */}
-  <div className="bg-yellow-100/20 backdrop-blur-sm rounded-2xl shadow-md p-6 border border-yellow-200/20">
-    <h3 className="text-xl font-bold mb-4 text-yellow-300">💡 Financial Tips for You</h3>
-    <ul className="list-disc pl-6 space-y-2 text-white/80">
-      {tips.map((tip, idx) => (
-        <li key={idx}>{tip}</li>
-      ))}
-    </ul>
-  </div>
-</div>
-
+    </div>
   );
 };

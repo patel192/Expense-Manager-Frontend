@@ -15,7 +15,12 @@ export const AddIncome = () => {
   }, [setValue]);
 
   const SubmitHandler = async (data) => {
-    const payload = { userID: data.userID, amount: data.amount, source: data.source, date: data.date };
+    const payload = {
+      userID: data.userID,
+      amount: data.amount,
+      source: data.source,
+      date: data.date,
+    };
     try {
       setLoading(true);
       const res = await axiosInstance.post("/income", payload);
@@ -33,11 +38,11 @@ export const AddIncome = () => {
   };
 
   return (
-    <div>
-      {/* Floating Action Button */}
+    <>
+      {/* Floating Add Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-110"
+        className="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 hover:shadow-2xl transition-all transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <PlusIcon className="h-6 w-6" />
       </button>
@@ -54,46 +59,59 @@ export const AddIncome = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" />
           </Transition.Child>
 
           <div className="fixed inset-0 flex items-center justify-center p-4">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-90"
+              enterFrom="opacity-0 scale-95"
               enterTo="opacity-100 scale-100"
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-90"
+              leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md bg-gray-900 text-white rounded-2xl p-6 shadow-2xl border border-white/20 backdrop-blur-sm">
+              <Dialog.Panel className="w-full max-w-md bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl p-6 sm:p-8 shadow-2xl border border-white/10">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-4">
-                  <Dialog.Title className="text-xl font-semibold">➕ Add Income</Dialog.Title>
-                  <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white">
+                <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
+                  <Dialog.Title className="text-xl font-semibold tracking-wide text-gray-100">
+                    Add New Income
+                  </Dialog.Title>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-gray-400 hover:text-white transition"
+                  >
                     <XMarkIcon className="h-6 w-6" />
                   </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit(SubmitHandler)} className="space-y-4">
+                <form onSubmit={handleSubmit(SubmitHandler)} className="space-y-5">
+                  {/* Amount */}
                   <div>
-                    <label className="block text-sm font-medium">Amount</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      Amount
+                    </label>
                     <input
                       type="number"
-                      className="mt-1 w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 focus:ring focus:ring-blue-400"
                       placeholder="Enter amount"
                       {...register("amount", { required: "Amount is required" })}
+                      className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
-                    {errors.amount && <p className="text-red-500 text-sm">{errors.amount.message}</p>}
+                    {errors.amount && (
+                      <p className="text-red-500 text-xs mt-1">{errors.amount.message}</p>
+                    )}
                   </div>
 
+                  {/* Source */}
                   <div>
-                    <label className="block text-sm font-medium">Source</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      Source
+                    </label>
                     <select
-                      className="mt-1 w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 focus:ring focus:ring-blue-400"
                       {...register("source", { required: "Source is required" })}
+                      className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     >
                       <option value="">Select income source</option>
                       <option value="Salary">Salary</option>
@@ -101,23 +119,31 @@ export const AddIncome = () => {
                       <option value="Investments">Investments</option>
                       <option value="Other">Other</option>
                     </select>
-                    {errors.source && <p className="text-red-500 text-sm">{errors.source.message}</p>}
+                    {errors.source && (
+                      <p className="text-red-500 text-xs mt-1">{errors.source.message}</p>
+                    )}
                   </div>
 
+                  {/* Date */}
                   <div>
-                    <label className="block text-sm font-medium">Date</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      Date
+                    </label>
                     <input
                       type="date"
-                      className="mt-1 w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 focus:ring focus:ring-blue-400"
                       {...register("date", { required: "Date is required" })}
+                      className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
-                    {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
+                    {errors.date && (
+                      <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>
+                    )}
                   </div>
 
+                  {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg transition-transform transform hover:scale-105"
+                    className="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-lg text-white font-medium tracking-wide shadow-md hover:shadow-blue-500/20 transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   >
                     {loading ? "Adding..." : "Add Income"}
                   </button>
@@ -127,6 +153,6 @@ export const AddIncome = () => {
           </div>
         </Dialog>
       </Transition>
-    </div>
+    </>
   );
 };

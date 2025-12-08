@@ -77,33 +77,39 @@ export const Account = () => {
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8"
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md sm:max-w-lg md:max-w-2xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl p-5 sm:p-8"
       >
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-6 text-center">
-          User Profile
-        </h2>
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-wide">
+            Account Settings
+          </h2>
+          <p className="text-gray-400 text-sm sm:text-base mt-2">
+            Manage your personal information and profile photo.
+          </p>
+        </div>
 
         {/* Profile Picture */}
-        <div className="flex justify-center mb-6 relative">
+        <div className="flex justify-center mb-8 relative">
           {preview ? (
             <img
               src={preview}
               alt="Preview"
-              className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full object-cover border-4 border-blue-400 shadow-md"
+              className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-cyan-400 shadow-lg"
             />
           ) : user.profilePic ? (
             <img
               src={user.profilePic}
               alt="Profile"
-              className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full object-cover border-4 border-gray-300 shadow-md"
+              className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-purple-400 shadow-lg"
             />
           ) : (
-            <FaUserCircle className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 text-gray-500" />
+            <FaUserCircle className="w-28 h-28 sm:w-32 sm:h-32 text-gray-500" />
           )}
 
           {isEditing && (
-            <label className="absolute bottom-0 right-6 sm:right-10 md:right-12 lg:right-16 bg-blue-600/80 hover:bg-blue-700 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg cursor-pointer shadow-md">
+            <label className="absolute bottom-2 right-10 sm:right-16 bg-cyan-600/80 hover:bg-cyan-700 text-white px-3 py-1.5 text-xs rounded-lg cursor-pointer shadow-md transition-all">
               Change
               <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
             </label>
@@ -111,10 +117,10 @@ export const Account = () => {
         </div>
 
         {/* Fields */}
-        <div className="space-y-4 md:space-y-5">
+        <div className="space-y-5">
           {["name", "email", "bio"].map((field) => (
             <div key={field}>
-              <label className="block text-gray-300 mb-1 text-sm sm:text-base md:text-lg capitalize">
+              <label className="block text-gray-300 mb-1 text-sm capitalize">
                 {field === "bio" ? "Bio" : field.charAt(0).toUpperCase() + field.slice(1)}
               </label>
               {field === "bio" ? (
@@ -124,10 +130,10 @@ export const Account = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   rows={3}
-                  className={`w-full px-3 py-2 rounded-lg border resize-none text-sm sm:text-base md:text-base ${
+                  className={`w-full px-3 py-2 rounded-lg border resize-none text-sm ${
                     isEditing
-                      ? "bg-white/90 text-gray-900 border-blue-400 focus:ring-2 focus:ring-blue-500"
-                      : "bg-white/20 text-gray-200 border-gray-500"
+                      ? "bg-white/90 text-gray-900 border-cyan-400 focus:ring-2 focus:ring-cyan-500"
+                      : "bg-white/10 text-gray-200 border-gray-600"
                   }`}
                 />
               ) : (
@@ -137,10 +143,10 @@ export const Account = () => {
                   value={user[field]}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className={`w-full px-3 py-2 rounded-lg border text-sm sm:text-base md:text-base ${
+                  className={`w-full px-3 py-2 rounded-lg border text-sm ${
                     isEditing
-                      ? "bg-white/90 text-gray-900 border-blue-400 focus:ring-2 focus:ring-blue-500"
-                      : "bg-white/20 text-gray-200 border-gray-500"
+                      ? "bg-white/90 text-gray-900 border-cyan-400 focus:ring-2 focus:ring-cyan-500"
+                      : "bg-white/10 text-gray-200 border-gray-600"
                   }`}
                 />
               )}
@@ -149,37 +155,37 @@ export const Account = () => {
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col sm:flex-row justify-end mt-6 gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row justify-end mt-8 gap-3 sm:gap-4">
           {!isEditing ? (
             <motion.button
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setIsEditing(true)}
-              className="px-4 sm:px-5 py-2 md:px-6 md:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md text-sm sm:text-base md:text-base"
+              className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg shadow-md hover:shadow-cyan-500/30 transition-all"
             >
-              Edit
+              Edit Profile
             </motion.button>
           ) : (
             <>
               <motion.button
                 whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   setIsEditing(false);
                   setPreview(null);
                   setSelectedFile(null);
                 }}
-                className="px-4 sm:px-5 py-2 md:px-6 md:py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg shadow-md text-sm sm:text-base md:text-base"
+                className="px-5 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-md transition-all"
               >
                 Cancel
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={handleSave}
-                className="px-4 sm:px-5 py-2 md:px-6 md:py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md text-sm sm:text-base md:text-base"
+                className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg shadow-md hover:shadow-green-500/30 transition-all"
               >
-                Save
+                Save Changes
               </motion.button>
             </>
           )}
