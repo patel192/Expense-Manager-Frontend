@@ -7,18 +7,13 @@ import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateLayout } from "./components/Layouts/PrivateLayout";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
 import { AdminLayout } from "./components/Layouts/AdminLayout";
-import { AddExpense } from "./components/User/Expense/AddExpense";
-import { AllExpenses } from "./components/User/Expense/AllExpenses";
-import { SetBudget } from "./components/User/Budget/SetBudget";
-import { ViewBudget } from "./components/User/Budget/ViewBudget";
-import { BudgetSummary } from "./components/User/Budget/BudgetSummary";
-import { AddIncome } from "./components/User/Income/AddIncome";
-import { ViewIncome } from "./components/User/Income/ViewIncome";
-import { IncomeSummary } from "./components/User/Income/IncomeSummary";
+import { UserBudget } from "./components/User/Budget/UserBudget";
+import { UserIncome } from "./components/User/Income/UserIncome";
+
+import { UserExpenses } from "./components/User/Expense/UserExpenses";
 import { Reports } from "./components/User/Reports";
 import { Transaction } from "./components/User/Transaction";
 import { UserDashboard } from "./components/User/UserDashboard";
-import { RecurringExpenses } from "./components/User/RecurringExpenses";
 
 import { AdminDashboard } from "./components/Admin/AdminDashboard";
 import { AccessControl } from "./components/Admin/AccessControl";
@@ -30,6 +25,7 @@ import { UserDetails } from "./components/Admin/UserDetails";
 import { Account } from "./components/Admin/Account";
 
 import { useEffect } from "react";
+import { UserDashboardLayout } from "./components/User/UserDashboardLayout";
 
 function App() {
   const location = useLocation();
@@ -57,18 +53,12 @@ function App() {
 
       {/* Protected User Routes */}
       <Route element={<PrivateRoutes />}>
-        <Route path="/private" element={<PrivateLayout />}>
-          <Route path="addexpense" element={<AddExpense />} />
-          <Route path="allexpenses" element={<AllExpenses />} />
-          <Route path="addbudget" element={<SetBudget />} />
-          <Route path="allbudget" element={<ViewBudget />} />
-          <Route path="budgetsummary" element={<BudgetSummary />} />
-          <Route path="addincome" element={<AddIncome />} />
-          <Route path="viewincome" element={<ViewIncome />} />
-          <Route path="incomesummary" element={<IncomeSummary />} />
+        <Route path="/private" element={<UserDashboardLayout />}>
+          <Route path="expenses" element={<UserExpenses />} />
+          <Route path="budget" element={<UserBudget />} />
+          <Route path="income" element={<UserIncome />} />
           <Route path="reports" element={<Reports />} />
-          <Route path="recurring" element={<RecurringExpenses />} />
-          <Route path="transaction" element={<Transaction />} />
+          <Route path="transactions" element={<Transaction />} />
           <Route path="userdashboard" element={<UserDashboard />} />
           <Route path="account/:userId" element={<Account />} />
         </Route>

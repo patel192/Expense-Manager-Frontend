@@ -22,7 +22,7 @@ export const UserDashboard = () => {
   const [recurring, setRecurring] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
-  const COLORS = ["#4F46E5", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444"];
+  const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
   const userId = localStorage.getItem("id");
 
   useEffect(() => {
@@ -62,69 +62,57 @@ export const UserDashboard = () => {
   const totalExpenses = expenses.reduce((a, e) => a + e.amount, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-800 px-4 sm:px-6 py-8">
-      {/* Header */}
+    <div className="text-white space-y-10">
+
+      {/* ========== HEADER ========== */}
       <motion.div
-        initial={{ opacity: 0, y: -8 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="mb-10"
       >
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-bold">
           Financial Overview
         </h1>
-        <p className="text-sm sm:text-base text-gray-500 mt-2">
-          A consolidated view of your current financial position.
+        <p className="text-gray-400 mt-2">
+          A consolidated view of your financial performance.
         </p>
       </motion.div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      {/* ========== METRICS ========== */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
-          {
-            title: "Total Budget",
-            value: totalBudget,
-            color: "from-indigo-500/10 to-indigo-500/5 border-indigo-200",
-          },
-          {
-            title: "Total Income",
-            value: totalIncome,
-            color: "from-emerald-500/10 to-emerald-500/5 border-emerald-200",
-          },
-          {
-            title: "Total Expenses",
-            value: totalExpenses,
-            color: "from-rose-500/10 to-rose-500/5 border-rose-200",
-          },
+          { title: "Total Budget", value: totalBudget, color: "text-cyan-400" },
+          { title: "Total Income", value: totalIncome, color: "text-emerald-400" },
+          { title: "Total Expenses", value: totalExpenses, color: "text-rose-400" },
         ].map((item, i) => (
           <motion.div
             key={i}
-            whileHover={{ y: -3 }}
+            whileHover={{ y: -4 }}
             transition={{ duration: 0.25 }}
-            className={`rounded-2xl bg-gradient-to-br ${item.color} border shadow-sm hover:shadow-md backdrop-blur-xl p-6 transition-all`}
+            className="rounded-2xl bg-[#111318] border border-white/10 p-6 shadow-lg"
           >
-            <h2 className="text-sm text-gray-600 font-medium mb-2">
-              {item.title}
-            </h2>
-            <p className="text-3xl font-semibold text-gray-900">
+            <h2 className="text-gray-400 text-sm">{item.title}</h2>
+            <p className={`mt-2 text-3xl font-bold ${item.color}`}>
               ₹{item.value.toLocaleString()}
             </p>
           </motion.div>
         ))}
       </div>
 
-      {/* Charts Section */}
+      {/* ========== CHARTS ========== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Income vs Expenses */}
+
+        {/* ==== Income vs Expenses Chart ==== */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -15 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition-all"
+          className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
         >
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <h3 className="text-lg font-semibold mb-4 text-white">
             Income vs Expenses
           </h3>
+
           <ResponsiveContainer width="100%" height={280}>
             <BarChart
               data={[
@@ -136,26 +124,27 @@ export const UserDashboard = () => {
               <YAxis stroke="#9CA3AF" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#fff",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
+                  backgroundColor: "#111318",
+                  border: "1px solid #2a2d34",
+                  color: "#fff",
                 }}
               />
-              <Bar dataKey="amount" fill="#6366F1" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="amount" fill="#3b82f6" radius={[10, 10, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
 
-        {/* Expense Breakdown */}
+        {/* ==== Expense Distribution Pie Chart ==== */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 15 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition-all"
+          className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
         >
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <h3 className="text-lg font-semibold mb-4 text-white">
             Expense Distribution
           </h3>
+
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
@@ -173,20 +162,23 @@ export const UserDashboard = () => {
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
+
               <Legend
-                wrapperStyle={{ color: "#4B5563", fontSize: 12 }}
+                wrapperStyle={{ color: "#d1d5db", fontSize: 12 }}
                 verticalAlign="bottom"
               />
+
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#fff",
-                  border: "1px solid #E5E7EB",
-                  borderRadius: 8,
+                  backgroundColor: "#111318",
+                  border: "1px solid #2a2d34",
+                  color: "#fff",
                 }}
               />
             </PieChart>
           </ResponsiveContainer>
         </motion.div>
+
       </div>
     </div>
   );
