@@ -76,9 +76,7 @@ export const ManageCategories = () => {
   };
 
   const filteredCategories = categories.filter((cat) => {
-    const matchesSearch = cat.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch = cat.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType ? cat.type === filterType : true;
     return matchesSearch && matchesType;
   });
@@ -88,14 +86,14 @@ export const ManageCategories = () => {
   const expenseCount = categories.filter((c) => c.type === "expense").length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-b from-[#0b0c10] via-[#0e1014] to-[#090b0e] text-gray-100 p-8">
       <Toaster position="top-right" />
 
       {/* Header */}
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
+        className="text-3xl font-semibold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
       >
         Manage Categories
       </motion.h2>
@@ -104,17 +102,17 @@ export const ManageCategories = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {[
           { label: "Total", value: totalCount, color: "from-blue-400 to-purple-500" },
-          { label: "Income", value: incomeCount, color: "from-green-400 to-emerald-500" },
+          { label: "Income", value: incomeCount, color: "from-emerald-400 to-green-500" },
           { label: "Expense", value: expenseCount, color: "from-pink-400 to-red-500" },
         ].map((card, idx) => (
           <motion.div
             key={idx}
             whileHover={{ scale: 1.05 }}
-            className="p-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20"
+            className="p-6 rounded-2xl bg-white/5 backdrop-blur-lg shadow-lg border border-white/10"
           >
-            <p className="text-sm text-gray-300">{card.label}</p>
+            <p className="text-sm text-gray-400">{card.label}</p>
             <h3
-              className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${card.color}`}
+              className={`text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${card.color}`}
             >
               {card.value}
             </h3>
@@ -127,23 +125,27 @@ export const ManageCategories = () => {
         onSubmit={handleSubmit(submitHandler)}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-4 mb-10 p-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20"
+        className="space-y-4 mb-10 p-6 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl"
       >
         <div>
-          <label className="block mb-2 text-sm font-medium">Category Name</label>
+          <label className="block mb-1 text-sm font-medium text-gray-300">
+            Category Name
+          </label>
           <input
             {...register("name", { required: "Category name is required" })}
-            className="border-none w-full p-3 rounded-lg bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-gray-400"
+            className="w-full p-3 rounded-lg bg-black/20 text-white border border-white/10 focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-500"
             placeholder="Enter category name"
           />
           {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
         <div>
-          <label className="block mb-2 text-sm font-medium">Category Type</label>
+          <label className="block mb-1 text-sm font-medium text-gray-300">
+            Category Type
+          </label>
           <select
             {...register("type", { required: "Please select a type" })}
-            className="border-none w-full p-3 rounded-lg bg-white/5 backdrop-blur-md focus:ring-2 focus:ring-purple-500 outline-none text-white"
+            className="w-full p-3 rounded-lg bg-black/20 text-white border border-white/10 focus:ring-2 focus:ring-purple-500 outline-none"
           >
             <option value="">Select Type</option>
             <option value="income">Income</option>
@@ -154,25 +156,26 @@ export const ManageCategories = () => {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-4 rounded-lg font-semibold shadow-md hover:opacity-90 transition"
+          className="w-full py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold shadow-md hover:opacity-90 transition"
         >
           Add Category
         </button>
       </motion.form>
 
-      {/* Search & Filter */}
-      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6 flex-wrap">
+      {/* Search + Filter */}
+      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
         <input
           type="text"
           placeholder="Search categories..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2 p-3 rounded-lg bg-white/5 backdrop-blur-md border border-white/20 focus:ring-2 focus:ring-blue-500 outline-none text-white placeholder-gray-400"
+          className="w-full md:w-1/2 p-3 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 focus:ring-2 focus:ring-blue-400 outline-none placeholder-gray-500"
         />
+
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="p-3 rounded-lg bg-white/5 backdrop-blur-md border border-white/20 focus:ring-2 focus:ring-purple-500 outline-none text-white"
+          className="p-3 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 focus:ring-2 focus:ring-purple-400 outline-none"
         >
           <option value="">All Types</option>
           <option value="income">Income</option>
@@ -180,54 +183,58 @@ export const ManageCategories = () => {
         </select>
       </div>
 
-      {/* Loading Spinner */}
+      {/* Table */}
       {loading ? (
         <div className="flex justify-center py-10">
-          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <>
-          {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto scrollbar-thin rounded-2xl shadow-lg border border-white/20 bg-white/5 backdrop-blur-md">
+          <div className="hidden md:block overflow-x-auto rounded-2xl shadow-xl border border-white/10 bg-white/5 backdrop-blur-md">
             <table className="w-full text-left">
-              <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+              <thead className="bg-white/10 border-b border-white/10">
                 <tr>
-                  <th className="px-6 py-3">Name</th>
-                  <th className="px-6 py-3">Type</th>
-                  <th className="px-6 py-3 text-center">Actions</th>
+                  <th className="px-6 py-3 text-sm text-gray-300">Name</th>
+                  <th className="px-6 py-3 text-sm text-gray-300">Type</th>
+                  <th className="px-6 py-3 text-sm text-center text-gray-300">
+                    Actions
+                  </th>
                 </tr>
               </thead>
+
               <tbody>
                 {filteredCategories.map((cat) => (
                   <motion.tr
                     key={cat._id}
-                    whileHover={{ scale: 1.01, backgroundColor: "rgba(255,255,255,0.05)" }}
-                    className="border-t border-white/10"
+                    whileHover={{ scale: 1.005, backgroundColor: "rgba(255,255,255,0.05)" }}
+                    className="border-b border-white/10"
                   >
-                    <td className="px-6 py-3">
+                    {/* Name */}
+                    <td className="px-6 py-4">
                       {editingId === cat._id ? (
                         <input
                           value={editedCategory.name}
                           onChange={(e) =>
                             setEditedCategory({ ...editedCategory, name: e.target.value })
                           }
-                          className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
+                          className="w-full p-2 rounded-lg bg-black/30 border border-white/10 text-white outline-none"
                         />
                       ) : (
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 font-semibold">
+                        <span className="font-semibold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                           {cat.name}
                         </span>
                       )}
                     </td>
 
-                    <td className="px-6 py-3">
+                    {/* Type */}
+                    <td className="px-6 py-4">
                       {editingId === cat._id ? (
                         <select
                           value={editedCategory.type}
                           onChange={(e) =>
                             setEditedCategory({ ...editedCategory, type: e.target.value })
                           }
-                          className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none"
+                          className="w-full p-2 rounded-lg bg-black/30 border border-white/10 text-white outline-none"
                         >
                           <option value="income">Income</option>
                           <option value="expense">Expense</option>
@@ -245,18 +252,19 @@ export const ManageCategories = () => {
                       )}
                     </td>
 
-                    <td className="px-6 py-3 flex gap-2 justify-center">
+                    {/* Actions */}
+                    <td className="px-6 py-4 flex justify-center gap-2">
                       {editingId === cat._id ? (
                         <>
                           <button
                             onClick={() => saveEdit(cat._id)}
-                            className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
+                            className="px-3 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium"
                           >
                             Save
                           </button>
                           <button
                             onClick={() => setEditingId(null)}
-                            className="bg-gray-500 hover:bg-gray-600 px-3 py-1 rounded-lg text-white font-medium"
+                            className="px-3 py-1 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-medium"
                           >
                             Cancel
                           </button>
@@ -265,13 +273,13 @@ export const ManageCategories = () => {
                         <>
                           <button
                             onClick={() => startEditing(cat)}
-                            className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
+                            className="px-3 py-1 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-medium"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => deleteCategory(cat._id)}
-                            className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
+                            className="px-3 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium"
                           >
                             Delete
                           </button>
@@ -280,24 +288,17 @@ export const ManageCategories = () => {
                     </td>
                   </motion.tr>
                 ))}
-                {filteredCategories.length === 0 && (
-                  <tr>
-                    <td colSpan="3" className="text-center py-6 text-gray-400">
-                      No categories found
-                    </td>
-                  </tr>
-                )}
               </tbody>
             </table>
           </div>
 
-          {/* Mobile Card View */}
-          <div className="block md:hidden space-y-4">
+          {/* Mobile Cards */}
+          <div className="block md:hidden space-y-4 mt-6">
             {filteredCategories.map((cat) => (
               <motion.div
                 key={cat._id}
                 whileHover={{ scale: 1.02 }}
-                className="p-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur-md shadow-md"
+                className="p-4 rounded-xl bg-white/5 backdrop-blur-md shadow-md border border-white/10"
               >
                 {editingId === cat._id ? (
                   <>
@@ -306,28 +307,29 @@ export const ManageCategories = () => {
                       onChange={(e) =>
                         setEditedCategory({ ...editedCategory, name: e.target.value })
                       }
-                      className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none mb-2"
+                      className="w-full p-2 rounded bg-black/20 text-white border border-white/10 outline-none mb-2"
                     />
                     <select
                       value={editedCategory.type}
                       onChange={(e) =>
                         setEditedCategory({ ...editedCategory, type: e.target.value })
                       }
-                      className="w-full p-2 rounded bg-white/10 text-white border border-white/20 outline-none mb-2"
+                      className="w-full p-2 rounded bg-black/20 text-white border border-white/10 outline-none mb-3"
                     >
                       <option value="income">Income</option>
                       <option value="expense">Expense</option>
                     </select>
+
                     <div className="flex gap-2">
                       <button
                         onClick={() => saveEdit(cat._id)}
-                        className="bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg text-white font-medium"
+                        className="flex-1 bg-green-500 hover:bg-green-600 py-2 rounded-lg text-white font-medium"
                       >
                         Save
                       </button>
                       <button
                         onClick={() => setEditingId(null)}
-                        className="bg-gray-500 hover:bg-gray-600 px-3 py-1 rounded-lg text-white font-medium"
+                        className="flex-1 bg-gray-500 hover:bg-gray-600 py-2 rounded-lg text-white font-medium"
                       >
                         Cancel
                       </button>
@@ -335,11 +337,11 @@ export const ManageCategories = () => {
                   </>
                 ) : (
                   <>
-                    <h4 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                    <h4 className="font-semibold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                       {cat.name}
                     </h4>
                     <p
-                      className={`mt-1 inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-medium ${
                         cat.type === "income"
                           ? "bg-green-400/20 text-green-300"
                           : "bg-red-400/20 text-red-300"
@@ -347,16 +349,17 @@ export const ManageCategories = () => {
                     >
                       {cat.type}
                     </p>
-                    <div className="mt-3 flex gap-2">
+
+                    <div className="flex gap-3 mt-4">
                       <button
                         onClick={() => startEditing(cat)}
-                        className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded-lg text-white font-medium"
+                        className="flex-1 bg-yellow-500 hover:bg-yellow-600 py-2 rounded-lg text-white font-medium"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => deleteCategory(cat._id)}
-                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-white font-medium"
+                        className="flex-1 bg-red-500 hover:bg-red-600 py-2 rounded-lg text-white font-medium"
                       >
                         Delete
                       </button>
@@ -365,9 +368,6 @@ export const ManageCategories = () => {
                 )}
               </motion.div>
             ))}
-            {filteredCategories.length === 0 && (
-              <p className="text-center py-6 text-gray-400">No categories found</p>
-            )}
           </div>
         </>
       )}

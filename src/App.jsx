@@ -4,9 +4,7 @@ import { Login } from "./Login";
 import { Signup } from "./Signup";
 import { Content } from "./components/Common/Content";
 import { PublicLayout } from "./components/Layouts/PublicLayout";
-import { PrivateLayout } from "./components/Layouts/PrivateLayout";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
-import { AdminLayout } from "./components/Layouts/AdminLayout";
 import { UserBudget } from "./components/User/Budget/UserBudget";
 import { UserIncome } from "./components/User/Income/UserIncome";
 
@@ -26,6 +24,7 @@ import { Account } from "./components/Admin/Account";
 
 import { useEffect } from "react";
 import { UserDashboardLayout } from "./components/User/UserDashboardLayout";
+import { AdminDashboardLayout } from "./components/Admin/AdminDashboardLayout";
 
 function App() {
   const location = useLocation();
@@ -66,7 +65,7 @@ function App() {
 
       {/* Protected Admin Routes */}
       <Route element={<PrivateRoutes />}>
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminDashboardLayout />}>
           <Route path="admindashboard" element={<AdminDashboard />} />
           <Route path="accesscontrol" element={<AccessControl />} />
           <Route path="managecategories" element={<ManageCategories />} />

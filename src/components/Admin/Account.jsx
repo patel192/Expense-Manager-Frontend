@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useParams } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
+import { FaCamera, FaUserCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 export const Account = () => {
@@ -12,6 +12,7 @@ export const Account = () => {
     bio: "",
     profilePic: "",
   });
+
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -65,130 +66,138 @@ export const Account = () => {
 
       setUser(res.data.data);
       setPreview(null);
-      setIsEditing(false);
       setSelectedFile(null);
+      setIsEditing(false);
     } catch (err) {
       console.error("Error saving profile:", err);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-950 to-black p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-white px-4 py-8 flex justify-center">
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-md sm:max-w-lg md:max-w-2xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl p-5 sm:p-8"
+        className="w-full max-w-5xl bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6 md:p-10"
       >
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-wide">
-            Account Settings
-          </h2>
-          <p className="text-gray-400 text-sm sm:text-base mt-2">
-            Manage your personal information and profile photo.
-          </p>
-        </div>
+        {/* HEADER */}
+        <h2 className="text-3xl font-semibold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent text-center">
+          Account Settings
+        </h2>
+        <p className="text-gray-400 text-center mt-1 mb-10">
+          Update your profile, personal info, and account details.
+        </p>
 
-        {/* Profile Picture */}
-        <div className="flex justify-center mb-8 relative">
-          {preview ? (
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-cyan-400 shadow-lg"
-            />
-          ) : user.profilePic ? (
-            <img
-              src={user.profilePic}
-              alt="Profile"
-              className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-purple-400 shadow-lg"
-            />
-          ) : (
-            <FaUserCircle className="w-28 h-28 sm:w-32 sm:h-32 text-gray-500" />
-          )}
-
-          {isEditing && (
-            <label className="absolute bottom-2 right-10 sm:right-16 bg-cyan-600/80 hover:bg-cyan-700 text-white px-3 py-1.5 text-xs rounded-lg cursor-pointer shadow-md transition-all">
-              Change
-              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-            </label>
-          )}
-        </div>
-
-        {/* Fields */}
-        <div className="space-y-5">
-          {["name", "email", "bio"].map((field) => (
-            <div key={field}>
-              <label className="block text-gray-300 mb-1 text-sm capitalize">
-                {field === "bio" ? "Bio" : field.charAt(0).toUpperCase() + field.slice(1)}
-              </label>
-              {field === "bio" ? (
-                <textarea
-                  name="bio"
-                  value={user.bio}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  rows={3}
-                  className={`w-full px-3 py-2 rounded-lg border resize-none text-sm ${
-                    isEditing
-                      ? "bg-white/90 text-gray-900 border-cyan-400 focus:ring-2 focus:ring-cyan-500"
-                      : "bg-white/10 text-gray-200 border-gray-600"
-                  }`}
+        {/* GRID LAYOUT */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {/* LEFT SIDE — PROFILE CARD */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center shadow-lg"
+          >
+            {/* Avatar */}
+            <div className="relative group">
+              {preview ? (
+                <img
+                  src={preview}
+                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-500 shadow-xl"
+                  alt="Preview"
+                />
+              ) : user.profilePic ? (
+                <img
+                  src={user.profilePic}
+                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-500 shadow-xl"
+                  alt="Profile"
                 />
               ) : (
-                <input
-                  type={field === "email" ? "email" : "text"}
-                  name={field}
-                  value={user[field]}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 rounded-lg border text-sm ${
-                    isEditing
-                      ? "bg-white/90 text-gray-900 border-cyan-400 focus:ring-2 focus:ring-cyan-500"
-                      : "bg-white/10 text-gray-200 border-gray-600"
-                  }`}
-                />
+                <FaUserCircle className="w-32 h-32 text-gray-500" />
+              )}
+
+              {isEditing && (
+                <label className="absolute bottom-0 right-0 bg-purple-600 p-2 rounded-full cursor-pointer hover:bg-purple-700 shadow-lg transition-all">
+                  <FaCamera size={18} />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                </label>
               )}
             </div>
-          ))}
-        </div>
 
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row justify-end mt-8 gap-3 sm:gap-4">
-          {!isEditing ? (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => setIsEditing(true)}
-              className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg shadow-md hover:shadow-cyan-500/30 transition-all"
-            >
-              Edit Profile
-            </motion.button>
-          ) : (
-            <>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  setIsEditing(false);
-                  setPreview(null);
-                  setSelectedFile(null);
-                }}
-                className="px-5 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-md transition-all"
-              >
-                Cancel
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={handleSave}
-                className="px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg shadow-md hover:shadow-green-500/30 transition-all"
-              >
-                Save Changes
-              </motion.button>
-            </>
-          )}
+            {/* Name + Email */}
+            <h3 className="text-xl font-semibold mt-4">{user.name}</h3>
+            <p className="text-gray-400 text-sm">{user.email}</p>
+
+            <div className="mt-4 flex flex-col gap-3 w-full">
+              {!isEditing ? (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 shadow-md hover:opacity-90 transition-all"
+                >
+                  Edit Profile
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={handleSave}
+                    className="w-full py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 shadow-md hover:opacity-90 transition"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsEditing(false);
+                      setPreview(null);
+                      setSelectedFile(null);
+                    }}
+                    className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
+          </motion.div>
+
+          {/* RIGHT SIDE — FORM */}
+          <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 shadow-lg">
+            <h3 className="text-xl font-semibold mb-6 text-purple-300">Personal Information</h3>
+
+            {/* Fields */}
+            <div className="space-y-6">
+              {["name", "email"].map((field) => (
+                <div key={field}>
+                  <label className="block mb-1 text-gray-300 capitalize">{field}</label>
+                  <input
+                    type={field === "email" ? "email" : "text"}
+                    name={field}
+                    disabled={!isEditing}
+                    value={user[field]}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-2 rounded-lg text-sm border ${
+                      isEditing
+                        ? "bg-white text-gray-900 border-purple-400 focus:ring-2 focus:ring-purple-500"
+                        : "bg-white/5 text-gray-300 border-white/10"
+                    }`}
+                  />
+                </div>
+              ))}
+
+              {/* Bio */}
+              <div>
+                <label className="block mb-1 text-gray-300">Bio</label>
+                <textarea
+                  name="bio"
+                  rows={4}
+                  disabled={!isEditing}
+                  value={user.bio}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 rounded-lg text-sm border resize-none ${
+                    isEditing
+                      ? "bg-white text-gray-900 border-purple-400 focus:ring-2 focus:ring-purple-500"
+                      : "bg-white/5 text-gray-300 border-white/10"
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>

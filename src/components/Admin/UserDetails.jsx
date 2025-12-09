@@ -3,21 +3,22 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
   BarChart,
   Bar,
   XAxis,
   YAxis,
   Tooltip,
-  LineChart,
-  Legend,
-  ResponsiveContainer,
-  Line,
   CartesianGrid,
+  Legend
 } from "recharts";
-import { User } from "lucide-react";
+import { User, Calendar, TrendingUp, TrendingDown } from "lucide-react";
 
 export const UserDetails = () => {
   const { userId } = useParams();
+
   const [user, setUser] = useState(null);
   const [income, setIncome] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -26,7 +27,7 @@ export const UserDetails = () => {
 
   const fetchData = async () => {
     try {
-      const [incomeRes, budgetRes, transactionRes, userRes] = await Promise.all([
+      const [incomeRes, budgetRes, txRes, userRes] = await Promise.all([
         axiosInstance.get(`/incomesbyUserID/${userId}`),
         axiosInstance.get(`/budgetsbyUserID/${userId}`),
         axiosInstance.get(`/transactionsByUserId/${userId}`),
@@ -35,10 +36,10 @@ export const UserDetails = () => {
 
       setIncome(incomeRes.data.data || []);
       setBudget(budgetRes.data.data || []);
-      setTransactions(transactionRes.data.data || []);
+      setTransactions(txRes.data.data || []);
       setUser(userRes.data.data || null);
-    } catch (err) {
-      console.error("Error fetching user details", err);
+    } catch (error) {
+      console.log("Error loading data:", error);
     } finally {
       setLoading(false);
     }
@@ -48,186 +49,195 @@ export const UserDetails = () => {
     fetchData();
   }, [userId]);
 
-  const totalIncome = income.reduce((sum, inc) => sum + (inc.amount || 0), 0);
-  const totalBudget = budget.reduce((sum, b) => sum + (b.amount || 0), 0);
+  const totalIncome = income.reduce((sum, i) => sum + (i.amount || 0), 0);
   const totalExpense = transactions
     .filter((t) => t.type === "expense")
-    .reduce((sum, exp) => sum + (exp.amount || 0), 0);
+    .reduce((sum, e) => sum + (e.amount || 0), 0);
+  const totalBudget = budget.reduce((sum, b) => sum + (b.amount || 0), 0);
+
+  const monthlyData = (() => {
+    const grouped = {};
+    transactions.forEach((t) => {
+      const m = new Date(t.date).toLocaleString("default", { month: "short" });
+      if (!grouped[m]) grouped[m] = { month: m, income: 0, expense: 0 };
+      if (t.type === "income") grouped[m].income += t.amount;
+      else grouped[m].expense += t.amount;
+    });
+    return Object.values(grouped);
+  })();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[70vh] text-gray-300">
+        Loading user analytics…
+      </div>
+    );
+  }
 
   return (
-    <div className="p-4 md:p-6 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-      {loading ? (
-        <div className="flex flex-col gap-4 items-center">
-          <div className="h-6 w-40 md:w-48 bg-white/10 animate-pulse rounded-lg"></div>
-          <div className="h-32 md:h-40 w-full max-w-2xl bg-white/10 animate-pulse rounded-2xl"></div>
-        </div>
-      ) : (
-        <>
-          {/* Profile Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="backdrop-blur-xl bg-white/10 p-4 md:p-6 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-6 items-center mb-8"
-          >
-            {/* Avatar */}
-            {user?.profilePic ? (
-              <img
-                src={user.profilePic}
-                alt={user.name}
-                className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white/20 object-cover shadow-lg"
-              />
-            ) : (
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-2xl md:text-3xl shadow-lg">
-                <User className="text-white w-10 h-10 md:w-14 md:h-14" />
-              </div>
-            )}
+    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-b from-[#0b0d11] via-[#0d0f13] to-black text-white">
 
-            {/* Details */}
-            <div className="text-center sm:text-left flex-1">
-              <h2 className="text-xl md:text-2xl font-bold">{user?.name || "Unknown User"}</h2>
-              <p className="text-gray-300 text-sm md:text-base">{user?.email || "No Email"}</p>
+      {/* ===================== PROFILE HERO ===================== */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full p-6 rounded-2xl bg-white/5 backdrop-blur-xl shadow-xl border border-white/10 mb-10"
+      >
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          
+          {/* Avatar */}
+          {user?.profilePic ? (
+            <img
+              src={user.profilePic}
+              alt={user.name}
+              className="w-28 h-28 rounded-full border-4 border-white/20 object-cover shadow-lg"
+            />
+          ) : (
+            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <User className="w-14 h-14 text-white" />
+            </div>
+          )}
+
+          <div className="flex-1 text-center sm:text-left">
+            <h2 className="text-2xl font-bold">{user.name}</h2>
+            <p className="text-gray-300">{user.email}</p>
+
+            <div className="mt-3 flex flex-wrap gap-3 justify-center sm:justify-start">
               <span
-                className={`inline-block mt-2 px-3 py-1 text-xs md:text-sm rounded-full ${
-                  user?.role === "Admin"
-                    ? "bg-red-500/20 text-red-300 border border-red-500/30"
-                    : "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                className={`px-4 py-1 rounded-full text-sm ${
+                  user.role === "Admin"
+                    ? "bg-red-500/20 text-red-300"
+                    : "bg-blue-500/20 text-blue-300"
                 }`}
               >
-                {user?.role || "User"}
+                {user.role}
               </span>
 
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs md:text-sm">
-                <div>
-                  <p className="text-gray-400">Joined On</p>
-                  <p>{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400">Total Transactions</p>
-                  <p>{transactions.length}</p>
-                </div>
-                <div className="sm:col-span-2">
-                  <p className="text-gray-400">Bio</p>
-                  <p>{user?.bio || "No bio provided."}</p>
-                </div>
+              <span className="flex items-center gap-1 text-gray-300 text-sm">
+                <Calendar size={14} />
+                Joined:{" "}
+                {new Date(user.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ===================== ANALYTICS STRIP ===================== */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+        {[
+          {
+            label: "Total Income",
+            value: totalIncome,
+            icon: <TrendingUp className="text-green-400" />,
+            color: "from-green-500 to-emerald-600",
+          },
+          {
+            label: "Total Expenses",
+            value: totalExpense,
+            icon: <TrendingDown className="text-red-400" />,
+            color: "from-red-500 to-pink-600",
+          },
+          {
+            label: "Total Budget",
+            value: totalBudget,
+            icon: <TrendingUp className="text-blue-400" />,
+            color: "from-blue-500 to-indigo-600",
+          },
+        ].map((card, idx) => (
+          <motion.div
+            key={idx}
+            whileHover={{ scale: 1.05 }}
+            className={`p-5 rounded-2xl bg-gradient-to-br ${card.color} shadow-lg backdrop-blur-xl border border-white/10 text-center`}
+          >
+            <div className="flex justify-center mb-2">{card.icon}</div>
+            <p className="text-white/80 text-sm">{card.label}</p>
+            <p className="text-2xl font-bold">₹{card.value}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* ===================== SPLIT CHARTS ===================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        
+        {/* Income vs Expense */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl shadow-xl border border-white/10"
+        >
+          <h3 className="text-lg font-semibold mb-4">Income vs Expense</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart
+              data={[
+                { name: "Income", amount: totalIncome },
+                { name: "Expense", amount: totalExpense },
+              ]}
+            >
+              <XAxis dataKey="name" stroke="#aaa" />
+              <YAxis stroke="#aaa" />
+              <Tooltip />
+              <Bar dataKey="amount" fill="#6366f1" radius={[10, 10, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        {/* Monthly Trends */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl shadow-xl border border-white/10"
+        >
+          <h3 className="text-lg font-semibold mb-4">Monthly Income / Expense</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+              <XAxis dataKey="month" stroke="#aaa" />
+              <YAxis stroke="#aaa" />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="income" stroke="#22c55e" strokeWidth={3} />
+              <Line type="monotone" dataKey="expense" stroke="#ef4444" strokeWidth={3} />
+            </LineChart>
+          </ResponsiveContainer>
+        </motion.div>
+      </div>
+
+      {/* ===================== TIMELINE (RECENT ACTIVITY) ===================== */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl"
+      >
+        <h3 className="text-lg font-semibold mb-6">Recent Activity Timeline</h3>
+
+        <div className="space-y-6 relative">
+
+          {/* Vertical line */}
+          <div className="absolute left-[8px] top-2 bottom-2 w-[2px] bg-white/20"></div>
+
+          {transactions.slice(0, 6).map((tx, idx) => (
+            <div key={idx} className="flex items-start gap-4 relative pl-6">
+              <span
+                className={`w-4 h-4 rounded-full absolute left-0 top-1.5 ${
+                  tx.type === "income"
+                    ? "bg-green-400"
+                    : "bg-red-400"
+                }`}
+              ></span>
+
+              <div>
+                <p className="font-semibold">
+                  {tx.type === "income" ? "Received" : "Spent"}: ₹{tx.amount}
+                </p>
+                <p className="text-gray-400 text-sm">
+                  {new Date(tx.date).toLocaleString()}
+                </p>
               </div>
             </div>
-          </motion.div>
-
-          {/* Stats Overview */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8">
-            {[
-              { label: "Total Income", value: totalIncome, color: "from-indigo-500 to-purple-500" },
-              { label: "Total Budget", value: totalBudget, color: "from-green-500 to-emerald-500" },
-              { label: "Total Expenses", value: totalExpense, color: "from-red-500 to-pink-500" },
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                whileHover={{ scale: 1.05 }}
-                className={`backdrop-blur-xl bg-gradient-to-r ${stat.color} p-4 md:p-6 rounded-2xl shadow-lg text-center`}
-              >
-                <p className="text-xs md:text-sm text-white/80">{stat.label}</p>
-                <p className="text-xl md:text-3xl font-bold">₹{stat.value.toFixed(2)}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Income vs Expense */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-lg p-4"
-            >
-              <h3 className="text-base md:text-lg font-semibold mb-4">Income vs Expense</h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart
-                  data={[
-                    { name: "Income", amount: totalIncome },
-                    { name: "Expense", amount: totalExpense },
-                  ]}
-                >
-                  <XAxis dataKey="name" stroke="#9CA3AF" />
-                  <YAxis stroke="#9CA3AF" />
-                  <Tooltip />
-                  <Bar dataKey="amount" fill="#6366F1" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </motion.div>
-
-            {/* Monthly Income & Expenses */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-lg p-4"
-            >
-              <h3 className="text-base md:text-lg font-semibold mb-4">Monthly Income & Expenses</h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart
-                  data={(() => {
-                    const grouped = {};
-                    transactions.forEach((t) => {
-                      const date = new Date(t.date);
-                      const month = date.toLocaleString("default", { month: "short" });
-                      if (!grouped[month]) grouped[month] = { month, expense: 0, income: 0 };
-                      if (t.type === "expense") grouped[month].expense += t.amount || 0;
-                      else grouped[month].income += t.amount || 0;
-                    });
-                    return Object.values(grouped);
-                  })()}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="month" stroke="#9CA3AF" />
-                  <YAxis stroke="#9CA3AF" />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="income" fill="#10B981" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="expense" fill="#EF4444" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </motion.div>
-          </div>
-
-          {/* Yearly Trend */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-6 backdrop-blur-xl bg-white/10 rounded-2xl shadow-lg p-4"
-          >
-            <h3 className="text-base md:text-lg font-semibold mb-4">Yearly Trend (All Months)</h3>
-            <ResponsiveContainer width="100%" height={280}>
-              <LineChart
-                data={(() => {
-                  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                  const grouped = months.map((m) => ({ month: m, expense: 0, income: 0 }));
-                  transactions.forEach((t) => {
-                    const date = new Date(t.date);
-                    const month = date.toLocaleString("default", { month: "short" });
-                    const entry = grouped.find((g) => g.month === month);
-                    if (entry) {
-                      if (t.type === "expense") entry.expense += t.amount || 0;
-                      else entry.income += t.amount || 0;
-                    }
-                  });
-                  return grouped;
-                })()}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="month" stroke="#9CA3AF" />
-                <YAxis stroke="#9CA3AF" />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="income" stroke="#10B981" strokeWidth={3} dot />
-                <Line type="monotone" dataKey="expense" stroke="#EF4444" strokeWidth={3} dot />
-              </LineChart>
-            </ResponsiveContainer>
-          </motion.div>
-        </>
-      )}
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 };
