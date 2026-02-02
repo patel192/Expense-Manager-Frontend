@@ -44,12 +44,10 @@ cd Expense-Manager-Frontend
 ```
 ### 2. Install dependencies
 ```bash
-Copy code
 npm install
 ```
 ### 3. Start development server
 ```bash
-Copy code
 npm run dev
 ```
 This will launch the app locally with hot reloading.
@@ -58,14 +56,13 @@ This will launch the app locally with hot reloading.
 To create an optimized production build:
 
 ```bash
-Copy code
 npm run build
 ```
 The static files will be generated under the dist/ folder and ready to deploy.
 
 📁 Folder Structure
 plaintext
-Copy code
+```bash
 public/           — Static assets (favicon, index.html, etc.)
 src/              — Source code for the application
   ├─ components/  — Reusable UI components
@@ -73,30 +70,34 @@ src/              — Source code for the application
   ├─ main.jsx     — React bootstrap file
 package.json      — Project config + scripts
 vite.config.js    — Vite config
+```
+
 
 🔗 Backend Integration
 This frontend expects a backend API to:
 
 Create new expense entries
 
-Read existing expenses
+----------------> Read existing expenses.
 
-Optionally support update and delete
+----------------> Optionally support update and delete.
 
-Make sure your backend endpoints match the fetch/axios patterns used in this app.
+----------------> Make sure your backend endpoints match the fetch/axios patterns used in this app.
+
 
 💡 Possible Enhancements
-Future improvements may include:
+----------------> Future improvements may include:
 
-Expense editing & deletion
+----------------> Expense editing & deletion
 
-Category filters and summaries
+----------------> Category filters and summaries
 
-User authentication
+----------------> User authentication
 
-Exporting expenses (CSV or PDF)
+----------------> Exporting expenses (CSV or PDF)
 
-Responsive mobile layout
+----------------> Responsive mobile layout
+
 
 📞 Contact
 If you have questions about this project, feel free to connect:
