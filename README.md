@@ -41,22 +41,26 @@ These instructions will help you run the project locally:
 ```bash
 git clone https://github.com/patel192/Expense-Manager-Frontend.git
 cd Expense-Manager-Frontend
+```
 ### 2. Install dependencies
-bash
+```bash
 Copy code
 npm install
+```
 ### 3. Start development server
-bash
+```bash
 Copy code
 npm run dev
+```
 This will launch the app locally with hot reloading.
 
 📦 Build for Production
 To create an optimized production build:
 
-bash
+```bash
 Copy code
 npm run build
+```
 The static files will be generated under the dist/ folder and ready to deploy.
 
 📁 Folder Structure
@@ -69,6 +73,7 @@ src/              — Source code for the application
   ├─ main.jsx     — React bootstrap file
 package.json      — Project config + scripts
 vite.config.js    — Vite config
+
 🔗 Backend Integration
 This frontend expects a backend API to:
 
