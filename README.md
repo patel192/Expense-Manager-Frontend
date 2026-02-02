@@ -41,11 +41,11 @@ These instructions will help you run the project locally:
 ```bash
 git clone https://github.com/patel192/Expense-Manager-Frontend.git
 cd Expense-Manager-Frontend
-2. Install dependencies
+### 2. Install dependencies
 bash
 Copy code
 npm install
-3. Start development server
+### 3. Start development server
 bash
 Copy code
 npm run dev
