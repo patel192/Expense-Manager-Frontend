@@ -7,8 +7,10 @@ import {
   FaWallet,
   FaMoneyBillWave,
 } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 export const Transaction = () => {
+  const {user} = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [activeTab, setActiveTab] = useState("All");
   const [summary, setSummary] = useState({
@@ -19,7 +21,7 @@ export const Transaction = () => {
   const [loading, setLoading] = useState(true);
 
   const tabTypes = { All: null, Expenses: "Expense", Incomes: "Income" };
-  const userId = useMemo(() => localStorage.getItem("id"), []);
+  const userId = useMemo(() => user?._id, [user]);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -18,8 +18,9 @@ import {
   FaTags,
   FaTrashAlt,
 } from "react-icons/fa";
-
+import { useAuth } from "../../../context/AuthContext";
 export const UserBudget = () => {
+  const {user} = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [budgets, setBudgets] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -32,7 +33,7 @@ export const UserBudget = () => {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
 
-  const userId = useMemo(() => localStorage.getItem("id"), []);
+  const userId = useMemo(() => user?._id, [user]);
 
   // --------------------------
   // Fetch Data

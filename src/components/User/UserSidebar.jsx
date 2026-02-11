@@ -15,10 +15,11 @@ import {
   FaTimes,
   FaChevronDown,
 } from "react-icons/fa";
-
+import {useAuth} from "../../context/AuthContext";
 export const UserSidebar = ({ isOpen, toggleSidebar }) => {
+  const {user} = useAuth();
   const location = useLocation();
-  const userId = localStorage.getItem("id");
+  const userId = user?._id
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedItems, setExpandedItems] = useState({});
 

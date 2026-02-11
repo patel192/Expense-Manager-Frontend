@@ -22,10 +22,11 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { HiDocumentArrowDown, HiPrinter } from "react-icons/hi2";
 import { FaChartPie, FaChartLine, FaChartBar } from "react-icons/fa6";
-
+import { useAuth } from "../../context/AuthContext";
 const COLORS = ["#6366F1", "#10B981", "#F59E0B", "#EF4444", "#A855F7", "#14B8A6"];
 
 export const Reports = () => {
+  const {user} = useAuth();
   const [incomeData, setIncomeData] = useState([]);
   const [expenseData, setExpenseData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +35,7 @@ export const Reports = () => {
   // Fetch Data
   // ---------------------------
   useEffect(() => {
-    const userId = localStorage.getItem("id");
+    const userId = user?._id
     const fetchData = async () => {
       try {
         const [incomeRes, expenseRes] = await Promise.all([

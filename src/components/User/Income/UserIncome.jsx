@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useMemo } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../Utils/axiosInstance";
@@ -23,7 +23,9 @@ import {
   FaPauseCircle,
   FaTrashAlt,
 } from "react-icons/fa";
+import { useAuth } from "../../../context/AuthContext";
 export const UserIncome = () => {
+  const {user} = useAuth();
   const [activeTab, setActiveTab] = useState("summary"); // 'summary' | 'analytics' | 'records'
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -51,7 +53,7 @@ export const UserIncome = () => {
     formState: { errors },
   } = useForm();
 
-  const userId = localStorage.getItem("id");
+  const userId = useMemo(() => user?._id,[user]);
   const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
   // ---------- Helper: build stats, charts & tips ----------

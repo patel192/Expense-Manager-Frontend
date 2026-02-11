@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment,useMemo } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { useForm } from "react-hook-form";
 import { Dialog, Transition } from "@headlessui/react";
@@ -25,8 +25,9 @@ import {
   Pie,
   Cell,
 } from "recharts";
-
+import {useAuth} from "../../../context/AuthContext";
 export const UserExpenses = () => {
+  const {user} = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [categories, setCategories] = useState([]);
   const [recentExpenses, setRecentExpenses] = useState([]);
@@ -35,7 +36,7 @@ export const UserExpenses = () => {
   const [categoryBreakdown, setCategoryBreakdown] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const userId = localStorage.getItem("id");
+  const userId = useMemo(() => user?._id, [user]);
   const COLORS = ["#ef4444", "#06b6d4", "#10b981", "#f59e0b", "#6366f1"];
 
   const {
