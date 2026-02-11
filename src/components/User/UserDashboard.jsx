@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { motion } from "framer-motion";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 export const UserDashboard = () => {
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
