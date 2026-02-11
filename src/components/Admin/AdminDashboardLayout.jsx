@@ -1,10 +1,9 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiBell, FiSearch, FiUser, FiLogOut } from "react-icons/fi";
-import { logout } from "../Utils/Logout";
 import { useAuth } from "../../context/AuthContext";
 export const AdminDashboardLayout = () => {
-  const {user} = useAuth();
+  const {user,logout} = useAuth();
   const location = useLocation();
 const navigate = useNavigate();
   // Admin Navigation Tabs
