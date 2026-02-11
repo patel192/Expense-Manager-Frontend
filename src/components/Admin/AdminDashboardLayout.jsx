@@ -2,11 +2,13 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiBell, FiSearch, FiUser, FiLogOut } from "react-icons/fi";
 import { logout } from "../Utils/Logout";
+import { useAuth } from "../../context/AuthContext";
 export const AdminDashboardLayout = () => {
+  const {user} = useAuth();
   const location = useLocation();
 const navigate = useNavigate();
   // Admin Navigation Tabs
-  const adminId = localStorage.getItem("id");
+  const adminId = user?._id;
   const navTabs = [
     { label: "Dashboard", path: "/admin/admindashboard" },
     { label: "Manage Users", path: "/admin/manageusers" },
