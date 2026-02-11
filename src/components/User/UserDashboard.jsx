@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { motion } from "framer-motion";
-
+import { useAuth } from "@/context/AuthContext";
 export const UserDashboard = () => {
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
@@ -23,7 +23,8 @@ export const UserDashboard = () => {
   const [transactions, setTransactions] = useState([]);
 
   const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
-  const userId = localStorage.getItem("id");
+  const { user } = useAuth();
+  const userId = user?._id;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,16 +64,13 @@ export const UserDashboard = () => {
 
   return (
     <div className="text-white space-y-10">
-
       {/* ========== HEADER ========== */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-3xl md:text-4xl font-bold">
-          Financial Overview
-        </h1>
+        <h1 className="text-3xl md:text-4xl font-bold">Financial Overview</h1>
         <p className="text-gray-400 mt-2">
           A consolidated view of your financial performance.
         </p>
@@ -82,8 +80,16 @@ export const UserDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           { title: "Total Budget", value: totalBudget, color: "text-cyan-400" },
-          { title: "Total Income", value: totalIncome, color: "text-emerald-400" },
-          { title: "Total Expenses", value: totalExpenses, color: "text-rose-400" },
+          {
+            title: "Total Income",
+            value: totalIncome,
+            color: "text-emerald-400",
+          },
+          {
+            title: "Total Expenses",
+            value: totalExpenses,
+            color: "text-rose-400",
+          },
         ].map((item, i) => (
           <motion.div
             key={i}
@@ -101,7 +107,6 @@ export const UserDashboard = () => {
 
       {/* ========== CHARTS ========== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
         {/* ==== Income vs Expenses Chart ==== */}
         <motion.div
           initial={{ opacity: 0, x: -15 }}
@@ -178,7 +183,6 @@ export const UserDashboard = () => {
             </PieChart>
           </ResponsiveContainer>
         </motion.div>
-
       </div>
     </div>
   );

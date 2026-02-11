@@ -5,8 +5,10 @@ import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "./components/Utils/axiosInstance";
 import { motion } from "framer-motion";
+import { useAuth } from "./context/AuthContext";
 
 export const Login = () => {
+const {login} = useAuth();
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -18,22 +20,12 @@ export const Login = () => {
       const res = await axiosInstance.post("/user/login", data);
 
       if (res.status === 200) {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("id", res.data.data._id);
-        localStorage.setItem("role", res.data.data.role);
 
         toast.success("Login successful!", {
           position: "top-center",
           autoClose: 2000,
         });
-
-        setTimeout(() => {
-          if (res.data.data.role === "Admin") {
-            navigate("/admin/admindashboard");
-          } else {
-            navigate("/private/userdashboard");
-          }
-        }, 500);
+        login(res.data)
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed", {
