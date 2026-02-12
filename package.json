@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "test": "vitest --run",
-    "test:run":"vitest run",
+    "test:run": "vitest run",
+    "test:coverage": "vitest --coverage",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -54,6 +55,7 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^4.0.18",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",
