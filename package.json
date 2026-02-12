@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "vitest --run --pool=vm",
+    "test": "vitest --run",
     "test:run":"vitest run",
     "build": "vite build",
     "lint": "eslint .",
