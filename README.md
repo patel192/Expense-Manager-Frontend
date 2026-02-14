@@ -1,5 +1,7 @@
 # Expense Manager — Frontend
 
+![Frontend CI](https://github.com/patel192/Expense-Manager-Frontend/actions/workflows/frontend-ci.yml/badge.svg)
+
 A web frontend application that lets users **track and manage their expenses** in the browser.  
 This project provides the user interface for adding, viewing, and organizing expense entries, and is meant to work with a backend API.
 
@@ -98,6 +100,47 @@ Create new expense entries
 
 ----------------> Responsive mobile layout
 
+## 🧪 Testing
+
+This project uses **Vitest + React Testing Library** for component and route testing.
+
+To run tests:
+
+```bash
+npm test
+```
+
+To run tests with coverage:
+```bash
+npm run test:coverage
+```
+
+Tests are automatically executed in GitHub Actions on every push and pull request.
+```yaml
+This shows:
+
+✔ Automated test validation  
+✔ CI integration  
+✔ Engineering discipline  
+```
+---
+
+# ✅ STEP 3 — Add CI/CD Section
+
+Add this near the bottom before Contact:
+
+```md
+## ⚙ Continuous Integration
+
+This project uses **GitHub Actions** for Continuous Integration.
+
+On every push or pull request:
+- Dependencies are installed
+- Project is built
+- All tests are executed
+
+This ensures code quality and build stability before deployment.
+```
 
 📞 Contact
 If you have questions about this project, feel free to connect:
