@@ -15,6 +15,8 @@ import {
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 export const UserDashboard = () => {
+  const [aiInsights, setAiInsights] = useState("");
+  const [loadingInsights, setLoadingInsights] = useState(false);
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -25,7 +27,19 @@ export const UserDashboard = () => {
   const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
   const { user } = useAuth();
   const userId = user?._id;
+  const fetchAIInsights = async () => {
+    try {
+      setLoadingInsights(true);
 
+      const res = await axiosInstance.get(`/ai/expense-insights/${userId}`);
+
+      setAiInsights(res.data.insights);
+    } catch (error) {
+      console.error("AI insight error:", error);
+    } finally {
+      setLoadingInsights(false);
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,6 +65,7 @@ export const UserDashboard = () => {
         setBills(billsRes.data.data);
         setRecurring(recurringRes.data.data);
         setTransactions(txnRes.data.data);
+        fetchAIInsights();
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
@@ -104,6 +119,25 @@ export const UserDashboard = () => {
           </motion.div>
         ))}
       </div>
+      {/* ========== AI INSIGHTS ========== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
+      >
+        <h3 className="text-lg font-semibold mb-3 text-white">
+          AI Financial Insights
+        </h3>
+
+        {loadingInsights ? (
+          <p className="text-gray-400">Analyzing your spending...</p>
+        ) : (
+          <p className="text-gray-300 whitespace-pre-line">
+            {aiInsights || "No insights available yet."}
+          </p>
+        )}
+      </motion.div>
 
       {/* ========== CHARTS ========== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
