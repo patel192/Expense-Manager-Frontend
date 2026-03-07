@@ -31,9 +31,11 @@ export const UserDashboard = () => {
     try {
       setLoadingInsights(true);
 
-      const res = await axiosInstance.get(`/ai/ask`);
+      const res = await axiosInstance.post(`/ai/ask`, {
+        message: `Analyze the following expenses and give insights: ${JSON.stringify(expenses)}`,
+      });
 
-      setAiInsights(res.data.insights);
+      setAiInsights(res.data.reply);
     } catch (error) {
       console.error("AI insight error:", error);
     } finally {
@@ -41,6 +43,8 @@ export const UserDashboard = () => {
     }
   };
   useEffect(() => {
+    if (!userId) return;
+
     const fetchData = async () => {
       try {
         const [
@@ -65,11 +69,13 @@ export const UserDashboard = () => {
         setBills(billsRes.data.data);
         setRecurring(recurringRes.data.data);
         setTransactions(txnRes.data.data);
+
         fetchAIInsights();
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
     };
+
     fetchData();
   }, [userId]);
 
