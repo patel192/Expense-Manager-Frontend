@@ -14,9 +14,12 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
+
 export const UserDashboard = () => {
+
   const [aiInsights, setAiInsights] = useState("");
   const [loadingInsights, setLoadingInsights] = useState(false);
+
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -24,29 +27,62 @@ export const UserDashboard = () => {
   const [recurring, setRecurring] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
-  const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
   const { user } = useAuth();
   const userId = user?._id;
-  const fetchAIInsights = async () => {
+
+  const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
+
+  // =========================
+  // AI Insights Function
+  // =========================
+  const fetchAIInsights = async (expenseData) => {
     try {
+
+      if (!expenseData || expenseData.length === 0) {
+        setAiInsights("No expenses available for AI analysis.");
+        return;
+      }
+
       setLoadingInsights(true);
 
-      const res = await axiosInstance.post(`/ai/ask`, {
-        message: "Do You Know the Google Gemini",
+      // summarize expenses by category
+      const summary = expenseData.reduce((acc, item) => {
+        const cat = item.categoryID?.name || "Other";
+        acc[cat] = (acc[cat] || 0) + item.amount;
+        return acc;
+      }, {});
+
+      const message = `
+Analyze this user's expense summary and provide financial insights and recommendations.
+
+Expense Summary:
+${JSON.stringify(summary, null, 2)}
+`;
+
+      const res = await axiosInstance.post("/ai/ask", {
+        message
       });
 
-      setAiInsights(res.data.reply);
+      setAiInsights(res.data?.reply || "AI returned no response.");
+
     } catch (error) {
       console.error("AI insight error:", error);
+      setAiInsights("Failed to generate insights.");
     } finally {
       setLoadingInsights(false);
     }
   };
+
+  // =========================
+  // Fetch Dashboard Data
+  // =========================
   useEffect(() => {
+
     if (!userId) return;
 
     const fetchData = async () => {
       try {
+
         const [
           budgetRes,
           incomeRes,
@@ -63,29 +99,38 @@ export const UserDashboard = () => {
           axiosInstance.get(`/transactionsByUserID/${userId}`),
         ]);
 
+        const expenseData = expenseRes.data.data;
+
         setBudget(budgetRes.data.data);
         setIncome(incomeRes.data.data);
-        setExpenses(expenseRes.data.data);
+        setExpenses(expenseData);
         setBills(billsRes.data.data);
         setRecurring(recurringRes.data.data);
         setTransactions(txnRes.data.data);
 
-        fetchAIInsights();
+        // call AI AFTER expenses loaded
+        fetchAIInsights(expenseData);
+
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
     };
 
     fetchData();
+
   }, [userId]);
 
+  // =========================
+  // Calculations
+  // =========================
   const totalBudget = budget.reduce((a, i) => a + i.amount, 0);
   const totalIncome = income.reduce((a, i) => a + i.amount, 0);
   const totalExpenses = expenses.reduce((a, e) => a + e.amount, 0);
 
   return (
     <div className="text-white space-y-10">
-      {/* ========== HEADER ========== */}
+
+      {/* HEADER */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -97,20 +142,12 @@ export const UserDashboard = () => {
         </p>
       </motion.div>
 
-      {/* ========== METRICS ========== */}
+      {/* METRICS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           { title: "Total Budget", value: totalBudget, color: "text-cyan-400" },
-          {
-            title: "Total Income",
-            value: totalIncome,
-            color: "text-emerald-400",
-          },
-          {
-            title: "Total Expenses",
-            value: totalExpenses,
-            color: "text-rose-400",
-          },
+          { title: "Total Income", value: totalIncome, color: "text-emerald-400" },
+          { title: "Total Expenses", value: totalExpenses, color: "text-rose-400" },
         ].map((item, i) => (
           <motion.div
             key={i}
@@ -125,7 +162,8 @@ export const UserDashboard = () => {
           </motion.div>
         ))}
       </div>
-      {/* ========== AI INSIGHTS ========== */}
+
+      {/* AI INSIGHTS */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -145,9 +183,10 @@ export const UserDashboard = () => {
         )}
       </motion.div>
 
-      {/* ========== CHARTS ========== */}
+      {/* CHARTS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* ==== Income vs Expenses Chart ==== */}
+
+        {/* Income vs Expense Chart */}
         <motion.div
           initial={{ opacity: 0, x: -15 }}
           animate={{ opacity: 1, x: 0 }}
@@ -179,7 +218,7 @@ export const UserDashboard = () => {
           </ResponsiveContainer>
         </motion.div>
 
-        {/* ==== Expense Distribution Pie Chart ==== */}
+        {/* Expense Pie Chart */}
         <motion.div
           initial={{ opacity: 0, x: 15 }}
           animate={{ opacity: 1, x: 0 }}
@@ -194,7 +233,7 @@ export const UserDashboard = () => {
             <PieChart>
               <Pie
                 data={expenses.map((e) => ({
-                  name: e.category,
+                  name: e.categoryID?.name || "Other",
                   value: e.amount,
                 }))}
                 cx="50%"
@@ -223,7 +262,9 @@ export const UserDashboard = () => {
             </PieChart>
           </ResponsiveContainer>
         </motion.div>
+
       </div>
+
     </div>
   );
 };
