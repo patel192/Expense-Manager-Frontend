@@ -32,7 +32,7 @@ export const UserDashboard = () => {
       setLoadingInsights(true);
 
       const res = await axiosInstance.post(`/ai/ask`, {
-        message: `Analyze the following expenses and give insights: ${JSON.stringify(expenses)}`,
+        message: "Do You Know the Google Gemini",
       });
 
       setAiInsights(res.data.reply);
