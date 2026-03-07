@@ -31,7 +31,7 @@ export const UserDashboard = () => {
     try {
       setLoadingInsights(true);
 
-      const res = await axiosInstance.get(`/ai/expense-insights/${userId}`);
+      const res = await axiosInstance.get(`/ai/ask`);
 
       setAiInsights(res.data.insights);
     } catch (error) {
