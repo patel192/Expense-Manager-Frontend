@@ -17,8 +17,8 @@ import { useAuth } from "../../context/AuthContext";
 
 export const UserDashboard = () => {
 
-  const [aiInsights, setAiInsights] = useState("");
-  const [loadingInsights, setLoadingInsights] = useState(false);
+  const { user } = useAuth();
+  const userId = user?._id;
 
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
@@ -27,60 +27,68 @@ export const UserDashboard = () => {
   const [recurring, setRecurring] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
-  const { user } = useAuth();
-  const userId = user?._id;
-
   const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
   // =========================
-  // AI Insights Function
+  // AI CHAT STATE
   // =========================
-  const fetchAIInsights = async (expenseData) => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loadingAI, setLoadingAI] = useState(false);
+
+  // =========================
+  // SEND MESSAGE TO AI
+  // =========================
+  const sendMessage = async () => {
+
+    if (!input.trim()) return;
+
+    const userMessage = {
+      role: "user",
+      text: input
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput("");
+
     try {
 
-      if (!expenseData || expenseData.length === 0) {
-        setAiInsights("No expenses available for AI analysis.");
-        return;
-      }
-
-      setLoadingInsights(true);
-
-      // summarize expenses by category
-      const summary = expenseData.reduce((acc, item) => {
-        const cat = item.categoryID?.name || "Other";
-        acc[cat] = (acc[cat] || 0) + item.amount;
-        return acc;
-      }, {});
-
-      const message = `
-Analyze this user's expense summary and provide financial insights and recommendations.
-
-Expense Summary:
-${JSON.stringify(summary, null, 2)}
-`;
+      setLoadingAI(true);
 
       const res = await axiosInstance.post("/ai/ask", {
-        message
+        message: input
       });
 
-      setAiInsights(res.data?.reply || "AI returned no response.");
+      const aiMessage = {
+        role: "ai",
+        text: res.data?.reply || "AI returned no response."
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
 
     } catch (error) {
-      console.error("AI insight error:", error);
-      setAiInsights("Failed to generate insights.");
+
+      console.error("AI chat error:", error);
+
+      setMessages(prev => [
+        ...prev,
+        { role: "ai", text: "AI failed to respond." }
+      ]);
+
     } finally {
-      setLoadingInsights(false);
+      setLoadingAI(false);
     }
   };
 
   // =========================
-  // Fetch Dashboard Data
+  // FETCH DASHBOARD DATA
   // =========================
   useEffect(() => {
 
     if (!userId) return;
 
     const fetchData = async () => {
+
       try {
 
         const [
@@ -99,17 +107,12 @@ ${JSON.stringify(summary, null, 2)}
           axiosInstance.get(`/transactionsByUserID/${userId}`),
         ]);
 
-        const expenseData = expenseRes.data.data;
-
         setBudget(budgetRes.data.data);
         setIncome(incomeRes.data.data);
-        setExpenses(expenseData);
+        setExpenses(expenseRes.data.data);
         setBills(billsRes.data.data);
         setRecurring(recurringRes.data.data);
         setTransactions(txnRes.data.data);
-
-        // call AI AFTER expenses loaded
-        fetchAIInsights(expenseData);
 
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
@@ -120,9 +123,6 @@ ${JSON.stringify(summary, null, 2)}
 
   }, [userId]);
 
-  // =========================
-  // Calculations
-  // =========================
   const totalBudget = budget.reduce((a, i) => a + i.amount, 0);
   const totalIncome = income.reduce((a, i) => a + i.amount, 0);
   const totalExpenses = expenses.reduce((a, e) => a + e.amount, 0);
@@ -134,9 +134,8 @@ ${JSON.stringify(summary, null, 2)}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
       >
-        <h1 className="text-3xl md:text-4xl font-bold">Financial Overview</h1>
+        <h1 className="text-3xl font-bold">Financial Overview</h1>
         <p className="text-gray-400 mt-2">
           A consolidated view of your financial performance.
         </p>
@@ -152,7 +151,6 @@ ${JSON.stringify(summary, null, 2)}
           <motion.div
             key={i}
             whileHover={{ y: -4 }}
-            transition={{ duration: 0.25 }}
             className="rounded-2xl bg-[#111318] border border-white/10 p-6 shadow-lg"
           >
             <h2 className="text-gray-400 text-sm">{item.title}</h2>
@@ -163,39 +161,63 @@ ${JSON.stringify(summary, null, 2)}
         ))}
       </div>
 
-      {/* AI INSIGHTS */}
+      {/* ========================= */}
+      {/* AI CHAT SECTION */}
+      {/* ========================= */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
         className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
       >
-        <h3 className="text-lg font-semibold mb-3 text-white">
-          AI Financial Insights
+        <h3 className="text-lg font-semibold mb-4">
+          AI Financial Assistant
         </h3>
 
-        {loadingInsights ? (
-          <p className="text-gray-400">Analyzing your spending...</p>
-        ) : (
-          <p className="text-gray-300 whitespace-pre-line">
-            {aiInsights || "No insights available yet."}
-          </p>
-        )}
+        {/* Chat messages */}
+        <div className="h-64 overflow-y-auto space-y-3 mb-4">
+
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`p-3 rounded-lg max-w-[80%] ${
+                msg.role === "user"
+                  ? "bg-blue-500 ml-auto text-white"
+                  : "bg-gray-700 text-gray-200"
+              }`}
+            >
+              {msg.text}
+            </div>
+          ))}
+
+          {loadingAI && (
+            <p className="text-gray-400">AI is thinking...</p>
+          )}
+
+        </div>
+
+        {/* Input */}
+        <div className="flex gap-2">
+
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask AI about your finances..."
+            className="flex-1 p-2 rounded bg-[#1a1d24] border border-gray-700 text-white"
+          />
+
+          <button
+            onClick={sendMessage}
+            className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Send
+          </button>
+
+        </div>
       </motion.div>
 
       {/* CHARTS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        {/* Income vs Expense Chart */}
-        <motion.div
-          initial={{ opacity: 0, x: -15 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
-        >
-          <h3 className="text-lg font-semibold mb-4 text-white">
-            Income vs Expenses
-          </h3>
+        <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+          <h3 className="text-lg font-semibold mb-4">Income vs Expenses</h3>
 
           <ResponsiveContainer width="100%" height={280}>
             <BarChart
@@ -206,26 +228,14 @@ ${JSON.stringify(summary, null, 2)}
             >
               <XAxis dataKey="name" stroke="#9CA3AF" />
               <YAxis stroke="#9CA3AF" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#111318",
-                  border: "1px solid #2a2d34",
-                  color: "#fff",
-                }}
-              />
-              <Bar dataKey="amount" fill="#3b82f6" radius={[10, 10, 0, 0]} />
+              <Tooltip />
+              <Bar dataKey="amount" fill="#3b82f6" />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
 
-        {/* Expense Pie Chart */}
-        <motion.div
-          initial={{ opacity: 0, x: 15 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
-        >
-          <h3 className="text-lg font-semibold mb-4 text-white">
+        <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+          <h3 className="text-lg font-semibold mb-4">
             Expense Distribution
           </h3>
 
@@ -236,10 +246,8 @@ ${JSON.stringify(summary, null, 2)}
                   name: e.categoryID?.name || "Other",
                   value: e.amount,
                 }))}
-                cx="50%"
-                cy="50%"
-                outerRadius={95}
                 dataKey="value"
+                outerRadius={95}
                 label
               >
                 {expenses.map((_, i) => (
@@ -247,20 +255,11 @@ ${JSON.stringify(summary, null, 2)}
                 ))}
               </Pie>
 
-              <Legend
-                wrapperStyle={{ color: "#d1d5db", fontSize: 12 }}
-                verticalAlign="bottom"
-              />
-
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#111318",
-                  border: "1px solid #2a2d34",
-                  color: "#fff",
-                }}
-              />
+              <Legend />
+              <Tooltip />
             </PieChart>
           </ResponsiveContainer>
+
         </motion.div>
 
       </div>
