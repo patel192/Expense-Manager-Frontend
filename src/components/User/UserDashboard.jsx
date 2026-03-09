@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import axiosInstance from "../Utils/axiosInstance";
 import {
   BarChart,
@@ -218,14 +219,14 @@ export const UserDashboard = () => {
 
       {/* EXPENSE SUMMARY SECTION  */}
       <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
-        <h3 className="text-lg font-semibold mb-3">AI Financial Insights</h3>
+        <h3 className="text-lg font-semibold mb-4">AI Financial Insights</h3>
 
         {loadingInsights ? (
-          <p className="text-gray-400">Analyzing expenses...</p>
+          <p className="text-gray-400">Analyzing your spending...</p>
         ) : (
-          <p className="text-gray-300 whitespace-pre-line">
-            {expenseInsights || "No insights available yet."}
-          </p>
+          <div className="prose prose-invert max-w-none text-gray-300">
+            <ReactMarkdown>{expenseInsights}</ReactMarkdown>
+          </div>
         )}
       </motion.div>
       {/* CHARTS */}
