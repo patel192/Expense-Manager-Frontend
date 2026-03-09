@@ -29,25 +29,36 @@ export const UserDashboard = () => {
 
   const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
-  // AI EXPENSE INSIGHTS
+  // =========================
+  // EXPENSE INSIGHTS
+  // =========================
   const [expenseInsights, setExpenseInsights] = useState("");
   const [loadingInsights, setLoadingInsights] = useState(false);
 
+  // =========================
   // AI CHAT
+  // =========================
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loadingAI, setLoadingAI] = useState(false);
 
-  // Risk Detection State
+  // =========================
+  // SPENDING RISK
+  // =========================
   const [riskData, setRiskData] = useState(null);
   const [loadingRisk, setLoadingRisk] = useState(false);
+
   // =========================
-  // SEND MESSAGE TO AI
+  // SEND MESSAGE
   // =========================
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { role: "user", text: input };
+    const userMessage = {
+      role: "user",
+      text: input,
+    };
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
@@ -77,12 +88,14 @@ export const UserDashboard = () => {
   };
 
   // =========================
-  // FETCH EXPENSE INSIGHTS
+  // FETCH INSIGHTS
   // =========================
   const fetchExpenseInsights = async () => {
     try {
       setLoadingInsights(true);
+
       const res = await axiosInstance.get(`/ai/expense-insights/${userId}`);
+
       setExpenseInsights(res.data.insights);
     } catch (err) {
       console.error("Insights Error", err);
@@ -92,7 +105,7 @@ export const UserDashboard = () => {
   };
 
   // =========================
-  // FETCH SPENDING RISK
+  // FETCH RISK
   // =========================
   const fetchRisk = async () => {
     try {
@@ -140,7 +153,7 @@ export const UserDashboard = () => {
         setTransactions(txnRes.data.data);
 
         fetchExpenseInsights();
-        fetchRisk(); // <-- NEW
+        fetchRisk();
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
@@ -153,20 +166,10 @@ export const UserDashboard = () => {
   const totalIncome = income.reduce((a, i) => a + i.amount, 0);
   const totalExpenses = expenses.reduce((a, e) => a + e.amount, 0);
 
-  const riskColor =
-    riskData?.riskLevel === "High"
-      ? "border-red-500 bg-red-500/10"
-      : riskData?.riskLevel === "Medium"
-        ? "border-yellow-500 bg-yellow-500/10"
-        : "border-emerald-500 bg-emerald-500/10";
-
   return (
     <div className="text-white space-y-10">
       {/* HEADER */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-3xl font-bold">Financial Overview</h1>
         <p className="text-gray-400 mt-2">
           A consolidated view of your financial performance.
@@ -177,16 +180,8 @@ export const UserDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           { title: "Total Budget", value: totalBudget, color: "text-cyan-400" },
-          {
-            title: "Total Income",
-            value: totalIncome,
-            color: "text-emerald-400",
-          },
-          {
-            title: "Total Expenses",
-            value: totalExpenses,
-            color: "text-rose-400",
-          },
+          { title: "Total Income", value: totalIncome, color: "text-emerald-400" },
+          { title: "Total Expenses", value: totalExpenses, color: "text-rose-400" },
         ].map((item, i) => (
           <motion.div
             key={i}
@@ -205,14 +200,8 @@ export const UserDashboard = () => {
       {/* SPENDING RISK DETECTOR */}
       {/* ========================= */}
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-lg"
-      >
-        <h3 className="text-lg font-semibold mb-3">
-          AI Spending Risk Detector
-        </h3>
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">AI Spending Risk Detector</h3>
 
         {loadingRisk ? (
           <p className="text-gray-400 animate-pulse">
@@ -224,8 +213,8 @@ export const UserDashboard = () => {
               riskData.riskLevel === "High"
                 ? "border-red-500 bg-red-500/10"
                 : riskData.riskLevel === "Medium"
-                  ? "border-yellow-500 bg-yellow-500/10"
-                  : "border-emerald-500 bg-emerald-500/10"
+                ? "border-yellow-500 bg-yellow-500/10"
+                : "border-emerald-500 bg-emerald-500/10"
             }`}
           >
             <p className="font-semibold mb-2">
@@ -246,6 +235,22 @@ export const UserDashboard = () => {
           </div>
         ) : (
           <p className="text-gray-400">No risk analysis available.</p>
+        )}
+      </motion.div>
+
+      {/* ========================= */}
+      {/* EXPENSE INSIGHTS */}
+      {/* ========================= */}
+
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">AI Financial Insights</h3>
+
+        {loadingInsights ? (
+          <p className="text-gray-400">Analyzing your spending...</p>
+        ) : (
+          <div className="bg-[#1a1d24] rounded-xl p-4 border border-white/5">
+            <ReactMarkdown>{expenseInsights}</ReactMarkdown>
+          </div>
         )}
       </motion.div>
 
