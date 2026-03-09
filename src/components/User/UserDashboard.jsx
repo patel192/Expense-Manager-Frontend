@@ -218,14 +218,48 @@ export const UserDashboard = () => {
       </motion.div>
 
       {/* EXPENSE SUMMARY SECTION  */}
-      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
-        <h3 className="text-lg font-semibold mb-4">AI Financial Insights</h3>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
+      >
+        <h3 className="text-lg font-semibold mb-4 text-white">
+          AI Financial Insights
+        </h3>
 
         {loadingInsights ? (
           <p className="text-gray-400">Analyzing your spending...</p>
         ) : (
-          <div className="prose prose-invert max-w-none text-gray-300">
-            <ReactMarkdown>{expenseInsights}</ReactMarkdown>
+          <div className="space-y-6">
+            {/* Highlight Box */}
+            <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-xl p-4">
+              <h4 className="text-cyan-400 font-semibold mb-1">AI Analysis</h4>
+
+              <p className="text-gray-300 text-sm">
+                Your financial data has been analyzed. Review the insights and
+                recommendations below to improve savings and spending habits.
+              </p>
+            </div>
+
+            {/* Insights Content */}
+            <div className="bg-[#1a1d24] rounded-xl p-4 border border-white/5">
+              <div
+                className="prose prose-invert max-w-none text-gray-300
+                        prose-headings:text-white
+                        prose-strong:text-cyan-400
+                        prose-li:text-gray-300"
+              >
+                <ReactMarkdown>{expenseInsights}</ReactMarkdown>
+              </div>
+            </div>
+
+            {/* Tip Box */}
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4">
+              <p className="text-emerald-400 text-sm">
+                💡 Tip: Use these insights to adjust your monthly budget and
+                increase savings efficiency.
+              </p>
+            </div>
           </div>
         )}
       </motion.div>
