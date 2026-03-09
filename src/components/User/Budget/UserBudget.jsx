@@ -1,335 +1,346 @@
-import { useState, useEffect, useMemo } from "react";
-import axiosInstance from "../../Utils/axiosInstance";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import axiosInstance from "../Utils/axiosInstance";
 import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
   PieChart,
   Pie,
   Cell,
-  Tooltip,
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { FaPlus, FaTrashAlt } from "react-icons/fa";
-import { useAuth } from "../../../context/AuthContext";
+import { motion } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
 
-export const UserBudget = () => {
+export const UserDashboard = () => {
   const { user } = useAuth();
-  const userId = useMemo(() => user?._id, [user]);
+  const userId = user?._id;
 
-  const [activeTab, setActiveTab] = useState("overview");
-
-  const [budgets, setBudgets] = useState([]);
+  const [budget, setBudget] = useState([]);
+  const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [summary, setSummary] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [bills, setBills] = useState([]);
+  const [recurring, setRecurring] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
-  const [budgetPlan, setBudgetPlan] = useState(null);
-  const [loadingPlan, setLoadingPlan] = useState(false);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [selectedBudget, setSelectedBudget] = useState(null);
-
-  const COLORS = ["#10b981", "#ef4444", "#3b82f6", "#f59e0b", "#a855f7"];
+  const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
   // =========================
-  // Fetch AI Budget Plan
+  // EXPENSE INSIGHTS
   // =========================
-  const fetchBudgetPlan = async () => {
+  const [expenseInsights, setExpenseInsights] = useState("");
+  const [loadingInsights, setLoadingInsights] = useState(false);
+
+  // =========================
+  // AI CHAT
+  // =========================
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loadingAI, setLoadingAI] = useState(false);
+
+  // =========================
+  // SPENDING RISK
+  // =========================
+  const [riskData, setRiskData] = useState(null);
+  const [loadingRisk, setLoadingRisk] = useState(false);
+
+  // =========================
+  // SEND MESSAGE
+  // =========================
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = {
+      role: "user",
+      text: input,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+
     try {
-      setLoadingPlan(true);
+      setLoadingAI(true);
 
-      const res = await axiosInstance.get(`/ai/budget-plan/${userId}`);
+      const res = await axiosInstance.post("/ai/ask", {
+        message: input,
+      });
 
-      setBudgetPlan(res.data.budgetPlan);
+      const aiMessage = {
+        role: "ai",
+        text: res.data?.reply || "AI returned no response.",
+      };
+
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
-      console.error("Budget plan error:", error);
+      console.error("AI chat error:", error);
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "AI failed to respond." },
+      ]);
     } finally {
-      setLoadingPlan(false);
+      setLoadingAI(false);
     }
   };
 
   // =========================
-  // Fetch Data
+  // FETCH INSIGHTS
+  // =========================
+  const fetchExpenseInsights = async () => {
+    try {
+      setLoadingInsights(true);
+
+      const res = await axiosInstance.get(`/ai/expense-insights/${userId}`);
+
+      setExpenseInsights(res.data.insights);
+    } catch (err) {
+      console.error("Insights Error", err);
+    } finally {
+      setLoadingInsights(false);
+    }
+  };
+
+  // =========================
+  // FETCH RISK
+  // =========================
+  const fetchRisk = async () => {
+    try {
+      setLoadingRisk(true);
+
+      const res = await axiosInstance.get(`/ai/spending-risk/${userId}`);
+
+      setRiskData(res.data.risk);
+    } catch (error) {
+      console.error("Risk detection error:", error);
+    } finally {
+      setLoadingRisk(false);
+    }
+  };
+
+  // =========================
+  // FETCH DASHBOARD DATA
   // =========================
   useEffect(() => {
     if (!userId) return;
 
-    fetchCategories();
-    fetchBudgetData();
+    const fetchData = async () => {
+      try {
+        const [
+          budgetRes,
+          incomeRes,
+          expenseRes,
+          billsRes,
+          recurringRes,
+          txnRes,
+        ] = await Promise.all([
+          axiosInstance.get(`/budgetsbyUserID/${userId}`),
+          axiosInstance.get(`/incomesbyUserID/${userId}`),
+          axiosInstance.get(`/expensesbyUserID/${userId}`),
+          axiosInstance.get(`/billByuserId/${userId}`),
+          axiosInstance.get(`/recurring/${userId}`),
+          axiosInstance.get(`/transactionsByUserID/${userId}`),
+        ]);
+
+        setBudget(budgetRes.data.data);
+        setIncome(incomeRes.data.data);
+        setExpenses(expenseRes.data.data);
+        setBills(billsRes.data.data);
+        setRecurring(recurringRes.data.data);
+        setTransactions(txnRes.data.data);
+
+        fetchExpenseInsights();
+        fetchRisk();
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      }
+    };
+
+    fetchData();
   }, [userId]);
 
-  const fetchCategories = async () => {
-    try {
-      const res = await axiosInstance.get("/categories");
-      setCategories(res.data.data || []);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchBudgetData = async () => {
-    try {
-      const [bRes, eRes] = await Promise.all([
-        axiosInstance.get(`/budgetsbyUserID/${userId}`),
-        axiosInstance.get(`/expensesbyUserID/${userId}`),
-      ]);
-
-      const bArr = bRes.data.data || [];
-      const eArr = eRes.data.data || [];
-
-      setBudgets(bArr);
-      setExpenses(eArr);
-
-      generateSummary(bArr, eArr);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // =========================
-  // Generate Budget Summary
-  // =========================
-  const generateSummary = (budgetsArr, expensesArr) => {
-    const processed = budgetsArr.map((b) => {
-      const catId =
-        typeof b.categoryID === "object"
-          ? b.categoryID._id || b.categoryID.id
-          : b.categoryID;
-
-      const catName =
-        typeof b.categoryID === "object" ? b.categoryID.name : "Unknown";
-
-      const spent = expensesArr
-        .filter((e) => {
-          const eCat =
-            typeof e.categoryID === "object"
-              ? e.categoryID._id || e.categoryID.id
-              : e.categoryID;
-
-          return eCat === catId;
-        })
-        .reduce((sum, e) => sum + Number(e.amount || 0), 0);
-
-      return {
-        id: b._id,
-        category: catName,
-        allocated: Number(b.amount) || 0,
-        spent,
-        remaining: Number(b.amount) - spent,
-      };
-    });
-
-    setSummary(processed);
-  };
+  const totalBudget = budget.reduce((a, i) => a + i.amount, 0);
+  const totalIncome = income.reduce((a, i) => a + i.amount, 0);
+  const totalExpenses = expenses.reduce((a, e) => a + e.amount, 0);
 
   return (
-    <div className="space-y-8 text-white">
-
+    <div className="text-white space-y-10">
       {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Budget Center</h1>
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="text-3xl font-bold">Financial Overview</h1>
+        <p className="text-gray-400 mt-2">
+          A consolidated view of your financial performance.
+        </p>
+      </motion.div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-green-600 px-4 py-2 rounded-xl"
-        >
-          <FaPlus /> Add Budget
-        </button>
-      </div>
-
-      {/* TABS */}
-      <div className="border-b border-white/10 flex gap-6">
-        {["overview", "analytics", "ai planner", "manage"].map((t) => (
-          <button
-            key={t}
-            onClick={() => setActiveTab(t)}
-            className={`pb-2 capitalize ${
-              activeTab === t
-                ? "border-b-2 border-emerald-400"
-                : "text-gray-400"
-            }`}
+      {/* METRICS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          { title: "Total Budget", value: totalBudget, color: "text-cyan-400" },
+          { title: "Total Income", value: totalIncome, color: "text-emerald-400" },
+          { title: "Total Expenses", value: totalExpenses, color: "text-rose-400" },
+        ].map((item, i) => (
+          <motion.div
+            key={i}
+            whileHover={{ y: -4 }}
+            className="rounded-2xl bg-[#111318] border border-white/10 p-6 shadow-lg"
           >
-            {t}
-          </button>
+            <h2 className="text-gray-400 text-sm">{item.title}</h2>
+            <p className={`mt-2 text-3xl font-bold ${item.color}`}>
+              ₹{item.value.toLocaleString()}
+            </p>
+          </motion.div>
         ))}
       </div>
 
-      {/* OVERVIEW */}
-      {activeTab === "overview" && (
-        <div className="grid md:grid-cols-2 gap-6">
-          {summary.map((item) => (
-            <div
-              key={item.id}
-              className="p-6 rounded-xl bg-[#111318] border border-white/10"
-            >
-              <h3 className="text-lg font-semibold">{item.category}</h3>
-              <p>Allocated: ₹{item.allocated}</p>
-              <p>Spent: ₹{item.spent}</p>
-              <p>Remaining: ₹{item.remaining}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ANALYTICS */}
-      {activeTab === "analytics" && (
-        <ResponsiveContainer width="100%" height={360}>
-          <PieChart>
-            <Pie
-              data={summary.map((s) => ({
-                name: s.category,
-                value: s.spent,
-              }))}
-              dataKey="value"
-              outerRadius={120}
-            >
-              {summary.map((_, i) => (
-                <Cell key={i} fill={COLORS[i % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-      )}
-
       {/* ========================= */}
-      {/* AI PLANNER */}
+      {/* SPENDING RISK DETECTOR */}
       {/* ========================= */}
 
-      {activeTab === "ai planner" && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="space-y-6"
-        >
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">
-              AI Budget Planner
-            </h2>
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">AI Spending Risk Detector</h3>
 
-            <button
-              onClick={fetchBudgetPlan}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-2 rounded-xl font-medium"
-            >
-              Generate AI Plan
-            </button>
-          </div>
-
-          {loadingPlan && (
-            <p className="text-gray-400 animate-pulse">
-              AI is analyzing your finances...
+        {loadingRisk ? (
+          <p className="text-gray-400 animate-pulse">
+            AI is analyzing your spending behavior...
+          </p>
+        ) : riskData ? (
+          <div
+            className={`rounded-xl p-4 border ${
+              riskData.riskLevel === "High"
+                ? "border-red-500 bg-red-500/10"
+                : riskData.riskLevel === "Medium"
+                ? "border-yellow-500 bg-yellow-500/10"
+                : "border-emerald-500 bg-emerald-500/10"
+            }`}
+          >
+            <p className="font-semibold mb-2">
+              Risk Level: {riskData.riskLevel}
             </p>
-          )}
 
-          {budgetPlan && (
+            <p className="text-gray-300">
+              <strong>Category:</strong> {riskData.category}
+            </p>
 
-            <div className="space-y-6">
+            <p className="text-gray-300">
+              <strong>Reason:</strong> {riskData.reason}
+            </p>
 
-              {/* SNAPSHOT */}
-              <div className="grid md:grid-cols-3 gap-6">
+            <p className="text-gray-300">
+              <strong>Suggestion:</strong> {riskData.suggestion}
+            </p>
+          </div>
+        ) : (
+          <p className="text-gray-400">No risk analysis available.</p>
+        )}
+      </motion.div>
 
-                <div className="bg-[#111318] border border-white/10 p-6 rounded-xl">
-                  <p className="text-gray-400 text-sm">Income</p>
-                  <h2 className="text-2xl font-bold text-green-400">
-                    ₹{budgetPlan.snapshot.income}
-                  </h2>
-                </div>
+      {/* ========================= */}
+      {/* EXPENSE INSIGHTS */}
+      {/* ========================= */}
 
-                <div className="bg-[#111318] border border-white/10 p-6 rounded-xl">
-                  <p className="text-gray-400 text-sm">Expenses</p>
-                  <h2 className="text-2xl font-bold text-red-400">
-                    ₹{budgetPlan.snapshot.expenses}
-                  </h2>
-                </div>
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">AI Financial Insights</h3>
 
-                <div className="bg-[#111318] border border-white/10 p-6 rounded-xl">
-                  <p className="text-gray-400 text-sm">Surplus</p>
-                  <h2 className="text-2xl font-bold text-cyan-400">
-                    ₹{budgetPlan.snapshot.surplus}
-                  </h2>
-                </div>
+        {loadingInsights ? (
+          <p className="text-gray-400">Analyzing your spending...</p>
+        ) : (
+          <div className="bg-[#1a1d24] rounded-xl p-4 border border-white/5">
+            <ReactMarkdown>{expenseInsights}</ReactMarkdown>
+          </div>
+        )}
+      </motion.div>
 
-              </div>
+      {/* ========================= */}
+      {/* AI CHAT */}
+      {/* ========================= */}
 
-              {/* RECOMMENDED BUDGET */}
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">AI Financial Assistant</h3>
 
-              <div className="bg-[#111318] border border-white/10 rounded-xl p-6">
-
-                <h3 className="text-lg font-semibold mb-4">
-                  Recommended Budget
-                </h3>
-
-                <div className="space-y-3">
-
-                  {budgetPlan.budgetPlan.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between bg-[#0d0f14] p-3 rounded-lg"
-                    >
-                      <span>{item.category}</span>
-                      <span className="text-cyan-400">
-                        ₹{item.recommended}
-                      </span>
-                    </div>
-                  ))}
-
-                </div>
-
-              </div>
-
-              {/* AI RECOMMENDATIONS */}
-
-              <div className="bg-[#111318] border border-white/10 rounded-xl p-6">
-
-                <h3 className="text-lg font-semibold mb-4">
-                  AI Suggestions
-                </h3>
-
-                <ul className="space-y-2 text-gray-300">
-
-                  {budgetPlan.recommendations.map((tip, i) => (
-                    <li key={i} className="flex gap-2">
-                      <span className="text-cyan-400">•</span>
-                      {tip}
-                    </li>
-                  ))}
-
-                </ul>
-
-              </div>
-
-            </div>
-
-          )}
-        </motion.div>
-      )}
-
-      {/* MANAGE */}
-      {activeTab === "manage" && (
-        <div className="grid md:grid-cols-2 gap-6">
-          {budgets.map((b) => (
+        <div className="h-64 overflow-y-auto space-y-3 mb-4">
+          {messages.map((msg, i) => (
             <div
-              key={b._id}
-              className="p-5 rounded-xl bg-gray-800 border border-white/10"
+              key={i}
+              className={`p-3 rounded-lg max-w-[80%] ${
+                msg.role === "user"
+                  ? "bg-blue-500 ml-auto text-white"
+                  : "bg-gray-700 text-gray-200"
+              }`}
             >
-              <h3 className="font-semibold">{b.description || "Budget"}</h3>
-              <p>₹{b.amount}</p>
-
-              <button
-                onClick={() => {
-                  setSelectedBudget(b);
-                  setConfirmDeleteOpen(true);
-                }}
-                className="mt-3 text-red-400"
-              >
-                <FaTrashAlt />
-              </button>
+              {msg.text}
             </div>
           ))}
+
+          {loadingAI && <p className="text-gray-400">AI is thinking...</p>}
         </div>
-      )}
+
+        <div className="flex gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask AI about your finances..."
+            className="flex-1 p-2 rounded bg-[#1a1d24] border border-gray-700 text-white"
+          />
+
+          <button
+            onClick={sendMessage}
+            className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Send
+          </button>
+        </div>
+      </motion.div>
+
+      {/* CHARTS */}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+          <h3 className="text-lg font-semibold mb-4">Income vs Expenses</h3>
+
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart
+              data={[
+                { name: "Income", amount: totalIncome },
+                { name: "Expenses", amount: totalExpenses },
+              ]}
+            >
+              <XAxis dataKey="name" stroke="#9CA3AF" />
+              <YAxis stroke="#9CA3AF" />
+              <Tooltip />
+              <Bar dataKey="amount" fill="#3b82f6" />
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+          <h3 className="text-lg font-semibold mb-4">Expense Distribution</h3>
+
+          <ResponsiveContainer width="100%" height={280}>
+            <PieChart>
+              <Pie
+                data={expenses.map((e) => ({
+                  name: e.categoryID?.name || "Other",
+                  value: e.amount,
+                }))}
+                dataKey="value"
+                outerRadius={95}
+                label
+              >
+                {expenses.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+
+              <Legend />
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </motion.div>
+      </div>
     </div>
   );
 };
