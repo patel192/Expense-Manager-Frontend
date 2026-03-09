@@ -15,18 +15,18 @@ import { useAuth } from "../../../context/AuthContext";
 
 export const UserBudget = () => {
   const { user } = useAuth();
-
   const userId = useMemo(() => user?._id, [user]);
 
-  // Budget Planner State
-  const [budgetPlan, setBudgetPlan] = useState("");
-  const [loadingPlan, setLoadingPlan] = useState(false);
-
   const [activeTab, setActiveTab] = useState("overview");
+
   const [budgets, setBudgets] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [summary, setSummary] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  const [budgetPlan, setBudgetPlan] = useState("");
+  const [displayedPlan, setDisplayedPlan] = useState("");
+  const [loadingPlan, setLoadingPlan] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingAdd, setLoadingAdd] = useState(false);
@@ -36,14 +36,38 @@ export const UserBudget = () => {
 
   const COLORS = ["#10b981", "#ef4444", "#3b82f6", "#f59e0b", "#a855f7"];
 
-  //Fetch the Budget plan
+  // =========================
+  // Typing Effect
+  // =========================
+  const typeWriterEffect = (text) => {
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setDisplayedPlan((prev) => prev + text[index]);
+
+      index++;
+
+      if (index >= text.length) {
+        clearInterval(interval);
+      }
+    }, 15);
+  };
+
+  // =========================
+  // Fetch AI Budget Plan
+  // =========================
   const fetchBudgetPlan = async () => {
     try {
       setLoadingPlan(true);
+      setDisplayedPlan("");
 
       const res = await axiosInstance.get(`/ai/budget-plan/${userId}`);
 
-      setBudgetPlan(res.data.budgetPlan);
+      const plan = res.data.budgetPlan;
+
+      setBudgetPlan(plan);
+
+      typeWriterEffect(plan);
     } catch (error) {
       console.error("Budget plan error:", error);
     } finally {
@@ -51,9 +75,9 @@ export const UserBudget = () => {
     }
   };
 
-  // --------------------------
-  // Fetch Data ONLY when userId exists
-  // --------------------------
+  // =========================
+  // Fetch Data
+  // =========================
   useEffect(() => {
     if (!userId) return;
 
@@ -89,9 +113,9 @@ export const UserBudget = () => {
     }
   };
 
-  // --------------------------
-  // Build Summary
-  // --------------------------
+  // =========================
+  // Generate Budget Summary
+  // =========================
   const generateSummary = (budgetsArr, expensesArr) => {
     const processed = budgetsArr.map((b) => {
       const catId =
@@ -108,6 +132,7 @@ export const UserBudget = () => {
             typeof e.categoryID === "object"
               ? e.categoryID._id || e.categoryID.id
               : e.categoryID;
+
           return eCat === catId;
         })
         .reduce((sum, e) => sum + Number(e.amount || 0), 0);
@@ -118,80 +143,19 @@ export const UserBudget = () => {
         allocated: Number(b.amount) || 0,
         spent,
         remaining: Number(b.amount) - spent,
-        start: b.start_date,
-        end: b.end_date,
       };
     });
 
     setSummary(processed);
   };
 
-  // --------------------------
-  // Insights
-  // --------------------------
-  const generateInsights = () => {
-    if (!summary.length) return ["Add a budget to start tracking insights."];
-
-    const tips = [];
-
-    summary.forEach((s) => {
-      if (s.spent > s.allocated) tips.push(`Overspending in ${s.category}.`);
-      else if (s.remaining < s.allocated * 0.15)
-        tips.push(`${s.category} budget nearly exhausted.`);
-      else if (s.remaining > s.allocated * 0.5)
-        tips.push(`${s.category} has a healthy surplus.`);
-    });
-
-    return tips.length ? tips : ["All budgets are on track."];
-  };
-
-  // --------------------------
-  // Add Budget
-  // --------------------------
-  const handleAddBudget = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-
-    const payload = {
-      userID: userId,
-      categoryID: formData.get("categoryID"),
-      amount: formData.get("amount"),
-      start_date: formData.get("start_date"),
-      end_date: formData.get("end_date"),
-    };
-
-    try {
-      setLoadingAdd(true);
-      await axiosInstance.post("/budget", payload);
-
-      setIsModalOpen(false);
-      fetchBudgetData(); // refresh all tabs
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setLoadingAdd(false);
-    }
-  };
-
-  // --------------------------
-  // Delete Budget
-  // --------------------------
-  const confirmDelete = async () => {
-    try {
-      await axiosInstance.delete(`/budget/${selectedBudget._id}`);
-      setConfirmDeleteOpen(false);
-      fetchBudgetData(); // IMPORTANT
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  // ==========================
+  // =========================
   // UI
-  // ==========================
+  // =========================
   return (
     <div className="space-y-8 text-white">
-      {/* Header */}
+
+      {/* HEADER */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Budget Center</h1>
 
@@ -203,7 +167,7 @@ export const UserBudget = () => {
         </button>
       </div>
 
-      {/* Tabs */}
+      {/* TABS */}
       <div className="border-b border-white/10 flex gap-6">
         {["overview", "analytics", "ai planner", "manage"].map((t) => (
           <button
@@ -223,59 +187,45 @@ export const UserBudget = () => {
       {/* OVERVIEW */}
       {activeTab === "overview" && (
         <div className="grid md:grid-cols-2 gap-6">
-          {summary.length === 0 ? (
-            <p className="text-gray-400">No budgets yet.</p>
-          ) : (
-            summary.map((item) => (
-              <div
-                key={item.id}
-                className="p-6 rounded-xl bg-[#111318] border border-white/10"
-              >
-                <h3 className="text-lg font-semibold">{item.category}</h3>
-                <p>Allocated: ₹{item.allocated}</p>
-                <p>Spent: ₹{item.spent}</p>
-                <p>Remaining: ₹{item.remaining}</p>
-              </div>
-            ))
-          )}
+          {summary.map((item) => (
+            <div
+              key={item.id}
+              className="p-6 rounded-xl bg-[#111318] border border-white/10"
+            >
+              <h3 className="text-lg font-semibold">{item.category}</h3>
+              <p>Allocated: ₹{item.allocated}</p>
+              <p>Spent: ₹{item.spent}</p>
+              <p>Remaining: ₹{item.remaining}</p>
+            </div>
+          ))}
         </div>
       )}
 
       {/* ANALYTICS */}
       {activeTab === "analytics" && (
-        <div>
-          {summary.length === 0 ? (
-            <p className="text-gray-400">No data for analytics.</p>
-          ) : (
-            <>
-              <ResponsiveContainer width="100%" height={360}>
-                <PieChart>
-                  <Pie
-                    data={summary.map((s) => ({
-                      name: s.category,
-                      value: s.spent,
-                    }))}
-                    dataKey="value"
-                    outerRadius={120}
-                  >
-                    {summary.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-
-              <ul className="mt-4 text-sm">
-                {generateInsights().map((tip, i) => (
-                  <li key={i}>{tip}</li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
+        <ResponsiveContainer width="100%" height={360}>
+          <PieChart>
+            <Pie
+              data={summary.map((s) => ({
+                name: s.category,
+                value: s.spent,
+              }))}
+              dataKey="value"
+              outerRadius={120}
+            >
+              {summary.map((_, i) => (
+                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
       )}
+
+      {/* ===================== */}
+      {/* AI PLANNER SECTION */}
+      {/* ===================== */}
 
       {activeTab === "ai planner" && (
         <motion.div
@@ -283,30 +233,65 @@ export const UserBudget = () => {
           animate={{ opacity: 1 }}
           className="space-y-6"
         >
+
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">AI Budget Planner</h2>
+
+            <h2 className="text-xl font-semibold">
+              AI Budget Planner
+            </h2>
 
             <button
               onClick={fetchBudgetPlan}
-              className="bg-blue-600 px-4 py-2 rounded-xl"
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-2 rounded-xl font-medium hover:opacity-90"
             >
-              Generate Plan
+              Generate AI Plan
             </button>
+
           </div>
 
-          {loadingPlan ? (
-            <p className="text-gray-400">Generating AI budget plan...</p>
-          ) : budgetPlan ? (
-            <div className="bg-[#111318] border border-white/10 rounded-xl p-6">
-              <div className="prose prose-invert max-w-none">
-                <ReactMarkdown>{budgetPlan}</ReactMarkdown>
-              </div>
-            </div>
-          ) : (
-            <p className="text-gray-400">
-              Click "Generate Plan" to create your AI budget plan.
+          {loadingPlan && (
+            <p className="text-gray-400 animate-pulse">
+              AI is analyzing your finances...
             </p>
           )}
+
+          {displayedPlan && (
+
+            <div className="bg-[#111318] border border-white/10 rounded-2xl p-6 space-y-4">
+
+              {/* AI HEADER */}
+
+              <div className="flex items-center gap-3">
+
+                <div className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center text-sm font-bold">
+                  AI
+                </div>
+
+                <p className="text-gray-300 text-sm">
+                  Smart Budget Recommendation
+                </p>
+
+              </div>
+
+              {/* AI RESPONSE */}
+
+              <div className="bg-[#0d0f14] rounded-xl p-5 border border-white/5">
+
+                <div
+                  className="prose prose-invert max-w-none text-gray-300
+                  prose-headings:text-white
+                  prose-strong:text-cyan-400
+                  prose-li:text-gray-300"
+                >
+                  <ReactMarkdown>{displayedPlan}</ReactMarkdown>
+                </div>
+
+              </div>
+
+            </div>
+
+          )}
+
         </motion.div>
       )}
 
@@ -335,8 +320,6 @@ export const UserBudget = () => {
         </div>
       )}
 
-      {/* ADD MODAL + DELETE MODAL */}
-      {/* (Your modal code can remain unchanged) */}
     </div>
   );
 };
