@@ -38,9 +38,9 @@ export const UserDashboard = () => {
   const [input, setInput] = useState("");
   const [loadingAI, setLoadingAI] = useState(false);
 
-  // SPENDING RISK
+  // Risk Detection State
   const [riskData, setRiskData] = useState(null);
-
+  const [loadingRisk, setLoadingRisk] = useState(false);
   // =========================
   // SEND MESSAGE TO AI
   // =========================
@@ -96,10 +96,15 @@ export const UserDashboard = () => {
   // =========================
   const fetchRisk = async () => {
     try {
+      setLoadingRisk(true);
+
       const res = await axiosInstance.get(`/ai/spending-risk/${userId}`);
+
       setRiskData(res.data.risk);
     } catch (error) {
       console.error("Risk detection error:", error);
+    } finally {
+      setLoadingRisk(false);
     }
   };
 
@@ -152,14 +157,16 @@ export const UserDashboard = () => {
     riskData?.riskLevel === "High"
       ? "border-red-500 bg-red-500/10"
       : riskData?.riskLevel === "Medium"
-      ? "border-yellow-500 bg-yellow-500/10"
-      : "border-emerald-500 bg-emerald-500/10";
+        ? "border-yellow-500 bg-yellow-500/10"
+        : "border-emerald-500 bg-emerald-500/10";
 
   return (
     <div className="text-white space-y-10">
-
       {/* HEADER */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <h1 className="text-3xl font-bold">Financial Overview</h1>
         <p className="text-gray-400 mt-2">
           A consolidated view of your financial performance.
@@ -170,8 +177,16 @@ export const UserDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           { title: "Total Budget", value: totalBudget, color: "text-cyan-400" },
-          { title: "Total Income", value: totalIncome, color: "text-emerald-400" },
-          { title: "Total Expenses", value: totalExpenses, color: "text-rose-400" },
+          {
+            title: "Total Income",
+            value: totalIncome,
+            color: "text-emerald-400",
+          },
+          {
+            title: "Total Expenses",
+            value: totalExpenses,
+            color: "text-rose-400",
+          },
         ].map((item, i) => (
           <motion.div
             key={i}
@@ -187,32 +202,52 @@ export const UserDashboard = () => {
       </div>
 
       {/* ========================= */}
-      {/* SPENDING RISK ALERT */}
+      {/* SPENDING RISK DETECTOR */}
       {/* ========================= */}
 
-      {riskData && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className={`rounded-2xl border p-5 ${riskColor}`}
-        >
-          <h3 className="font-semibold text-lg mb-2">
-            ⚠ Spending Risk Alert
-          </h3>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="rounded-2xl border border-white/10 bg-[#111318] p-6 shadow-lg"
+      >
+        <h3 className="text-lg font-semibold mb-3">
+          AI Spending Risk Detector
+        </h3>
 
-          <p className="text-gray-300">
-            <strong>Category:</strong> {riskData.category}
+        {loadingRisk ? (
+          <p className="text-gray-400 animate-pulse">
+            AI is analyzing your spending behavior...
           </p>
+        ) : riskData ? (
+          <div
+            className={`rounded-xl p-4 border ${
+              riskData.riskLevel === "High"
+                ? "border-red-500 bg-red-500/10"
+                : riskData.riskLevel === "Medium"
+                  ? "border-yellow-500 bg-yellow-500/10"
+                  : "border-emerald-500 bg-emerald-500/10"
+            }`}
+          >
+            <p className="font-semibold mb-2">
+              Risk Level: {riskData.riskLevel}
+            </p>
 
-          <p className="text-gray-300">
-            <strong>Reason:</strong> {riskData.reason}
-          </p>
+            <p className="text-gray-300">
+              <strong>Category:</strong> {riskData.category}
+            </p>
 
-          <p className="text-gray-300">
-            <strong>Suggestion:</strong> {riskData.suggestion}
-          </p>
-        </motion.div>
-      )}
+            <p className="text-gray-300">
+              <strong>Reason:</strong> {riskData.reason}
+            </p>
+
+            <p className="text-gray-300">
+              <strong>Suggestion:</strong> {riskData.suggestion}
+            </p>
+          </div>
+        ) : (
+          <p className="text-gray-400">No risk analysis available.</p>
+        )}
+      </motion.div>
 
       {/* ========================= */}
       {/* AI CHAT */}
