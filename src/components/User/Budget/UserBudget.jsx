@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import ReactMarkdown from "react-markdown";
 import axiosInstance from "../../Utils/axiosInstance";
 import { motion } from "framer-motion";
 import {
@@ -24,34 +23,14 @@ export const UserBudget = () => {
   const [summary, setSummary] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  const [budgetPlan, setBudgetPlan] = useState("");
-  const [displayedPlan, setDisplayedPlan] = useState("");
+  const [budgetPlan, setBudgetPlan] = useState(null);
   const [loadingPlan, setLoadingPlan] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loadingAdd, setLoadingAdd] = useState(false);
-
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
 
   const COLORS = ["#10b981", "#ef4444", "#3b82f6", "#f59e0b", "#a855f7"];
-
-  // =========================
-  // Typing Effect
-  // =========================
-  const typeWriterEffect = (text) => {
-    let index = 0;
-
-    const interval = setInterval(() => {
-      setDisplayedPlan((prev) => prev + text[index]);
-
-      index++;
-
-      if (index >= text.length) {
-        clearInterval(interval);
-      }
-    }, 15);
-  };
 
   // =========================
   // Fetch AI Budget Plan
@@ -59,15 +38,10 @@ export const UserBudget = () => {
   const fetchBudgetPlan = async () => {
     try {
       setLoadingPlan(true);
-      setDisplayedPlan("");
 
       const res = await axiosInstance.get(`/ai/budget-plan/${userId}`);
 
-      const plan = res.data.budgetPlan;
-
-      setBudgetPlan(plan);
-
-      typeWriterEffect(plan);
+      setBudgetPlan(res.data.budgetPlan);
     } catch (error) {
       console.error("Budget plan error:", error);
     } finally {
@@ -149,9 +123,6 @@ export const UserBudget = () => {
     setSummary(processed);
   };
 
-  // =========================
-  // UI
-  // =========================
   return (
     <div className="space-y-8 text-white">
 
@@ -223,9 +194,9 @@ export const UserBudget = () => {
         </ResponsiveContainer>
       )}
 
-      {/* ===================== */}
-      {/* AI PLANNER SECTION */}
-      {/* ===================== */}
+      {/* ========================= */}
+      {/* AI PLANNER */}
+      {/* ========================= */}
 
       {activeTab === "ai planner" && (
         <motion.div
@@ -233,20 +204,17 @@ export const UserBudget = () => {
           animate={{ opacity: 1 }}
           className="space-y-6"
         >
-
           <div className="flex justify-between items-center">
-
             <h2 className="text-xl font-semibold">
               AI Budget Planner
             </h2>
 
             <button
               onClick={fetchBudgetPlan}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-2 rounded-xl font-medium hover:opacity-90"
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-2 rounded-xl font-medium"
             >
               Generate AI Plan
             </button>
-
           </div>
 
           {loadingPlan && (
@@ -255,43 +223,86 @@ export const UserBudget = () => {
             </p>
           )}
 
-          {displayedPlan && (
+          {budgetPlan && (
 
-            <div className="bg-[#111318] border border-white/10 rounded-2xl p-6 space-y-4">
+            <div className="space-y-6">
 
-              {/* AI HEADER */}
+              {/* SNAPSHOT */}
+              <div className="grid md:grid-cols-3 gap-6">
 
-              <div className="flex items-center gap-3">
-
-                <div className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center text-sm font-bold">
-                  AI
+                <div className="bg-[#111318] border border-white/10 p-6 rounded-xl">
+                  <p className="text-gray-400 text-sm">Income</p>
+                  <h2 className="text-2xl font-bold text-green-400">
+                    ₹{budgetPlan.snapshot.income}
+                  </h2>
                 </div>
 
-                <p className="text-gray-300 text-sm">
-                  Smart Budget Recommendation
-                </p>
+                <div className="bg-[#111318] border border-white/10 p-6 rounded-xl">
+                  <p className="text-gray-400 text-sm">Expenses</p>
+                  <h2 className="text-2xl font-bold text-red-400">
+                    ₹{budgetPlan.snapshot.expenses}
+                  </h2>
+                </div>
+
+                <div className="bg-[#111318] border border-white/10 p-6 rounded-xl">
+                  <p className="text-gray-400 text-sm">Surplus</p>
+                  <h2 className="text-2xl font-bold text-cyan-400">
+                    ₹{budgetPlan.snapshot.surplus}
+                  </h2>
+                </div>
 
               </div>
 
-              {/* AI RESPONSE */}
+              {/* RECOMMENDED BUDGET */}
 
-              <div className="bg-[#0d0f14] rounded-xl p-5 border border-white/5">
+              <div className="bg-[#111318] border border-white/10 rounded-xl p-6">
 
-                <div
-                  className="prose prose-invert max-w-none text-gray-300
-                  prose-headings:text-white
-                  prose-strong:text-cyan-400
-                  prose-li:text-gray-300"
-                >
-                  <ReactMarkdown>{displayedPlan}</ReactMarkdown>
+                <h3 className="text-lg font-semibold mb-4">
+                  Recommended Budget
+                </h3>
+
+                <div className="space-y-3">
+
+                  {budgetPlan.budgetPlan.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex justify-between bg-[#0d0f14] p-3 rounded-lg"
+                    >
+                      <span>{item.category}</span>
+                      <span className="text-cyan-400">
+                        ₹{item.recommended}
+                      </span>
+                    </div>
+                  ))}
+
                 </div>
+
+              </div>
+
+              {/* AI RECOMMENDATIONS */}
+
+              <div className="bg-[#111318] border border-white/10 rounded-xl p-6">
+
+                <h3 className="text-lg font-semibold mb-4">
+                  AI Suggestions
+                </h3>
+
+                <ul className="space-y-2 text-gray-300">
+
+                  {budgetPlan.recommendations.map((tip, i) => (
+                    <li key={i} className="flex gap-2">
+                      <span className="text-cyan-400">•</span>
+                      {tip}
+                    </li>
+                  ))}
+
+                </ul>
 
               </div>
 
             </div>
 
           )}
-
         </motion.div>
       )}
 
@@ -319,7 +330,6 @@ export const UserBudget = () => {
           ))}
         </div>
       )}
-
     </div>
   );
 };
