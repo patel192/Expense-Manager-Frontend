@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
+import ReactMarkdown from "react-markdown";
 import axiosInstance from "../../Utils/axiosInstance";
-import { Dialog, Transition } from "@headlessui/react";
 import { motion } from "framer-motion";
 import {
   PieChart,
@@ -10,20 +10,17 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import {
-  FaChartPie,
-  FaPlus,
-  FaCalendarAlt,
-  FaRupeeSign,
-  FaTags,
-  FaTrashAlt,
-} from "react-icons/fa";
+import { FaPlus, FaTrashAlt } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 
 export const UserBudget = () => {
   const { user } = useAuth();
 
   const userId = useMemo(() => user?._id, [user]);
+
+  // Budget Planner State
+  const [budgetPlan, setBudgetPlan] = useState("");
+  const [loadingPlan, setLoadingPlan] = useState(false);
 
   const [activeTab, setActiveTab] = useState("overview");
   const [budgets, setBudgets] = useState([]);
@@ -38,6 +35,21 @@ export const UserBudget = () => {
   const [selectedBudget, setSelectedBudget] = useState(null);
 
   const COLORS = ["#10b981", "#ef4444", "#3b82f6", "#f59e0b", "#a855f7"];
+
+  //Fetch the Budget plan
+  const fetchBudgetPlan = async () => {
+    try {
+      setLoadingPlan(true);
+
+      const res = await axiosInstance.get(`/ai/budget-plan/${userId}`);
+
+      setBudgetPlan(res.data.budgetPlan);
+    } catch (error) {
+      console.error("Budget plan error:", error);
+    } finally {
+      setLoadingPlan(false);
+    }
+  };
 
   // --------------------------
   // Fetch Data ONLY when userId exists
@@ -118,14 +130,12 @@ export const UserBudget = () => {
   // Insights
   // --------------------------
   const generateInsights = () => {
-    if (!summary.length)
-      return ["Add a budget to start tracking insights."];
+    if (!summary.length) return ["Add a budget to start tracking insights."];
 
     const tips = [];
 
     summary.forEach((s) => {
-      if (s.spent > s.allocated)
-        tips.push(`Overspending in ${s.category}.`);
+      if (s.spent > s.allocated) tips.push(`Overspending in ${s.category}.`);
       else if (s.remaining < s.allocated * 0.15)
         tips.push(`${s.category} budget nearly exhausted.`);
       else if (s.remaining > s.allocated * 0.5)
@@ -195,7 +205,7 @@ export const UserBudget = () => {
 
       {/* Tabs */}
       <div className="border-b border-white/10 flex gap-6">
-        {["overview", "analytics", "manage"].map((t) => (
+        {["overview", "analytics", "ai planner", "manage"].map((t) => (
           <button
             key={t}
             onClick={() => setActiveTab(t)}
@@ -265,6 +275,39 @@ export const UserBudget = () => {
             </>
           )}
         </div>
+      )}
+
+      {activeTab === "ai planner" && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-6"
+        >
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">AI Budget Planner</h2>
+
+            <button
+              onClick={fetchBudgetPlan}
+              className="bg-blue-600 px-4 py-2 rounded-xl"
+            >
+              Generate Plan
+            </button>
+          </div>
+
+          {loadingPlan ? (
+            <p className="text-gray-400">Generating AI budget plan...</p>
+          ) : budgetPlan ? (
+            <div className="bg-[#111318] border border-white/10 rounded-xl p-6">
+              <div className="prose prose-invert max-w-none">
+                <ReactMarkdown>{budgetPlan}</ReactMarkdown>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-400">
+              Click "Generate Plan" to create your AI budget plan.
+            </p>
+          )}
+        </motion.div>
       )}
 
       {/* MANAGE */}
