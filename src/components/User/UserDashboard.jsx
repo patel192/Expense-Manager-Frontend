@@ -16,7 +16,6 @@ import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 
 export const UserDashboard = () => {
-
   const { user } = useAuth();
   const userId = user?._id;
 
@@ -29,6 +28,10 @@ export const UserDashboard = () => {
 
   const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
+  // AI EXPENSE INSIGHTS STATE
+  const [expenseInsights, setExpenseInsights] = useState("");
+  const [loadingInsights, setLoadingInsights] = useState(false);
+
   // =========================
   // AI CHAT STATE
   // =========================
@@ -40,57 +43,60 @@ export const UserDashboard = () => {
   // SEND MESSAGE TO AI
   // =========================
   const sendMessage = async () => {
-
     if (!input.trim()) return;
 
     const userMessage = {
       role: "user",
-      text: input
+      text: input,
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
     try {
-
       setLoadingAI(true);
 
       const res = await axiosInstance.post("/ai/ask", {
-        message: input
+        message: input,
       });
 
       const aiMessage = {
         role: "ai",
-        text: res.data?.reply || "AI returned no response."
+        text: res.data?.reply || "AI returned no response.",
       };
 
-      setMessages(prev => [...prev, aiMessage]);
-
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
-
       console.error("AI chat error:", error);
 
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
-        { role: "ai", text: "AI failed to respond." }
+        { role: "ai", text: "AI failed to respond." },
       ]);
-
     } finally {
       setLoadingAI(false);
     }
   };
 
+  const fetchExpenseInsights = async () => {
+    try {
+      setLoadingInsights(true);
+      const res = await axiosInstance.get(`/ai/expense-insights/${userId}`);
+      setExpenseInsights(res.data.insights);
+    } catch (err) {
+      console.error("Insights Error", err);
+    } finally {
+      setLoadingInsights(false);
+    }
+  };
   // =========================
   // FETCH DASHBOARD DATA
   // =========================
   useEffect(() => {
-
     if (!userId) return;
 
     const fetchData = async () => {
-
       try {
-
         const [
           budgetRes,
           incomeRes,
@@ -114,13 +120,13 @@ export const UserDashboard = () => {
         setRecurring(recurringRes.data.data);
         setTransactions(txnRes.data.data);
 
+        fetchExpenseInsights();
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
     };
 
     fetchData();
-
   }, [userId]);
 
   const totalBudget = budget.reduce((a, i) => a + i.amount, 0);
@@ -129,7 +135,6 @@ export const UserDashboard = () => {
 
   return (
     <div className="text-white space-y-10">
-
       {/* HEADER */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -145,8 +150,16 @@ export const UserDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           { title: "Total Budget", value: totalBudget, color: "text-cyan-400" },
-          { title: "Total Income", value: totalIncome, color: "text-emerald-400" },
-          { title: "Total Expenses", value: totalExpenses, color: "text-rose-400" },
+          {
+            title: "Total Income",
+            value: totalIncome,
+            color: "text-emerald-400",
+          },
+          {
+            title: "Total Expenses",
+            value: totalExpenses,
+            color: "text-rose-400",
+          },
         ].map((item, i) => (
           <motion.div
             key={i}
@@ -164,16 +177,11 @@ export const UserDashboard = () => {
       {/* ========================= */}
       {/* AI CHAT SECTION */}
       {/* ========================= */}
-      <motion.div
-        className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
-      >
-        <h3 className="text-lg font-semibold mb-4">
-          AI Financial Assistant
-        </h3>
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">AI Financial Assistant</h3>
 
         {/* Chat messages */}
         <div className="h-64 overflow-y-auto space-y-3 mb-4">
-
           {messages.map((msg, i) => (
             <div
               key={i}
@@ -187,15 +195,11 @@ export const UserDashboard = () => {
             </div>
           ))}
 
-          {loadingAI && (
-            <p className="text-gray-400">AI is thinking...</p>
-          )}
-
+          {loadingAI && <p className="text-gray-400">AI is thinking...</p>}
         </div>
 
         {/* Input */}
         <div className="flex gap-2">
-
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -209,13 +213,23 @@ export const UserDashboard = () => {
           >
             Send
           </button>
-
         </div>
       </motion.div>
 
+      {/* EXPENSE SUMMARY SECTION  */}
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-3">AI Financial Insights</h3>
+
+        {loadingInsights ? (
+          <p className="text-gray-400">Analyzing expenses...</p>
+        ) : (
+          <p className="text-gray-300 whitespace-pre-line">
+            {expenseInsights || "No insights available yet."}
+          </p>
+        )}
+      </motion.div>
       {/* CHARTS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
         <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
           <h3 className="text-lg font-semibold mb-4">Income vs Expenses</h3>
 
@@ -235,9 +249,7 @@ export const UserDashboard = () => {
         </motion.div>
 
         <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">
-            Expense Distribution
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">Expense Distribution</h3>
 
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
@@ -259,11 +271,8 @@ export const UserDashboard = () => {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-
         </motion.div>
-
       </div>
-
     </div>
   );
 };
