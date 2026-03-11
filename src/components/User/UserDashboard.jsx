@@ -35,6 +35,10 @@ export const UserDashboard = () => {
   const [expenseInsights, setExpenseInsights] = useState("");
   const [loadingInsights, setLoadingInsights] = useState(false);
 
+  //FINANCIAL FORECAST
+  const [forecast, setForecast] = useState("");
+  const [loadingForecast, setLoadingForecast] = useState(false);
+
   // =========================
   // AI CHAT
   // =========================
@@ -104,6 +108,18 @@ export const UserDashboard = () => {
     }
   };
 
+  const fetchForecast = async () => {
+    try {
+      setLoadingForecast(true);
+
+      const res = await axiosInstance.get(`/ai/financial-forecast/${userId}`);
+      setForecast(res.data.forecast);
+    } catch (error) {
+      console.error("Forecast error:", error);
+    } finally {
+      setLoadingForecast(false);
+    }
+  };
   // =========================
   // FETCH RISK
   // =========================
@@ -286,6 +302,39 @@ export const UserDashboard = () => {
         ) : (
           <p className="text-gray-400">
             Click "Generate Insights" to analyze your financial behavior.
+          </p>
+        )}
+      </motion.div>
+
+      {/* ========================= */}
+      {/* FINANCIAL FORECAST */}
+      {/* ========================= */}
+
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">AI Financial Forecast</h3>
+
+          {!forecast && (
+            <button
+              onClick={fetchForecast}
+              className="bg-purple-500 px-4 py-2 rounded text-sm hover:bg-purple-600"
+            >
+              Generate Forecast
+            </button>
+          )}
+        </div>
+
+        {loadingForecast ? (
+          <p className="text-gray-400 animate-pulse">
+            AI is predicting your financial future...
+          </p>
+        ) : forecast ? (
+          <div className="bg-[#1a1d24] rounded-xl p-4 border border-white/5">
+            <ReactMarkdown>{forecast}</ReactMarkdown>
+          </div>
+        ) : (
+          <p className="text-gray-400">
+            Click "Generate Forecast" to see your financial projection.
           </p>
         )}
       </motion.div>
