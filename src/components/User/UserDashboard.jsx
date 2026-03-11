@@ -60,6 +60,10 @@ export const UserDashboard = () => {
   const [riskData, setRiskData] = useState(null);
   const [loadingRisk, setLoadingRisk] = useState(false);
 
+  //ALL INSIGHTS
+  const [allInsights, setAllInsights] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
   // =========================
   // SEND MESSAGE
   // =========================
@@ -177,6 +181,19 @@ export const UserDashboard = () => {
     }
   };
 
+  //FETCH ALL INSIGHTS
+  const fetchAllInsights = async () => {
+    try {
+      setLoadingHistory(true);
+      const res = await axiosInstance.get(`/ai/insights/${userId}`);
+      setAllInsights(res.data.insights);
+    } catch (error) {
+      console.error("Insight history error", error);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
   // =========================
   // FETCH DASHBOARD DATA
   // =========================
@@ -213,6 +230,7 @@ export const UserDashboard = () => {
     };
 
     fetchData();
+    fetchAllInsights();
   }, [userId]);
 
   const totalBudget = budget.reduce((a, i) => a + i.amount, 0);
@@ -550,6 +568,58 @@ export const UserDashboard = () => {
           </ResponsiveContainer>
         </motion.div>
       </div>
+
+      {/* ========================= */}
+      {/* AI INSIGHT HISTORY */}
+      {/* ========================= */}
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
+      >
+        <h3 className="text-lg font-semibold mb-4">AI Insight History</h3>
+
+        {loadingHistory ? (
+          <p className="text-gray-400 animate-pulse">
+            Loading insight history...
+          </p>
+        ) : allInsights.length === 0 ? (
+          <p className="text-gray-400">No AI insights generated yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {allInsights.map((item) => (
+              <div
+                key={item._id}
+                className="bg-[#1a1d24] border border-white/5 rounded-xl p-4"
+              >
+                {/* Insight Header */}
+
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-semibold text-cyan-400 capitalize">
+                    {item.type.replace("-", " ")}
+                  </span>
+
+                  <span className="text-xs text-gray-500">
+                    {new Date(item.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+
+                {/* Insight Content */}
+
+                <div
+                  className="prose prose-invert max-w-none text-gray-300
+            prose-headings:text-white
+            prose-strong:text-cyan-400
+            prose-li:text-gray-300"
+                >
+                  <ReactMarkdown>{item.content}</ReactMarkdown>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 };
