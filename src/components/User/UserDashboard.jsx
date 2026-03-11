@@ -43,6 +43,10 @@ export const UserDashboard = () => {
   const [savingOpportunities, setSavingOpportunities] = useState("");
   const [loadingSavings, setLoadingSavings] = useState(false);
 
+  //FINANCIAL HEALTH
+  const [healthScore, setHealthScore] = useState("");
+  const [loadingHealth, setLoadingHealth] = useState(false);
+
   // =========================
   // AI CHAT
   // =========================
@@ -138,6 +142,21 @@ export const UserDashboard = () => {
       console.error("Saving opportunities error:", error);
     } finally {
       setLoadingSavings(false);
+    }
+  };
+
+  //FETCH HEALTH SCORE
+  const fetchHealthScore = async () => {
+    try {
+      setLoadingHealth(true);
+
+      const res = await axiosInstance.get(`/ai/financial-health/${userId}`);
+
+      setHealthScore(res.data.healthScore);
+    } catch (error) {
+      console.error("Health score error:", error);
+    } finally {
+      setLoadingHealth(false);
     }
   };
 
@@ -396,6 +415,50 @@ export const UserDashboard = () => {
         ) : (
           <p className="text-gray-400">
             Click "Analyze Savings" to find potential saving opportunities.
+          </p>
+        )}
+      </motion.div>
+
+      {/* ========================= */}
+      {/* FINANCIAL HEALTH SCORE */}
+      {/* ========================= */}
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
+      >
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">AI Financial Health Score</h3>
+
+          {!healthScore && (
+            <button
+              onClick={fetchHealthScore}
+              className="bg-purple-500 px-4 py-2 rounded text-sm hover:bg-purple-600"
+            >
+              Calculate Score
+            </button>
+          )}
+        </div>
+
+        {loadingHealth ? (
+          <p className="text-gray-400 animate-pulse">
+            AI is evaluating your financial health...
+          </p>
+        ) : healthScore ? (
+          <div className="bg-[#1a1d24] rounded-xl p-4 border border-white/5">
+            <div
+              className="prose prose-invert max-w-none text-gray-300
+        prose-headings:text-white
+        prose-strong:text-purple-400
+        prose-li:text-gray-300"
+            >
+              <ReactMarkdown>{healthScore}</ReactMarkdown>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-400">
+            Click "Calculate Score" to evaluate your financial health.
           </p>
         )}
       </motion.div>
