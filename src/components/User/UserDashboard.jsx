@@ -39,6 +39,10 @@ export const UserDashboard = () => {
   const [forecast, setForecast] = useState("");
   const [loadingForecast, setLoadingForecast] = useState(false);
 
+  //SAVING OPPORTUNITY
+  const [savingOpportunities, setSavingOpportunities] = useState("");
+  const [loadingSavings, setLoadingSavings] = useState(false);
+
   // =========================
   // AI CHAT
   // =========================
@@ -108,6 +112,7 @@ export const UserDashboard = () => {
     }
   };
 
+  //FETCH FORECAST
   const fetchForecast = async () => {
     try {
       setLoadingForecast(true);
@@ -120,6 +125,22 @@ export const UserDashboard = () => {
       setLoadingForecast(false);
     }
   };
+
+  //FETCH SAVING OPPORTUNITIES
+  const fetchSavingOpportunities = async () => {
+    try {
+      setLoadingSavings(true);
+
+      const res = await axiosInstance.get(`/ai/saving-opportunities/${userId}`);
+
+      setSavingOpportunities(res.data.opportunities);
+    } catch (error) {
+      console.error("Saving opportunities error:", error);
+    } finally {
+      setLoadingSavings(false);
+    }
+  };
+
   // =========================
   // FETCH RISK
   // =========================
@@ -335,6 +356,46 @@ export const UserDashboard = () => {
         ) : (
           <p className="text-gray-400">
             Click "Generate Forecast" to see your financial projection.
+          </p>
+        )}
+      </motion.div>
+
+      {/* ========================= */}
+      {/* SAVING OPPORTUNITIES */}
+      {/* ========================= */}
+
+      <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">AI Saving Opportunities</h3>
+
+          {!savingOpportunities && (
+            <button
+              onClick={fetchSavingOpportunities}
+              className="bg-emerald-500 px-4 py-2 rounded text-sm hover:bg-emerald-600"
+            >
+              Analyze Savings
+            </button>
+          )}
+        </div>
+
+        {loadingSavings ? (
+          <p className="text-gray-400 animate-pulse">
+            AI is analyzing your spending patterns...
+          </p>
+        ) : savingOpportunities ? (
+          <div className="bg-[#1a1d24] rounded-xl p-4 border border-white/5">
+            <div
+              className="prose prose-invert max-w-none text-gray-300
+        prose-headings:text-white
+        prose-strong:text-emerald-400
+        prose-li:text-gray-300"
+            >
+              <ReactMarkdown>{savingOpportunities}</ReactMarkdown>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-400">
+            Click "Analyze Savings" to find potential saving opportunities.
           </p>
         )}
       </motion.div>
