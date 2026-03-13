@@ -584,7 +584,7 @@ export const UserDashboard = () => {
           <p className="text-gray-400 animate-pulse">
             Loading insight history...
           </p>
-        ) : allInsights.length === 0 ? (
+        ) : !allInsights || allInsights.length === 0 ? (
           <p className="text-gray-400">No AI insights generated yet.</p>
         ) : (
           <div className="space-y-4">
