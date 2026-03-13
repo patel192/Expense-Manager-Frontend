@@ -25,6 +25,7 @@ import { Account } from "./components/Admin/Account";
 import { useEffect } from "react";
 import { UserDashboardLayout } from "./components/User/UserDashboardLayout";
 import { AdminDashboardLayout } from "./components/Admin/AdminDashboardLayout";
+import { RecurringTransactions } from "./components/User/RecurringTransactions";
 
 function App() {
   const location = useLocation();
@@ -56,6 +57,7 @@ function App() {
           <Route path="expenses" element={<UserExpenses />} />
           <Route path="budget" element={<UserBudget />} />
           <Route path="income" element={<UserIncome />} />
+          <Route path="recurring" element={<RecurringTransactions />} />
           <Route path="reports" element={<Reports />} />
           <Route path="transactions" element={<Transaction />} />
           <Route path="userdashboard" element={<UserDashboard />} />

@@ -11,6 +11,7 @@ export const UserDashboardLayout = () => {
     { label: "Overview", path: "/private/userdashboard" },
     { label: "Income", path: "/private/income" },
     { label: "Expenses", path: "/private/expenses" },
+    { label: "Recurring", path: "/private/recurring" },
     { label: "Budgets", path: "/private/budget" },
     { label: "Reports", path: "/private/reports" },
     { label: "Transaction", path: "/private/transactions" },
