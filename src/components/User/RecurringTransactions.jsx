@@ -25,7 +25,7 @@ export const RecurringTransactions = () => {
     <div className="text-white space-y-6">
       <h1 className="text-2xl font-semibold mb-4">Recurring Transactions</h1>
       <form
-        action=""
+        onSubmit={handleSubmit}
         className="bg-[#111318] p-6 rounded-xl border border-white/10 space-y-4"
       >
         {/* Title */}
