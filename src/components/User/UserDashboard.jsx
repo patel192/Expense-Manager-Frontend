@@ -200,42 +200,50 @@ export const UserDashboard = () => {
   useEffect(() => {
     if (!userId) return;
 
-    const fetchData = async () => {
+    const fetchCoreData = async () => {
       try {
-        const [
-          budgetRes,
-          incomeRes,
-          expenseRes,
-          billsRes,
-          recurringRes,
-          txnRes,
-        ] = await Promise.all([
+        const [budgetRes, incomeRes, expenseRes] = await Promise.all([
           axiosInstance.get(`/budgetsbyUserID/${userId}`),
           axiosInstance.get(`/incomesbyUserID/${userId}`),
           axiosInstance.get(`/expensesbyUserID/${userId}`),
+        ]);
+
+        setBudget(budgetRes.data.data || []);
+        setIncome(incomeRes.data.data || []);
+        setExpenses(expenseRes.data.data || []);
+      } catch (err) {
+        console.error("Error fetching core dashboard data:", err);
+      }
+    };
+
+    fetchCoreData();
+  }, [userId]);
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchSecondaryData = async () => {
+      try {
+        const [billsRes, recurringRes, txnRes] = await Promise.all([
           axiosInstance.get(`/billByuserId/${userId}`),
           axiosInstance.get(`/recurring/${userId}`),
           axiosInstance.get(`/transactionsByUserID/${userId}`),
         ]);
 
-        setBudget(budgetRes.data.data);
-        setIncome(incomeRes.data.data);
-        setExpenses(expenseRes.data.data);
-        setBills(billsRes.data.data);
-        setRecurring(recurringRes.data.data);
-        setTransactions(txnRes.data.data);
+        setBills(billsRes.data.data || []);
+        setRecurring(recurringRes.data.data || []);
+        setTransactions(txnRes.data.data || []);
       } catch (err) {
-        console.error("Error fetching dashboard data:", err);
+        console.error("Error fetching secondary dashboard data:", err);
       }
     };
 
-    fetchData();
+    fetchSecondaryData();
     fetchAllInsights();
   }, [userId]);
 
-  const totalBudget = budget.reduce((a, i) => a + i.amount, 0);
-  const totalIncome = income.reduce((a, i) => a + i.amount, 0);
-  const totalExpenses = expenses.reduce((a, e) => a + e.amount, 0);
+  const totalBudget = (budget || []).reduce((a, i) => a + i.amount, 0);
+  const totalIncome = (income || []).reduce((a, i) => a + i.amount, 0);
+  const totalExpenses = (expenses || []).reduce((a, e) => a + e.amount, 0);
 
   return (
     <div className="text-white space-y-10">
