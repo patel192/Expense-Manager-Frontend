@@ -1,10 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
+import { P } from "framer-motion/dist/types.d-Cjd591yU";
 
 export const RecurringTransactions = () => {
+  const [recurringList, setRecurringList] = useState([]);
   const { user } = useAuth();
   const userId = user?._id;
+
+  const fetchRecurring = async () => {
+    try {
+      const res = await axiosInstance.get(`/recurring/${userId}`);
+      setRecurringList(res.data.data || []);
+    } catch (error) {
+      console.error("Error fetching recurring transaction:", error);
+    }
+  };
 
   const [formData, setFormData] = useState({
     title: "",
@@ -32,6 +43,7 @@ export const RecurringTransactions = () => {
       };
 
       const res = await axiosInstance.post("/recurring", payload);
+      await fetchRecurring();
 
       console.log("Recurring created:", res.data);
 
@@ -43,11 +55,15 @@ export const RecurringTransactions = () => {
         frequency: "monthly",
         nextDate: "",
       });
-
     } catch (error) {
       console.error("Error creating recurring transaction:", error);
     }
   };
+
+  useEffect(() => {
+    if (!userId) return;
+    fetchRecurring();
+  }, [userId]);
 
   return (
     <div className="text-white space-y-6">
@@ -57,12 +73,9 @@ export const RecurringTransactions = () => {
         onSubmit={handleSubmit}
         className="bg-[#111318] p-6 rounded-xl border border-white/10 space-y-4"
       >
-
         {/* Title */}
         <div>
-          <label className="block text-sm text-gray-400 mb-1">
-            Title
-          </label>
+          <label className="block text-sm text-gray-400 mb-1">Title</label>
 
           <input
             type="text"
@@ -76,9 +89,7 @@ export const RecurringTransactions = () => {
 
         {/* Amount */}
         <div>
-          <label className="block text-sm text-gray-400 mb-1">
-            Amount
-          </label>
+          <label className="block text-sm text-gray-400 mb-1">Amount</label>
 
           <input
             type="number"
@@ -92,9 +103,7 @@ export const RecurringTransactions = () => {
 
         {/* Category */}
         <div>
-          <label className="block text-sm text-gray-400 mb-1">
-            Category
-          </label>
+          <label className="block text-sm text-gray-400 mb-1">Category</label>
 
           <input
             type="text"
@@ -108,9 +117,7 @@ export const RecurringTransactions = () => {
 
         {/* Frequency */}
         <div>
-          <label className="block text-sm text-gray-400 mb-1">
-            Frequency
-          </label>
+          <label className="block text-sm text-gray-400 mb-1">Frequency</label>
 
           <select
             name="frequency"
@@ -147,8 +154,35 @@ export const RecurringTransactions = () => {
         >
           Add Recurring Expense
         </button>
-
       </form>
+
+      <div className="bg-[#111318] p-6 rounded-xl border border-white/10">
+        <h2 className="text-lg font-semibold mb-4">Recurring Expenses</h2>
+        {recurringList.length === 0 ? (
+          <p className="text-gray-400">No recurring transactions added yet.</p>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="text-gray-400 border-b border-gray-700">
+              <tr>
+                <th className="text-left py-2">Title</th>
+                <th className="text-left py-2">Amount</th>
+                <th className="text-left py-2">Frequency</th>
+                <th className="text-left py-2">Next Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recurringList.map((item) => (
+                <tr key={item._id} className="border-b border-gray-800">
+                  <td className="py-2">{item.title}</td>
+                  <td>{item.amount}</td>
+                  <td>{item.frequency}</td>
+                  <td>{new Date(item.nextDate).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 };
