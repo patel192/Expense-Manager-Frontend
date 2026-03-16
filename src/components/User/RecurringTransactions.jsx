@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export const RecurringTransactions = () => {
   const [recurringList, setRecurringList] = useState([]);
-  const [editingId, setEditingId] = useState(null)
+  const [editingId, setEditingId] = useState(null);
   const { user } = useAuth();
   const userId = user?._id;
 
@@ -49,17 +49,21 @@ export const RecurringTransactions = () => {
         userId: userId,
       };
 
-      if(editingId){
-        await axiosInstance.put(`/recurring/${editingId}`,payload);
-      }else{
-        await axiosInstance.post("/recurring",payload);
+      let res;
+
+      if (editingId) {
+        res = await axiosInstance.put(`/recurring/${editingId}`, payload);
+      } else {
+        res = await axiosInstance.post("/recurring", payload);
       }
-      const res = await axiosInstance.post("/recurring", payload);
+
       await fetchRecurring();
 
-      console.log("Recurring created:", res.data);
+      console.log(
+        editingId ? "Recurring updated" : "Recurring created",
+        res.data,
+      );
 
-      // reset form
       setFormData({
         title: "",
         amount: "",
@@ -67,21 +71,22 @@ export const RecurringTransactions = () => {
         frequency: "monthly",
         nextDate: "",
       });
+
       setEditingId(null);
     } catch (error) {
-      console.error("Error creating recurring transaction:", error);
+      console.error("Error saving recurring transaction:", error);
     }
   };
   const handleEdit = (item) => {
     setFormData({
-      title:item.title,
-      amount:item.amount,
-      category:item.category,
-      frequency:item.frequency,
-      nextDate: item.nextDate.slice(0,10)
+      title: item.title,
+      amount: item.amount,
+      category: item.category,
+      frequency: item.frequency,
+      nextDate: item.nextDate.slice(0, 10),
     });
     setEditingId(item._id);
-  }
+  };
 
   useEffect(() => {
     if (!userId) return;
@@ -200,21 +205,20 @@ export const RecurringTransactions = () => {
                   <td>{item.amount}</td>
                   <td>{item.frequency}</td>
                   <td>{new Date(item.nextDate).toLocaleDateString()}</td>
-                  <td>
+                  <td className="space-x-3">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="text-blue-400 hover:text-blue-600"
+                    >
+                      Edit
+                    </button>
+
                     <button
                       onClick={() => deleteRecurring(item._id)}
                       className="text-red-400 hover:text-red-600"
                     >
                       Delete
                     </button>
-                    <td>
-                      <button
-                        onClick={() => handleEdit(item)}
-                        className="text-blue-400 hover:text-blue-600"
-                      >
-                        Edit
-                      </button>
-                    </td>
                   </td>
                 </tr>
               ))}
