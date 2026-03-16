@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export const RecurringTransactions = () => {
   const [recurringList, setRecurringList] = useState([]);
+  const [editingId, setEditingId] = useState(null)
   const { user } = useAuth();
   const userId = user?._id;
 
@@ -48,6 +49,11 @@ export const RecurringTransactions = () => {
         userId: userId,
       };
 
+      if(editingId){
+        await axiosInstance.put(`/recurring/${editingId}`,payload);
+      }else{
+        await axiosInstance.post("/recurring",payload);
+      }
       const res = await axiosInstance.post("/recurring", payload);
       await fetchRecurring();
 
@@ -61,10 +67,21 @@ export const RecurringTransactions = () => {
         frequency: "monthly",
         nextDate: "",
       });
+      setEditingId(null);
     } catch (error) {
       console.error("Error creating recurring transaction:", error);
     }
   };
+  const handleEdit = (item) => {
+    setFormData({
+      title:item.title,
+      amount:item.amount,
+      category:item.category,
+      frequency:item.frequency,
+      nextDate: item.nextDate.slice(0,10)
+    });
+    setEditingId(item._id);
+  }
 
   useEffect(() => {
     if (!userId) return;
@@ -158,7 +175,7 @@ export const RecurringTransactions = () => {
           type="submit"
           className="bg-cyan-500 px-4 py-2 rounded hover:bg-cyan-600"
         >
-          Add Recurring Expense
+          {editingId ? "Update Recurring Expense" : "Add Recurring Expense"}
         </button>
       </form>
 
@@ -190,6 +207,14 @@ export const RecurringTransactions = () => {
                     >
                       Delete
                     </button>
+                    <td>
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="text-blue-400 hover:text-blue-600"
+                      >
+                        Edit
+                      </button>
+                    </td>
                   </td>
                 </tr>
               ))}
