@@ -15,7 +15,14 @@ export const RecurringTransactions = () => {
       console.error("Error fetching recurring transaction:", error);
     }
   };
-
+  const deleteRecurring = async (id) => {
+    try {
+      await axiosInstance.delete(`/recurring/${id}`);
+      fetchRecurring();
+    } catch (error) {
+      console.error("Error Deleting recurring:", error);
+    }
+  };
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
@@ -176,6 +183,14 @@ export const RecurringTransactions = () => {
                   <td>{item.amount}</td>
                   <td>{item.frequency}</td>
                   <td>{new Date(item.nextDate).toLocaleDateString()}</td>
+                  <td>
+                    <button
+                      onClick={() => deleteRecurring(item._id)}
+                      className="text-red-400 hover:text-red-600"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
