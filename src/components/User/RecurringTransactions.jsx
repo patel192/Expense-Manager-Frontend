@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
-import { P } from "framer-motion/dist/types.d-Cjd591yU";
 
 export const RecurringTransactions = () => {
   const [recurringList, setRecurringList] = useState([]);
