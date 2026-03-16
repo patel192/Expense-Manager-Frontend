@@ -39,6 +39,8 @@ export const UserDashboard = () => {
   const [forecast, setForecast] = useState("");
   const [loadingForecast, setLoadingForecast] = useState(false);
 
+  const [upcomingRecurring, setUpcomingRecurring] = useState([]);
+
   //SAVING OPPORTUNITY
   const [savingOpportunities, setSavingOpportunities] = useState("");
   const [loadingSavings, setLoadingSavings] = useState(false);
@@ -103,6 +105,14 @@ export const UserDashboard = () => {
     }
   };
 
+  const fetchUpcomingRecurring = async () => {
+    try {
+      const res = await axiosInstance.get(`/recurring/upcoming/${userId}`);
+      setUpcomingRecurring(res.data.data || []);
+    } catch (error) {
+      console.error("Error fetching upcoming recurring", error);
+    }
+  };
   // =========================
   // FETCH INSIGHTS
   // =========================
@@ -217,6 +227,7 @@ export const UserDashboard = () => {
     };
 
     fetchCoreData();
+    fetchUpcomingRecurring();
   }, [userId]);
   useEffect(() => {
     if (!userId) return;
@@ -577,6 +588,29 @@ export const UserDashboard = () => {
         </motion.div>
       </div>
 
+      {/* Upcoming Expenses */}
+      <div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+        <h3 className="text-lg font-semibold mb-4">
+          Upcoming Recurring Payments
+        </h3>
+
+        {upcomingRecurring.length === 0 ? (
+          <p className="text-gray-400">No upcoming recurring payments</p>
+        ) : (
+          <ul className="space-y-3">
+            {upcomingRecurring.map((item) => (
+              <li key={item._id} className="flex justify-between">
+                <span>{item.title}</span>
+
+                <span className="text-gray-400">
+                  ₹{item.amount} •{" "}
+                  {new Date(item.nextDate).toLocaleDateString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       {/* ========================= */}
       {/* AI INSIGHT HISTORY */}
       {/* ========================= */}
