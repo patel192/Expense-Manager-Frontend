@@ -227,11 +227,11 @@ export const UserDashboard = () => {
     };
 
     fetchCoreData();
-    fetchUpcomingRecurring();
   }, [userId]);
   useEffect(() => {
     if (!userId) return;
 
+    fetchUpcomingRecurring();
     const fetchSecondaryData = async () => {
       try {
         const [billsRes, recurringRes, txnRes] = await Promise.all([
