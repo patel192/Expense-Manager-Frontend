@@ -24,6 +24,15 @@ export const RecurringTransactions = () => {
       console.error("Error Deleting recurring:", error);
     }
   };
+
+  const toggleRecurring = async (id) => {
+    try {
+      await axiosInstance.patch(`/recurring/toggle/${id}`);
+      fetchRecurring();
+    } catch (error) {
+      console.error("Error toggling recurring", error);
+    }
+  };
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
@@ -218,6 +227,13 @@ export const RecurringTransactions = () => {
                       className="text-red-400 hover:text-red-600"
                     >
                       Delete
+                    </button>
+
+                    <button
+                      onClick={() => toggleRecurring(item._id)}
+                      className="text-yellow-400 hover:text-yellow-600"
+                    >
+                      {item.isActive ? "Pause" : "Resume"}
                     </button>
                   </td>
                 </tr>
