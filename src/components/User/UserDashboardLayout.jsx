@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FiBell, FiSearch, FiUser, FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 export const UserDashboardLayout = () => {
-  const {logout} = useAuth();
+  const { logout } = useAuth();
   const location = useLocation();
 
   const navTabs = [
@@ -15,16 +15,13 @@ export const UserDashboardLayout = () => {
     { label: "Budgets", path: "/private/budget" },
     { label: "Reports", path: "/private/reports" },
     { label: "Transaction", path: "/private/transactions" },
-
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-white flex flex-col">
-      
       {/* ========== TOP NAVBAR ========== */}
       <header className="sticky top-0 z-50 bg-[#0d0f12]/80 backdrop-blur-xl border-b border-white/10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex items-center justify-between">
-
           {/* LEFT SECTION: LOGO + TABS */}
           <div className="flex items-center gap-10">
             {/* Logo */}
@@ -40,26 +37,40 @@ export const UserDashboardLayout = () => {
             </div>
 
             {/* Tabs */}
-            <nav className="hidden md:flex items-center gap-6 text-gray-300">
-              {navTabs.map((tab, index) => (
-                <Link
-                  key={index}
-                  to={tab.path}
-                  className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
-                    location.pathname === tab.path
-                      ? "bg-white/10 text-white"
-                      : "hover:bg-white/5 hover:text-white"
-                  }`}
-                >
-                  {tab.label}
-                </Link>
-              ))}
+            <nav className="hidden md:flex items-center gap-4 relative">
+              {navTabs.map((tab, index) => {
+                const isActive = location.pathname === tab.path;
+                return (
+                  <div key={index} className="relative">
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeTab"
+                        className="absolute inset-0 bg-white/10 rounded-lg"
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        }}
+                      />
+                    )}
+                    <Link
+                      to={tab.path}
+                      className={`relative px-4 py-2 text-sm z-10 ${
+                        isActive
+                          ? "text-white"
+                          : "text-gray-400 hover:text-white"
+                      }`}
+                    >
+                      {tab.label}
+                    </Link>
+                  </div>
+                );
+              })}
             </nav>
           </div>
 
           {/* RIGHT SECTION: SEARCH + ICONS */}
           <div className="flex items-center gap-4 text-gray-300">
-
             {/* Search */}
             <div className="hidden sm:flex items-center bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
               <FiSearch className="text-gray-400" />
@@ -93,7 +104,7 @@ export const UserDashboardLayout = () => {
 
       {/* ========== MAIN CONTENT ========== */}
       <motion.main
-      key={location.pathname}
+        key={location.pathname}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
@@ -101,7 +112,6 @@ export const UserDashboardLayout = () => {
       >
         <Outlet />
       </motion.main>
-
     </div>
   );
 };
