@@ -218,7 +218,7 @@ export const UserDashboard = () => {
           axiosInstance.get(`/incomesbyUserID/${userId}`),
           axiosInstance.get(`/expensesbyUserID/${userId}`),
         ]);
-
+        console.timeEnd("Dashboard Load");
         setBudget(budgetRes.data.data || []);
         setIncome(incomeRes.data.data || []);
         setExpenses(expenseRes.data.data || []);
@@ -234,7 +234,6 @@ export const UserDashboard = () => {
   useEffect(() => {
     if (!userId) return;
 
-    fetchUpcomingRecurring();
     const fetchSecondaryData = async () => {
       try {
         const [billsRes, recurringRes, txnRes] = await Promise.all([
@@ -250,9 +249,10 @@ export const UserDashboard = () => {
         console.error("Error fetching secondary dashboard data:", err);
       }
     };
-
-    fetchSecondaryData();
-    fetchAllInsights();
+    setTimeout(() => {
+      fetchSecondaryData();
+      fetchUpcomingRecurring();
+    }, 1000);
   }, [userId]);
 
   const totalBudget = (budget || []).reduce((a, i) => a + i.amount, 0);
