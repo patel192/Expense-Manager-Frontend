@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiBell, FiSearch, FiUser, FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
