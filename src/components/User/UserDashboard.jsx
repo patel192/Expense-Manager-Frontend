@@ -19,7 +19,7 @@ import { useAuth } from "../../context/AuthContext";
 export const UserDashboard = () => {
   const { user } = useAuth();
   const userId = user?._id;
-
+  const [loadingDashboard, setloadingDashboard] = useState(true);
   const [budget, setBudget] = useState([]);
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -212,6 +212,7 @@ export const UserDashboard = () => {
 
     const fetchCoreData = async () => {
       try {
+        setloadingDashboard(true);
         const [budgetRes, incomeRes, expenseRes] = await Promise.all([
           axiosInstance.get(`/budgetsbyUserID/${userId}`),
           axiosInstance.get(`/incomesbyUserID/${userId}`),
@@ -223,6 +224,8 @@ export const UserDashboard = () => {
         setExpenses(expenseRes.data.data || []);
       } catch (err) {
         console.error("Error fetching core dashboard data:", err);
+      } finally {
+        setloadingDashboard(false);
       }
     };
 
@@ -256,6 +259,18 @@ export const UserDashboard = () => {
   const totalIncome = (income || []).reduce((a, i) => a + i.amount, 0);
   const totalExpenses = (expenses || []).reduce((a, e) => a + e.amount, 0);
 
+  if (loadingDashboard) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse h-8 w-1/3 bg-gray-700 rounded"></div>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="h-20 bg-gray-700 rounded"></div>
+          <div className="h-20 bg-gray-700 rounded"></div>
+          <div className="h-20 bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="text-white space-y-10">
       {/* HEADER */}
