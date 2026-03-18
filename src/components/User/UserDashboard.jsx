@@ -66,6 +66,8 @@ export const UserDashboard = () => {
   const [allInsights, setAllInsights] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
+  const [loadingCharts, setloadingCharts] = useState(true);
+  const [loadingSecondary, setloadingSecondary] = useState(true);
   // =========================
   // SEND MESSAGE
   // =========================
@@ -236,6 +238,7 @@ export const UserDashboard = () => {
 
     const fetchSecondaryData = async () => {
       try {
+        setloadingSecondary(true);
         const [billsRes, recurringRes, txnRes] = await Promise.all([
           axiosInstance.get(`/billByuserId/${userId}`),
           axiosInstance.get(`/recurring/${userId}`),
@@ -247,6 +250,9 @@ export const UserDashboard = () => {
         setTransactions(txnRes.data.data || []);
       } catch (err) {
         console.error("Error fetching secondary dashboard data:", err);
+      } finally {
+        setloadingSecondary(false);
+        setloadingCharts(false);
       }
     };
     setTimeout(() => {
@@ -386,7 +392,6 @@ export const UserDashboard = () => {
           </motion.div>
         ))}
       </div>
-
       {/* ========================= */}
       {/* SPENDING RISK DETECTOR */}
       {/* ========================= */}
@@ -440,7 +445,6 @@ export const UserDashboard = () => {
           </p>
         )}
       </motion.div>
-
       {/* ========================= */}
       {/* EXPENSE INSIGHTS */}
       {/* ========================= */}
@@ -472,11 +476,9 @@ export const UserDashboard = () => {
           </p>
         )}
       </motion.div>
-
       {/* ========================= */}
       {/* FINANCIAL FORECAST */}
       {/* ========================= */}
-
       <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">AI Financial Forecast</h3>
@@ -505,11 +507,9 @@ export const UserDashboard = () => {
           </p>
         )}
       </motion.div>
-
       {/* ========================= */}
       {/* SAVING OPPORTUNITIES */}
       {/* ========================= */}
-
       <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">AI Saving Opportunities</h3>
@@ -545,11 +545,9 @@ export const UserDashboard = () => {
           </p>
         )}
       </motion.div>
-
       {/* ========================= */}
       {/* FINANCIAL HEALTH SCORE */}
       {/* ========================= */}
-
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -589,11 +587,9 @@ export const UserDashboard = () => {
           </p>
         )}
       </motion.div>
-
       {/* ========================= */}
       {/* AI CHAT */}
       {/* ========================= */}
-
       <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
         <h3 className="text-lg font-semibold mb-4">AI Financial Assistant</h3>
 
@@ -630,81 +626,97 @@ export const UserDashboard = () => {
           </button>
         </div>
       </motion.div>
-
       {/* CHARTS */}
+      {loadingCharts ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="h-64 bg-gray-800 rounded animate-pulse"
+            ></div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">Income vs Expenses</h3>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">Income vs Expenses</h3>
-
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart
-              data={[
-                { name: "Income", amount: totalIncome },
-                { name: "Expenses", amount: totalExpenses },
-              ]}
-            >
-              <XAxis dataKey="name" stroke="#9CA3AF" />
-              <YAxis stroke="#9CA3AF" />
-              <Tooltip />
-              <Bar dataKey="amount" fill="#3b82f6" />
-            </BarChart>
-          </ResponsiveContainer>
-        </motion.div>
-
-        <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">Expense Distribution</h3>
-
-          <ResponsiveContainer width="100%" height={280}>
-            <PieChart>
-              <Pie
-                data={expenses.map((e) => ({
-                  name: e.categoryID?.name || "Other",
-                  value: e.amount,
-                }))}
-                dataKey="value"
-                outerRadius={95}
-                label
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart
+                data={[
+                  { name: "Income", amount: totalIncome },
+                  { name: "Expenses", amount: totalExpenses },
+                ]}
               >
-                {expenses.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
+                <XAxis dataKey="name" stroke="#9CA3AF" />
+                <YAxis stroke="#9CA3AF" />
+                <Tooltip />
+                <Bar dataKey="amount" fill="#3b82f6" />
+              </BarChart>
+            </ResponsiveContainer>
+          </motion.div>
 
-              <Legend />
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </motion.div>
-      </div>
+          <motion.div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">Expense Distribution</h3>
 
+            <ResponsiveContainer width="100%" height={280}>
+              <PieChart>
+                <Pie
+                  data={expenses.map((e) => ({
+                    name: e.categoryID?.name || "Other",
+                    value: e.amount,
+                  }))}
+                  dataKey="value"
+                  outerRadius={95}
+                  label
+                >
+                  {expenses.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  ))}
+                </Pie>
+
+                <Legend />
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </motion.div>
+        </div>
+      )}
       {/* Upcoming Expenses */}
-      <div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
-        <h3 className="text-lg font-semibold mb-4">
-          Upcoming Recurring Payments
-        </h3>
+      {loadingSecondary ? (
+        <div className="space-y-2 animate-pulse">
+          <div className="h-4 bg-gray-700 rounded"></div>
+          <div className="h-4 bg-gray-800 rounded"></div>
+        </div>
+      ) : upcomingRecurring.length === 0 ? (
+        <p>No upcoming payments</p>
+      ) : (
+        <div className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg">
+          <h3 className="text-lg font-semibold mb-4">
+            Upcoming Recurring Payments
+          </h3>
 
-        {upcomingRecurring.length === 0 ? (
-          <p className="text-gray-400">No upcoming recurring payments</p>
-        ) : (
-          <ul className="space-y-3">
-            {upcomingRecurring.map((item) => (
-              <li key={item._id} className="flex justify-between">
-                <span>{item.title}</span>
+          {upcomingRecurring.length === 0 ? (
+            <p className="text-gray-400">No upcoming recurring payments</p>
+          ) : (
+            <ul className="space-y-3">
+              {upcomingRecurring.map((item) => (
+                <li key={item._id} className="flex justify-between">
+                  <span>{item.title}</span>
 
-                <span className="text-gray-400">
-                  ₹{item.amount} •{" "}
-                  {new Date(item.nextDate).toLocaleDateString()}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+                  <span className="text-gray-400">
+                    ₹{item.amount} •{" "}
+                    {new Date(item.nextDate).toLocaleDateString()}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
       {/* ========================= */}
       {/* AI INSIGHT HISTORY */}
       {/* ========================= */}
-
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

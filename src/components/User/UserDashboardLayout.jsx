@@ -1,4 +1,4 @@
-
+import { useLocation } from "react-router-dom";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiBell, FiSearch, FiUser, FiLogOut } from "react-icons/fi";
@@ -93,9 +93,10 @@ export const UserDashboardLayout = () => {
 
       {/* ========== MAIN CONTENT ========== */}
       <motion.main
+      key={location.pathname}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.25 }}
         className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6"
       >
         <Outlet />
