@@ -3,11 +3,11 @@ import { Outlet, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiBell, FiSearch, FiUser, FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
-import {useTheme} from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 export const UserDashboardLayout = () => {
   const { logout } = useAuth();
   const location = useLocation();
-  const {theme,setTheme} = useTheme();
+  const { theme, setTheme } = useTheme();
   const navTabs = [
     { label: "Overview", path: "/private/userdashboard" },
     { label: "Income", path: "/private/income" },
@@ -19,9 +19,22 @@ export const UserDashboardLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-white flex flex-col">
+    <div
+      className="min-h-screen 
+  bg-white dark:bg-gradient-to-b dark:from-[#0c0e12] dark:via-[#0f1115] dark:to-[#0b0c10] 
+  text-black dark:text-white 
+  flex flex-col"
+    >
+      {" "}
       {/* ========== TOP NAVBAR ========== */}
-      <header className="sticky top-0 z-50 bg-[#0d0f12]/80 backdrop-blur-xl border-b border-white/10 shadow-lg">
+      <header
+        className="sticky top-0 z-50 
+  bg-white/80 dark:bg-[#0d0f12]/80 
+  backdrop-blur-xl 
+  border-b border-gray-200 dark:border-white/10 
+  shadow-lg"
+      >
+        {" "}
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex items-center justify-between">
           {/* LEFT SECTION: LOGO + TABS */}
           <div className="flex items-center gap-10">
@@ -72,14 +85,15 @@ export const UserDashboardLayout = () => {
 
           {/* RIGHT SECTION: SEARCH + ICONS */}
           <div className="flex items-center gap-4 text-gray-300">
-           <button
-           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-           className="p-2 rounded-lg hover:bg-white/10"
-           >
-            {theme === "dark" ? "🌞" : "🌙"}
-           </button>
-           
-           
+            <button
+              onClick={() => {
+                console.log("clicked"); // debug
+                setTheme(theme === "dark" ? "light" : "dark");
+              }}
+            >
+              Toggle Theme
+            </button>
+
             {/* Search */}
             <div className="hidden sm:flex items-center bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
               <FiSearch className="text-gray-400" />
@@ -110,7 +124,6 @@ export const UserDashboardLayout = () => {
           </div>
         </div>
       </header>
-
       {/* ========== MAIN CONTENT ========== */}
       <motion.main
         key={location.pathname}
