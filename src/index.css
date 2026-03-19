@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* 👇 ADD THIS BLOCK */
+@theme {
+  --color-bg: white;
+}
+
+@variant dark {
+  :root {
+    --color-bg: #0f1115;
+  }
+}
