@@ -3,10 +3,11 @@ import { Outlet, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiBell, FiSearch, FiUser, FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+import {useTheme} from "../../context/ThemeContext";
 export const UserDashboardLayout = () => {
   const { logout } = useAuth();
   const location = useLocation();
-
+  const {theme,setTheme} = useTheme();
   const navTabs = [
     { label: "Overview", path: "/private/userdashboard" },
     { label: "Income", path: "/private/income" },
@@ -71,6 +72,14 @@ export const UserDashboardLayout = () => {
 
           {/* RIGHT SECTION: SEARCH + ICONS */}
           <div className="flex items-center gap-4 text-gray-300">
+           <button
+           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+           className="p-2 rounded-lg hover:bg-white/10"
+           >
+            {theme === "dark" ? "🌞" : "🌙"}
+           </button>
+           
+           
             {/* Search */}
             <div className="hidden sm:flex items-center bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
               <FiSearch className="text-gray-400" />
