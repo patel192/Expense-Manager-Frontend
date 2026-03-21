@@ -1,11 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 
 export const Navbar = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const menuRef = useRef(null);
+
+  // Shrink navbar slightly on scroll for a polished feel
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Close mobile menu on outside click
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    if (open) document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [open]);
+
+  // Close menu on route change
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
 
   const links = [
     { label: "Home", to: "/" },
@@ -26,113 +51,193 @@ export const Navbar = () => {
     setOpen(false);
   };
 
+  const isHomeActive = location.pathname === "/";
+
   return (
-    <header className="sticky top-0 z-50 bg-[#0d0f12]/80 backdrop-blur-xl border-b border-white/10">
-      <nav className="max-w-7xl mx-auto flex items-center justify-between px-5 py-4">
-        
-        {/* Logo */}
+    <header
+      ref={menuRef}
+      className={`sticky top-0 z-50 border-b border-white/10 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#0d0f12]/95 backdrop-blur-2xl py-0"
+          : "bg-[#0d0f12]/80 backdrop-blur-xl"
+      }`}
+    >
+      <nav className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
+
+        {/* ── Logo ── */}
         <motion.div
           initial={{ opacity: 0, x: -18 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-3"
+          transition={{ duration: 0.4 }}
+          className="flex items-center gap-2.5 flex-shrink-0"
         >
-          <img src="/expense-colored-icon-design-good-for-web-or-mobile-app-vector.jpg"
-            className="h-9 w-9 rounded-md object-cover"
-          />
-          <span className="text-xl font-semibold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+            {/* Inline SVG fallback — no broken image on mobile */}
+            <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth={2.2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v1m0 9v1M5.05 5.05A9 9 0 1118.95 18.95" />
+            </svg>
+          </div>
+          <span className="text-[1.1rem] font-semibold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             FinTrack
           </span>
         </motion.div>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 text-gray-300 font-medium">
+        {/* ── Desktop Links ── */}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="hidden md:flex items-center gap-1 text-sm font-medium"
+        >
           {links.map((link, i) =>
             link.id ? (
               <button
                 key={i}
                 onClick={(e) => scrollToSection(e, link.id)}
-                className="hover:text-white transition-colors"
+                className="px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200"
               >
                 {link.label}
               </button>
             ) : (
-              <Link key={i} to={link.to} className="hover:text-white transition-colors">
+              <Link
+                key={i}
+                to={link.to}
+                className={`px-3 py-2 rounded-lg transition-all duration-200 ${
+                  isHomeActive
+                    ? "text-white bg-white/8"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
                 {link.label}
               </Link>
             )
           )}
 
+          {/* Divider */}
+          <div className="w-px h-5 bg-white/10 mx-2" />
+
           <Link
             to="/login"
-            className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition"
+            className="px-4 py-2 rounded-lg text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
           >
             Login
           </Link>
 
           <Link
             to="/signup"
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 transition"
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:opacity-90 hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 ml-1"
           >
             Sign Up
           </Link>
-        </div>
+        </motion.div>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-gray-300"
-        >
-          {open ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
+        {/* ── Mobile: auth buttons + hamburger ── */}
+        <div className="flex md:hidden items-center gap-2">
+          <Link
+            to="/login"
+            className="px-3 py-1.5 text-sm rounded-lg text-gray-300 border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+          >
+            Login
+          </Link>
+          <Link
+            to="/signup"
+            className="px-3 py-1.5 text-sm rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:opacity-90 transition-all"
+          >
+            Sign Up
+          </Link>
+          {/* Hamburger — proper touch target */}
+          <button
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            className="ml-1 p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 min-w-[40px] min-h-[40px] flex items-center justify-center"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={open ? "close" : "open"}
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.15 }}
+              >
+                {open ? <FiX size={20} /> : <FiMenu size={20} />}
+              </motion.span>
+            </AnimatePresence>
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile Menu */}
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden bg-[#0f1115] border-t border-white/10 p-5"
-        >
-          <div className="flex flex-col gap-4 text-gray-300">
-            {links.map((link, i) =>
-              link.id ? (
-                <button
-                  key={i}
-                  onClick={(e) => scrollToSection(e, link.id)}
-                  className="text-left py-2 hover:text-white"
-                >
-                  {link.label}
-                </button>
-              ) : (
+      {/* ── Mobile Dropdown Menu ── */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden border-t border-white/10 bg-[#0d0f12]/98 backdrop-blur-2xl"
+          >
+            <div className="px-4 py-3 flex flex-col">
+              {/* Nav section label */}
+              <p className="text-[10px] uppercase tracking-widest text-gray-600 font-medium px-2 mb-1">
+                Navigate
+              </p>
+
+              {links.map((link, i) =>
+                link.id ? (
+                  <button
+                    key={i}
+                    onClick={(e) => scrollToSection(e, link.id)}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 text-sm font-medium transition-all text-left min-h-[44px]"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/60 flex-shrink-0" />
+                    {link.label}
+                  </button>
+                ) : (
+                  <Link
+                    key={i}
+                    to={link.to}
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] ${
+                      isHomeActive
+                        ? "text-cyan-400 bg-cyan-500/8"
+                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isHomeActive ? "bg-cyan-400" : "bg-gray-600"}`} />
+                    {link.label}
+                  </Link>
+                )
+              )}
+
+              {/* Divider */}
+              <div className="my-3 border-t border-white/8" />
+
+              {/* Auth section label */}
+              <p className="text-[10px] uppercase tracking-widest text-gray-600 font-medium px-2 mb-1">
+                Account
+              </p>
+
+              <div className="flex flex-col gap-2 pb-2">
                 <Link
-                  key={i}
-                  to={link.to}
+                  to="/login"
                   onClick={() => setOpen(false)}
-                  className="py-2 hover:text-white"
+                  className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-center text-sm font-medium text-gray-200 transition-all min-h-[44px] flex items-center justify-center"
                 >
-                  {link.label}
+                  Login
                 </Link>
-              )
-            )}
-
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-center"
-            >
-              Login
-            </Link>
-
-            <Link
-              to="/signup"
-              onClick={() => setOpen(false)}
-              className="py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-center"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </motion.div>
-      )}
+                <Link
+                  to="/signup"
+                  onClick={() => setOpen(false)}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-center text-sm font-medium hover:opacity-90 transition-all min-h-[44px] flex items-center justify-center shadow-lg shadow-cyan-500/20"
+                >
+                  Sign Up — It's Free
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
