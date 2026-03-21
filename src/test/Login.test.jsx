@@ -3,6 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { Login } from "../Login";
 import { expect } from "vitest";
 import { AuthProvider } from "../context/AuthContext";
+
 describe("Login Component", () => {
   test("renders Login Form", () => {
     render(
@@ -12,6 +13,9 @@ describe("Login Component", () => {
         </AuthProvider>
       </MemoryRouter>,
     );
-    expect(screen.getByText(/login/i)).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("heading", { name: /welcome back/i })
+    ).toBeInTheDocument();
   });
 });
