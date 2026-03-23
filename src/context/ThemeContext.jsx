@@ -3,23 +3,25 @@ import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "dark"
+  // Read saved preference on first load, default to "dark"
+  const [theme, setThemeState] = useState(
+    () => localStorage.getItem("fintrack-theme") || "dark"
   );
 
   useEffect(() => {
-    console.log("Theme changed:", theme); // 👈 DEBUG
+    const root = document.documentElement; // <html> element
 
-    document.documentElement.classList.remove("dark");
-    
     if (theme === "dark") {
-      document.documentElement.classList.add("dark");
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
     }
 
-    localStorage.setItem("theme", theme);
-
+    // Persist preference across page refreshes
+    localStorage.setItem("fintrack-theme", theme);
   }, [theme]);
+
+  const setTheme = (newTheme) => setThemeState(newTheme);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
