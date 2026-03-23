@@ -1,8 +1,7 @@
 import { useLocation, Outlet, Link } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FiBell, FiSearch, FiLogOut, FiMenu, FiX,
+import { FiLogOut, FiMenu, FiX,
   FiTrendingUp, FiTrendingDown, FiPieChart,
   FiRepeat, FiTarget, FiBarChart2, FiList,
   FiSun, FiMoon,
@@ -33,7 +32,6 @@ export const UserDashboardLayout = () => {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   const isDark = theme === "dark";
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
@@ -91,33 +89,6 @@ export const UserDashboardLayout = () => {
           </nav>
 
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            <AnimatePresence>
-              {searchOpen ? (
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: 180, opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex items-center bg-gray-100 dark:bg-white/8 border border-gray-200 dark:border-white/10 px-3 py-1.5 rounded-lg overflow-hidden"
-                >
-                  <FiSearch size={14} className="text-gray-400 flex-shrink-0" />
-                  <input autoFocus type="text" placeholder="Search..."
-                    onBlur={() => setSearchOpen(false)}
-                    className="bg-transparent text-sm text-gray-800 dark:text-gray-200 ml-2 focus:outline-none w-full placeholder-gray-400" />
-                </motion.div>
-              ) : (
-                <button onClick={() => setSearchOpen(true)}
-                  className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/8 hover:text-gray-900 dark:hover:text-white transition-all">
-                  <FiSearch size={17} />
-                </button>
-              )}
-            </AnimatePresence>
-
-            <button className="relative p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/8 hover:text-gray-900 dark:hover:text-white transition-all">
-              <FiBell size={17} />
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-cyan-500" />
-            </button>
-
             <button onClick={() => setTheme(isDark ? "light" : "dark")}
               title={isDark ? "Switch to light mode" : "Switch to dark mode"}
               className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/8 hover:text-gray-900 dark:hover:text-white transition-all">
