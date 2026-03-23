@@ -72,29 +72,26 @@ const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border
 
 const COLORS = ["#10b981", "#ef4444", "#3b82f6", "#f59e0b", "#a855f7"];
 
-/* ══════════════════════════════════════
-   MAIN COMPONENT
-══════════════════════════════════════ */
 export const UserBudget = () => {
   const { user } = useAuth();
-  const userId = useMemo(() => user?._id, [user]);
+
+  /* ── FIX: Safe userId — never reads ._id when user is null ── */
+  const userId = user?._id ?? null;
 
   /* ── ALL ORIGINAL STATE — UNTOUCHED ── */
-  const [activeTab, setActiveTab]               = useState("overview");
-  const [budgets, setBudgets]                   = useState([]);
-  const [expenses, setExpenses]                 = useState([]);
-  const [summary, setSummary]                   = useState([]);
-  const [categories, setCategories]             = useState([]);
-  const [budgetPlan, setBudgetPlan]             = useState(null);
-  const [loadingPlan, setLoadingPlan]           = useState(false);
-  const [isModalOpen, setIsModalOpen]           = useState(false);
+  const [activeTab, setActiveTab]                 = useState("overview");
+  const [budgets, setBudgets]                     = useState([]);
+  const [expenses, setExpenses]                   = useState([]);
+  const [summary, setSummary]                     = useState([]);
+  const [categories, setCategories]               = useState([]);
+  const [budgetPlan, setBudgetPlan]               = useState(null);
+  const [loadingPlan, setLoadingPlan]             = useState(false);
+  const [isModalOpen, setIsModalOpen]             = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [selectedBudget, setSelectedBudget]     = useState(null);
-
-  /* ── extra UI state (no logic) ── */
-  const [isSubmitting, setIsSubmitting]         = useState(false);
-  const [isDeleting, setIsDeleting]             = useState(false);
-  const [newBudget, setNewBudget]               = useState({ categoryID: "", amount: "", description: "" });
+  const [selectedBudget, setSelectedBudget]       = useState(null);
+  const [isSubmitting, setIsSubmitting]           = useState(false);
+  const [isDeleting, setIsDeleting]               = useState(false);
+  const [newBudget, setNewBudget]                 = useState({ categoryID: "", amount: "", description: "" });
 
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
   const fetchBudgetPlan = async () => {
@@ -106,11 +103,12 @@ export const UserBudget = () => {
     finally { setLoadingPlan(false); }
   };
 
+  /* ── FIX: useEffect only runs when userId is a real value ── */
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) return;       // ← guard: skip if user not yet loaded
     fetchCategories();
     fetchBudgetData();
-  }, [userId]);
+  }, [userId]);               // ← re-runs once userId resolves from null → real ID
 
   const fetchCategories = async () => {
     try {
@@ -135,22 +133,28 @@ export const UserBudget = () => {
 
   const generateSummary = (budgetsArr, expensesArr) => {
     const processed = budgetsArr.map((b) => {
-      const catId = typeof b.categoryID === "object" ? b.categoryID._id || b.categoryID.id : b.categoryID;
-      const catName = typeof b.categoryID === "object" ? b.categoryID.name : "Unknown";
-      const spent = expensesArr
+      const catId   = typeof b.categoryID === "object" ? b.categoryID?._id || b.categoryID?.id : b.categoryID;
+      const catName = typeof b.categoryID === "object" ? b.categoryID?.name : "Unknown";
+      const spent   = expensesArr
         .filter((e) => {
-          const eCat = typeof e.categoryID === "object" ? e.categoryID._id || e.categoryID.id : e.categoryID;
+          const eCat = typeof e.categoryID === "object" ? e.categoryID?._id || e.categoryID?.id : e.categoryID;
           return eCat === catId;
         })
         .reduce((sum, e) => sum + Number(e.amount || 0), 0);
-      return { id: b._id, category: catName, allocated: Number(b.amount) || 0, spent, remaining: Number(b.amount) - spent };
+      return {
+        id: b._id,
+        category: catName,
+        allocated: Number(b.amount) || 0,
+        spent,
+        remaining: Number(b.amount) - spent,
+      };
     });
     setSummary(processed);
   };
 
-  /* ── Add budget handler (UI-only, calls real API) ── */
   const handleAddBudget = async (e) => {
     e.preventDefault();
+    if (!userId) return;
     try {
       setIsSubmitting(true);
       await axiosInstance.post("/budget", { ...newBudget, userID: userId, amount: Number(newBudget.amount) });
@@ -161,7 +165,6 @@ export const UserBudget = () => {
     finally { setIsSubmitting(false); }
   };
 
-  /* ── Delete budget handler ── */
   const handleDeleteBudget = async () => {
     if (!selectedBudget) return;
     try {
@@ -175,9 +178,9 @@ export const UserBudget = () => {
   };
 
   /* ── Derived totals ── */
-  const totalAllocated = summary.reduce((s, i) => s + i.allocated, 0);
-  const totalSpent     = summary.reduce((s, i) => s + i.spent, 0);
-  const totalRemaining = summary.reduce((s, i) => s + i.remaining, 0);
+  const totalAllocated  = summary.reduce((s, i) => s + i.allocated, 0);
+  const totalSpent      = summary.reduce((s, i) => s + i.spent, 0);
+  const totalRemaining  = summary.reduce((s, i) => s + i.remaining, 0);
   const overBudgetCount = summary.filter(i => i.spent > i.allocated).length;
 
   const tabs = [
@@ -186,6 +189,24 @@ export const UserBudget = () => {
     { id: "ai planner", label: "AI Planner", icon: <FiCpu size={14} /> },
     { id: "manage",     label: "Manage",     icon: <FiSettings size={14} /> },
   ];
+
+  /* ── FIX: Show skeleton while user hasn't resolved yet ── */
+  if (!userId) {
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <Shimmer className="h-8 w-48" />
+          <Shimmer className="h-4 w-64" />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => <Shimmer key={i} className="h-28" />)}
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          {[1,2,3,4].map(i => <Shimmer key={i} className="h-40" />)}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 text-white">
@@ -216,8 +237,16 @@ export const UserBudget = () => {
         {[
           { label: "Total Allocated", value: `₹${totalAllocated.toLocaleString("en-IN")}`, color: "text-cyan-400",    bg: "bg-cyan-500/5",    border: "border-cyan-500/20",    glow: "bg-cyan-400",    icon: <FiTarget size={17} /> },
           { label: "Total Spent",     value: `₹${totalSpent.toLocaleString("en-IN")}`,     color: "text-rose-400",   bg: "bg-rose-500/5",    border: "border-rose-500/20",    glow: "bg-rose-400",    icon: <FiTrendingDown size={17} /> },
-          { label: "Remaining",       value: `₹${Math.abs(totalRemaining).toLocaleString("en-IN")}`, color: totalRemaining >= 0 ? "text-emerald-400" : "text-rose-400", bg: "bg-emerald-500/5", border: "border-emerald-500/20", glow: "bg-emerald-400", icon: <FiDollarSign size={17} /> },
-          { label: "Over Budget",     value: overBudgetCount,                               color: overBudgetCount > 0 ? "text-amber-400" : "text-emerald-400", bg: overBudgetCount > 0 ? "bg-amber-500/5" : "bg-emerald-500/5", border: overBudgetCount > 0 ? "border-amber-500/20" : "border-emerald-500/20", glow: overBudgetCount > 0 ? "bg-amber-400" : "bg-emerald-400", icon: overBudgetCount > 0 ? <FiAlertTriangle size={17} /> : <FiCheckCircle size={17} /> },
+          { label: "Remaining",       value: `₹${Math.abs(totalRemaining).toLocaleString("en-IN")}`,
+            color: totalRemaining >= 0 ? "text-emerald-400" : "text-rose-400",
+            bg: "bg-emerald-500/5", border: "border-emerald-500/20", glow: "bg-emerald-400",
+            icon: <FiDollarSign size={17} /> },
+          { label: "Over Budget",     value: overBudgetCount,
+            color: overBudgetCount > 0 ? "text-amber-400" : "text-emerald-400",
+            bg: overBudgetCount > 0 ? "bg-amber-500/5" : "bg-emerald-500/5",
+            border: overBudgetCount > 0 ? "border-amber-500/20" : "border-emerald-500/20",
+            glow: overBudgetCount > 0 ? "bg-amber-400" : "bg-emerald-400",
+            icon: overBudgetCount > 0 ? <FiAlertTriangle size={17} /> : <FiCheckCircle size={17} /> },
         ].map((card, idx) => (
           <motion.div
             key={idx}
@@ -302,13 +331,13 @@ export const UserBudget = () => {
                           {pct}%
                         </span>
                       </div>
-
                       <BudgetProgress pct={pct} />
-
                       <div className="flex items-center justify-between mt-3 text-xs">
                         <span className="text-gray-600">Spent: <span className="text-rose-400 font-medium">₹{item.spent.toLocaleString("en-IN")}</span></span>
                         <span className={`font-medium ${item.remaining >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
-                          {item.remaining >= 0 ? `₹${item.remaining.toLocaleString("en-IN")} left` : `₹${Math.abs(item.remaining).toLocaleString("en-IN")} over`}
+                          {item.remaining >= 0
+                            ? `₹${item.remaining.toLocaleString("en-IN")} left`
+                            : `₹${Math.abs(item.remaining).toLocaleString("en-IN")} over`}
                         </span>
                       </div>
                     </motion.div>
@@ -326,7 +355,6 @@ export const UserBudget = () => {
             exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}
             className="grid grid-cols-1 xl:grid-cols-2 gap-5"
           >
-            {/* Donut */}
             <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
@@ -361,7 +389,6 @@ export const UserBudget = () => {
               )}
             </div>
 
-            {/* Allocated vs Spent bar */}
             <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center">
@@ -395,7 +422,6 @@ export const UserBudget = () => {
             exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}
             className="space-y-5"
           >
-            {/* AI card header */}
             <div className="rounded-2xl bg-[#0d0f14]/80 border border-blue-500/20 backdrop-blur-sm overflow-hidden">
               <div className="flex items-center justify-between px-5 py-4 border-b border-blue-500/15">
                 <div className="flex items-center gap-3">
@@ -407,28 +433,23 @@ export const UserBudget = () => {
                     <p className="text-xs text-gray-500 mt-0.5">Get a personalized budget plan based on your finances</p>
                   </div>
                 </div>
-                <button
-                  onClick={fetchBudgetPlan}
-                  disabled={loadingPlan}
+                <button onClick={fetchBudgetPlan} disabled={loadingPlan}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
                              bg-gradient-to-r from-blue-500 to-cyan-500 text-white
                              hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200
                              disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
-                             shadow-lg shadow-blue-500/20"
-                >
+                             shadow-lg shadow-blue-500/20">
                   {loadingPlan
                     ? <><FiRefreshCw size={13} className="animate-spin" /> Analyzing...</>
                     : <><FiZap size={13} /> Generate Plan</>}
                 </button>
               </div>
-
               {!budgetPlan && !loadingPlan && (
                 <div className="flex flex-col items-center gap-3 py-12 text-center px-5">
                   <FiCpu size={28} className="text-gray-700" />
                   <p className="text-sm text-gray-500">Click "Generate Plan" to get AI-powered budget recommendations.</p>
                 </div>
               )}
-
               {loadingPlan && (
                 <div className="p-5 space-y-3">
                   {[1,2,3].map(i => <Shimmer key={i} className="h-12 rounded-xl" />)}
@@ -438,17 +459,13 @@ export const UserBudget = () => {
 
             {budgetPlan && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-
-                {/* Snapshot cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[
                     { label: "Income",   value: `₹${budgetPlan.snapshot.income}`,   color: "text-emerald-400", bg: "bg-emerald-500/5", border: "border-emerald-500/20", glow: "bg-emerald-400" },
                     { label: "Expenses", value: `₹${budgetPlan.snapshot.expenses}`, color: "text-rose-400",    bg: "bg-rose-500/5",    border: "border-rose-500/20",    glow: "bg-rose-400" },
                     { label: "Surplus",  value: `₹${budgetPlan.snapshot.surplus}`,  color: "text-cyan-400",   bg: "bg-cyan-500/5",    border: "border-cyan-500/20",    glow: "bg-cyan-400" },
                   ].map((s, i) => (
-                    <motion.div key={i}
-                      initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.08 }}
+                    <motion.div key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
                       className={`relative overflow-hidden rounded-2xl border p-5 ${s.bg} ${s.border}`}>
                       <div className={`absolute -top-6 -right-6 w-16 h-16 rounded-full blur-2xl opacity-20 ${s.glow}`} />
                       <p className="text-xs font-medium text-gray-500 uppercase tracking-widest mb-2">{s.label}</p>
@@ -457,7 +474,6 @@ export const UserBudget = () => {
                   ))}
                 </div>
 
-                {/* Recommended budget */}
                 <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
                   <div className="px-5 py-4 border-b border-white/8">
                     <h3 className="text-sm font-semibold text-white">Recommended Budget</h3>
@@ -465,9 +481,7 @@ export const UserBudget = () => {
                   </div>
                   <div className="divide-y divide-white/5">
                     {budgetPlan.budgetPlan.map((item, i) => (
-                      <motion.div key={i}
-                        initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }}
+                      <motion.div key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
                         className="flex items-center justify-between px-5 py-3.5 hover:bg-white/3 transition-colors">
                         <div className="flex items-center gap-3">
                           <div className="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/15 flex items-center justify-center">
@@ -481,7 +495,6 @@ export const UserBudget = () => {
                   </div>
                 </div>
 
-                {/* AI Suggestions */}
                 <div className="rounded-2xl bg-[#0d0f14]/80 border border-emerald-500/20 backdrop-blur-sm p-5">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center">
@@ -517,7 +530,6 @@ export const UserBudget = () => {
                 <FiPlus size={14} /> Add
               </button>
             </div>
-
             {budgets.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-white/8 bg-white/2">
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
@@ -531,20 +543,17 @@ export const UserBudget = () => {
                   <motion.div key={b._id}
                     initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.06 }}
-                    className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5
-                               hover:border-white/20 transition-colors"
+                    className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5 hover:border-white/20 transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="text-sm font-semibold text-white">
-                          {typeof b.categoryID === "object" ? b.categoryID.name : b.description || "Budget"}
+                          {typeof b.categoryID === "object" ? b.categoryID?.name : b.description || "Budget"}
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">{b.description || "No description"}</p>
                       </div>
-                      <button
-                        onClick={() => { setSelectedBudget(b); setConfirmDeleteOpen(true); }}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-600 hover:bg-rose-500/15 hover:text-rose-400 transition-all"
-                      >
+                      <button onClick={() => { setSelectedBudget(b); setConfirmDeleteOpen(true); }}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-600 hover:bg-rose-500/15 hover:text-rose-400 transition-all">
                         <FiTrash2 size={13} />
                       </button>
                     </div>
@@ -642,8 +651,13 @@ export const UserBudget = () => {
                 </div>
                 <h3 className="text-base font-semibold text-white mb-2">Delete Budget?</h3>
                 <p className="text-sm text-gray-500 mb-6">
-                  This will permanently delete the budget for <span className="text-white font-medium">
-                    {selectedBudget && (typeof selectedBudget.categoryID === "object" ? selectedBudget.categoryID.name : selectedBudget.description || "this category")}
+                  This will permanently delete the budget for{" "}
+                  <span className="text-white font-medium">
+                    {selectedBudget && (
+                      typeof selectedBudget.categoryID === "object"
+                        ? selectedBudget.categoryID?.name
+                        : selectedBudget.description || "this category"
+                    )}
                   </span>. This action cannot be undone.
                 </p>
                 <div className="flex gap-3">
