@@ -45,80 +45,199 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ============================================================
+   LIGHT MODE VARIABLES  (active when .dark is NOT on <html>)
+   ============================================================ */
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
+
+  /* Page & surface backgrounds */
+  --background:        oklch(0.97 0 0);        /* near-white page bg */
+  --foreground:        oklch(0.141 0.005 285.823);
+  --card:              oklch(1 0 0);            /* white card surface */
+  --card-foreground:   oklch(0.141 0.005 285.823);
+  --popover:           oklch(1 0 0);
+  --popover-foreground:oklch(0.141 0.005 285.823);
+  --primary:           oklch(0.21 0.006 285.885);
+  --primary-foreground:oklch(0.985 0 0);
+  --secondary:         oklch(0.967 0.001 286.375);
+  --secondary-foreground:oklch(0.21 0.006 285.885);
+  --muted:             oklch(0.967 0.001 286.375);
+  --muted-foreground:  oklch(0.552 0.016 285.938);
+  --accent:            oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
+  --destructive:       oklch(0.577 0.245 27.325);
+  --border:            oklch(0.88 0.004 286.32);
+  --input:             oklch(0.92 0.004 286.32);
+  --ring:              oklch(0.705 0.015 286.067);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.21 0.006 285.885);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.705 0.015 286.067);
+  --sidebar-foreground:oklch(0.141 0.005 285.823);
+  --sidebar-primary:   oklch(0.21 0.006 285.885);
+  --sidebar-primary-foreground:oklch(0.985 0 0);
+  --sidebar-accent:    oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground:oklch(0.21 0.006 285.885);
+  --sidebar-border:    oklch(0.92 0.004 286.32);
+  --sidebar-ring:      oklch(0.705 0.015 286.067);
+
+  /* ── Custom vars: map hardcoded dark hex → light equivalents ── */
+  --surface-primary:   #ffffff;        /* replaces bg-[#111318]  */
+  --surface-secondary: #f8f9fb;        /* replaces bg-[#0d0f14]  */
+  --surface-tertiary:  #f1f3f7;        /* replaces bg-[#0c0e12] bg-[#0b0c10] */
+  --surface-overlay:   rgba(0,0,0,0.04); /* replaces bg-black/40  */
+  --surface-subtle:    rgba(0,0,0,0.04); /* replaces bg-white/5   */
+  --border-subtle:     rgba(0,0,0,0.10); /* replaces border-white/10 */
+  --border-medium:     rgba(0,0,0,0.15); /* replaces border-white/15 */
+  --text-primary:      #111318;
+  --text-secondary:    #4b5563;
+  --text-tertiary:     #6b7280;
+  --text-muted:        #9ca3af;
 }
 
+/* ============================================================
+   DARK MODE VARIABLES  (active when .dark IS on <html>)
+   ============================================================ */
 .dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
+  --background:        oklch(0.141 0.005 285.823);
+  --foreground:        oklch(0.985 0 0);
+  --card:              oklch(0.21 0.006 285.885);
+  --card-foreground:   oklch(0.985 0 0);
+  --popover:           oklch(0.21 0.006 285.885);
+  --popover-foreground:oklch(0.985 0 0);
+  --primary:           oklch(0.92 0.004 286.32);
+  --primary-foreground:oklch(0.21 0.006 285.885);
+  --secondary:         oklch(0.274 0.006 286.033);
+  --secondary-foreground:oklch(0.985 0 0);
+  --muted:             oklch(0.274 0.006 286.033);
+  --muted-foreground:  oklch(0.705 0.015 286.067);
+  --accent:            oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.552 0.016 285.938);
+  --destructive:       oklch(0.704 0.191 22.216);
+  --border:            oklch(1 0 0 / 10%);
+  --input:             oklch(1 0 0 / 15%);
+  --ring:              oklch(0.552 0.016 285.938);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.552 0.016 285.938);
+  --sidebar-foreground:oklch(0.985 0 0);
+  --sidebar-primary:   oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground:oklch(0.985 0 0);
+  --sidebar-accent:    oklch(0.274 0.006 286.033);
+  --sidebar-accent-foreground:oklch(0.985 0 0);
+  --sidebar-border:    oklch(1 0 0 / 10%);
+  --sidebar-ring:      oklch(0.552 0.016 285.938);
+
+  /* ── Custom vars: keep original dark hex values in dark mode ── */
+  --surface-primary:   #111318;
+  --surface-secondary: #0d0f14;
+  --surface-tertiary:  #0c0e12;
+  --surface-overlay:   rgba(0,0,0,0.40);
+  --surface-subtle:    rgba(255,255,255,0.05);
+  --border-subtle:     rgba(255,255,255,0.10);
+  --border-medium:     rgba(255,255,255,0.15);
+  --text-primary:      #ffffff;
+  --text-secondary:    #d1d5db;
+  --text-tertiary:     #9ca3af;
+  --text-muted:        #6b7280;
 }
 
+/* ============================================================
+   GLOBAL OVERRIDES
+   Maps every hardcoded dark hex used in components to CSS vars.
+   This means components don't need to be changed at all.
+   ============================================================ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
+
+  /* Smooth theme transition on all elements */
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color;
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
+  }
+
+  /* ── Override hardcoded dark backgrounds ── */
+
+  /* bg-[#111318] and bg-[#111318]/80 */
+  [class*="bg-\[#111318\]"] {
+    background-color: var(--surface-primary) !important;
+  }
+
+  /* bg-[#0d0f14] and bg-[#0d0f14]/80 */
+  [class*="bg-\[#0d0f14\]"] {
+    background-color: var(--surface-secondary) !important;
+  }
+
+  /* bg-[#0c0e12], bg-[#0b0c10], bg-[#0f1115], bg-[#0f1115] */
+  [class*="bg-\[#0c0e12\]"],
+  [class*="bg-\[#0b0c10\]"],
+  [class*="bg-\[#0f1115\]"],
+  [class*="bg-\[#1a1d24\]"],
+  [class*="bg-\[#181b22\]"],
+  [class*="bg-\[#1a1d26\]"] {
+    background-color: var(--surface-tertiary) !important;
+  }
+
+  /* bg-black/40 inputs */
+  [class*="bg-black\/40"] {
+    background-color: var(--surface-overlay) !important;
+  }
+
+  /* bg-white/5, bg-white/4 subtle surfaces */
+  [class*="bg-white\/5"],
+  [class*="bg-white\/4"],
+  [class*="bg-white\/8"] {
+    background-color: var(--surface-subtle) !important;
+  }
+
+  /* ── Text overrides ── */
+  /* text-white in component context → theme-aware */
+  .user-layout [class*="text-white"]:not([class*="text-white/"]),
+  .admin-layout [class*="text-white"]:not([class*="text-white/"]) {
+    color: var(--text-primary);
+  }
+
+  /* border-white/* → theme-aware border */
+  [class*="border-white\/10"] {
+    border-color: var(--border-subtle) !important;
+  }
+  [class*="border-white\/15"],
+  [class*="border-white\/20"] {
+    border-color: var(--border-medium) !important;
+  }
+
+  /* ── Gradient backgrounds on page wrappers ── */
+  /* The dark gradient on UserDashboardLayout root */
+  .dark\:bg-gradient-to-b,
+  [class*="dark:from-\[#0c0e12\]"] {
+    background: var(--surface-tertiary);
+  }
+
+  /* ── Chart tooltip dark bg ── */
+  .recharts-tooltip-wrapper .recharts-default-tooltip {
+    background-color: var(--surface-primary) !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+/* ============================================================
+   SHIMMER ANIMATION
+   ============================================================ */
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
 }
