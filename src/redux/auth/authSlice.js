@@ -1,4 +1,3 @@
-import { logout } from "../../components/Utils/Logout";
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     user : null,
