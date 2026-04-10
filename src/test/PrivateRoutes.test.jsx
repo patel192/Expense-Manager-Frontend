@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import {  screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { PrivateRoutes } from "../components/Hooks/PrivateRoutes";
 import { expect } from "vitest";
 import { AuthProvider } from "../context/AuthContext";
-
+import { renderWithProviders as render } from "./test-utils";
 describe("PrivateRoutes", () => {
   test("redirects to login if not authenticated", () => {
     localStorage.clear();

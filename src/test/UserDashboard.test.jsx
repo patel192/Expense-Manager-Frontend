@@ -1,9 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import {  screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { UserDashboard } from "../components/User/UserDashboard";
 import axiosInstance from "../components/Utils/axiosInstance";
 import { vi } from "vitest";
-
+import { renderWithProviders as render } from "./test-utils";
 vi.mock("../components/Utils/axiosInstance", () => ({
   default: {
     get: vi.fn(),
