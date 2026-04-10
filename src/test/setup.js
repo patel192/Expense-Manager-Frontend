@@ -19,3 +19,4 @@ Object.defineProperty(window, "location", {
   },
   writable: true,
 });
+window.HTMLElement.prototype.scrollIntoView = function () {};
