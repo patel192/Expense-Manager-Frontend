@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useSelector,useDispatch } from "react-redux";
-import { fetchCategories,addCategory,updateCategory, } from "../../redux/expense/expenseSlice";
+import { fetchCategories,addCategory,updateCategory, } from "../../redux/category/categorySlice";
 
 export const ManageCategories = () => {
   const {categories, loading} = useSelector((state) => state.category )

@@ -2,7 +2,8 @@ import { useEffect, useState, Fragment, useMemo } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { useForm } from "react-hook-form";
 import { useDispatch,useSelector } from "react-redux";
-import { fetchCategories,fetchAllExpenses,fetchRecentExpenses } from "../../../redux/expense/expenseSlice";
+import { fetchAllExpenses,fetchRecentExpenses } from "../../../redux/expense/expenseSlice";
+import { fetchCategories } from "../../../redux/category/categorySlice";
 import { Dialog, Transition } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {

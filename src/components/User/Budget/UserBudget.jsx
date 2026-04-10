@@ -3,7 +3,8 @@ import axiosInstance from "../../Utils/axiosInstance";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, Transition } from "@headlessui/react";
 import { useSelector ,useDispatch} from "react-redux";
-import { fetchBudgetPlan,fetchCategories,fetchBudgetData } from "../../../redux/budget/budgetSlice";
+import { fetchBudgetPlan,fetchBudgetData } from "../../../redux/budget/budgetSlice";
+import { fetchCategories } from "../../../redux/category/categorySlice";
 import {
   PieChart, Pie, Cell, Tooltip, Legend,
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid,
