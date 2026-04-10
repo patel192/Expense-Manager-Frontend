@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import axiosInstance from "../Utils/axiosInstance";
+import { useSelector,useDispatch } from "react-redux";
+import { fetchAdminReport } from "../../redux/adminReport/adminReportSlice";
 import {
   BarChart,
   Bar,
@@ -19,21 +20,13 @@ import {
 const COLORS = ["#818cf8", "#34d399", "#fbbf24", "#f87171", "#a855f7"];
 
 export const ReportAdmins = () => {
-  const [stats, setStats] = useState(null);
-
+  const dispatch = useDispatch();
+  const {stats,loading} = useSelector((state)=> state.adminReport)
   useEffect(() => {
-    const fetchReport = async () => {
-      try {
-        const res = await axiosInstance.get("/adminreport");
-        setStats(res.data);
-      } catch (error) {
-        console.error("Failed to fetch report data", error);
-      }
-    };
-    fetchReport();
-  }, []);
+   dispatch(fetchAdminReport());    
+  }, [dispatch]);
 
-  if (!stats)
+  if (loading || !stats)
     return (
       <div className="flex items-center justify-center h-[70vh] text-gray-400 text-xl">
         Loading report...

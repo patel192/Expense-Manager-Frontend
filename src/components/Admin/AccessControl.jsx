@@ -1,26 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
-import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
-
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
 export const AccessControl = () => {
-  const [users, setUsers] = useState([]);
+  const dispatch = useDispatch();
+  const { users, loading } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 6;
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axiosInstance.get("/users");
-        setUsers(res.data.data || []);
-      } catch (error) {
-        alert("Error fetching users");
-      }
-    };
-    fetchUsers();
-  }, []);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const roleColors = {
     Admin: "from-yellow-400 to-orange-500 text-black",
@@ -37,15 +30,30 @@ export const AccessControl = () => {
     return matchesSearch && matchesRole;
   });
 
+  const handleDelete = async (userId) => {
+    if (!window.confirm("Delete this user?")) return;
+    try {
+      await dispatch(deleteUser(userId));
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
+
   const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
+  if (loading) {
+    return (
+      <div className="flex justify-center mt-10">
+        <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-b from-[#0b0c10] via-[#0f1115] to-[#0c0e12] text-white">
-
       {/* ======= Header ======= */}
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
@@ -137,9 +145,13 @@ export const AccessControl = () => {
                   <p>
                     Status:{" "}
                     {user.is_active ? (
-                      <span className="text-green-400 font-semibold">Active</span>
+                      <span className="text-green-400 font-semibold">
+                        Active
+                      </span>
                     ) : (
-                      <span className="text-red-400 font-semibold">Inactive</span>
+                      <span className="text-red-400 font-semibold">
+                        Inactive
+                      </span>
                     )}
                   </p>
                 </div>
@@ -152,7 +164,10 @@ export const AccessControl = () => {
                   Edit
                 </button>
 
-                <button className="flex-1 py-2 rounded-xl bg-red-500/80 hover:bg-red-600 transition text-white font-medium shadow">
+                <button
+                  onClick={() => handleDelete(user._id)}
+                  className="flex-1 py-2 rounded-xl bg-red-500/80 hover:bg-red-600 transition text-white font-medium shadow"
+                >
                   <FaTrash size={14} className="inline mr-2" />
                   Delete
                 </button>

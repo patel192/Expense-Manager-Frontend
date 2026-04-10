@@ -1,0 +1,175 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axiosInstance from "../../components/Utils/axiosInstance";
+
+/* Fetch Categories */
+
+export const fetchCategories = createAsyncThunk(
+  "budget/fetchCategories",
+  async () => {
+    const res = await axiosInstance.get("/categories");
+    return res.data.data || [];
+  }
+);
+
+/* Fetch Budget + Expenses */
+
+export const fetchBudgetData = createAsyncThunk(
+  "budget/fetchBudgetData",
+  async (userId) => {
+
+    const [bRes, eRes] = await Promise.all([
+      axiosInstance.get(`/budgetsbyUserID/${userId}`),
+      axiosInstance.get(`/expensesbyUserID/${userId}`),
+    ]);
+
+    const budgets =
+      bRes.data.data || [];
+
+    const expenses =
+      eRes.data.data || [];
+
+    const summary =
+      budgets.map((b) => {
+
+        const catId =
+          typeof b.categoryID === "object"
+            ? b.categoryID?._id
+            : b.categoryID;
+
+        const catName =
+          typeof b.categoryID === "object"
+            ? b.categoryID?.name
+            : "Unknown";
+
+        const spent =
+          expenses
+            .filter((e) => {
+
+              const eCat =
+                typeof e.categoryID === "object"
+                  ? e.categoryID?._id
+                  : e.categoryID;
+
+              return eCat === catId;
+
+            })
+            .reduce(
+              (sum, e) =>
+                sum + Number(e.amount || 0),
+              0
+            );
+
+        return {
+          id: b._id,
+          category: catName,
+          allocated: Number(b.amount) || 0,
+          spent,
+          remaining:
+            Number(b.amount) - spent,
+        };
+
+      });
+
+    return {
+      budgets,
+      expenses,
+      summary,
+    };
+
+  }
+);
+
+/* AI Budget Plan */
+
+export const fetchBudgetPlan = createAsyncThunk(
+  "budget/fetchBudgetPlan",
+  async (userId) => {
+
+    const res =
+      await axiosInstance.get(
+        `/ai/budget-plan/${userId}`
+      );
+
+    return res.data.budgetPlan;
+
+  }
+);
+
+const initialState = {
+
+  budgets: [],
+
+  expenses: [],
+
+  summary: [],
+
+  categories: [],
+
+  budgetPlan: null,
+
+  loading: false,
+
+};
+
+const budgetSlice = createSlice({
+
+  name: "budget",
+
+  initialState,
+
+  reducers: {},
+
+  extraReducers: (builder) => {
+
+    builder
+
+      .addCase(
+        fetchBudgetData.pending,
+        (state) => {
+          state.loading = true;
+        }
+      )
+
+      .addCase(
+        fetchBudgetData.fulfilled,
+        (state, action) => {
+
+          state.loading = false;
+
+          state.budgets =
+            action.payload.budgets;
+
+          state.expenses =
+            action.payload.expenses;
+
+          state.summary =
+            action.payload.summary;
+
+        }
+      )
+
+      .addCase(
+        fetchCategories.fulfilled,
+        (state, action) => {
+
+          state.categories =
+            action.payload;
+
+        }
+      )
+
+      .addCase(
+        fetchBudgetPlan.fulfilled,
+        (state, action) => {
+
+          state.budgetPlan =
+            action.payload;
+
+        }
+      );
+
+  },
+
+});
+
+export default budgetSlice.reducer;

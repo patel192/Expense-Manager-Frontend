@@ -1,6 +1,8 @@
 import React, { useEffect, useState, Fragment, useMemo } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { useForm } from "react-hook-form";
+import { useDispatch,useSelector } from "react-redux";
+import { fetchCategories,fetchAllExpenses,fetchRecentExpenses } from "../../../redux/expense/expenseSlice";
 import { Dialog, Transition } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -68,12 +70,10 @@ const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border
 ══════════════════════════════════════ */
 export const UserExpenses = () => {
   const { user } = useAuth();
-
+  const dispatch = useDispatch();
+const {categories,recentExpenses,expenses} = useSelector((state) => state.expense)
   /* ── ALL ORIGINAL STATE — UNTOUCHED ── */
   const [activeTab, setActiveTab] = useState("overview");
-  const [categories, setCategories] = useState([]);
-  const [recentExpenses, setRecentExpenses] = useState([]);
-  const [expenses, setExpenses] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [categoryBreakdown, setCategoryBreakdown] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,33 +87,10 @@ export const UserExpenses = () => {
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
   useEffect(() => {
     if (userId) setValue("userID", userId);
-    fetchCategories();
-    fetchRecentExpenses();
-    fetchAllExpenses();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await axiosInstance.get("/categories");
-      setCategories(res.data.data);
-    } catch (error) { console.error("Category fetch error:", error); }
-  };
-
-  const fetchRecentExpenses = async () => {
-    try {
-      const res = await axiosInstance.get(`/recent-expense/${userId}`);
-      setRecentExpenses(res.data.data || []);
-    } catch (error) { console.error("Recent expense fetch error:", error); }
-  };
-
-  const fetchAllExpenses = async () => {
-    try {
-      const res = await axiosInstance.get(`/expensesbyUserID/${userId}`);
-      const data = res.data.data || [];
-      setExpenses(data);
-      buildCharts(data);
-    } catch (error) { console.error(error); }
-  };
+    dispatch(fetchCategories());
+    dispatch(fetchRecentExpenses(userId));
+    dispatch(fetchAllExpenses());
+  }, [dispatch,userId]);
 
   const buildCharts = (data) => {
     const monthly = Array.from({ length: 12 }, () => 0);
@@ -143,8 +120,8 @@ export const UserExpenses = () => {
       alert("Expense added successfully");
       reset();
       setIsModalOpen(false);
-      fetchRecentExpenses();
-      fetchAllExpenses();
+      dispatch(fetchRecentExpenses(userId));
+      dispatch(fetchAllExpenses(userId));
     } catch (error) {
       alert(error.message);
     } finally {

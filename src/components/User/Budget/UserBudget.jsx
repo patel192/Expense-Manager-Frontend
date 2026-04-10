@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, Fragment } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, Transition } from "@headlessui/react";
+import { useSelector ,useDispatch} from "react-redux";
+import { fetchBudgetPlan,fetchCategories,fetchBudgetData } from "../../redux/budget/budgetSlice";
 import {
   PieChart, Pie, Cell, Tooltip, Legend,
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -13,7 +15,7 @@ import {
   FiAlertTriangle, FiCheckCircle, FiZap, FiRefreshCw,
   FiTag, FiAlignLeft,
 } from "react-icons/fi";
-import { useAuth } from "../../../context/AuthContext";
+
 
 /* ─── Shimmer ─── */
 const Shimmer = ({ className = "" }) => (
@@ -73,18 +75,20 @@ const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border
 const COLORS = ["#10b981", "#ef4444", "#3b82f6", "#f59e0b", "#a855f7"];
 
 export const UserBudget = () => {
-  const { user } = useAuth();
-
+  const user = useSelector((state) => state.auth.user ) 
+  const dispatch = useDispatch();
+  const {
+    budgets,
+    expenses,
+    summary,
+    categories,
+    budgetPlan,
+  } = useSelector((state) => state.budget )
   /* ── FIX: Safe userId — never reads ._id when user is null ── */
   const userId = user?._id ?? null;
 
   /* ── ALL ORIGINAL STATE — UNTOUCHED ── */
   const [activeTab, setActiveTab]                 = useState("overview");
-  const [budgets, setBudgets]                     = useState([]);
-  const [expenses, setExpenses]                   = useState([]);
-  const [summary, setSummary]                     = useState([]);
-  const [categories, setCategories]               = useState([]);
-  const [budgetPlan, setBudgetPlan]               = useState(null);
   const [loadingPlan, setLoadingPlan]             = useState(false);
   const [isModalOpen, setIsModalOpen]             = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -94,63 +98,16 @@ export const UserBudget = () => {
   const [newBudget, setNewBudget]                 = useState({ categoryID: "", amount: "", description: "" });
 
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
-  const fetchBudgetPlan = async () => {
-    try {
-      setLoadingPlan(true);
-      const res = await axiosInstance.get(`/ai/budget-plan/${userId}`);
-      setBudgetPlan(res.data.budgetPlan);
-    } catch (error) { console.error("Budget plan error:", error); }
-    finally { setLoadingPlan(false); }
-  };
+  
 
   /* ── FIX: useEffect only runs when userId is a real value ── */
   useEffect(() => {
     if (!userId) return;       // ← guard: skip if user not yet loaded
-    fetchCategories();
-    fetchBudgetData();
-  }, [userId]);               // ← re-runs once userId resolves from null → real ID
+    dispatch(fetchCategories());
+    dispatch(fetchBudgetData(userId))
+    
+  }, [dispatch,userId]);               // ← re-runs once userId resolves from null → real ID
 
-  const fetchCategories = async () => {
-    try {
-      const res = await axiosInstance.get("/categories");
-      setCategories(res.data.data || []);
-    } catch (error) { console.error(error); }
-  };
-
-  const fetchBudgetData = async () => {
-    try {
-      const [bRes, eRes] = await Promise.all([
-        axiosInstance.get(`/budgetsbyUserID/${userId}`),
-        axiosInstance.get(`/expensesbyUserID/${userId}`),
-      ]);
-      const bArr = bRes.data.data || [];
-      const eArr = eRes.data.data || [];
-      setBudgets(bArr);
-      setExpenses(eArr);
-      generateSummary(bArr, eArr);
-    } catch (error) { console.error(error); }
-  };
-
-  const generateSummary = (budgetsArr, expensesArr) => {
-    const processed = budgetsArr.map((b) => {
-      const catId   = typeof b.categoryID === "object" ? b.categoryID?._id || b.categoryID?.id : b.categoryID;
-      const catName = typeof b.categoryID === "object" ? b.categoryID?.name : "Unknown";
-      const spent   = expensesArr
-        .filter((e) => {
-          const eCat = typeof e.categoryID === "object" ? e.categoryID?._id || e.categoryID?.id : e.categoryID;
-          return eCat === catId;
-        })
-        .reduce((sum, e) => sum + Number(e.amount || 0), 0);
-      return {
-        id: b._id,
-        category: catName,
-        allocated: Number(b.amount) || 0,
-        spent,
-        remaining: Number(b.amount) - spent,
-      };
-    });
-    setSummary(processed);
-  };
 
   const handleAddBudget = async (e) => {
     e.preventDefault();

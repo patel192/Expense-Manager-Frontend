@@ -1,32 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaClipboardList } from "react-icons/fa";
-import axiosInstance from "../Utils/axiosInstance";
-
+import { useSelector, useDispatch } from "react-redux";
+import { fetchLogs } from "../../redux/log/logSlice";
 export const Systemlog = () => {
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { logs, loading } = useSelector((state) => state.log);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const res = await axiosInstance.get("/logs");
-        setLogs(res.data || []);
-      } catch (error) {
-        console.error("Failed to fetch logs", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLogs();
-  }, []);
+    dispatch(fetchLogs());
+  }, [dispatch]);
 
   const filteredLogs = logs.filter(
     (log) =>
       log.user?.toLowerCase().includes(search.toLowerCase()) ||
       log.action?.toLowerCase().includes(search.toLowerCase()) ||
-      log.description?.toLowerCase().includes(search.toLowerCase())
+      log.description?.toLowerCase().includes(search.toLowerCase()),
   );
 
   // Badge Color System
@@ -43,7 +33,6 @@ export const Systemlog = () => {
 
   return (
     <div className="p-6 sm:p-10 min-h-screen text-white bg-gradient-to-br from-gray-900 via-[#0c0e12] to-black">
-      
       {/* HEADER */}
       <motion.div
         initial={{ y: -12, opacity: 0 }}
@@ -108,13 +97,15 @@ export const Systemlog = () => {
                       }`}
                     >
                       <td className="p-4 text-gray-300">
-                        {new Date(log.timestamp || log.createdAt).toLocaleString()}
+                        {new Date(
+                          log.timestamp || log.createdAt,
+                        ).toLocaleString()}
                       </td>
                       <td className="p-4 text-indigo-300">{log.user}</td>
                       <td className="p-4">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${getBadgeColor(
-                            log.action
+                            log.action,
                           )}`}
                         >
                           {log.action}
@@ -139,17 +130,21 @@ export const Systemlog = () => {
                     {new Date(log.timestamp || log.createdAt).toLocaleString()}
                   </p>
 
-                  <p className="font-semibold text-indigo-300 mt-1">{log.user}</p>
+                  <p className="font-semibold text-indigo-300 mt-1">
+                    {log.user}
+                  </p>
 
                   <span
                     className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold ${getBadgeColor(
-                      log.action
+                      log.action,
                     )}`}
                   >
                     {log.action}
                   </span>
 
-                  <p className="mt-3 text-gray-300 text-sm">{log.description}</p>
+                  <p className="mt-3 text-gray-300 text-sm">
+                    {log.description}
+                  </p>
                 </motion.div>
               ))}
             </div>

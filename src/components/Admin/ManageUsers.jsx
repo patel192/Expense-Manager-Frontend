@@ -1,54 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useSelector, useDispatch } from "react-redux";
 import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
-
+import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
 export const ManageUsers = () => {
-  const [users, setUsers] = useState([]);
+  const dispatch = useDispatch();
+  const { users, loading } = useSelector((state) => state.user);
   const [displayedUsers, setDisplayedUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 6;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axiosInstance.get("/users");
-        const fetchedUsers = res.data.data || [];
-
-        setUsers(fetchedUsers);
-        setDisplayedUsers(fetchedUsers);
-      } catch {
-        toast.error("Error fetching users");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
-
+    dispatch(fetchUsers());
+  }, [dispatch]);
+  useEffect(() => {
+    setDisplayedUsers(users);
+  }, [users]);
   // filter logic
   useEffect(() => {
     let filtered = [...users];
 
     if (search) {
       filtered = filtered.filter((u) =>
-        u.name.toLowerCase().includes(search.toLowerCase())
+        u.name.toLowerCase().includes(search.toLowerCase()),
       );
     }
     if (roleFilter !== "all") {
       filtered = filtered.filter((u) => u.role === roleFilter);
     }
-
     setDisplayedUsers(filtered);
     setCurrentPage(1);
   }, [search, roleFilter, users]);
@@ -64,17 +51,22 @@ export const ManageUsers = () => {
     if (!window.confirm("Delete this user permanently?")) return;
 
     try {
-      await axiosInstance.delete(`/user/${userId}`);
-      setUsers((prev) => prev.filter((u) => u._id !== userId));
+      await dispatch(deleteUser(userId));
 
       toast.success("User deleted", {
         autoClose: 1800,
-        style: { backgroundColor: "#16a34a", color: "white" },
+        style: {
+          backgroundColor: "#16a34a",
+          color: "white",
+        },
       });
     } catch {
       toast.error("Error deleting user", {
         autoClose: 1800,
-        style: { backgroundColor: "#dc2626", color: "white" },
+        style: {
+          backgroundColor: "#dc2626",
+          color: "white",
+        },
       });
     }
   };
@@ -175,8 +167,8 @@ export const ManageUsers = () => {
                           user.role === "Admin"
                             ? "bg-purple-500/20 text-purple-300"
                             : user.role === "Manager"
-                            ? "bg-blue-500/20 text-blue-300"
-                            : "bg-green-500/20 text-green-300"
+                              ? "bg-blue-500/20 text-blue-300"
+                              : "bg-green-500/20 text-green-300"
                         }`}
                       >
                         {user.role}

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import {loginSuccess} from "./redux/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -33,6 +36,7 @@ const Field = ({ label, icon, error, children }) => (
 
 export const Login = () => {
   const { login } = useAuth();
+  const dispatch = useDispatch();
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -45,7 +49,13 @@ export const Login = () => {
       const res = await axiosInstance.post("/user/login", data);
       if (res.status === 200) {
         toast.success("Login successful!", { position: "top-center", autoClose: 2000 });
-        login(res.data);
+        dispatch(
+          loginSuccess({
+            user:res.data.user,
+            token:res.data.token,
+            role:res.data.role
+          })
+        )
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed", {

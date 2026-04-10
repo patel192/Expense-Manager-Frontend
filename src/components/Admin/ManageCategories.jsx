@@ -3,45 +3,34 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
+import { useSelector,useDispatch } from "react-redux";
+import { fetchCategories,addCategory,deleteCategory,updateCategory, } from "../../redux/expense/expenseSlice";
 
 export const ManageCategories = () => {
+  const {categories, loading} = useSelector((state) => state.category )
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editedCategory, setEditedCategory] = useState({ name: "", type: "" });
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    setLoading(true);
-    try {
-      const res = await axiosInstance.get("/categories");
-      setCategories(res.data.data || []);
-    } catch {
-      toast.error("Failed to fetch categories");
-    } finally {
-      setLoading(false);
-    }
-  };
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const submitHandler = async (data) => {
     try {
-      const res = await axiosInstance.post("/category", data);
+      const res = await dispatch(addCategory(data));
       if (res.status === 201) {
         toast.success("Category added!");
         reset();
-        fetchCategories();
+        dispatch(fetchCategories())
       }
     } catch {
       toast.error("Error adding category");
@@ -51,9 +40,9 @@ export const ManageCategories = () => {
   const deleteCategory = async (id) => {
     if (!window.confirm("Delete this category?")) return;
     try {
-      await axiosInstance.delete(`/category/${id}`);
+      await dispatch(deleteCategory(id));
       toast.success("Category deleted");
-      fetchCategories();
+      dispatch(fetchCategories());
     } catch {
       toast.error("Failed to delete category");
     }
@@ -66,10 +55,10 @@ export const ManageCategories = () => {
 
   const saveEdit = async (id) => {
     try {
-      await axiosInstance.put(`/category/${id}`, editedCategory);
+      await dispatch(updateCategory({id,data:editedCategory}))
       toast.success("Category updated");
       setEditingId(null);
-      fetchCategories();
+      dispatch(fetchCategories());
     } catch {
       toast.error("Failed to update category");
     }

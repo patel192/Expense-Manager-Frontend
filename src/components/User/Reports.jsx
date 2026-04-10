@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import  { useState } from "react";
+import { useSelector } from "react-redux";
 import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 import {
@@ -9,7 +9,7 @@ import {
 } from "react-icons/fi";
 
 export const Reports = () => {
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const userId = user?._id;
   const [loading, setLoading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);

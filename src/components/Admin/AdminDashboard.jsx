@@ -1,6 +1,8 @@
 // AdminDashboard.jsx
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../Utils/axiosInstance";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUsers } from "../../redux/user/userSlice";
+import { fetchTransactions } from "../../redux/transaction/transactionSlice";
 import {
   BarChart,
   Bar,
@@ -15,15 +17,60 @@ import {
   CartesianGrid,
 } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, UserCog, CreditCard, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Users,
+  UserCog,
+  CreditCard,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 export const AdminDashboard = () => {
-  const [users, setUsers] = useState([]);
-  const [userCountsPerMonth, setUserCountsPerMonth] = useState([]);
-  const [roleDistribution, setRoleDistribution] = useState([]);
-  const [recentUsers, setRecentUsers] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const dispatch = useDispatch();
+  const { users } = useSelector((state) => state.user);
+  const { transactions } = useSelector((state) => state.transaction);
+  const userCountsPerMonth = (() => {
+    const monthlyCounts = {};
 
+    users.forEach((user) => {
+      const month = new Date(user.createdAt).toLocaleString("default", {
+        month: "short",
+      });
+
+      monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
+    });
+
+    const monthsOrder = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return monthsOrder.map((m) => ({
+      name: m,
+      users: monthlyCounts[m] || 0,
+    }));
+  })();
+  const roleDistribution = [
+    {
+      name: "Admins",
+      value: users.filter((u) => u.role === "Admin").length,
+    },
+
+    {
+      name: "Users",
+      value: users.filter((u) => u.role !== "Admin").length,
+    },
+  ];
   // UI state for collapsible blocks
   const [openKPIs, setOpenKPIs] = useState(true);
   const [openUsersChart, setOpenUsersChart] = useState(true);
@@ -31,52 +78,9 @@ export const AdminDashboard = () => {
   const [openRecentTx, setOpenRecentTx] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userRes = await axiosInstance.get("/users");
-        const allUsers = userRes.data.data || [];
-        setUsers(allUsers);
-
-        // Role distribution
-        const adminCount = allUsers.filter((u) => u.role === "Admin").length;
-        const userCount = allUsers.length - adminCount;
-        setRoleDistribution([
-          { name: "Admins", value: adminCount },
-          { name: "Users", value: userCount },
-        ]);
-
-        // Monthly user counts (ordered)
-        const monthlyCounts = {};
-        allUsers.forEach((user) => {
-          const month = new Date(user.createdAt).toLocaleString("default", {
-            month: "short",
-          });
-          monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
-        });
-
-        const monthsOrder = [
-          "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-        ];
-        setUserCountsPerMonth(
-          monthsOrder.map((m) => ({ name: m, users: monthlyCounts[m] || 0 }))
-        );
-
-        // Recent users
-        const recent = [...allUsers]
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 6);
-        setRecentUsers(recent);
-
-        // Transactions
-        const txRes = await axiosInstance.get("/transactions");
-        setTransactions(txRes.data.data || []);
-      } catch (error) {
-        console.error("Failed to load dashboard data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+    dispatch(fetchUsers());
+    dispatch(fetchTransactions());
+  }, [dispatch]);
 
   const COLORS = ["#06b6d4", "#6366F1"]; // cyan + indigo
 
@@ -87,22 +91,29 @@ export const AdminDashboard = () => {
   const totalUsers = users.length;
   const totalAdmins = users.filter((u) => u.role === "Admin").length;
   const totalTransactions = transactions.length;
-  const recentTxCount = transactions.length ? transactions.slice(0, 5).length : 0;
+  const recentTxCount = transactions.length
+    ? transactions.slice(0, 5).length
+    : 0;
 
   return (
     <div className="min-h-screen p-6 sm:p-8 lg:p-10 bg-gradient-to-br from-gray-900 via-black to-gray-950 text-white space-y-8">
       {/* Page heading */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Admin Insights Hub</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            Admin Insights Hub
+          </h1>
           <p className="text-sm text-gray-400 mt-1">
-            Consolidated analytics — quick KPIs, monthly trends, role split and recent activity.
+            Consolidated analytics — quick KPIs, monthly trends, role split and
+            recent activity.
           </p>
         </div>
 
         <div className="flex gap-3 items-center">
           <button
-            onClick={() => { /* could open global filters */ }}
+            onClick={() => {
+              /* could open global filters */
+            }}
             className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/6 hover:bg-white/10 transition"
           >
             Filter
@@ -147,10 +158,15 @@ export const AdminDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-3 text-xs text-gray-400">
-                  New in last 30 days: {users.filter(u => {
-                    const d = new Date(u.createdAt);
-                    return d > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-                  }).length}
+                  New in last 30 days:{" "}
+                  {
+                    users.filter((u) => {
+                      const d = new Date(u.createdAt);
+                      return (
+                        d > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                      );
+                    }).length
+                  }
                 </div>
               </motion.div>
 
@@ -169,7 +185,11 @@ export const AdminDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-3 text-xs text-gray-400">
-                  Admin ratio: {totalUsers ? ((totalAdmins / totalUsers) * 100).toFixed(1) : 0}%
+                  Admin ratio:{" "}
+                  {totalUsers
+                    ? ((totalAdmins / totalUsers) * 100).toFixed(1)
+                    : 0}
+                  %
                 </div>
               </motion.div>
 
@@ -184,10 +204,14 @@ export const AdminDashboard = () => {
                   </div>
                   <div>
                     <div className="text-sm text-gray-300">Transactions</div>
-                    <div className="text-2xl font-bold mt-1">{totalTransactions}</div>
+                    <div className="text-2xl font-bold mt-1">
+                      {totalTransactions}
+                    </div>
                   </div>
                 </div>
-                <div className="mt-3 text-xs text-gray-400">Recent: {recentTxCount} shown below</div>
+                <div className="mt-3 text-xs text-gray-400">
+                  Recent: {recentTxCount} shown below
+                </div>
               </motion.div>
 
               {/* KPI card 4 (spare) */}
@@ -202,14 +226,21 @@ export const AdminDashboard = () => {
                   <div>
                     <div className="text-sm text-gray-300">Active (30d)</div>
                     <div className="text-2xl font-bold mt-1">
-                      {users.filter(u => {
-                        // some heuristic: users that logged in in last 30d - (if you store lastLogin), fallback to new users
-                        return new Date(u.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-                      }).length}
+                      {
+                        users.filter((u) => {
+                          // some heuristic: users that logged in in last 30d - (if you store lastLogin), fallback to new users
+                          return (
+                            new Date(u.createdAt) >
+                            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                          );
+                        }).length
+                      }
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 text-xs text-gray-400">Quick engagement estimate</div>
+                <div className="mt-3 text-xs text-gray-400">
+                  Quick engagement estimate
+                </div>
               </motion.div>
             </motion.div>
           )}
@@ -224,7 +255,11 @@ export const AdminDashboard = () => {
             onClick={() => setOpenUsersChart((v) => !v)}
             className="flex items-center gap-2 text-sm text-gray-300 p-2 rounded hover:bg-white/5 transition"
           >
-            {openUsersChart ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {openUsersChart ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
             {openUsersChart ? "Hide" : "Show"}
           </button>
         </div>
@@ -242,7 +277,9 @@ export const AdminDashboard = () => {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h3 className="font-semibold">Users per Month</h3>
-                    <p className="text-xs text-gray-400">Monthly sign-ups during the year</p>
+                    <p className="text-xs text-gray-400">
+                      Monthly sign-ups during the year
+                    </p>
                   </div>
                 </div>
 
@@ -253,7 +290,11 @@ export const AdminDashboard = () => {
                       <XAxis dataKey="name" stroke="#9CA3AF" />
                       <YAxis stroke="#9CA3AF" />
                       <Tooltip contentStyle={{ background: "#0b1220" }} />
-                      <Bar dataKey="users" fill={COLORS[1]} radius={[8, 8, 0, 0]} />
+                      <Bar
+                        dataKey="users"
+                        fill={COLORS[1]}
+                        radius={[8, 8, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -263,7 +304,9 @@ export const AdminDashboard = () => {
               <div className="p-4 rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 shadow-lg flex flex-col gap-4">
                 <div>
                   <h4 className="text-sm font-semibold">Top months</h4>
-                  <p className="text-xs text-gray-400">Highest sign-up months</p>
+                  <p className="text-xs text-gray-400">
+                    Highest sign-up months
+                  </p>
                 </div>
 
                 <ul className="space-y-2">
@@ -272,9 +315,14 @@ export const AdminDashboard = () => {
                     .sort((a, b) => b.users - a.users)
                     .slice(0, 4)
                     .map((m) => (
-                      <li key={m.name} className="flex items-center justify-between">
+                      <li
+                        key={m.name}
+                        className="flex items-center justify-between"
+                      >
                         <div className="text-sm">{m.name}</div>
-                        <div className="text-sm font-medium text-white">{m.users}</div>
+                        <div className="text-sm font-medium text-white">
+                          {m.users}
+                        </div>
                       </li>
                     ))}
                 </ul>
@@ -296,7 +344,11 @@ export const AdminDashboard = () => {
             onClick={() => setOpenRoleChart((v) => !v)}
             className="flex items-center gap-2 text-sm text-gray-300 p-2 rounded hover:bg-white/5 transition"
           >
-            {openRoleChart ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {openRoleChart ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
             {openRoleChart ? "Hide" : "Show"}
           </button>
         </div>
@@ -322,7 +374,9 @@ export const AdminDashboard = () => {
                         cx="50%"
                         cy="50%"
                         outerRadius={70}
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) =>
+                          `${name} ${(percent * 100).toFixed(0)}%`
+                        }
                       >
                         {roleDistribution.map((entry, idx) => (
                           <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
@@ -350,13 +404,21 @@ export const AdminDashboard = () => {
                         className="flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/3 transition"
                       >
                         <div>
-                          <div className="font-medium">{u.name || "Unnamed"}</div>
-                          <div className="text-xs text-gray-400">{u.email || "—"}</div>
+                          <div className="font-medium">
+                            {u.name || "Unnamed"}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {u.email || "—"}
+                          </div>
                         </div>
                         <div className="text-sm text-gray-300">
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            u.role === "Admin" ? "bg-purple-600/20 text-purple-200" : "bg-blue-600/10 text-blue-200"
-                          }`}>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              u.role === "Admin"
+                                ? "bg-purple-600/20 text-purple-200"
+                                : "bg-blue-600/10 text-blue-200"
+                            }`}
+                          >
                             {u.role}
                           </span>
                         </div>
@@ -364,7 +426,9 @@ export const AdminDashboard = () => {
                     ))}
                   </ul>
                 ) : (
-                  <div className="text-gray-400 text-sm">No recent users found.</div>
+                  <div className="text-gray-400 text-sm">
+                    No recent users found.
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -405,17 +469,28 @@ export const AdminDashboard = () => {
                   </thead>
                   <tbody>
                     {transactions.slice(0, 12).map((tx, idx) => (
-                      <tr key={tx._id || idx} className="border-t border-white/6 hover:bg-white/3 transition">
+                      <tr
+                        key={tx._id || idx}
+                        className="border-t border-white/6 hover:bg-white/3 transition"
+                      >
                         <td className="p-3">{tx.userID?.name || "Unknown"}</td>
-                        <td className="p-3 font-semibold text-green-300">₹{tx.amount}</td>
-                        <td className="p-3">{tx.type || (tx.amount < 0 ? "Expense" : "Income")}</td>
-                        <td className="p-3 text-gray-300">{new Date(tx.createdAt).toLocaleString()}</td>
+                        <td className="p-3 font-semibold text-green-300">
+                          ₹{tx.amount}
+                        </td>
+                        <td className="p-3">
+                          {tx.type || (tx.amount < 0 ? "Expense" : "Income")}
+                        </td>
+                        <td className="p-3 text-gray-300">
+                          {new Date(tx.createdAt).toLocaleString()}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <div className="text-gray-400 text-sm py-6 text-center">No transactions found.</div>
+                <div className="text-gray-400 text-sm py-6 text-center">
+                  No transactions found.
+                </div>
               )}
             </motion.div>
           )}
