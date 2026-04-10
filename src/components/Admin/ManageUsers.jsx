@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
 import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
 export const ManageUsers = () => {

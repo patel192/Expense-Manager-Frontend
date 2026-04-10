@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 import { useSelector,useDispatch } from "react-redux";
-import { fetchCategories,addCategory,deleteCategory,updateCategory, } from "../../redux/expense/expenseSlice";
+import { fetchCategories,addCategory,updateCategory, } from "../../redux/expense/expenseSlice";
 
 export const ManageCategories = () => {
   const {categories, loading} = useSelector((state) => state.category )

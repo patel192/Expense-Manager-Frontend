@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
-import axiosInstance from "../Utils/axiosInstance";
+import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTransactions } from "../../redux/transaction/transactionSlice";
@@ -17,7 +16,6 @@ import {
   FiRefreshCw,
   FiInbox,
 } from "react-icons/fi";
-import { useAuth } from "../../context/AuthContext";
 
 /* ─── Shimmer ─── */
 const Shimmer = ({ className = "" }) => (

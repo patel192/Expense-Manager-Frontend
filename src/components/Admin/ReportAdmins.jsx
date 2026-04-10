@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSelector,useDispatch } from "react-redux";
 import { fetchAdminReport } from "../../redux/adminReport/adminReportSlice";
@@ -13,8 +13,6 @@ import {
   Pie,
   Cell,
   Legend,
-  LineChart,
-  Line,
 } from "recharts";
 
 const COLORS = ["#818cf8", "#34d399", "#fbbf24", "#f87171", "#a855f7"];

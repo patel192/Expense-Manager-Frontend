@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaTachometerAlt,
@@ -12,10 +12,8 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
-import { use } from "react";
 export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
   const {user} = useAuth();
-  const user = user || JSON.parse(localStorage.getItem("user"));
   const userId = user?._id || (user && user.id) || "unknown";
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();

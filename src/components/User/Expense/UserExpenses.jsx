@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment, useMemo } from "react";
+import { useEffect, useState, Fragment, useMemo } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { useForm } from "react-hook-form";
 import { useDispatch,useSelector } from "react-redux";
@@ -6,16 +6,13 @@ import { fetchCategories,fetchAllExpenses,fetchRecentExpenses } from "../../../r
 import { Dialog, Transition } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  Legend, ResponsiveContainer, PieChart, Pie, Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   FiTrendingDown, FiTag, FiDollarSign, FiCalendar,
   FiFileText, FiList, FiBarChart2, FiAlignLeft,
-  FiPlus, FiTrash2, FiRefreshCw, FiShoppingBag,
-  FiAlertCircle,
-} from "react-icons/fi";
+  FiPlus, FiTrash2, FiRefreshCw, FiShoppingBag,} from "react-icons/fi";
 import { useAuth } from "../../../context/AuthContext";
 
 /* ─── Shimmer ─── */

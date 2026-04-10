@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment, useMemo } from "react";
+import  { useState, useEffect, Fragment, useMemo } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,10 +21,8 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { PlusIcon, XMarkIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {  XMarkIcon, TrashIcon } from "@heroicons/react/24/outline";
 import {
-  FaSyncAlt,
-  FaPlusCircle,
   FaPauseCircle,
   FaTrashAlt,
 } from "react-icons/fa";

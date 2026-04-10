@@ -1,5 +1,5 @@
 // AdminDashboard.jsx
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers } from "../../redux/user/userSlice";
 import { fetchTransactions } from "../../redux/transaction/transactionSlice";
