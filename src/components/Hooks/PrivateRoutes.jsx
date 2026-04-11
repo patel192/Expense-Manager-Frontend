@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 export const PrivateRoutes = () => {
   const { user, loading } = useSelector((state) => state.auth);
-  console.log("AUTH STATE", user);
+
   if (loading) {
     return <h1>Loading...</h1>;
   }
