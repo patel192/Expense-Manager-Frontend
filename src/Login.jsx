@@ -8,6 +8,7 @@ import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "./components/Utils/axiosInstance";
 import { motion } from "framer-motion";
+import { useAuth } from "./context/AuthContext";
 import {
   FiMail,
   FiLock,
@@ -44,6 +45,7 @@ const Field = ({ label, icon, error, children }) => (
 
 export const Login = () => {
   const dispatch = useDispatch();
+  const { login: authLogin } = useAuth();
   const {
     register,
     handleSubmit,
@@ -63,13 +65,16 @@ export const Login = () => {
           position: "top-center",
           autoClose: 2000,
         });
-        dispatch(
-          loginSuccess({
-            user: res.data.user,
-            token: res.data.token,
-            role: res.data.role,
-          }),
-        );
+        
+        const loginData = {
+          user: res.data.user,
+          token: res.data.token,
+          role: res.data.role,
+        };
+        
+        dispatch(loginSuccess(loginData));
+        authLogin({ token: res.data.token, data: res.data.user });
+        
         if (res.data.role === "Admin") {
           navigate("/admin/admindashboard");
         } else {

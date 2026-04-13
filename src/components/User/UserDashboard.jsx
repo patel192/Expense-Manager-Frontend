@@ -170,9 +170,7 @@ const DashboardSkeleton = () => (
 export const UserDashboard = () => {
   const user = useSelector((state) => state.auth.user);
   const userId = user?._id;
-  const budget = useSelector((state) => {
-    state.budget.budgets;
-  });
+  const budget = useSelector((state) => state.budget.budgets);
   const loadingDashboard = useSelector(
     (state) =>
       state.budget.loading || state.income.loading || state.expense.loading,
