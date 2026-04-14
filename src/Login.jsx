@@ -55,30 +55,58 @@ export const Login = () => {
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
   const submitHandler = async (data) => {
     setLoading(true);
+    let wakingUpToast = null;
+    
+    // Set a timer to show "waking up" toast if it takes too long
+    const wakingUpTimer = setTimeout(() => {
+      wakingUpToast = toast.info("Backend is waking up... this might take a minute.", {
+        position: "top-center",
+        autoClose: false,
+      });
+    }, 10000);
+
     try {
       const res = await axiosInstance.post("/user/login", data);
+      clearTimeout(wakingUpTimer);
+      if (wakingUpToast) toast.dismiss(wakingUpToast);
+
       if (res.status === 200) {
         toast.success("Login successful!", {
           position: "top-center",
           autoClose: 2000,
         });
         
+        // Handle nested data structure if backend uses it
+        const responseData = res.data.data || res.data;
         const loginData = {
-          user: res.data.user,
-          token: res.data.token,
-          role: res.data.role,
+          user: responseData.user,
+          token: responseData.token,
+          role: responseData.role,
         };
         
+        if (!loginData.user) {
+          console.error("User details missing in API response:", res.data);
+          toast.error("User details not found in response.");
+          return;
+        }
+
         dispatch(loginSuccess(loginData));
         
-        if (res.data.role === "Admin") {
+        const role = loginData.role;
+        if (role === "Admin") {
           navigate("/admin/admindashboard");
         } else {
           navigate("/private/userdashboard");
         }
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed", {
+      clearTimeout(wakingUpTimer);
+      if (wakingUpToast) toast.dismiss(wakingUpToast);
+
+      const errorMessage = error.response?.data?.message || 
+                          (error.code === "ECONNABORTED" ? "Login timed out. Please try again." : "Login failed");
+      
+      toast.error(errorMessage, {
         position: "top-center",
         autoClose: 3000,
       });

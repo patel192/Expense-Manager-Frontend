@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axiosInstance from "./components/Utils/axiosInstance";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,7 +11,7 @@ export const ForgotPassword = () => {
   const submitHandler = async (data) => {
     setLoading(true);
     try {
-      const res = await axios.post("/user/forgotpassword", data);
+      const res = await axiosInstance.post("/user/forgotpassword", data);
       if (res.status === 200) {
         toast.success("Reset password link sent to your email!", {
           position: "top-center",

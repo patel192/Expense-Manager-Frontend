@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "./components/Utils/axiosInstance";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,7 +14,7 @@ export const ResetPassword = () => {
   const submitHandler = async (data) => {
     setLoading(true);
     try {
-      const res = await axios.post("/user/resetpassword", {
+      const res = await axiosInstance.post("/user/resetpassword", {
         token,
         password: data.password,
       });
