@@ -14,6 +14,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import { FiActivity, FiPieChart, FiGrid, FiUsers, FiXCircle, FiFileText } from "react-icons/fi";
 
 const COLORS = ["#818cf8", "#34d399", "#fbbf24", "#f87171", "#a855f7"];
 

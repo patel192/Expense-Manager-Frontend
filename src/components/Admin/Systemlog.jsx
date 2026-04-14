@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaClipboardList } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchLogs } from "../../redux/log/logSlice";
+import { FiLayout, FiSearch, FiClipboardList } from "react-icons/fi";
 export const Systemlog = () => {
   const dispatch = useDispatch();
   const { logs, loading } = useSelector((state) => state.log);

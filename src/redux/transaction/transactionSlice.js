@@ -80,7 +80,7 @@ export const fetchAllTransactions = createAsyncThunk(
   async () => {
     const [expenseRes, incomeRes] = await Promise.all([
       axiosInstance.get("/expenses"),
-      axiosInstance.get("/income"),
+      axiosInstance.get("/incomes"),
     ]);
 
     const expenses = (expenseRes.data.data || expenseRes.data || []).map((e) => ({

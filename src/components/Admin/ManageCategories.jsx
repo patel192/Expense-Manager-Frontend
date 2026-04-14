@@ -4,6 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useSelector,useDispatch } from "react-redux";
 import { fetchCategories,addCategory,updateCategory, } from "../../redux/category/categorySlice";
+import { FiGrid, FiActivity, FiFileText, FiSearch, FiX } from "react-icons/fi";
 
 export const ManageCategories = () => {
   const {categories, loading} = useSelector((state) => state.category )
@@ -63,7 +64,7 @@ const dispatch = useDispatch();
   };
 
   const filteredCategories = categories.filter((cat) => {
-    const matchesSearch = cat.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = cat.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType ? cat.type === filterType : true;
     return matchesSearch && matchesType;
   });

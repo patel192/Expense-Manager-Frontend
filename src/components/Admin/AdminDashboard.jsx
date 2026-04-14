@@ -24,6 +24,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import { FiUsers, FiShield, FiActivity, FiLayout } from "react-icons/fi";
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();

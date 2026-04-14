@@ -7,6 +7,7 @@ import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
+import { FiGrid, FiUsers } from "react-icons/fi";
 export const ManageUsers = () => {
   const dispatch = useDispatch();
   const { users, loading } = useSelector((state) => state.user);
@@ -29,7 +30,7 @@ export const ManageUsers = () => {
 
     if (search) {
       filtered = filtered.filter((u) =>
-        u.name.toLowerCase().includes(search.toLowerCase()),
+        u.name?.toLowerCase().includes(search.toLowerCase()),
       );
     }
     if (roleFilter !== "all") {
