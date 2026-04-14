@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "./redux/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,7 +7,6 @@ import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "./components/Utils/axiosInstance";
 import { motion } from "framer-motion";
-import { useAuth } from "./context/AuthContext";
 import {
   FiMail,
   FiLock,
@@ -45,7 +43,6 @@ const Field = ({ label, icon, error, children }) => (
 
 export const Login = () => {
   const dispatch = useDispatch();
-  const { login: authLogin } = useAuth();
   const {
     register,
     handleSubmit,
@@ -73,7 +70,6 @@ export const Login = () => {
         };
         
         dispatch(loginSuccess(loginData));
-        authLogin({ token: res.data.token, data: res.data.user });
         
         if (res.data.role === "Admin") {
           navigate("/admin/admindashboard");
