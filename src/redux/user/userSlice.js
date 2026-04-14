@@ -5,7 +5,7 @@ export const fetchUsers = createAsyncThunk(
     "user/fetchUsers",
     async () => {
         const res = await axiosInstance.get("/users");
-        return res.data.data || [];
+        return res.data.data || res.data || [];
     }
 );
 

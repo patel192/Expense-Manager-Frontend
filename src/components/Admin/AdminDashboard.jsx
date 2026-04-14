@@ -2,7 +2,7 @@
 import  { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers } from "../../redux/user/userSlice";
-import { fetchTransactions } from "../../redux/transaction/transactionSlice";
+import { fetchAllTransactions } from "../../redux/transaction/transactionSlice";
 import {
   BarChart,
   Bar,
@@ -27,12 +27,15 @@ import {
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
-  const { transactions } = useSelector((state) => state.transaction);
+  const { users, loading: userLoading } = useSelector((state) => state.user);
+  const { transactions, loading: txLoading } = useSelector((state) => state.transaction);
+
+  const loadingDashboard = userLoading || txLoading;
+
   const userCountsPerMonth = (() => {
     const monthlyCounts = {};
 
-    users.forEach((user) => {
+    (users || []).forEach((user) => {
       const month = new Date(user.createdAt).toLocaleString("default", {
         month: "short",
       });
@@ -63,14 +66,16 @@ export const AdminDashboard = () => {
   const roleDistribution = [
     {
       name: "Admins",
-      value: users.filter((u) => u.role === "Admin").length,
+      value: (users || []).filter((u) => u.role === "Admin").length,
     },
 
     {
       name: "Users",
-      value: users.filter((u) => u.role !== "Admin").length,
+      value: (users || []).filter((u) => u.role !== "Admin").length,
     },
   ];
+
+  const recentUsers = (users || []).slice(-5).reverse();
   // UI state for collapsible blocks
   const [openKPIs, setOpenKPIs] = useState(true);
   const [openUsersChart, setOpenUsersChart] = useState(true);
@@ -79,7 +84,7 @@ export const AdminDashboard = () => {
 
   useEffect(() => {
     dispatch(fetchUsers());
-    dispatch(fetchTransactions());
+    dispatch(fetchAllTransactions());
   }, [dispatch]);
 
   const COLORS = ["#06b6d4", "#6366F1"]; // cyan + indigo
@@ -88,11 +93,11 @@ export const AdminDashboard = () => {
   const fmt = (v) => (typeof v === "number" ? `₹${v.toLocaleString()}` : v);
 
   // Compose KPI values
-  const totalUsers = users.length;
-  const totalAdmins = users.filter((u) => u.role === "Admin").length;
-  const totalTransactions = transactions.length;
-  const recentTxCount = transactions.length
-    ? transactions.slice(0, 5).length
+  const totalUsers = (users || []).length;
+  const totalAdmins = (users || []).filter((u) => u.role === "Admin").length;
+  const totalTransactions = (transactions || []).length;
+  const recentTxCount = (transactions || []).length
+    ? (transactions || []).slice(0, 5).length
     : 0;
 
   return (

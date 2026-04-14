@@ -6,12 +6,8 @@ import axiosInstance from "../../components/Utils/axiosInstance";
 export const fetchAdminReport = createAsyncThunk(
   "adminReport/fetchAdminReport",
   async () => {
-
-    const res =
-      await axiosInstance.get("/adminreport");
-
-    return res.data;
-
+    const res = await axiosInstance.get("/adminreport");
+    return res.data.data || res.data || {};
   }
 );
 
