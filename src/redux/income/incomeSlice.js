@@ -6,7 +6,7 @@ export const fetchIncomeData = createAsyncThunk(
   async (userId) => {
     if (!userId) return { incomes: [], expenses: [] };
     const [incomeRes, expenseRes] = await Promise.all([
-      axiosInstance.get(`/incomebyUserID/${userId}`),
+      axiosInstance.get(`/incomesbyUserID/${userId}`),
       axiosInstance.get(`/expensesbyUserID/${userId}`),
     ]);
     return {

@@ -49,6 +49,7 @@ export const RecurringTransactions = () => {
   const userId = user?._id;
   const { recurringPayments: recurringList, loading } = useSelector((state) => state.income);
   const [submitting, setSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
     title: "", amount: "", category: "", frequency: "monthly", nextDate: "",

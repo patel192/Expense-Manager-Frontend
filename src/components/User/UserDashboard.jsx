@@ -320,7 +320,7 @@ export const UserDashboard = () => {
         const [billsRes, recurringRes, txnRes] = await Promise.all([
           axiosInstance.get(`/billByuserId/${userId}`),
           axiosInstance.get(`/recurring/${userId}`),
-          axiosInstance.get(`/transactionsByUserID/${userId}`),
+          axiosInstance.get(`/transactionsByUserId/${userId}`),
         ]);
         setBills(billsRes.data.data || []);
         setRecurring(recurringRes.data.data || []);
