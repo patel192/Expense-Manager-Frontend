@@ -71,28 +71,30 @@ export const Login = () => {
       if (wakingUpToast) toast.dismiss(wakingUpToast);
 
       if (res.status === 200) {
+        // Correctly handle the backend response structure
+        const user = res.data.data && res.data.data._id ? res.data.data : (res.data.user || null);
+        const token = res.data.token || (res.data.data && res.data.data.token);
+        const role = user?.role || res.data.role;
+
+        const loginData = { user, token, role };
+        
+        if (!loginData.user || !loginData.user._id) {
+          console.error("User details missing or invalid in API response:", res.data);
+          toast.error("Login failed: User details not found in response.", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+          return;
+        }
+
+        // Only show success if we have the user data
         toast.success("Login successful!", {
           position: "top-center",
           autoClose: 2000,
         });
-        
-        // Handle nested data structure if backend uses it
-        const responseData = res.data.data || res.data;
-        const loginData = {
-          user: responseData.user,
-          token: responseData.token,
-          role: responseData.role,
-        };
-        
-        if (!loginData.user) {
-          console.error("User details missing in API response:", res.data);
-          toast.error("User details not found in response.");
-          return;
-        }
 
         dispatch(loginSuccess(loginData));
         
-        const role = loginData.role;
         if (role === "Admin") {
           navigate("/admin/admindashboard");
         } else {
