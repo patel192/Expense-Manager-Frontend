@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { FaClipboardList } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchLogs } from "../../redux/log/logSlice";
-import { FiLayout, FiSearch, FiClipboardList } from "react-icons/fi";
+import { FiLayout, FiSearch, FiClipboard } from "react-icons/fi";
 export const Systemlog = () => {
   const dispatch = useDispatch();
   const { logs, loading } = useSelector((state) => state.log);
@@ -88,7 +88,7 @@ export const Systemlog = () => {
           </div>
         ) : filteredLogs.length === 0 ? (
           <div className="py-24 text-center">
-             <FiClipboardList size={48} className="mx-auto text-gray-700 mb-4" />
+             <FiClipboard size={48} className="mx-auto text-gray-700 mb-4" />
              <p className="text-gray-500 font-medium">No operational records match the current criteria.</p>
           </div>
         ) : (
