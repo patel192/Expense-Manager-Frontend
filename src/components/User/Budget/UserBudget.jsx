@@ -3,8 +3,7 @@ import axiosInstance from "../../Utils/axiosInstance";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, Transition } from "@headlessui/react";
 import { useSelector ,useDispatch} from "react-redux";
-import { fetchBudgetPlan,fetchBudgetData } from "../../../redux/budget/budgetSlice";
-import { fetchCategories } from "../../../redux/category/categorySlice";
+import { fetchBudgetPlan, fetchBudgetData, fetchCategories } from "../../../redux/budget/budgetSlice";
 import {
   PieChart, Pie, Cell, Tooltip, Legend,
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -118,7 +117,7 @@ export const UserBudget = () => {
       await axiosInstance.post("/budget", { ...newBudget, userID: userId, amount: Number(newBudget.amount) });
       setIsModalOpen(false);
       setNewBudget({ categoryID: "", amount: "", description: "" });
-      fetchBudgetData();
+      dispatch(fetchBudgetData(userId));
     } catch (error) { console.error("Add budget error:", error); }
     finally { setIsSubmitting(false); }
   };
@@ -130,7 +129,7 @@ export const UserBudget = () => {
       await axiosInstance.delete(`/budget/${selectedBudget._id}`);
       setConfirmDeleteOpen(false);
       setSelectedBudget(null);
-      fetchBudgetData();
+      dispatch(fetchBudgetData(userId));
     } catch (error) { console.error("Delete error:", error); }
     finally { setIsDeleting(false); }
   };

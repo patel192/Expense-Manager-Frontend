@@ -7,7 +7,7 @@ export const fetchCategories = createAsyncThunk(
   "budget/fetchCategories",
   async () => {
     const res = await axiosInstance.get("/categories");
-    return res.data.data || [];
+    return res.data.data || res.data || [];
   }
 );
 
@@ -16,66 +16,44 @@ export const fetchCategories = createAsyncThunk(
 export const fetchBudgetData = createAsyncThunk(
   "budget/fetchBudgetData",
   async (userId) => {
-
+    if (!userId) return { budgets: [], expenses: [], summary: [] };
     const [bRes, eRes] = await Promise.all([
       axiosInstance.get(`/budgetsbyUserID/${userId}`),
       axiosInstance.get(`/expensesbyUserID/${userId}`),
     ]);
 
-    const budgets =
-      bRes.data.data || [];
+    const budgets = bRes.data.data || bRes.data || [];
+    const expenses = eRes.data.data || eRes.data || [];
 
-    const expenses =
-      eRes.data.data || [];
+    const summary = budgets.map((b) => {
+      const catId =
+        typeof b.categoryID === "object" ? b.categoryID?._id : b.categoryID;
 
-    const summary =
-      budgets.map((b) => {
+      const catName =
+        typeof b.categoryID === "object" ? b.categoryID?.name : "Unknown";
 
-        const catId =
-          typeof b.categoryID === "object"
-            ? b.categoryID?._id
-            : b.categoryID;
+      const spent = expenses
+        .filter((e) => {
+          const eCat =
+            typeof e.categoryID === "object" ? e.categoryID?._id : e.categoryID;
+          return eCat === catId;
+        })
+        .reduce((sum, e) => sum + Number(e.amount || 0), 0);
 
-        const catName =
-          typeof b.categoryID === "object"
-            ? b.categoryID?.name
-            : "Unknown";
-
-        const spent =
-          expenses
-            .filter((e) => {
-
-              const eCat =
-                typeof e.categoryID === "object"
-                  ? e.categoryID?._id
-                  : e.categoryID;
-
-              return eCat === catId;
-
-            })
-            .reduce(
-              (sum, e) =>
-                sum + Number(e.amount || 0),
-              0
-            );
-
-        return {
-          id: b._id,
-          category: catName,
-          allocated: Number(b.amount) || 0,
-          spent,
-          remaining:
-            Number(b.amount) - spent,
-        };
-
-      });
+      return {
+        id: b._id,
+        category: catName,
+        allocated: Number(b.amount) || 0,
+        spent,
+        remaining: Number(b.amount) - spent,
+      };
+    });
 
     return {
       budgets,
       expenses,
       summary,
     };
-
   }
 );
 
@@ -84,14 +62,9 @@ export const fetchBudgetData = createAsyncThunk(
 export const fetchBudgetPlan = createAsyncThunk(
   "budget/fetchBudgetPlan",
   async (userId) => {
-
-    const res =
-      await axiosInstance.get(
-        `/ai/budget-plan/${userId}`
-      );
-
-    return res.data.budgetPlan;
-
+    if (!userId) return null;
+    const res = await axiosInstance.get(`/ai/budget-plan/${userId}`);
+    return res.data.budgetPlan || res.data;
   }
 );
 

@@ -25,11 +25,10 @@ const dispatch = useDispatch();
 
   const submitHandler = async (data) => {
     try {
-      const res = await dispatch(addCategory(data));
-      if (res.status === 201) {
+      const resultAction = await dispatch(addCategory(data));
+      if (addCategory.fulfilled.match(resultAction)) {
         toast.success("Category added!");
         reset();
-        dispatch(fetchCategories())
       }
     } catch {
       toast.error("Error adding category");

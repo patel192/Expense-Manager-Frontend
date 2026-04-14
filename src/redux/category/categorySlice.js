@@ -7,7 +7,7 @@ export const fetchCategories = createAsyncThunk(
   "category/fetchCategories",
   async () => {
     const res = await axiosInstance.get("/categories");
-    return res.data.data || [];
+    return res.data.data || res.data || [];
   }
 );
 
