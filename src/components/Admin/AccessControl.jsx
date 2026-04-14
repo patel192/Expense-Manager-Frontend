@@ -53,152 +53,163 @@ export const AccessControl = () => {
   }
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-b from-[#0b0c10] via-[#0f1115] to-[#0c0e12] text-white">
+    <div className="pb-10">
       {/* ======= Header ======= */}
-      <motion.h2
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-bold mb-8 bg-gradient-to-r from-indigo-400 to-pink-500 bg-clip-text text-transparent"
-      >
-        User Access Control
-      </motion.h2>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+            Access <span className="text-cyan-400">Governance</span>
+          </h1>
+          <p className="text-gray-400 text-sm max-w-md">
+            Manage system-wide permissions and security roles. Audit user clearance levels and active status.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 bg-white/5 border border-white/5 px-4 py-2 rounded-xl">
+           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Security Override Active</span>
+        </div>
+      </div>
 
       {/* ======= Filters Panel ======= */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-5 mb-8 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl space-y-4"
+        className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 mb-8 bg-[#0d0f14]/50 border border-white/5 backdrop-blur-md rounded-3xl shadow-2xl"
       >
-        {/* Search Bar */}
-        <div className="relative">
-          <FaSearch className="absolute left-3 top-3 text-gray-400" />
+        <div className="md:col-span-2 relative group">
+          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
           <input
             type="text"
-            placeholder="Search users..."
+            placeholder="Search by identity or email..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-10 pr-3 py-2 rounded-xl bg-white/5 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-black/20 border border-white/5 text-white placeholder-gray-600 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all font-medium"
           />
         </div>
 
-        {/* Role Filter */}
-        <select
-          value={filterRole}
-          onChange={(e) => {
-            setFilterRole(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/20 text-white focus:ring-2 focus:ring-pink-500 outline-none"
-        >
-          <option value="All">All Roles</option>
-          <option value="Admin">Admin</option>
-          <option value="User">User</option>
-          <option value="Manager">Manager</option>
-        </select>
+        <div className="relative">
+          <select
+            value={filterRole}
+            onChange={(e) => {
+              setFilterRole(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full py-3 px-4 rounded-2xl bg-black/20 border border-white/5 text-gray-400 focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none cursor-pointer font-medium"
+          >
+            <option value="All">All Clearance Levels</option>
+            <option value="Admin">Tier 1: Admin</option>
+            <option value="Manager">Tier 2: Manager</option>
+            <option value="User">Tier 3: Standard User</option>
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+             <FiChevronLeft className="rotate-[-90deg]" size={14} />
+          </div>
+        </div>
       </motion.div>
 
       {/* ======= User Cards Layout ======= */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {paginatedUsers.length > 0 ? (
           paginatedUsers.map((user, index) => (
             <motion.div
               key={user._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.07 }}
-              whileHover={{ scale: 1.02 }}
-              className="p-5 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl flex flex-col justify-between"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.05 }}
+              className="group p-6 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-md shadow-xl hover:bg-white/[0.08] transition-all duration-300 border-t-2 border-t-white/10 overflow-hidden relative"
             >
-              {/* User Name */}
-              <div>
-                <h3 className="text-xl font-semibold bg-gradient-to-r from-indigo-300 to-pink-400 bg-clip-text text-transparent">
-                  {user.name}
-                </h3>
-                <p className="text-gray-300 text-sm mt-1">{user.email}</p>
+               {/* Accent Gradient */}
+               <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${roleColors[user.roleId?.name]?.split(' ')[0] || "from-gray-500"} to-transparent opacity-[0.03] -mr-8 -mt-8 rounded-full blur-2xl group-hover:opacity-[0.08] transition-opacity`} />
 
-                {/* Role Badge */}
-                <div
-                  className={`mt-3 inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r ${
-                    roleColors[user.roleId?.name] || "from-gray-500 to-gray-700"
-                  }`}
-                >
-                  {user.roleId?.name || "N/A"}
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-center gap-4 mb-4">
+                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-white font-bold text-lg shadow-inner">
+                      {user.name?.charAt(0).toUpperCase()}
+                   </div>
+                   <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-white text-lg truncate group-hover:text-cyan-400 transition-colors">
+                        {user.name}
+                      </h3>
+                      <p className="text-gray-500 text-xs truncate">{user.email}</p>
+                   </div>
                 </div>
 
-                {/* Meta Info */}
-                <div className="mt-3 text-xs text-gray-400 space-y-1">
-                  <p>
-                    Age:{" "}
-                    <span className="text-gray-300">{user.age || "N/A"}</span>
-                  </p>
-                  <p>
-                    Joined:{" "}
-                    <span className="text-gray-300">
-                      {user.createdAt
-                        ? new Date(user.createdAt).toLocaleDateString()
-                        : "N/A"}
-                    </span>
-                  </p>
-                  <p>
-                    Status:{" "}
-                    {user.is_active ? (
-                      <span className="text-green-400 font-semibold">
-                        Active
+                <div className="space-y-4 flex-1">
+                   <div className="flex flex-wrap items-center gap-2">
+                      <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
+                        user.roleId?.name === "Admin" ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400" : 
+                        user.roleId?.name === "Manager" ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400" : 
+                        "bg-white/5 border-white/10 text-gray-400"
+                      }`}>
+                         {user.roleId?.name || "UNASSIGNED"}
                       </span>
-                    ) : (
-                      <span className="text-red-400 font-semibold">
-                        Inactive
+                      
+                      <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
+                        user.is_active ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                      }`}>
+                         {user.is_active ? "VERIFIED" : "RESTRICTED"}
                       </span>
-                    )}
-                  </p>
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-black/20 border border-white/5">
+                      <div>
+                         <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mb-0.5">METRIC/AGE</p>
+                         <p className="text-xs font-mono text-gray-300">{user.age || "N/A"}</p>
+                      </div>
+                      <div className="text-right">
+                         <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mb-0.5">ENROLLED</p>
+                         <p className="text-xs font-mono text-gray-300">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</p>
+                      </div>
+                   </div>
                 </div>
-              </div>
 
-              {/* Buttons */}
-              <div className="flex gap-3 mt-5">
-                <button className="flex-1 py-2 rounded-xl bg-indigo-500/80 hover:bg-indigo-600 transition text-white font-medium shadow">
-                  <FaEdit size={14} className="inline mr-2" />
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => handleDelete(user._id)}
-                  className="flex-1 py-2 rounded-xl bg-red-500/80 hover:bg-red-600 transition text-white font-medium shadow"
-                >
-                  <FaTrash size={14} className="inline mr-2" />
-                  Delete
-                </button>
+                {/* Buttons */}
+                <div className="flex gap-3 mt-6 pt-6 border-t border-white/5 group-hover:border-white/10 transition-colors">
+                  <button className="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
+                    CONFIG
+                  </button>
+                  <button
+                    onClick={() => handleDelete(user._id)}
+                    className="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold uppercase tracking-widest"
+                  >
+                    TERMINATE
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))
         ) : (
-          <p className="text-gray-400 text-center col-span-full py-10">
-            No users found
-          </p>
+          <div className="col-span-full py-24 text-center rounded-3xl bg-white/5 border border-dashed border-white/10">
+             <FiShield size={48} className="mx-auto text-gray-700 mb-4" />
+             <p className="text-gray-500 font-medium">No subjects detected in current cache scope.</p>
+          </div>
         )}
       </div>
 
       {/* ======= Pagination ======= */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-10">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentPage(i + 1)}
-              className={`px-4 py-2 text-sm rounded-lg transition font-medium ${
-                currentPage === i + 1
-                  ? "bg-indigo-500 text-white shadow-lg"
-                  : "bg-white/5 text-gray-300 hover:bg-white/10"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
+        <div className="flex justify-center mt-12 overflow-x-auto pb-2">
+          <div className="flex items-center gap-1 p-1 bg-white/5 rounded-2xl border border-white/5">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`min-w-[40px] h-10 px-3 rounded-xl text-xs font-bold transition-all duration-300
+                  ${currentPage === i + 1
+                    ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                    : "text-gray-500 hover:text-white hover:bg-white/5"
+                  }`}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
   );
 };
+

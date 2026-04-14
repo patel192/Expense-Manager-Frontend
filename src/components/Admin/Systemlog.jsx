@@ -32,86 +32,100 @@ export const Systemlog = () => {
   };
 
   return (
-    <div className="p-6 sm:p-10 min-h-screen text-white bg-gradient-to-br from-gray-900 via-[#0c0e12] to-black">
+    <div className="pb-10">
       {/* HEADER */}
-      <motion.div
-        initial={{ y: -12, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
-      >
-        <FaClipboardList className="text-3xl text-indigo-400" />
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
-          System Logs
-        </h1>
-      </motion.div>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+            System <span className="text-purple-400">Audits</span>
+          </h1>
+          <p className="text-gray-400 text-sm max-w-md">
+            Immutable operation ledger documenting administrative actions, security overrides, and system-level events.
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-xs font-bold text-gray-500">
+              <FiLayout size={14} className="text-purple-400" />
+              {logs.length} EVENTS LOGGED
+           </div>
+        </div>
+      </div>
 
-      {/* SEARCH BAR */}
+      {/* SEARCH BAR LAYER */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex justify-center mb-10"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row gap-4 p-4 mb-8 bg-[#0d0f14]/50 border border-white/5 backdrop-blur-md rounded-3xl shadow-2xl items-center"
       >
-        <input
-          type="text"
-          placeholder="Search logs..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-md px-5 py-3 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none shadow-lg"
-        />
+        <div className="flex-1 relative group w-full">
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
+          <input
+            type="text"
+            placeholder="Search taxonomy cache by user, action or payload..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-black/20 border border-white/5 text-sm text-gray-200 placeholder-gray-600 focus:ring-2 focus:ring-purple-500/20 transition-all outline-none font-medium"
+          />
+        </div>
+        
+        <div className="px-4 py-3 rounded-2xl bg-white/5 text-[10px] font-bold text-purple-400 uppercase tracking-widest border border-purple-500/20 whitespace-nowrap">
+           Real-time Monitoring Active
+        </div>
       </motion.div>
 
       {/* LOGS PANEL */}
       <motion.div
-        initial={{ opacity: 0, y: 25 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl overflow-hidden"
+        className="rounded-3xl bg-[#0d0f14]/30 backdrop-blur-xl border border-white/5 shadow-2xl overflow-hidden"
       >
         {loading ? (
-          <div className="p-6 text-center text-gray-400">Loading logs...</div>
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+             <div className="w-10 h-10 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" />
+             <p className="text-xs font-bold text-gray-600 tracking-widest uppercase animate-pulse">Synchronizing Ledger...</p>
+          </div>
         ) : filteredLogs.length === 0 ? (
-          <div className="p-6 text-center text-gray-400">No logs found.</div>
+          <div className="py-24 text-center">
+             <FiClipboardList size={48} className="mx-auto text-gray-700 mb-4" />
+             <p className="text-gray-500 font-medium">No operational records match the current criteria.</p>
+          </div>
         ) : (
           <>
             {/* DESKTOP TABLE */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="min-w-full text-sm">
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="bg-white/5 text-gray-300 uppercase text-xs tracking-wide border-b border-white/10">
-                    <th className="p-4 text-left">Timestamp</th>
-                    <th className="p-4 text-left">User</th>
-                    <th className="p-4 text-left">Action</th>
-                    <th className="p-4 text-left">Description</th>
+                  <tr className="bg-white/5 text-[10px] font-bold text-gray-500 uppercase tracking-widest border-b border-white/5">
+                    <th className="px-6 py-5">Sequence Time</th>
+                    <th className="px-6 py-5">Initiating User</th>
+                    <th className="px-6 py-5">Execution Action</th>
+                    <th className="px-6 py-5">Transaction Description</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-white/[0.03] font-mono">
                   {filteredLogs.map((log, index) => (
                     <motion.tr
                       key={log._id || index}
-                      whileHover={{
-                        scale: 1.01,
-                        backgroundColor: "rgba(255,255,255,0.03)",
-                      }}
-                      transition={{ duration: 0.18 }}
-                      className={`border-b border-white/10 ${
-                        index % 2 === 0 ? "bg-white/5" : "bg-white/0"
-                      }`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: index * 0.01 }}
+                      className="group hover:bg-white/[0.01] transition-colors"
                     >
-                      <td className="p-4 text-gray-300">
-                        {new Date(
-                          log.timestamp || log.createdAt,
-                        ).toLocaleString()}
+                      <td className="px-6 py-5 text-gray-500 text-xs">
+                        {new Date(log.timestamp || log.createdAt).toLocaleString()}
                       </td>
-                      <td className="p-4 text-indigo-300">{log.user}</td>
-                      <td className="p-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${getBadgeColor(
-                            log.action,
-                          )}`}
-                        >
-                          {log.action}
+                      <td className="px-6 py-5 font-bold text-purple-400 group-hover:text-purple-300 transition-colors">
+                        {log.user}
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold border ${getBadgeColor(log.action)}`}>
+                          {log.action?.toUpperCase()}
                         </span>
                       </td>
-                      <td className="p-4 text-gray-400">{log.description}</td>
+                      <td className="px-6 py-5 text-gray-400 group-hover:text-gray-300 transition-colors max-w-xs truncate" title={log.description}>
+                        {log.description}
+                      </td>
                     </motion.tr>
                   ))}
                 </tbody>
@@ -119,30 +133,29 @@ export const Systemlog = () => {
             </div>
 
             {/* MOBILE VIEW */}
-            <div className="sm:hidden p-5 space-y-4">
+            <div className="lg:hidden p-4 space-y-4">
               {filteredLogs.map((log, index) => (
                 <motion.div
                   key={log._id || index}
-                  whileHover={{ scale: 1.02 }}
-                  className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-lg"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.02 }}
+                  className="p-5 rounded-3xl bg-white/5 border border-white/5 shadow-lg space-y-3"
                 >
-                  <p className="text-xs text-gray-400">
-                    {new Date(log.timestamp || log.createdAt).toLocaleString()}
+                  <div className="flex items-center justify-between">
+                     <p className="text-[10px] font-mono text-gray-500">
+                        {new Date(log.timestamp || log.createdAt).toLocaleString()}
+                     </p>
+                     <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${getBadgeColor(log.action)}`}>
+                        {log.action?.toUpperCase()}
+                     </span>
+                  </div>
+
+                  <p className="font-bold text-purple-400 text-sm">
+                    @{log.user}
                   </p>
 
-                  <p className="font-semibold text-indigo-300 mt-1">
-                    {log.user}
-                  </p>
-
-                  <span
-                    className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold ${getBadgeColor(
-                      log.action,
-                    )}`}
-                  >
-                    {log.action}
-                  </span>
-
-                  <p className="mt-3 text-gray-300 text-sm">
+                  <p className="text-gray-400 text-xs leading-relaxed">
                     {log.description}
                   </p>
                 </motion.div>
@@ -154,3 +167,4 @@ export const Systemlog = () => {
     </div>
   );
 };
+

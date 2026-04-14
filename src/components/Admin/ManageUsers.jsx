@@ -71,153 +71,211 @@ export const ManageUsers = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 sm:p-8 bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-white">
-      <ToastContainer theme="colored" transition={Bounce} />
+    <div className="pb-10">
+      <ToastContainer theme="dark" transition={Bounce} />
 
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-7xl mx-auto space-y-8"
+        className="space-y-8"
       >
-        {/* HEADER */}
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-            Manage Users
-          </h1>
-          <p className="text-gray-400 text-sm">
-            View, filter, and manage all registered users.
-          </p>
+        {/* HEADER SECTION */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+              User <span className="text-cyan-400">Registry</span>
+            </h1>
+            <p className="text-gray-400 text-sm max-w-md">
+              Audit, moderate, and manage the system's user base with granular controls and real-time status updates.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3 bg-white/5 border border-white/5 p-1.5 rounded-2xl">
+             <div className="px-4 py-2 rounded-xl bg-cyan-500/10 text-cyan-400 text-xs font-bold uppercase tracking-widest border border-cyan-500/20">
+                {displayedUsers.length} TOTAL RECORDS
+             </div>
+          </div>
         </div>
 
-        {/* FILTER BAR */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-lg shadow-lg">
-          {/* search */}
-          <div className="relative w-full sm:w-1/2">
-            <IoSearch className="absolute left-3 top-3 text-gray-400" />
+        {/* FILTER & SEARCH BAR */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 rounded-3xl bg-[#0d0f14]/50 border border-white/5 backdrop-blur-md shadow-2xl">
+          <div className="md:col-span-2 relative group">
+            <IoSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
             <input
               type="text"
-              placeholder="Search by name..."
-              className="pl-10 pr-4 py-2 w-full rounded-lg bg-black/20 border border-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 outline-none"
+              placeholder="Query by name or identifier..."
+              className="w-full pl-12 pr-4 py-3 rounded-2xl bg-black/20 border border-white/5 text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all font-medium"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
-          {/* filter */}
-          <select
-            className="py-2 px-3 rounded-lg bg-black/20 border border-white/10 text-white focus:ring-2 focus:ring-purple-500 outline-none"
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-          >
-            <option value="all">All Roles</option>
-            <option value="Admin">Admin</option>
-            <option value="Manager">Manager</option>
-            <option value="User">User</option>
-          </select>
+          <div className="relative">
+            <select
+              className="w-full py-3 px-4 rounded-2xl bg-black/20 border border-white/5 text-gray-300 focus:ring-2 focus:ring-purple-500/20 outline-none appearance-none cursor-pointer font-medium"
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+            >
+              <option value="all">Global Scope (All Roles)</option>
+              <option value="Admin">Privileged (Admin)</option>
+              <option value="Manager">Executive (Manager)</option>
+              <option value="User">Standard (User)</option>
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+               <motion.div animate={{ rotate: 90 }}>
+                 <FiGrid size={12} />
+               </motion.div>
+            </div>
+          </div>
         </div>
 
-        {/* TABLE */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl overflow-hidden border border-white/10 shadow-xl bg-white/5 backdrop-blur-xl"
-        >
-          {loading ? (
-            <div className="p-10 text-center text-gray-400 animate-pulse">
-              Loading users...
-            </div>
-          ) : displayedUsers.length === 0 ? (
-            <div className="p-12 text-center text-gray-500 text-lg">
-              No users found.
-            </div>
-          ) : (
-            <table className="min-w-full text-sm md:text-base">
-              <thead>
-                <tr className="bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-gray-200 uppercase text-xs md:text-sm tracking-wide">
-                  <th className="p-3 text-left">Name</th>
-                  <th className="p-3 text-left">Age</th>
-                  <th className="p-3 text-left">Email</th>
-                  <th className="p-3 text-left">Role</th>
-                  <th className="p-3 text-center">Actions</th>
-                </tr>
-              </thead>
+        {/* DATA REPRESENTATION */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+             <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
+             <p className="text-sm font-semibold text-cyan-400/60 uppercase tracking-widest animate-pulse">Syncing Registry...</p>
+          </div>
+        ) : displayedUsers.length === 0 ? (
+          <div className="py-24 text-center rounded-3xl bg-white/5 border border-dashed border-white/10">
+             <FiUsers size={48} className="mx-auto text-gray-700 mb-4" />
+             <p className="text-lg font-medium text-gray-500">No matching subjects found in the database.</p>
+          </div>
+        ) : (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden lg:block rounded-3xl overflow-hidden border border-white/5 bg-[#0d0f14]/30 backdrop-blur-xl shadow-2xl">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-white/5 text-gray-500 font-bold uppercase tracking-widest text-[10px] border-b border-white/5">
+                    <th className="px-6 py-5">Full Name</th>
+                    <th className="px-6 py-5">Metric (Age)</th>
+                    <th className="px-6 py-5">Email Address</th>
+                    <th className="px-6 py-5">Assigned Role</th>
+                    <th className="px-6 py-5 text-center">Protocol Actions</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {currentUsers.map((user, index) => (
-                  <motion.tr
-                    key={user._id}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      scale: 1.01,
-                    }}
-                    className="border-t border-white/10"
-                  >
-                    <td className="p-3">{user.name}</td>
-                    <td className="p-3">{user.age || "N/A"}</td>
-                    <td className="p-3">{user.email}</td>
-
-                    {/* role */}
-                    <td className="p-3">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                <tbody className="divide-y divide-white/[0.03]">
+                  {currentUsers.map((user, index) => (
+                    <motion.tr
+                      key={user._id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.03 }}
+                      className="group hover:bg-white/[0.02] transition-colors"
+                    >
+                      <td className="px-6 py-5">
+                         <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-white font-bold shadow-lg">
+                               {user.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="font-semibold text-gray-200 group-hover:text-white transition">{user.name}</span>
+                         </div>
+                      </td>
+                      <td className="px-6 py-5 font-mono text-gray-400">{user.age || "—"}</td>
+                      <td className="px-6 py-5 text-gray-400">{user.email}</td>
+                      <td className="px-6 py-5 text-gray-400">
+                        <span className={`px-3 py-1 transparent rounded-lg text-[10px] font-bold border ${
                           user.role === "Admin"
-                            ? "bg-purple-500/20 text-purple-300"
+                            ? "border-purple-500/30 bg-purple-500/10 text-purple-400"
                             : user.role === "Manager"
-                              ? "bg-blue-500/20 text-blue-300"
-                              : "bg-green-500/20 text-green-300"
-                        }`}
-                      >
-                        {user.role}
-                      </span>
-                    </td>
+                              ? "border-blue-500/30 bg-blue-500/10 text-blue-400"
+                              : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                        }`}>
+                          {user.role?.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex justify-center gap-3">
+                          <button
+                            onClick={() => navigate(`/admin/user/${user._id}`)}
+                            className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all duration-300 shadow-lg"
+                            title="Inspect Profile"
+                          >
+                            <FaEye size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(user._id)}
+                            className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500 hover:text-white transition-all duration-300 shadow-lg"
+                            title="Terminate Account"
+                          >
+                            <FaTrash size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-                    {/* actions */}
-                    <td className="p-3 flex justify-center gap-2">
-                      <button
-                        onClick={() => navigate(`/admin/user/${user._id}`)}
-                        className="p-2 bg-cyan-600/80 hover:bg-cyan-600 rounded-full shadow-lg transition"
-                        title="View"
-                      >
-                        <FaEye size={14} />
-                      </button>
+            {/* Mobile Card View */}
+            <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+               {currentUsers.map((user, i) => (
+                  <motion.div
+                    key={user._id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="p-5 rounded-3xl bg-white/5 border border-white/5 shadow-xl space-y-4"
+                  >
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white font-bold text-lg">
+                           {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                           <h4 className="font-bold text-white truncate">{user.name}</h4>
+                           <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${
+                          user.role === "Admin" ? "border-purple-500/30 text-purple-400" : "border-cyan-500/30 text-cyan-400"
+                        }`}>
+                           {user.role?.toUpperCase()}
+                        </span>
+                     </div>
+                     
+                     <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/5">
+                        <button
+                          onClick={() => navigate(`/admin/user/${user._id}`)}
+                          className="flex-1 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold transition active:scale-95"
+                        >
+                          INSPECT
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user._id)}
+                          className="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold transition active:scale-95"
+                        >
+                          TERMINATE
+                        </button>
+                     </div>
+                  </motion.div>
+               ))}
+            </div>
+          </>
+        )}
 
-                      <button
-                        onClick={() => handleDelete(user._id)}
-                        className="p-2 bg-red-600/80 hover:bg-red-600 rounded-full shadow-lg transition"
-                        title="Delete"
-                      >
-                        <FaTrash size={14} />
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </motion.div>
-
-        {/* PAGINATION */}
+        {/* PAGINATION ENGINE */}
         {totalPages > 1 && (
-          <div className="flex justify-center gap-2 mt-6 flex-wrap">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                  currentPage === i + 1
-                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg"
-                    : "bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10"
-                }`}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
+          <div className="flex items-center justify-center gap-2 mt-8">
+            <div className="flex items-center gap-1 p-1 bg-white/5 rounded-2xl border border-white/5">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  className={`min-w-[40px] h-10 rounded-xl text-xs font-bold transition-all duration-300
+                    ${currentPage === i + 1
+                      ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                      : "text-gray-500 hover:text-white hover:bg-white/5"
+                    }`}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </motion.div>
     </div>
   );
 };
+
