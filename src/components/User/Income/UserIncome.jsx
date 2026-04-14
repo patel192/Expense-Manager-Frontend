@@ -224,7 +224,7 @@ export const UserIncome = () => {
     };
     try {
       setIsSubmitting(true);
-      const res = await axiosInstance.post("/income", payload);
+      const res = await axiosInstance.post("/incomes", payload);
       if (res.status === 201) {
         alert("✅ Income added successfully!");
         setIsModalOpen(false);

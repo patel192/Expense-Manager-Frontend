@@ -17,7 +17,7 @@ export const addCategory = createAsyncThunk(
   "category/addCategory",
   async (data) => {
     const res = await axiosInstance.post(
-      "/category",
+      "/categories",
       data
     );
     return res.data.data;
@@ -30,7 +30,7 @@ export const deleteCategory = createAsyncThunk(
   "category/deleteCategory",
   async (id) => {
     await axiosInstance.delete(
-      `/category/${id}`
+      `/categories/${id}`
     );
     return id;
   }
@@ -42,7 +42,7 @@ export const updateCategory = createAsyncThunk(
   "category/updateCategory",
   async ({ id, data }) => {
     const res = await axiosInstance.put(
-      `/category/${id}`,
+      `/categories/${id}`,
       data
     );
     return res.data.data;

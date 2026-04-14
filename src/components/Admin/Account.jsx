@@ -1,8 +1,19 @@
-import { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useParams } from "react-router-dom";
-import { FaCamera, FaUserCircle } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  FiCamera, 
+  FiUser, 
+  FiMail, 
+  FiEdit2, 
+  FiCheck, 
+  FiX, 
+  FiShield, 
+  FiInfo,
+  FiSave,
+  FiRefreshCw
+} from "react-icons/fi";
 
 export const Account = () => {
   const { userId } = useParams();
@@ -11,11 +22,14 @@ export const Account = () => {
     email: "",
     bio: "",
     profilePic: "",
+    role: "User"
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   const CLOUD_NAME = "dfaou6haj";
   const UPLOAD_PRESET = "My_Images";
@@ -23,25 +37,36 @@ export const Account = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        setLoading(true);
         const res = await axiosInstance.get(`/user/${userId}`);
         setUser(res.data.data);
       } catch (err) {
         console.error("Error fetching user:", err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchUser();
+    if (userId) fetchUser();
   }, [userId]);
 
   const handleChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setSelectedFile(file);
-    if (file) setPreview(URL.createObjectURL(file));
+    if (file) {
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const showMsg = (text, type = "success") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: "", type: "" }), 4000);
   };
 
   const handleSave = async () => {
     try {
+      setLoading(true);
       let uploadedImageUrl = user.profilePic;
 
       if (selectedFile) {
@@ -53,7 +78,6 @@ export const Account = () => {
           `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
           formData
         );
-
         uploadedImageUrl = uploadRes.data.secure_url;
       }
 
@@ -68,138 +92,228 @@ export const Account = () => {
       setPreview(null);
       setSelectedFile(null);
       setIsEditing(false);
+      showMsg("Profile updated successfully");
     } catch (err) {
       console.error("Error saving profile:", err);
+      showMsg("Failed to save changes", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const inputCls = "w-full pl-11 pr-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-gray-200 placeholder-gray-600 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/25 transition-all outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-white px-4 py-8 flex justify-center">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-5xl bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6 md:p-10"
-      >
-        {/* HEADER */}
-        <h2 className="text-3xl font-semibold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent text-center">
-          Account Settings
-        </h2>
-        <p className="text-gray-400 text-center mt-1 mb-10">
-          Update your profile, personal info, and account details.
-        </p>
+    <div className="space-y-10 pb-20">
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+            Identity <span className="text-cyan-400">Hub</span>
+          </h1>
+          <p className="text-gray-400 text-sm max-w-md">
+            Manage your personal credentials, profile aesthetics, and security protocols in a unified environment.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+           <div className="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              Authenticated Session
+           </div>
+        </div>
+      </div>
 
-        {/* GRID LAYOUT */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* LEFT SIDE — PROFILE CARD */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center shadow-lg"
-          >
-            {/* Avatar */}
-            <div className="relative group">
-              {preview ? (
-                <img
-                  src={preview}
-                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-500 shadow-xl"
-                  alt="Preview"
-                />
-              ) : user.profilePic ? (
-                <img
-                  src={user.profilePic}
-                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-500 shadow-xl"
-                  alt="Profile"
-                />
-              ) : (
-                <FaUserCircle className="w-32 h-32 text-gray-500" />
-              )}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* LEFT PANEL: PROFILE CARD */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-4 space-y-6"
+        >
+          <div className="relative p-8 rounded-[2rem] bg-[#0d0f14]/80 border border-white/5 backdrop-blur-xl overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 blur-[80px]" />
+            
+            <div className="relative flex flex-col items-center text-center">
+              {/* Avatar Container */}
+              <div className="relative group mb-6">
+                <div className="w-36 h-36 rounded-full p-1.5 bg-gradient-to-tr from-cyan-500 to-blue-600 shadow-2xl">
+                  {preview ? (
+                    <img src={preview} className="w-full h-full rounded-full object-cover border-4 border-[#0b0c10]" alt="Preview" />
+                  ) : user.profilePic ? (
+                    <img src={user.profilePic} className="w-full h-full rounded-full object-cover border-4 border-[#0b0c10]" alt="Profile" />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-gray-900 border-4 border-[#0b0c10] flex items-center justify-center">
+                      <FiUser size={48} className="text-gray-700" />
+                    </div>
+                  )}
+                </div>
+                
+                <AnimatePresence>
+                  {isEditing && (
+                    <motion.label 
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      className="absolute bottom-2 right-2 w-10 h-10 bg-cyan-500 text-white rounded-xl shadow-xl flex items-center justify-center cursor-pointer hover:bg-cyan-600 transition-colors border border-white/20"
+                    >
+                      <FiCamera size={18} />
+                      <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                    </motion.label>
+                  )}
+                </AnimatePresence>
+              </div>
 
-              {isEditing && (
-                <label className="absolute bottom-0 right-0 bg-purple-600 p-2 rounded-full cursor-pointer hover:bg-purple-700 shadow-lg transition-all">
-                  <FaCamera size={18} />
-                  <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-                </label>
-              )}
-            </div>
+              <h2 className="text-2xl font-bold text-white mb-1">{user.name || "System Identity"}</h2>
+              <p className="text-gray-500 text-sm mb-6 flex items-center gap-1.5 justify-center">
+                <FiMail size={12} />
+                {user.email}
+              </p>
 
-            {/* Name + Email */}
-            <h3 className="text-xl font-semibold mt-4">{user.name}</h3>
-            <p className="text-gray-400 text-sm">{user.email}</p>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8">
+                <FiShield size={10} className="text-cyan-400" />
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{user.role || "User"} Privilege</span>
+              </div>
 
-            <div className="mt-4 flex flex-col gap-3 w-full">
               {!isEditing ? (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 shadow-md hover:opacity-90 transition-all"
+                  className="w-full py-3.5 rounded-2xl bg-white/5 border border-white/10 text-white text-sm font-semibold hover:bg-white/10 hover:border-cyan-500/30 transition-all flex items-center justify-center gap-2 group"
                 >
-                  Edit Profile
+                  <FiEdit2 size={16} className="text-gray-500 group-hover:text-cyan-400" />
+                  Edit Credentials
                 </button>
               ) : (
-                <>
+                <div className="grid grid-cols-2 gap-3 w-full">
                   <button
                     onClick={handleSave}
-                    className="w-full py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 shadow-md hover:opacity-90 transition"
+                    disabled={loading}
+                    className="py-3.5 rounded-2xl bg-cyan-500 text-white text-sm font-bold shadow-lg shadow-cyan-500/20 hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                   >
-                    Save Changes
+                    {loading ? <FiRefreshCw className="animate-spin" /> : <FiCheck />}
+                    Save
                   </button>
                   <button
-                    onClick={() => {
-                      setIsEditing(false);
-                      setPreview(null);
-                      setSelectedFile(null);
-                    }}
-                    className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
+                    onClick={() => { setIsEditing(false); setPreview(null); }}
+                    className="py-3.5 rounded-2xl bg-white/5 border border-white/10 text-gray-300 text-sm font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
                   >
+                    <FiX />
                     Cancel
                   </button>
-                </>
+                </div>
               )}
             </div>
-          </motion.div>
+          </div>
 
-          {/* RIGHT SIDE — FORM */}
-          <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 shadow-lg">
-            <h3 className="text-xl font-semibold mb-6 text-purple-300">Personal Information</h3>
-
-            {/* Fields */}
-            <div className="space-y-6">
-              {["name", "email"].map((field) => (
-                <div key={field}>
-                  <label className="block mb-1 text-gray-300 capitalize">{field}</label>
-                  <input
-                    type={field === "email" ? "email" : "text"}
-                    name={field}
-                    disabled={!isEditing}
-                    value={user[field]}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 rounded-lg text-sm border ${
-                      isEditing
-                        ? "bg-white text-gray-900 border-purple-400 focus:ring-2 focus:ring-purple-500"
-                        : "bg-white/5 text-gray-300 border-white/10"
-                    }`}
-                  />
-                </div>
-              ))}
-
-              {/* Bio */}
+          <div className="p-6 rounded-[2rem] bg-gradient-to-br from-cyan-500/10 to-blue-600/5 border border-cyan-500/10">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 flex-shrink-0">
+                <FiInfo size={18} />
+              </div>
               <div>
-                <label className="block mb-1 text-gray-300">Bio</label>
-                <textarea
-                  name="bio"
-                  rows={4}
-                  disabled={!isEditing}
-                  value={user.bio}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-2 rounded-lg text-sm border resize-none ${
-                    isEditing
-                      ? "bg-white text-gray-900 border-purple-400 focus:ring-2 focus:ring-purple-500"
-                      : "bg-white/5 text-gray-300 border-white/10"
-                  }`}
-                />
+                <h4 className="text-sm font-bold text-white mb-1">Security Snapshot</h4>
+                <p className="text-xs text-gray-500 leading-relaxed">Your account uses enterprise-grade encryption. Ensure your password is updated every 90 cycles for maximum integrity.</p>
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+
+        {/* RIGHT PANEL: DETAILS FORM */}
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-8 p-8 sm:p-10 rounded-[2rem] bg-[#0d0f14]/50 border border-white/5 shadow-2xl backdrop-blur-md relative"
+        >
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+          
+          <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
+            <FiUser className="text-cyan-400" />
+            Core Attributes
+          </h3>
+
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Legal Name</label>
+                <div className="relative group">
+                  <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={user.name}
+                    disabled={!isEditing}
+                    onChange={handleChange}
+                    placeholder="Enter full name"
+                    className={inputCls}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Primary Email</label>
+                <div className="relative group">
+                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={user.email}
+                    disabled={!isEditing}
+                    onChange={handleChange}
+                    placeholder="name@organization.com"
+                    className={inputCls}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Personal Narrative</label>
+              <textarea
+                name="bio"
+                rows={6}
+                value={user.bio}
+                disabled={!isEditing}
+                onChange={handleChange}
+                placeholder="Share a brief overview of your system role and objectives..."
+                className="w-full px-5 py-4 rounded-3xl bg-white/5 border border-white/5 text-gray-200 placeholder-gray-600 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/25 transition-all outline-none text-sm resize-none disabled:opacity-50"
+              />
+            </div>
+
+            {isEditing && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center justify-end gap-4 p-4 rounded-2xl bg-cyan-400/5 border border-cyan-400/10"
+              >
+                <p className="text-xs text-cyan-400/80 italic mr-auto">Pending changes detected in taxonomy cache</p>
+                <button
+                  onClick={handleSave}
+                  disabled={loading}
+                  className="px-6 py-2.5 rounded-xl bg-cyan-500 text-white text-xs font-bold hover:bg-cyan-600 transition-all flex items-center gap-2 shadow-lg shadow-cyan-500/20"
+                >
+                  <FiSave />
+                  COMMIT CHANGES
+                </button>
+              </motion.div>
+            )}
+
+            {/* MESSAGE TOAST */}
+            <AnimatePresence>
+              {message.text && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className={`p-4 rounded-xl text-xs font-bold ${message.type === 'error' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}
+                >
+                  {message.text}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };
+
+export default Account;

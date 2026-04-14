@@ -109,7 +109,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
   const SubmitHandler = async (data) => {
     try {
       setIsSubmitting(true);
-      await axiosInstance.post("/expense", {
+      await axiosInstance.post("/expenses", {
         userID: data.userID,
         categoryID: data.categoryID,
         amount: data.amount,
@@ -131,9 +131,9 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
   const deleteExpense = async (id) => {
     if (!window.confirm("Delete this expense?")) return;
     try {
-      await axiosInstance.delete(`/expense/${id}`);
-      fetchAllExpenses();
-      fetchRecentExpenses();
+      await axiosInstance.delete(`/expenses/${id}`);
+      dispatch(fetchAllExpenses(userId));
+      dispatch(fetchRecentExpenses(userId));
     } catch (error) { console.error("Delete error:", error); }
   };
 

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useSelector,useDispatch } from "react-redux";
-import { fetchCategories,addCategory,updateCategory, } from "../../redux/category/categorySlice";
+import { fetchCategories, addCategory, updateCategory, deleteCategory } from "../../redux/category/categorySlice";
 import { FiGrid, FiActivity, FiFileText, FiSearch, FiX } from "react-icons/fi";
 
 export const ManageCategories = () => {
@@ -41,7 +41,6 @@ const dispatch = useDispatch();
     try {
       await dispatch(deleteCategory(id));
       toast.success("Category deleted");
-      dispatch(fetchCategories());
     } catch {
       toast.error("Failed to delete category");
     }
