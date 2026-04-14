@@ -402,22 +402,6 @@ const DashboardSkeleton = () => (
   </div>
 );
 
-export default AdminDashboard;
-
-
-/* ---------- LOADING SKELETON ---------- */
-const DashboardSkeleton = () => (
-  <div className="space-y-8 animate-pulse">
-    <div className="h-20 w-1/3 bg-white/5 rounded-3xl" />
-    <div className="grid grid-cols-4 gap-6">
-      {[1, 2, 3, 4].map(i => <div key={i} className="h-32 rounded-3xl bg-white/5" />)}
-    </div>
-    <div className="grid grid-cols-3 gap-6">
-      <div className="col-span-2 h-[400px] rounded-3xl bg-white/5" />
-      <div className="h-[400px] rounded-3xl bg-white/5" />
-    </div>
-  </div>
-);
 
 export default AdminDashboard;
 
