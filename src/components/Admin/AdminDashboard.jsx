@@ -403,7 +403,7 @@ const DashboardSkeleton = () => (
 );
 
 export default AdminDashboard;
-};
+
 
 /* ---------- LOADING SKELETON ---------- */
 const DashboardSkeleton = () => (
