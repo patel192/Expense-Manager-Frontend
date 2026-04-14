@@ -170,6 +170,7 @@ const DashboardSkeleton = () => (
 /* ════════════════════════════════════
    MAIN COMPONENT
 ════════════════════════════════════ */
+export const UserDashboard = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const userId = user?._id;
@@ -943,4 +944,5 @@ const DashboardSkeleton = () => (
       </div>
     </motion.div>
   );
+};
 
