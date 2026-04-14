@@ -4,13 +4,14 @@ import axiosInstance from "../../components/Utils/axiosInstance";
 export const fetchIncomeData = createAsyncThunk(
   "income/fetchIncomeData",
   async (userId) => {
+    if (!userId) return { incomes: [], expenses: [] };
     const [incomeRes, expenseRes] = await Promise.all([
       axiosInstance.get(`/incomebyUserID/${userId}`),
       axiosInstance.get(`/expensesbyUserID/${userId}`),
     ]);
     return {
-      incomes: incomeRes.data.data || [],
-      expenses: expenseRes.data.data || [],
+      incomes: incomeRes.data.data || incomeRes.data || [],
+      expenses: expenseRes.data.data || expenseRes.data || [],
     };
   },
 );
@@ -18,8 +19,9 @@ export const fetchIncomeData = createAsyncThunk(
 export const fetchRecurring = createAsyncThunk(
   "income/fetchRecurring",
   async (userId) => {
+    if (!userId) return [];
     const res = await axiosInstance.get(`/recurring/${userId}`);
-    return res.data.data || [];
+    return res.data.data || res.data || [];
   },
 );
 

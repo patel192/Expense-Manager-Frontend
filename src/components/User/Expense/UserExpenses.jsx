@@ -2,8 +2,7 @@ import { useEffect, useState, Fragment, useMemo } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { useForm } from "react-hook-form";
 import { useDispatch,useSelector } from "react-redux";
-import { fetchAllExpenses,fetchRecentExpenses } from "../../../redux/expense/expenseSlice";
-import { fetchCategories } from "../../../redux/category/categorySlice";
+import { fetchAllExpenses, fetchRecentExpenses, fetchCategories } from "../../../redux/expense/expenseSlice";
 import { Dialog, Transition } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -14,7 +13,7 @@ import {
   FiTrendingDown, FiTag, FiDollarSign, FiCalendar,
   FiFileText, FiList, FiBarChart2, FiAlignLeft,
   FiPlus, FiTrash2, FiRefreshCw, FiShoppingBag,} from "react-icons/fi";
-import { useAuth } from "../../../context/AuthContext";
+// import { useAuth } from "../../../context/AuthContext";
 
 /* ─── Shimmer ─── */
 const Shimmer = ({ className = "" }) => (
@@ -67,7 +66,7 @@ const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border
    MAIN COMPONENT
 ══════════════════════════════════════ */
 export const UserExpenses = () => {
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 const {categories,recentExpenses,expenses} = useSelector((state) => state.expense)
   /* ── ALL ORIGINAL STATE — UNTOUCHED ── */
@@ -84,11 +83,13 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
 
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
   useEffect(() => {
-    if (userId) setValue("userID", userId);
-    dispatch(fetchCategories());
-    dispatch(fetchRecentExpenses(userId));
-    dispatch(fetchAllExpenses());
-  }, [dispatch,userId]);
+    if (userId) {
+      setValue("userID", userId);
+      dispatch(fetchCategories());
+      dispatch(fetchRecentExpenses(userId));
+      dispatch(fetchAllExpenses(userId));
+    }
+  }, [dispatch, userId, setValue]);
 
   const buildCharts = (data) => {
     const monthly = Array.from({ length: 12 }, () => 0);

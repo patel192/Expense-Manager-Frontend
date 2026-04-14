@@ -14,7 +14,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchBudgetData } from "../../redux/budget/budgetSlice";
+import { fetchIncomeData } from "../../redux/income/incomeSlice";
+import { fetchAllExpenses } from "../../redux/expense/expenseSlice";
 import {
   FiTrendingUp,
   FiTrendingDown,
@@ -167,7 +170,7 @@ const DashboardSkeleton = () => (
 /* ════════════════════════════════════
    MAIN COMPONENT
 ════════════════════════════════════ */
-export const UserDashboard = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const userId = user?._id;
   const budget = useSelector((state) => state.budget.budgets);
@@ -304,6 +307,12 @@ export const UserDashboard = () => {
   };
   useEffect(() => {
     if (!userId) return;
+
+    // Dispatch Redux actions to populate the store
+    dispatch(fetchBudgetData(userId));
+    dispatch(fetchIncomeData(userId));
+    dispatch(fetchAllExpenses(userId));
+
     const fetchSecondaryData = async () => {
       try {
         setloadingSecondary(true);
@@ -325,7 +334,7 @@ export const UserDashboard = () => {
     /* Run both in parallel immediately — no artificial delay */
     fetchSecondaryData();
     fetchUpcomingRecurring();
-  }, [userId]);
+  }, [userId, dispatch]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });

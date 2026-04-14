@@ -1,6 +1,7 @@
 import  { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
-import { useAuth } from "../../context/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchRecurring } from "../../redux/income/incomeSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiRepeat, FiEdit2, FiTrash2, FiPause, FiPlay,
@@ -43,13 +44,10 @@ const freqConfig = {
 };
 
 export const RecurringTransactions = () => {
-  const { user } = useAuth();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const userId = user?._id;
-
-  /* ── ALL ORIGINAL STATE — UNTOUCHED ── */
-  const [recurringList, setRecurringList] = useState([]);
-  const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { recurringPayments: recurringList, loading } = useSelector((state) => state.income);
   const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -57,29 +55,21 @@ export const RecurringTransactions = () => {
   });
 
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
-  const fetchRecurring = async () => {
-    try {
-      setLoading(true);
-      const res = await axiosInstance.get(`/recurring/${userId}`);
-      setRecurringList(res.data.data || []);
-    } catch (error) {
-      console.error("Error fetching recurring transaction:", error);
-    } finally {
-      setLoading(false);
-    }
+  const fetchRecurringList = () => {
+    if (userId) dispatch(fetchRecurring(userId));
   };
 
   const deleteRecurring = async (id) => {
     try {
       await axiosInstance.delete(`/recurring/${id}`);
-      fetchRecurring();
+      fetchRecurringList();
     } catch (error) { console.error("Error Deleting recurring:", error); }
   };
 
   const toggleRecurring = async (id) => {
     try {
       await axiosInstance.patch(`/recurring/toggle/${id}`);
-      fetchRecurring();
+      fetchRecurringList();
     } catch (error) { console.error("Error toggling recurring", error); }
   };
 
@@ -96,7 +86,7 @@ export const RecurringTransactions = () => {
       } else {
         res = await axiosInstance.post("/recurring", payload);
       }
-      await fetchRecurring();
+      await fetchRecurringList();
       console.log(editingId ? "Recurring updated" : "Recurring created", res.data);
       setFormData({ title: "", amount: "", category: "", frequency: "monthly", nextDate: "" });
       setEditingId(null);
@@ -122,9 +112,8 @@ export const RecurringTransactions = () => {
   };
 
   useEffect(() => {
-    if (!userId) return;
-    fetchRecurring();
-  }, [userId]);
+    fetchRecurringList();
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ── Derived stats ── */
   const activeCount   = recurringList.filter(r => r.isActive !== false).length;

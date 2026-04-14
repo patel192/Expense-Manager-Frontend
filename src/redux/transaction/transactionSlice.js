@@ -13,19 +13,19 @@ export const fetchTransactions = createAsyncThunk(
       ]);
 
     const expenses =
-      (expenseRes.data.data || []).map((e) => ({
+      (expenseRes.data.data || expenseRes.data || []).map((e) => ({
         ...e,
         type: "Expense",
       }));
 
     const incomes =
-      (incomeRes.data.data || []).map((i) => ({
+      (incomeRes.data.data || incomeRes.data || []).map((i) => ({
         ...i,
         type: "Income",
       }));
 
     const budgets =
-      budgetRes?.data?.data || [];
+      budgetRes?.data?.data || budgetRes?.data || [];
 
     const merged =
       [...expenses, ...incomes].map((t) => {

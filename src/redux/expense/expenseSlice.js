@@ -3,22 +3,24 @@ import axiosInstance from "../../components/Utils/axiosInstance";
 
 export const fetchCategories = createAsyncThunk("expense/fetchCategories",async () => {
     const res = await axiosInstance.get("/categories");
-    return res.data.data;
+    return res.data.data || res.data;
 })
 
 export const fetchRecentExpenses = createAsyncThunk(
     "expense/fetchRecentExpenses",
     async (userId) => {
+        if (!userId) return [];
         const res = await axiosInstance.get(`/recent-expense/${userId}`)
-        return res.data.data || [];
+        return res.data.data || res.data || [];
     }
 );
 
 export const fetchAllExpenses = createAsyncThunk(
     "expense/fetchAllExpenses",
     async (userId) => {
+        if (!userId) return [];
         const res = await axiosInstance.get(`/expensesbyUserID/${userId}`);
-        return res.data.data || [];
+        return res.data.data || res.data || [];
     }
 );
 const initialState = {
