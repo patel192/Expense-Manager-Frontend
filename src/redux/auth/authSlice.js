@@ -1,12 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
-const savedUser = localStorage.getItem("user");
+
+const getStoredUser = () => {
+  try {
+    const user = localStorage.getItem("user");
+    return user && user !== "undefined" ? JSON.parse(user) : null;
+  } catch {
+    return null;
+  }
+};
+
+const savedUser = getStoredUser();
 const savedToken = localStorage.getItem("token");
 const savedRole = localStorage.getItem("role");
 
 const initialState = {
-  user: savedUser ? JSON.parse(savedUser) : null,
-  token: savedToken || null,
-  role: savedRole || null,
+  user: savedUser,
+  token: savedToken && savedToken !== "undefined" ? savedToken : null,
+  role: savedRole && savedRole !== "undefined" ? savedRole : null,
   isAuthenticated: !!savedUser,
   loading: false,
 };
@@ -15,17 +25,16 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.role = action.payload.role;
-      state.isAuthenticated = true;
+      const { user, token, role } = action.payload;
+      state.user = user || null;
+      state.token = token || null;
+      state.role = role || null;
+      state.isAuthenticated = !!user;
       state.loading = false;
 
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
-
-      localStorage.setItem("token", action.payload.token);
-
-      localStorage.setItem("role", action.payload.role);
+      if (user) localStorage.setItem("user", JSON.stringify(user));
+      if (token) localStorage.setItem("token", token);
+      if (role) localStorage.setItem("role", role);
     },
 
     logout: (state) => {
