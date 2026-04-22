@@ -353,6 +353,9 @@ export const Content = () => {
   return (
     <div className="min-h-[calc(100vh-80px)] pb-20 space-y-32">
       {/* ═══════════ HERO ═══════════ */}
+      <div className="bg-[var(--background)] text-[var(--foreground)] p-6">
+  Theme is working
+</div>
       <section
         id="home"
         className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-16 md:pt-12"
