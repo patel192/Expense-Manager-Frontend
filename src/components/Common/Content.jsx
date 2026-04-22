@@ -75,7 +75,9 @@ const AppWindow = () => {
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
         </div>
-        <p className="text-xs text-[var(--muted)] font-medium">FinTrack · Overview</p>
+        <p className="text-xs text-[var(--muted)] font-medium">
+          FinTrack · Overview
+        </p>
         <span className="px-2 py-0.5 rounded-full text-[10px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
           Live
         </span>
@@ -139,10 +141,12 @@ const AppWindow = () => {
         {/* Budget progress bar */}
         <div className="rounded-xl bg-[var(--card)] border border-[var(--border)] p-3 space-y-2">
           <div className="flex items-center justify-between text-[11px]">
-            <span className="text-[var(--muted)] font-medium">Budget usage</span>
+            <span className="text-[var(--muted)] font-medium">
+              Budget usage
+            </span>
             <span className="text-amber-300 font-semibold">72%</span>
           </div>
-          <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-[var(--surface-tertiary)] overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={visible ? { width: "72%" } : { width: 0 }}
@@ -353,7 +357,7 @@ export const Content = () => {
   return (
     <div className="min-h-[calc(100vh-80px)] pb-20 space-y-32">
       {/* ═══════════ HERO ═══════════ */}
-      
+
       <section
         id="home"
         className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-16 md:pt-12"
@@ -384,7 +388,7 @@ tracking-tight "
             in one place.
           </h1>
 
-          <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
+          <p className="text-[var(--text-secondary)] text-base md:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
             FinTrack helps you track income, expenses, budgets and reports with
             a clean, focused interface — so you always know where your money
             goes.
@@ -404,7 +408,7 @@ tracking-tight "
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-[var(--border)] bg-white/5
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-secondary)]
                          text-[var(--text)] font-medium hover:bg-white/10 hover:border-[var(--border)]
                          transition-all duration-200 flex items-center justify-center gap-2"
             >
@@ -433,7 +437,7 @@ tracking-tight "
             ].map((pill, i) => (
               <span
                 key={i}
-                className={`flex items-center gap-1.5 text-xs font-medium ${pill.color} bg-white/5 border border-[var(--border)] px-3 py-1.5 rounded-full`}
+                className={`flex items-center gap-1.5 text-xs font-medium ${pill.color} bg-[var(--surface-secondary)] border border-[var(--border)] px-3 py-1.5 rounded-full`}
               >
                 {pill.icon}
                 {pill.text}
@@ -545,11 +549,15 @@ tracking-tight "
               >
                 {s.icon}
               </div>
-              <p className="text-[10px] font-bold tracking-widest text-gray-600 uppercase mb-2">
+              <p className="text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase mb-2">
                 {s.step}
               </p>
-              <h3 className="text-[var(--text)] font-semibold mb-2">{s.title}</h3>
-              <p className="text-sm text-[var(--muted)] leading-relaxed">{s.desc}</p>
+              <h3 className="text-[var(--text)] font-semibold mb-2">
+                {s.title}
+              </h3>
+              <p className="text-sm text-[var(--muted)] leading-relaxed">
+                {s.desc}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -583,10 +591,16 @@ tracking-tight "
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className={`bg-[var(--card)] border border-[var(--border)] border-l-2 ${sec.accent}
-                          rounded-2xl p-5 md:p-7
-                          grid grid-cols-1 md:grid-cols-3 gap-6
-                          hover:border-[var(--border)] transition-all duration-300`}
+              className="
+bg-[var(--surface-primary)]
+border
+border-[var(--border)]
+rounded-xl
+p-6
+shadow-sm
+hover:shadow-md
+transition
+"
             >
               {/* Left: info */}
               <div className="md:col-span-1 space-y-3">
@@ -615,7 +629,7 @@ tracking-tight "
                 {sec.cards.map((card, j) => (
                   <div
                     key={j}
-                    className="bg-black/30 border border-[var(--border)] rounded-xl p-4 hover:border-[var(--border)] transition-colors"
+                    className="bg-[var(--surface-secondary)] border border-[var(--border)] rounded-xl p-4 hover:border-[var(--border)] transition-colors"
                   >
                     <p className="text-xs text-[var(--muted)] uppercase tracking-wide font-medium mb-2">
                       {card.label}
@@ -643,7 +657,7 @@ tracking-tight "
         whileInView="visible"
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f2027] via-[#111827] to-[#0f1115]
+        className="relative overflow-hidden rounded-3xl bg-[var(--surface-primary)]
                    border border-[var(--border)] p-8 md:p-12 text-center"
       >
         {/* Glow orbs */}
