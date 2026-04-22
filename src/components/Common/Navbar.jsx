@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
+import { useTheme } from "../../context/ThemeContext";
 
 export const Navbar = () => {
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -124,7 +126,21 @@ export const Navbar = () => {
 
           {/* Divider */}
           <div className="w-px h-5 bg-white/10 mx-2" />
-
+          <button
+            onClick={toggleTheme}
+            className="
+    px-3 py-2
+    rounded-lg
+    border
+    border-[var(--border)]
+    bg-[var(--card)]
+    text-[var(--text)]
+    hover:bg-[var(--muted)]
+    transition
+  "
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
           <Link
             to="/login"
             className="px-4 py-2 rounded-lg text-gray-300 bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-[var(--border)] transition-all duration-200"
@@ -142,6 +158,21 @@ export const Navbar = () => {
 
         {/* ── Mobile: auth buttons + hamburger ── */}
         <div className="flex md:hidden items-center gap-2">
+          <button
+  onClick={toggleTheme}
+  className="
+    px-3 py-2
+    rounded-lg
+    border
+    border-[var(--border)]
+    bg-[var(--card)]
+    text-[var(--text)]
+    hover:bg-[var(--muted)]
+    transition
+  "
+>
+  {theme === "dark" ? "☀️" : "🌙"}
+</button>
           <Link
             to="/login"
             className="px-3 py-1.5 text-sm rounded-lg text-gray-300 border border-[var(--border)] bg-white/5 hover:bg-white/10 transition-all"
