@@ -110,7 +110,7 @@ export const Transaction = () => {
   ];
 
   return (
-    <div className="space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text)]">
       {/* ══ HEADER ══ */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -121,13 +121,13 @@ export const Transaction = () => {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             Transactions
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-[var(--muted)] mt-1 text-sm">
             All your incomes and expenses — filter, inspect and plan budgets.
           </p>
         </div>
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border
-                        bg-white/5 border-white/10 text-gray-400 text-xs font-medium self-start"
+                        bg-white/5 border-[var(--border)] text-[var(--muted)] text-xs font-medium self-start"
         >
           <FiCalendar size={12} />
           {new Date().toLocaleDateString("en-IN", {
@@ -208,7 +208,7 @@ export const Transaction = () => {
                   </span>
                 )}
               </div>
-              <p className="text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">
+              <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">
                 {card.title}
               </p>
               <p className={`text-2xl font-bold tracking-tight ${card.color}`}>
@@ -224,7 +224,7 @@ export const Transaction = () => {
         {/* ── LEFT: Transaction list (2 cols) ── */}
         <div className="lg:col-span-2 space-y-4">
           {/* Pill tabs with counts */}
-          <div className="flex items-center gap-1 bg-white/4 border border-white/8 rounded-2xl p-1.5 w-fit flex-wrap">
+          <div className="flex items-center gap-1 bg-white/4 border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -233,7 +233,7 @@ export const Transaction = () => {
                   ${
                     activeTab === tab.key
                       ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 text-cyan-400"
-                      : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                      : "text-[var(--muted)] hover:text-gray-300 hover:bg-white/5"
                   }`}
               >
                 {tab.label}
@@ -248,15 +248,15 @@ export const Transaction = () => {
           </div>
 
           {/* Transaction card */}
-          <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
+          <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
             {loading ? (
               <TransactionSkeleton />
             ) : filteredSorted.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-16 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-[var(--border)] flex items-center justify-center">
                   <FiInbox size={22} className="text-gray-600" />
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[var(--muted)]">
                   No {activeTab.toLowerCase()} transactions found.
                 </p>
               </div>
@@ -325,7 +325,7 @@ export const Transaction = () => {
                               </p>
                               <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                                 {t.categoryID?.name && (
-                                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/6 border border-white/8 text-gray-500">
+                                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/6 border border-[var(--border)] text-[var(--muted)]">
                                     {t.categoryID.name}
                                   </span>
                                 )}
@@ -372,12 +372,12 @@ export const Transaction = () => {
         {/* ── RIGHT: Sidebar ── */}
         <aside className="space-y-4">
           {/* Quick Filters */}
-          <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3.5 border-b border-white/8">
+          <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3.5 border-b border-[var(--border)]">
               <div className="w-6 h-6 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
                 <FiFilter size={11} className="text-cyan-400" />
               </div>
-              <h4 className="text-xs font-semibold text-white uppercase tracking-widest">
+              <h4 className="text-xs font-semibold text-[var(--text)] uppercase tracking-widest">
                 Quick Filters
               </h4>
             </div>
@@ -390,7 +390,7 @@ export const Transaction = () => {
                     ${
                       activeTab === tab.key
                         ? "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-medium"
-                        : "text-gray-400 hover:text-gray-200 hover:bg-white/5 border border-transparent"
+                        : "text-[var(--muted)] hover:text-gray-200 hover:bg-white/5 border border-transparent"
                     }`}
                 >
                   <span className="flex items-center gap-2">
@@ -411,12 +411,12 @@ export const Transaction = () => {
           </div>
 
           {/* Summary panel */}
-          <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3.5 border-b border-white/8">
+          <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3.5 border-b border-[var(--border)]">
               <div className="w-6 h-6 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
                 <FiDollarSign size={11} className="text-blue-400" />
               </div>
-              <h4 className="text-xs font-semibold text-white uppercase tracking-widest">
+              <h4 className="text-xs font-semibold text-[var(--text)] uppercase tracking-widest">
                 Summary
               </h4>
             </div>
@@ -443,7 +443,7 @@ export const Transaction = () => {
                   key={i}
                   className={`flex items-center justify-between text-sm ${i < 2 ? "pb-3 border-b border-white/5" : ""}`}
                 >
-                  <span className="text-gray-500">{row.label}</span>
+                  <span className="text-[var(--muted)]">{row.label}</span>
                   <span className={`font-bold ${row.color}`}>
                     {row.value < 0 ? "−" : ""}₹
                     {Math.abs(row.value).toLocaleString("en-IN")}
@@ -508,7 +508,7 @@ export const Transaction = () => {
               ].map((tip, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-2.5 text-xs text-gray-400"
+                  className="flex items-start gap-2.5 text-xs text-[var(--muted)]"
                 >
                   <span className="text-amber-500 flex-shrink-0 mt-0.5">
                     {tip.icon}

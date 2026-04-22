@@ -57,8 +57,8 @@ const Shimmer = ({ className = "" }) => (
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#1a1d26] border border-white/15 rounded-xl px-4 py-3 shadow-2xl">
-      <p className="text-xs text-gray-400 mb-2 font-medium">{label}</p>
+    <div className="bg-[#1a1d26] border border-[var(--border)] rounded-xl px-4 py-3 shadow-2xl">
+      <p className="text-xs text-[var(--muted)] mb-2 font-medium">{label}</p>
       {payload.map((p, i) => (
         <p key={i} className="text-sm font-bold" style={{ color: p.color }}>
           {p.name}: ₹{p.value?.toLocaleString("en-IN")}
@@ -86,7 +86,7 @@ const sourceConfig = {
     label: "Investments",
   },
   Other: {
-    color: "text-gray-400",
+    color: "text-[var(--muted)]",
     bg: "bg-gray-500/15 border-gray-500/25",
     label: "Other",
   },
@@ -95,7 +95,7 @@ const sourceConfig = {
 /* ─── Field wrapper ─── */
 const Field = ({ label, error, children }) => (
   <div className="space-y-1.5">
-    <label className="block text-xs font-medium text-gray-400 tracking-wide">
+    <label className="block text-xs font-medium text-[var(--muted)] tracking-wide">
       {label}
     </label>
     {children}
@@ -301,10 +301,10 @@ export const UserIncome = () => {
 
   /* ── Input class ── */
   const inputCls =
-    "w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-white/20 transition-all duration-200";
+    "w-full px-3.5 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-[var(--border)] transition-all duration-200";
 
   return (
-    <div className="space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text)]">
       {/* ══ HEADER ══ */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -315,7 +315,7 @@ export const UserIncome = () => {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             Income Center
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-[var(--muted)] mt-1 text-sm">
             Track income, analyze trends, manage all records in one place.
           </p>
         </div>
@@ -332,7 +332,7 @@ export const UserIncome = () => {
       </motion.div>
 
       {/* ══ PILL TABS ══ */}
-      <div className="flex items-center gap-1 bg-white/4 border border-white/8 rounded-2xl p-1.5 w-fit flex-wrap">
+      <div className="flex items-center gap-1 bg-white/4 border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -341,7 +341,7 @@ export const UserIncome = () => {
               ${
                 activeTab === tab.id
                   ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 text-cyan-400"
-                  : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                  : "text-[var(--muted)] hover:text-gray-300 hover:bg-white/5"
               }`}
           >
             {tab.icon}
@@ -432,7 +432,7 @@ export const UserIncome = () => {
                       >
                         <span className={card.color}>{card.icon}</span>
                       </div>
-                      <p className="text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">
+                      <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">
                         {card.label}
                       </p>
                       <p
@@ -486,12 +486,12 @@ export const UserIncome = () => {
               className="grid grid-cols-1 xl:grid-cols-2 gap-5"
             >
               {/* Bar chart */}
-              <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+              <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
                     <FiBarChart2 size={13} className="text-blue-400" />
                   </div>
-                  <h3 className="text-sm font-semibold text-white">
+                  <h3 className="text-sm font-semibold text-[var(--text)]">
                     Monthly Income vs Expenses
                   </h3>
                 </div>
@@ -542,12 +542,12 @@ export const UserIncome = () => {
               </div>
 
               {/* Line chart */}
-              <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+              <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
                     <FiTrendingUp size={13} className="text-cyan-400" />
                   </div>
-                  <h3 className="text-sm font-semibold text-white">
+                  <h3 className="text-sm font-semibold text-[var(--text)]">
                     Income Trend & Average
                   </h3>
                 </div>
@@ -613,29 +613,29 @@ export const UserIncome = () => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-semibold text-white">
+                  <h3 className="text-base font-semibold text-[var(--text)]">
                     All Income Records
                   </h3>
-                  <p className="text-gray-500 text-xs mt-0.5">
+                  <p className="text-[var(--muted)] text-xs mt-0.5">
                     {incomes.length} records total
                   </p>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl
-                             bg-white/5 border border-white/10 text-sm text-gray-300
-                             hover:bg-white/10 hover:border-white/20 transition-all"
+                             bg-white/5 border border-[var(--border)] text-sm text-gray-300
+                             hover:bg-white/10 hover:border-[var(--border)] transition-all"
                 >
                   <FiPlus size={14} /> Add
                 </button>
               </div>
 
               {incomes.length === 0 ? (
-                <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-white/8 bg-white/2">
+                <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-[var(--border)] bg-white/2">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                     <FiTrendingUp size={22} className="text-emerald-400" />
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-[var(--muted)]">
                     No income records yet.
                   </p>
                   <button
@@ -657,8 +657,8 @@ export const UserIncome = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: idx * 0.04 }}
                         whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                        className="rounded-2xl bg-[#0d0f14]/80 border border-white/8
-                                   hover:border-white/20 transition-all p-5 flex flex-col justify-between"
+                        className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)]
+                                   hover:border-[var(--border)] transition-all p-5 flex flex-col justify-between"
                       >
                         <div className="flex items-start justify-between mb-4">
                           <div>
@@ -717,10 +717,10 @@ export const UserIncome = () => {
                   <FiRepeat size={16} className="text-cyan-400" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold text-white">
+                  <h2 className="text-base font-semibold text-[var(--text)]">
                     Recurring Payments
                   </h2>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-[var(--muted)]">
                     Manage your regular income & payment schedules
                   </p>
                 </div>
@@ -731,9 +731,9 @@ export const UserIncome = () => {
                 onSubmit={handleRecurringSubmit}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5"
+                className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5"
               >
-                <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
                   <FiPlus size={14} className="text-cyan-400" />
                   Add New Recurring Payment
                 </h3>
@@ -784,7 +784,7 @@ export const UserIncome = () => {
                     type="submit"
                     disabled={recurringLoading}
                     className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
-                               bg-gradient-to-r from-cyan-500 to-blue-600 text-sm font-semibold text-white
+                               bg-gradient-to-r from-cyan-500 to-blue-600 text-sm font-semibold text-[var(--text)]
                                hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200
                                disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
                                shadow-lg shadow-cyan-500/20"
@@ -804,12 +804,12 @@ export const UserIncome = () => {
               </motion.form>
 
               {/* Recurring list */}
-              <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
-                <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-white">
+              <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
+                <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-[var(--text)]">
                     Your Recurring Payments
                   </h3>
-                  <span className="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded-full">
+                  <span className="text-xs text-[var(--muted)] bg-white/5 px-2.5 py-1 rounded-full">
                     {recurringPayments.length} active
                   </span>
                 </div>
@@ -827,7 +827,7 @@ export const UserIncome = () => {
                     <div className="hidden sm:block overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="border-b border-white/8">
+                          <tr className="border-b border-[var(--border)]">
                             {[
                               "Name",
                               "Amount",
@@ -865,7 +865,7 @@ export const UserIncome = () => {
                                   {pay.frequency}
                                 </span>
                               </td>
-                              <td className="px-5 py-3.5 text-gray-400 text-xs">
+                              <td className="px-5 py-3.5 text-[var(--muted)] text-xs">
                                 {new Date(pay.startDate).toLocaleDateString(
                                   "en-IN",
                                   {
@@ -875,7 +875,7 @@ export const UserIncome = () => {
                                   },
                                 )}
                               </td>
-                              <td className="px-5 py-3.5 text-gray-500 text-xs">
+                              <td className="px-5 py-3.5 text-[var(--muted)] text-xs">
                                 {pay.category || "—"}
                               </td>
                               <td className="px-5 py-3.5">
@@ -980,18 +980,18 @@ export const UserIncome = () => {
             >
               <Dialog.Panel className="w-full max-w-md rounded-2xl bg-[#0f1115] border border-white/12 shadow-2xl overflow-hidden">
                 {/* Modal header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-white/8">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center">
                       <FiTrendingUp size={14} className="text-emerald-400" />
                     </div>
-                    <Dialog.Title className="text-sm font-semibold text-white">
+                    <Dialog.Title className="text-sm font-semibold text-[var(--text)]">
                       Add New Income
                     </Dialog.Title>
                   </div>
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-all"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/10 transition-all"
                   >
                     <XMarkIcon className="h-4 w-4" />
                   </button>
@@ -1044,7 +1044,7 @@ export const UserIncome = () => {
                       type="submit"
                       disabled={isSubmitting}
                       className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600
-                                 font-semibold text-sm text-white shadow-lg shadow-cyan-500/20
+                                 font-semibold text-sm text-[var(--text)] shadow-lg shadow-cyan-500/20
                                  hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200
                                  disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
                                  flex items-center justify-center gap-2 mt-2"

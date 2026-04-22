@@ -27,7 +27,7 @@ export const ReportAdmins = () => {
 
   if (loading || !stats)
     return (
-      <div className="flex items-center justify-center h-[70vh] text-gray-400 text-xl">
+      <div className="flex items-center justify-center h-[70vh] text-[var(--muted)] text-xl">
         Loading report...
       </div>
     );
@@ -84,16 +84,16 @@ export const ReportAdmins = () => {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-4xl font-black tracking-tight text-white mb-2">
+          <h1 className="text-4xl font-black tracking-tight text-[var(--text)] mb-2">
             Intelligence <span className="text-cyan-400">Reports</span>
           </h1>
-          <p className="text-gray-500 text-sm max-w-lg font-medium">
+          <p className="text-[var(--muted)] text-sm max-w-lg font-medium">
             Aggregated analytical insights across all system nodes. High-fidelity data visualization for ecosystem health monitoring.
           </p>
         </div>
         <div className="flex items-center gap-3 bg-[#0d0f14]/80 px-4 py-2.5 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-md">
            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Node Analytics: Synchronized</span>
+           <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest whitespace-nowrap">Node Analytics: Synchronized</span>
         </div>
       </div>
 
@@ -108,8 +108,8 @@ export const ReportAdmins = () => {
             className="group p-5 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
           >
              <div className="relative z-10">
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-2">{kpi.label}</p>
-                <h3 className={`text-2xl font-black text-white group-hover:text-cyan-400 transition-colors truncate`}>
+                <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em] mb-2">{kpi.label}</p>
+                <h3 className={`text-2xl font-black text-[var(--text)] group-hover:text-cyan-400 transition-colors truncate`}>
                   {kpi.value}
                 </h3>
                 <div className="mt-4 flex items-center justify-between">
@@ -131,7 +131,7 @@ export const ReportAdmins = () => {
           className="xl:col-span-3 rounded-[2.5rem] bg-[#0d0f14]/50 border border-white/5 p-8 shadow-2xl backdrop-blur-xl group"
         >
           <div className="flex items-center justify-between mb-8">
-             <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-gray-400">Financial Convergence</h2>
+             <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-[var(--muted)]">Financial Convergence</h2>
              <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-cyan-400">
                 <FiActivity size={18} />
              </div>
@@ -163,7 +163,7 @@ export const ReportAdmins = () => {
           className="xl:col-span-2 rounded-[2.5rem] bg-[#0d0f14]/50 border border-white/5 p-8 shadow-2xl backdrop-blur-xl"
         >
           <div className="flex items-center justify-between mb-8">
-             <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-gray-400">Class Distribution</h2>
+             <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-[var(--muted)]">Class Distribution</h2>
              <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-purple-400">
                 <FiPieChart size={18} />
              </div>
@@ -196,13 +196,13 @@ export const ReportAdmins = () => {
                   {pieData.slice(0, 4).map((entry, i) => (
                      <div key={i} className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="text-[10px] font-bold text-gray-500 uppercase truncate">{entry.name}</span>
+                        <span className="text-[10px] font-bold text-[var(--muted)] uppercase truncate">{entry.name}</span>
                      </div>
                   ))}
                </div>
             </div>
           ) : (
-            <div className="h-[280px] flex items-center justify-center border border-dashed border-white/10 rounded-3xl">
+            <div className="h-[280px] flex items-center justify-center border border-dashed border-[var(--border)] rounded-3xl">
                <p className="text-gray-600 font-bold uppercase tracking-widest text-[10px]">Registry Empty</p>
             </div>
           )}
@@ -217,11 +217,11 @@ export const ReportAdmins = () => {
         className="rounded-[2.5rem] bg-gradient-to-br from-[#0d0f14] to-[#040506] border border-white/5 p-10 shadow-3xl relative overflow-hidden group"
       >
         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-           <FiGrid size={120} className="text-gray-400" />
+           <FiGrid size={120} className="text-[var(--muted)]" />
         </div>
         
         <div className="relative z-10 w-full lg:w-2/3">
-           <h2 className="text-2xl font-bold text-white mb-6">Strategic Highlights</h2>
+           <h2 className="text-2xl font-bold text-[var(--text)] mb-6">Strategic Highlights</h2>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                  <div className="flex items-start gap-4">
@@ -229,7 +229,7 @@ export const ReportAdmins = () => {
                        <FiActivity size={18} />
                     </div>
                     <div>
-                       <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Peak Capital Flow</p>
+                       <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Peak Capital Flow</p>
                        <h4 className="text-xl font-bold text-gray-200">₹{stats.totalIncome.toLocaleString()}</h4>
                     </div>
                  </div>
@@ -238,7 +238,7 @@ export const ReportAdmins = () => {
                        <FiUsers size={18} />
                     </div>
                     <div>
-                       <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Primary Operator</p>
+                       <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Primary Operator</p>
                        <h4 className="text-xl font-bold text-gray-200">{stats.mostActiveUser || "STANDBY"}</h4>
                     </div>
                  </div>
@@ -250,7 +250,7 @@ export const ReportAdmins = () => {
                        <FiXCircle size={18} />
                     </div>
                     <div>
-                       <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Dormant Accounts</p>
+                       <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Dormant Accounts</p>
                        <h4 className="text-xl font-bold text-gray-200">{stats.deactivatedUsers} NODES</h4>
                     </div>
                  </div>
@@ -259,7 +259,7 @@ export const ReportAdmins = () => {
                        <FiFileText size={18} />
                     </div>
                     <div>
-                       <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Operational Outlay</p>
+                       <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Operational Outlay</p>
                        <h4 className="text-xl font-bold text-gray-200">₹{stats.totalExpense.toLocaleString()}</h4>
                     </div>
                  </div>

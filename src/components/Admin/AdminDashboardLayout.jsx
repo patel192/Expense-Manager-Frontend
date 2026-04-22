@@ -35,16 +35,16 @@ export const AdminDashboardLayout = () => {
               </button>
               
               <div className="hidden sm:block">
-                <h2 className="text-sm font-medium text-gray-400 capitalize">
+                <h2 className="text-sm font-medium text-[var(--muted)] capitalize">
                   Admin <span className="mx-2 text-gray-600">/</span> 
-                  <span className="text-white">Workspace</span>
+                  <span className="text-[var(--text)]">Workspace</span>
                 </h2>
               </div>
             </div>
 
             {/* Middle: Search (Desktop) */}
             <div className="hidden md:flex flex-1 max-w-md mx-8 relative group">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-cyan-400 transition-colors" />
               <input
                 type="text"
                 placeholder="Search global records..."
@@ -58,7 +58,7 @@ export const AdminDashboardLayout = () => {
             <div className="flex items-center gap-2 sm:gap-4">
               {/* Notifications */}
               <button className="relative p-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition group">
-                <FiBell size={20} className="text-gray-400 group-hover:text-white transition" />
+                <FiBell size={20} className="text-[var(--muted)] group-hover:text-[var(--text)] transition" />
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.5)] border-2 border-[#0d0f14]" />
               </button>
 
@@ -67,7 +67,7 @@ export const AdminDashboardLayout = () => {
                 onClick={() => navigate(`/admin/account/${user?._id}`)}
                 className="p-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition group"
               >
-                <FiSettings size={20} className="text-gray-400 group-hover:text-white transition" />
+                <FiSettings size={20} className="text-[var(--muted)] group-hover:text-[var(--text)] transition" />
               </button>
 
               {/* Divider */}
@@ -78,7 +78,7 @@ export const AdminDashboardLayout = () => {
                 onClick={logout}
                 className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl 
                            bg-rose-500/10 border border-rose-500/20 text-rose-400 
-                           hover:bg-rose-500 hover:text-white transition-all duration-300 font-semibold text-xs sm:text-sm"
+                           hover:bg-rose-500 hover:text-[var(--text)] transition-all duration-300 font-semibold text-xs sm:text-sm"
               >
                 <FiLogOut size={16} />
                 <span className="hidden sm:inline">Sign Out</span>
@@ -105,7 +105,7 @@ export const AdminDashboardLayout = () => {
         </main>
 
         {/* Footer */}
-        <footer className="py-6 px-10 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-medium tracking-wide">
+        <footer className="py-6 px-10 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)] font-medium tracking-wide">
           <p>© 2026 FINTRACK ANALYTICS ENGINE. ALL RIGHTS RESERVED.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-cyan-400 transition">SUPPORT</a>

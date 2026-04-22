@@ -14,11 +14,11 @@ import {
 /* ── reusable input wrapper ── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
-    <label className="block text-xs font-medium text-gray-400 tracking-wide">
+    <label className="block text-xs font-medium text-[var(--muted)] tracking-wide">
       {label}
     </label>
     <div className="relative">
-      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none">
         {icon}
       </span>
       {children}
@@ -62,7 +62,7 @@ export const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10
-                    bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-white relative overflow-hidden">
+                    bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-[var(--text)] relative overflow-hidden">
 
       <ToastContainer transition={Bounce} />
 
@@ -71,16 +71,16 @@ export const Signup = () => {
       <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-blue-600/6 blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-3xl overflow-hidden
-                      border border-white/10 shadow-[0_32px_80px_rgba(0,0,0,0.8)]">
+                      border border-[var(--border)] shadow-[0_32px_80px_rgba(0,0,0,0.8)]">
 
         {/* ── LEFT: Decorative Panel (desktop only) ── */}
         <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#0d1f2d] via-[#0a1628] to-[#091020]
-                        border-r border-white/10 p-10">
+                        border-r border-[var(--border)] p-10">
 
           {/* Brand */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
-              <FiTrendingUp size={16} className="text-white" />
+              <FiTrendingUp size={16} className="text-[var(--text)]" />
             </div>
             <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               FinTrack
@@ -90,10 +90,10 @@ export const Signup = () => {
           {/* Middle content */}
           <div className="space-y-8">
             <div className="space-y-3">
-              <h2 className="text-2xl font-bold text-white leading-tight">
+              <h2 className="text-2xl font-bold text-[var(--text)] leading-tight">
                 Start your financial journey today
               </h2>
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className="text-sm text-[var(--muted)] leading-relaxed">
                 Join thousands of users who track income, expenses, and budgets — all in one clean dashboard.
               </p>
             </div>
@@ -120,9 +120,9 @@ export const Signup = () => {
                 { label: "Free", sublabel: "Always" },
                 { label: "Secure", sublabel: "& Private" },
               ].map((s, i) => (
-                <div key={i} className="flex-1 bg-white/4 border border-white/8 rounded-xl px-4 py-3 text-center">
-                  <p className="text-white font-bold text-sm">{s.label}</p>
-                  <p className="text-gray-500 text-xs">{s.sublabel}</p>
+                <div key={i} className="flex-1 bg-white/4 border border-[var(--border)] rounded-xl px-4 py-3 text-center">
+                  <p className="text-[var(--text)] font-bold text-sm">{s.label}</p>
+                  <p className="text-[var(--muted)] text-xs">{s.sublabel}</p>
                 </div>
               ))}
             </div>
@@ -139,12 +139,12 @@ export const Signup = () => {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="bg-[#111318] px-6 sm:px-8 py-10 flex flex-col justify-center"
+          className="bg-[var(--card)] px-6 sm:px-8 py-10 flex flex-col justify-center"
         >
           {/* Mobile brand header */}
           <div className="flex lg:hidden items-center justify-center gap-2 mb-8">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-              <FiTrendingUp size={14} className="text-white" />
+              <FiTrendingUp size={14} className="text-[var(--text)]" />
             </div>
             <span className="text-base font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               FinTrack
@@ -153,8 +153,8 @@ export const Signup = () => {
 
           {/* Form header */}
           <div className="mb-7 space-y-1">
-            <h2 className="text-xl font-bold text-white">Create your account</h2>
-            <p className="text-sm text-gray-400">Fill in your details to get started</p>
+            <h2 className="text-xl font-bold text-[var(--text)]">Create your account</h2>
+            <p className="text-sm text-[var(--muted)]">Fill in your details to get started</p>
           </div>
 
           <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
@@ -165,10 +165,10 @@ export const Signup = () => {
                 type="text"
                 placeholder="John Doe"
                 {...register("name", { required: "Name is required" })}
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/40 border border-white/10
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
                            text-gray-100 placeholder-gray-600 text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
-                           hover:border-white/20 transition-all duration-200"
+                           hover:border-[var(--border)] transition-all duration-200"
               />
             </Field>
 
@@ -180,10 +180,10 @@ export const Signup = () => {
                 type="number"
                 placeholder="25"
                 {...register("age", { required: "Age is required", min: 18 })}
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/40 border border-white/10
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
                            text-gray-100 placeholder-gray-600 text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
-                           hover:border-white/20 transition-all duration-200"
+                           hover:border-[var(--border)] transition-all duration-200"
               />
             </Field>
 
@@ -193,10 +193,10 @@ export const Signup = () => {
                 type="email"
                 placeholder="john@example.com"
                 {...register("email", { required: "Email is required" })}
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/40 border border-white/10
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
                            text-gray-100 placeholder-gray-600 text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
-                           hover:border-white/20 transition-all duration-200"
+                           hover:border-[var(--border)] transition-all duration-200"
               />
             </Field>
 
@@ -209,15 +209,15 @@ export const Signup = () => {
                   required: "Password is required",
                   minLength: { value: 8, message: "Password must be at least 8 characters" },
                 })}
-                className="w-full pl-10 pr-11 py-3 rounded-xl bg-black/40 border border-white/10
+                className="w-full pl-10 pr-11 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
                            text-gray-100 placeholder-gray-600 text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
-                           hover:border-white/20 transition-all duration-200"
+                           hover:border-[var(--border)] transition-all duration-200"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors p-0.5"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-gray-300 transition-colors p-0.5"
               >
                 {showPassword ? <FiEyeOff size={15} /> : <FiEye size={15} />}
               </button>
@@ -227,7 +227,7 @@ export const Signup = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3.5 rounded-xl font-semibold text-white text-sm
+              className={`w-full py-3.5 rounded-xl font-semibold text-[var(--text)] text-sm
                           flex items-center justify-center gap-2 transition-all duration-200 mt-2
                           ${loading
                             ? "bg-cyan-500/30 cursor-not-allowed"
@@ -236,7 +236,7 @@ export const Signup = () => {
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin w-4 h-4 text-[var(--text)]" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                   </svg>
@@ -273,7 +273,7 @@ export const Signup = () => {
           </div>
 
           {/* Login redirect */}
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-[var(--muted)]">
             Already have an account?{" "}
             <Link
               to="/login"

@@ -15,9 +15,9 @@ export const UserNavbar = ({ toggleSidebar }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-black text-[var(--text)]">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-gray-900/70 border-b border-white/10 shadow-lg">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-gray-900/70 border-b border-[var(--border)] shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3">
           {/* Left: Sidebar toggle + Logo */}
           <div className="flex items-center gap-3">
@@ -69,7 +69,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
 
             <button
               onClick={logout}
-              className="px-4 py-2 rounded-md bg-gradient-to-r from-red-500 to-pink-500 font-semibold text-white hover:shadow-lg hover:shadow-pink-500/30 transition-all"
+              className="px-4 py-2 rounded-md bg-gradient-to-r from-red-500 to-pink-500 font-semibold text-[var(--text)] hover:shadow-lg hover:shadow-pink-500/30 transition-all"
             >
               Logout
             </button>
@@ -86,7 +86,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
 
         {/* Mobile dropdown */}
         {menuOpen && (
-          <div className="md:hidden bg-gray-900/95 border-t border-white/10 shadow-lg">
+          <div className="md:hidden bg-gray-900/95 border-t border-[var(--border)] shadow-lg">
             <div className="flex flex-col items-center px-6 py-4 space-y-4">
               <div className="flex gap-5 text-xl text-gray-300">
                 <a href="#" className="hover:text-cyan-400 transition-all">
@@ -113,7 +113,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
                   logout();
                   setMenuOpen(false);
                 }}
-                className="w-full py-2 rounded-md bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-pink-500/30 transition-all"
+                className="w-full py-2 rounded-md bg-gradient-to-r from-red-500 to-pink-500 text-[var(--text)] font-semibold hover:shadow-lg hover:shadow-pink-500/30 transition-all"
               >
                 Logout
               </button>

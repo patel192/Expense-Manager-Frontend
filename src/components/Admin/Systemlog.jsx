@@ -37,16 +37,16 @@ export const Systemlog = () => {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+          <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] mb-2">
             System <span className="text-purple-400">Audits</span>
           </h1>
-          <p className="text-gray-400 text-sm max-w-md">
+          <p className="text-[var(--muted)] text-sm max-w-md">
             Immutable operation ledger documenting administrative actions, security overrides, and system-level events.
           </p>
         </div>
         
         <div className="flex items-center gap-4">
-           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-xs font-bold text-gray-500">
+           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-xs font-bold text-[var(--muted)]">
               <FiLayout size={14} className="text-purple-400" />
               {logs.length} EVENTS LOGGED
            </div>
@@ -60,7 +60,7 @@ export const Systemlog = () => {
         className="flex flex-col sm:flex-row gap-4 p-4 mb-8 bg-[#0d0f14]/50 border border-white/5 backdrop-blur-md rounded-3xl shadow-2xl items-center"
       >
         <div className="flex-1 relative group w-full">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-purple-400 transition-colors" />
           <input
             type="text"
             placeholder="Search taxonomy cache by user, action or payload..."
@@ -89,7 +89,7 @@ export const Systemlog = () => {
         ) : filteredLogs.length === 0 ? (
           <div className="py-24 text-center">
              <FiClipboard size={48} className="mx-auto text-gray-700 mb-4" />
-             <p className="text-gray-500 font-medium">No operational records match the current criteria.</p>
+             <p className="text-[var(--muted)] font-medium">No operational records match the current criteria.</p>
           </div>
         ) : (
           <>
@@ -97,7 +97,7 @@ export const Systemlog = () => {
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="bg-white/5 text-[10px] font-bold text-gray-500 uppercase tracking-widest border-b border-white/5">
+                  <tr className="bg-white/5 text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest border-b border-white/5">
                     <th className="px-6 py-5">Sequence Time</th>
                     <th className="px-6 py-5">Initiating User</th>
                     <th className="px-6 py-5">Execution Action</th>
@@ -113,7 +113,7 @@ export const Systemlog = () => {
                       transition={{ delay: index * 0.01 }}
                       className="group hover:bg-white/[0.01] transition-colors"
                     >
-                      <td className="px-6 py-5 text-gray-500 text-xs">
+                      <td className="px-6 py-5 text-[var(--muted)] text-xs">
                         {new Date(log.timestamp || log.createdAt).toLocaleString()}
                       </td>
                       <td className="px-6 py-5 font-bold text-purple-400 group-hover:text-purple-300 transition-colors">
@@ -124,7 +124,7 @@ export const Systemlog = () => {
                           {log.action?.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-5 text-gray-400 group-hover:text-gray-300 transition-colors max-w-xs truncate" title={log.description}>
+                      <td className="px-6 py-5 text-[var(--muted)] group-hover:text-gray-300 transition-colors max-w-xs truncate" title={log.description}>
                         {log.description}
                       </td>
                     </motion.tr>
@@ -144,7 +144,7 @@ export const Systemlog = () => {
                   className="p-5 rounded-3xl bg-white/5 border border-white/5 shadow-lg space-y-3"
                 >
                   <div className="flex items-center justify-between">
-                     <p className="text-[10px] font-mono text-gray-500">
+                     <p className="text-[10px] font-mono text-[var(--muted)]">
                         {new Date(log.timestamp || log.createdAt).toLocaleString()}
                      </p>
                      <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${getBadgeColor(log.action)}`}>
@@ -156,7 +156,7 @@ export const Systemlog = () => {
                     @{log.user}
                   </p>
 
-                  <p className="text-gray-400 text-xs leading-relaxed">
+                  <p className="text-[var(--muted)] text-xs leading-relaxed">
                     {log.description}
                   </p>
                 </motion.div>

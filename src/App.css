@@ -85,13 +85,13 @@
   --sidebar-ring:      oklch(0.705 0.015 286.067);
 
   /* ── Custom vars: map hardcoded dark hex → light equivalents ── */
-  --surface-primary:   #ffffff;        /* replaces bg-[#111318]  */
+  --surface-primary:   #ffffff;        /* replaces bg-[var(--card)]  */
   --surface-secondary: #f8f9fb;        /* replaces bg-[#0d0f14]  */
   --surface-tertiary:  #f1f3f7;        /* replaces bg-[#0c0e12] bg-[#0b0c10] */
-  --surface-overlay:   rgba(0,0,0,0.04); /* replaces bg-black/40  */
+  --surface-overlay:   rgba(0,0,0,0.04); /* replaces bg-[var(--card)]  */
   --surface-subtle:    rgba(0,0,0,0.04); /* replaces bg-white/5   */
-  --border-subtle:     rgba(0,0,0,0.10); /* replaces border-white/10 */
-  --border-medium:     rgba(0,0,0,0.15); /* replaces border-white/15 */
+  --border-subtle:     rgba(0,0,0,0.10); /* replaces border-[var(--border)] */
+  --border-medium:     rgba(0,0,0,0.15); /* replaces border-[var(--border)] */
   --text-primary:      #111318;
   --text-secondary:    #4b5563;
   --text-tertiary:     #6b7280;
@@ -172,7 +172,7 @@
 
   /* ── Override hardcoded dark backgrounds ── */
 
-  /* bg-[#111318] and bg-[#111318]/80 */
+  /* bg-[var(--card)] and bg-[var(--card)]/80 */
   [class*="bg-\[#111318\]"] {
     background-color: var(--surface-primary) !important;
   }
@@ -192,7 +192,7 @@
     background-color: var(--surface-tertiary) !important;
   }
 
-  /* bg-black/40 inputs */
+  /* bg-[var(--card)] inputs */
   [class*="bg-black\/40"] {
     background-color: var(--surface-overlay) !important;
   }
@@ -205,9 +205,9 @@
   }
 
   /* ── Text overrides ── */
-  /* text-white in component context → theme-aware */
-  .user-layout [class*="text-white"]:not([class*="text-white/"]),
-  .admin-layout [class*="text-white"]:not([class*="text-white/"]) {
+  /* text-[var(--text)] in component context → theme-aware */
+  .user-layout [class*="text-[var(--text)]"]:not([class*="text-[var(--text)]/"]),
+  .admin-layout [class*="text-[var(--text)]"]:not([class*="text-[var(--text)]/"]) {
     color: var(--text-primary);
   }
 

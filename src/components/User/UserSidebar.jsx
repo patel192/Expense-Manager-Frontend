@@ -77,7 +77,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
+            className="fixed inset-0 bg-[var(--card)] backdrop-blur-sm z-40 md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -137,11 +137,11 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <span className="text-gray-500">{item.icon}</span>
+                          <span className="text-[var(--muted)]">{item.icon}</span>
                           <span>{item.label}</span>
                         </div>
                         <FaChevronDown
-                          className={`text-gray-400 text-xs transition-transform ${
+                          className={`text-[var(--muted)] text-xs transition-transform ${
                             shouldShowChildren ? "rotate-180" : ""
                           }`}
                         />
@@ -185,7 +185,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                             : "hover:bg-gray-100"
                         }`}
                       >
-                        <span className="text-gray-500">{item.icon}</span>
+                        <span className="text-[var(--muted)]">{item.icon}</span>
                         {item.label}
                       </Link>
                     </li>
@@ -197,19 +197,19 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
         </div>
 
         {/* Footer Contact Section */}
-        <div className="p-4 border-t border-gray-200 text-sm text-gray-500 space-y-2">
+        <div className="p-4 border-t border-gray-200 text-sm text-[var(--muted)] space-y-2">
           <p className="font-medium text-gray-700">Support</p>
           <div className="flex items-center gap-2">
-            <FaEnvelope className="text-gray-400" />{" "}
+            <FaEnvelope className="text-[var(--muted)]" />{" "}
             <a href="mailto:patelmuhammad192@gmail.com" className="hover:text-indigo-600">
               patelmuhammad192@gmail.com
             </a>
           </div>
           <div className="flex items-center gap-2">
-            <FaPhone className="text-gray-400" /> <span>+91 8980380280</span>
+            <FaPhone className="text-[var(--muted)]" /> <span>+91 8980380280</span>
           </div>
           <div className="flex items-center gap-2">
-            <FaGithub className="text-gray-400" />{" "}
+            <FaGithub className="text-[var(--muted)]" />{" "}
             <a
               href="https://github.com/patel192"
               target="_blank"

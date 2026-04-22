@@ -75,7 +75,7 @@ export const Navbar = () => {
             <svg
               viewBox="0 0 24 24"
               fill="none"
-              className="w-4 h-4 text-white"
+              className="w-4 h-4 text-[var(--text)]"
               stroke="currentColor"
               strokeWidth={2.2}
             >
@@ -103,7 +103,7 @@ export const Navbar = () => {
               <button
                 key={i}
                 onClick={(e) => scrollToSection(e, link.id)}
-                className="px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200"
+                className="px-3 py-2 rounded-lg text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/5 transition-all duration-200"
               >
                 {link.label}
               </button>
@@ -113,8 +113,8 @@ export const Navbar = () => {
                 to={link.to}
                 className={`px-3 py-2 rounded-lg transition-all duration-200 ${
                   isHomeActive
-                    ? "text-white bg-white/8"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                    ? "text-[var(--text)] bg-white/8"
+                    : "text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/5"
                 }`}
               >
                 {link.label}
@@ -127,14 +127,14 @@ export const Navbar = () => {
 
           <Link
             to="/login"
-            className="px-4 py-2 rounded-lg text-gray-300 bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-white/20 transition-all duration-200"
+            className="px-4 py-2 rounded-lg text-gray-300 bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-[var(--border)] transition-all duration-200"
           >
             Login
           </Link>
 
           <Link
             to="/signup"
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:opacity-90 hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 ml-1"
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-[var(--text)] font-medium hover:opacity-90 hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 ml-1"
           >
             Sign Up
           </Link>
@@ -150,7 +150,7 @@ export const Navbar = () => {
           </Link>
           <Link
             to="/signup"
-            className="px-3 py-1.5 text-sm rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:opacity-90 transition-all"
+            className="px-3 py-1.5 text-sm rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-[var(--text)] font-medium hover:opacity-90 transition-all"
           >
             Sign Up
           </Link>
@@ -159,7 +159,7 @@ export const Navbar = () => {
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
             aria-expanded={open}
-            className="ml-1 p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 min-w-[40px] min-h-[40px] flex items-center justify-center"
+            className="ml-1 p-2 rounded-lg text-gray-300 hover:text-[var(--text)] hover:bg-white/10 transition-all duration-200 min-w-[40px] min-h-[40px] flex items-center justify-center"
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
@@ -184,7 +184,7 @@ export const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden border-t border-[var(--border)] bg-[#0d0f12]/98 backdrop-blur-2xl"
+            className="md:hidden overflow-hidden border-t border-[var(--border)] bg-[var(--bg)]/98 backdrop-blur-2xl"
           >
             <div className="px-4 py-3 flex flex-col">
               {/* Nav section label */}
@@ -197,7 +197,7 @@ export const Navbar = () => {
                   <button
                     key={i}
                     onClick={(e) => scrollToSection(e, link.id)}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 text-sm font-medium transition-all text-left min-h-[44px]"
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-300 hover:text-[var(--text)] hover:bg-white/5 text-sm font-medium transition-all text-left min-h-[44px]"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/60 flex-shrink-0" />
                     {link.label}
@@ -210,7 +210,7 @@ export const Navbar = () => {
                     className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] ${
                       isHomeActive
                         ? "text-cyan-400 bg-cyan-500/8"
-                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                        : "text-gray-300 hover:text-[var(--text)] hover:bg-white/5"
                     }`}
                   >
                     <span
@@ -222,7 +222,7 @@ export const Navbar = () => {
               )}
 
               {/* Divider */}
-              <div className="my-3 border-t border-white/8" />
+              <div className="my-3 border-t border-[var(--border)]" />
 
               {/* Auth section label */}
               <p className="text-[10px] uppercase tracking-widest text-gray-600 font-medium px-2 mb-1">
@@ -233,14 +233,14 @@ export const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-white/20 text-center text-sm font-medium text-gray-200 transition-all min-h-[44px] flex items-center justify-center"
+                  className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-[var(--border)] text-center text-sm font-medium text-gray-200 transition-all min-h-[44px] flex items-center justify-center"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setOpen(false)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-center text-sm font-medium hover:opacity-90 transition-all min-h-[44px] flex items-center justify-center shadow-lg shadow-cyan-500/20"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-[var(--text)] text-center text-sm font-medium hover:opacity-90 transition-all min-h-[44px] flex items-center justify-center shadow-lg shadow-cyan-500/20"
                 >
                   Sign Up — It's Free
                 </Link>

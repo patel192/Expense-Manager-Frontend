@@ -83,10 +83,10 @@ export const ManageUsers = () => {
         {/* HEADER SECTION */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] mb-2">
               User <span className="text-cyan-400">Registry</span>
             </h1>
-            <p className="text-gray-400 text-sm max-w-md">
+            <p className="text-[var(--muted)] text-sm max-w-md">
               Audit, moderate, and manage the system's user base with granular controls and real-time status updates.
             </p>
           </div>
@@ -101,11 +101,11 @@ export const ManageUsers = () => {
         {/* FILTER & SEARCH BAR */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 rounded-3xl bg-[#0d0f14]/50 border border-white/5 backdrop-blur-md shadow-2xl">
           <div className="md:col-span-2 relative group">
-            <IoSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
+            <IoSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-cyan-400 transition-colors" />
             <input
               type="text"
               placeholder="Query by name or identifier..."
-              className="w-full pl-12 pr-4 py-3 rounded-2xl bg-black/20 border border-white/5 text-white placeholder-gray-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all font-medium"
+              className="w-full pl-12 pr-4 py-3 rounded-2xl bg-black/20 border border-white/5 text-[var(--text)] placeholder-gray-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all font-medium"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -122,7 +122,7 @@ export const ManageUsers = () => {
               <option value="Manager">Executive (Manager)</option>
               <option value="User">Standard (User)</option>
             </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--muted)]">
                <motion.div animate={{ rotate: 90 }}>
                  <FiGrid size={12} />
                </motion.div>
@@ -137,9 +137,9 @@ export const ManageUsers = () => {
              <p className="text-sm font-semibold text-cyan-400/60 uppercase tracking-widest animate-pulse">Syncing Registry...</p>
           </div>
         ) : displayedUsers.length === 0 ? (
-          <div className="py-24 text-center rounded-3xl bg-white/5 border border-dashed border-white/10">
+          <div className="py-24 text-center rounded-3xl bg-white/5 border border-dashed border-[var(--border)]">
              <FiUsers size={48} className="mx-auto text-gray-700 mb-4" />
-             <p className="text-lg font-medium text-gray-500">No matching subjects found in the database.</p>
+             <p className="text-lg font-medium text-[var(--muted)]">No matching subjects found in the database.</p>
           </div>
         ) : (
           <>
@@ -147,7 +147,7 @@ export const ManageUsers = () => {
             <div className="hidden lg:block rounded-3xl overflow-hidden border border-white/5 bg-[#0d0f14]/30 backdrop-blur-xl shadow-2xl">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-white/5 text-gray-500 font-bold uppercase tracking-widest text-[10px] border-b border-white/5">
+                  <tr className="bg-white/5 text-[var(--muted)] font-bold uppercase tracking-widest text-[10px] border-b border-white/5">
                     <th className="px-6 py-5">Full Name</th>
                     <th className="px-6 py-5">Metric (Age)</th>
                     <th className="px-6 py-5">Email Address</th>
@@ -167,15 +167,15 @@ export const ManageUsers = () => {
                     >
                       <td className="px-6 py-5">
                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-white font-bold shadow-lg">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 border border-[var(--border)] flex items-center justify-center text-[var(--text)] font-bold shadow-lg">
                                {user.name.charAt(0).toUpperCase()}
                             </div>
-                            <span className="font-semibold text-gray-200 group-hover:text-white transition">{user.name}</span>
+                            <span className="font-semibold text-gray-200 group-hover:text-[var(--text)] transition">{user.name}</span>
                          </div>
                       </td>
-                      <td className="px-6 py-5 font-mono text-gray-400">{user.age || "—"}</td>
-                      <td className="px-6 py-5 text-gray-400">{user.email}</td>
-                      <td className="px-6 py-5 text-gray-400">
+                      <td className="px-6 py-5 font-mono text-[var(--muted)]">{user.age || "—"}</td>
+                      <td className="px-6 py-5 text-[var(--muted)]">{user.email}</td>
+                      <td className="px-6 py-5 text-[var(--muted)]">
                         <span className={`px-3 py-1 transparent rounded-lg text-[10px] font-bold border ${
                           user.role === "Admin"
                             ? "border-purple-500/30 bg-purple-500/10 text-purple-400"
@@ -190,14 +190,14 @@ export const ManageUsers = () => {
                         <div className="flex justify-center gap-3">
                           <button
                             onClick={() => navigate(`/admin/user/${user._id}`)}
-                            className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all duration-300 shadow-lg"
+                            className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-cyan-400 hover:bg-cyan-500 hover:text-[var(--text)] transition-all duration-300 shadow-lg"
                             title="Inspect Profile"
                           >
                             <FaEye size={16} />
                           </button>
                           <button
                             onClick={() => handleDelete(user._id)}
-                            className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500 hover:text-white transition-all duration-300 shadow-lg"
+                            className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500 hover:text-[var(--text)] transition-all duration-300 shadow-lg"
                             title="Terminate Account"
                           >
                             <FaTrash size={14} />
@@ -221,12 +221,12 @@ export const ManageUsers = () => {
                     className="p-5 rounded-3xl bg-white/5 border border-white/5 shadow-xl space-y-4"
                   >
                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white font-bold text-lg">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-[var(--text)] font-bold text-lg">
                            {user.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                           <h4 className="font-bold text-white truncate">{user.name}</h4>
-                           <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                           <h4 className="font-bold text-[var(--text)] truncate">{user.name}</h4>
+                           <p className="text-xs text-[var(--muted)] truncate">{user.email}</p>
                         </div>
                         <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${
                           user.role === "Admin" ? "border-purple-500/30 text-purple-400" : "border-cyan-500/30 text-cyan-400"
@@ -264,8 +264,8 @@ export const ManageUsers = () => {
                   key={i}
                   className={`min-w-[40px] h-10 rounded-xl text-xs font-bold transition-all duration-300
                     ${currentPage === i + 1
-                      ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                      : "text-gray-500 hover:text-white hover:bg-white/5"
+                      ? "bg-cyan-500 text-[var(--text)] shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                      : "text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/5"
                     }`}
                   onClick={() => setCurrentPage(i + 1)}
                 >

@@ -29,8 +29,8 @@ const Shimmer = ({ className = "" }) => (
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#1a1d26] border border-white/15 rounded-xl px-4 py-3 shadow-2xl">
-      <p className="text-xs text-gray-400 mb-2 font-medium">{label}</p>
+    <div className="bg-[#1a1d26] border border-[var(--border)] rounded-xl px-4 py-3 shadow-2xl">
+      <p className="text-xs text-[var(--muted)] mb-2 font-medium">{label}</p>
       {payload.map((p, i) => (
         <p key={i} className="text-sm font-bold" style={{ color: p.color }}>
           {p.name}: ₹{p.value?.toLocaleString("en-IN")}
@@ -60,17 +60,17 @@ const BudgetProgress = ({ pct }) => {
 /* ─── Field wrapper ─── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
-    <label className="block text-xs font-medium text-gray-400 tracking-wide">{label}</label>
+    <label className="block text-xs font-medium text-[var(--muted)] tracking-wide">{label}</label>
     <div className="relative">
-      {icon && <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-10">{icon}</span>}
+      {icon && <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none z-10">{icon}</span>}
       {children}
     </div>
     {error && <p className="flex items-center gap-1.5 text-red-400 text-xs"><span className="w-1 h-1 rounded-full bg-red-400 flex-shrink-0" />{error}</p>}
   </div>
 );
 
-const inputCls  = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 hover:border-white/20 transition-all duration-200";
-const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-gray-100 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 hover:border-white/20 transition-all duration-200 appearance-none";
+const inputCls  = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 hover:border-[var(--border)] transition-all duration-200";
+const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 hover:border-[var(--border)] transition-all duration-200 appearance-none";
 
 const COLORS = ["#10b981", "#ef4444", "#3b82f6", "#f59e0b", "#a855f7"];
 
@@ -166,7 +166,7 @@ export const UserBudget = () => {
   }
 
   return (
-    <div className="space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text)]">
 
       {/* ══ HEADER ══ */}
       <motion.div
@@ -176,7 +176,7 @@ export const UserBudget = () => {
       >
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Budget Center</h1>
-          <p className="text-gray-500 mt-1 text-sm">Plan, track, and optimize your spending by category.</p>
+          <p className="text-[var(--muted)] mt-1 text-sm">Plan, track, and optimize your spending by category.</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -218,7 +218,7 @@ export const UserBudget = () => {
               <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center mb-3 ${card.bg} border ${card.border}`}>
                 <span className={card.color}>{card.icon}</span>
               </div>
-              <p className="text-[10px] sm:text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">{card.label}</p>
+              <p className="text-[10px] sm:text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">{card.label}</p>
               <p className={`text-lg sm:text-2xl font-bold tracking-tight ${card.color}`}>{card.value}</p>
             </div>
           </motion.div>
@@ -226,7 +226,7 @@ export const UserBudget = () => {
       </div>
 
       {/* ══ PILL TABS ══ */}
-      <div className="flex items-center gap-1 bg-white/4 border border-white/8 rounded-2xl p-1.5 w-fit flex-wrap">
+      <div className="flex items-center gap-1 bg-white/4 border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -234,7 +234,7 @@ export const UserBudget = () => {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
               ${activeTab === tab.id
                 ? "bg-gradient-to-r from-emerald-500/20 to-teal-600/20 border border-emerald-500/30 text-emerald-400"
-                : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                : "text-[var(--muted)] hover:text-gray-300 hover:bg-white/5"
               }`}
           >
             {tab.icon}{tab.label}
@@ -253,11 +253,11 @@ export const UserBudget = () => {
             className="space-y-4"
           >
             {summary.length === 0 ? (
-              <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-white/8 bg-white/2">
+              <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-[var(--border)] bg-white/2">
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                   <FiTarget size={22} className="text-emerald-400" />
                 </div>
-                <p className="text-sm text-gray-500">No budgets set yet.</p>
+                <p className="text-sm text-[var(--muted)]">No budgets set yet.</p>
                 <button onClick={() => setIsModalOpen(true)} className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">
                   + Create your first budget
                 </button>
@@ -275,12 +275,12 @@ export const UserBudget = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.07 }}
                       whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                      className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5"
+                      className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <h3 className="text-sm font-semibold text-white">{item.category}</h3>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <h3 className="text-sm font-semibold text-[var(--text)]">{item.category}</h3>
+                          <p className="text-xs text-[var(--muted)] mt-0.5">
                             ₹{item.spent.toLocaleString("en-IN")} of ₹{item.allocated.toLocaleString("en-IN")} used
                           </p>
                         </div>
@@ -312,12 +312,12 @@ export const UserBudget = () => {
             exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}
             className="grid grid-cols-1 xl:grid-cols-2 gap-5"
           >
-            <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+            <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
                   <FiPieChart size={13} className="text-cyan-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-white">Spending by Category</h3>
+                <h3 className="text-sm font-semibold text-[var(--text)]">Spending by Category</h3>
               </div>
               {summary.length === 0 ? (
                 <div className="flex items-center justify-center h-48 text-gray-600 text-sm">No data yet</div>
@@ -336,7 +336,7 @@ export const UserBudget = () => {
                   </ResponsiveContainer>
                   <div className="flex flex-wrap gap-2 justify-center mt-2">
                     {summary.map((s, i) => (
-                      <span key={i} className="flex items-center gap-1.5 text-xs text-gray-400">
+                      <span key={i} className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
                         <span className="w-2.5 h-2.5 rounded-sm" style={{ background: COLORS[i % COLORS.length] }} />
                         {s.category}
                       </span>
@@ -346,12 +346,12 @@ export const UserBudget = () => {
               )}
             </div>
 
-            <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+            <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center">
                   <FiTarget size={13} className="text-emerald-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-white">Allocated vs Spent</h3>
+                <h3 className="text-sm font-semibold text-[var(--text)]">Allocated vs Spent</h3>
               </div>
               {summary.length === 0 ? (
                 <div className="flex items-center justify-center h-48 text-gray-600 text-sm">No data yet</div>
@@ -386,13 +386,13 @@ export const UserBudget = () => {
                     <FiCpu size={14} className="text-blue-400" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-semibold text-white">AI Budget Planner</h2>
-                    <p className="text-xs text-gray-500 mt-0.5">Get a personalized budget plan based on your finances</p>
+                    <h2 className="text-sm font-semibold text-[var(--text)]">AI Budget Planner</h2>
+                    <p className="text-xs text-[var(--muted)] mt-0.5">Get a personalized budget plan based on your finances</p>
                   </div>
                 </div>
                 <button onClick={fetchBudgetPlan} disabled={loadingPlan}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
-                             bg-gradient-to-r from-blue-500 to-cyan-500 text-white
+                             bg-gradient-to-r from-blue-500 to-cyan-500 text-[var(--text)]
                              hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200
                              disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
                              shadow-lg shadow-blue-500/20">
@@ -404,7 +404,7 @@ export const UserBudget = () => {
               {!budgetPlan && !loadingPlan && (
                 <div className="flex flex-col items-center gap-3 py-12 text-center px-5">
                   <FiCpu size={28} className="text-gray-700" />
-                  <p className="text-sm text-gray-500">Click "Generate Plan" to get AI-powered budget recommendations.</p>
+                  <p className="text-sm text-[var(--muted)]">Click "Generate Plan" to get AI-powered budget recommendations.</p>
                 </div>
               )}
               {loadingPlan && (
@@ -425,16 +425,16 @@ export const UserBudget = () => {
                     <motion.div key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
                       className={`relative overflow-hidden rounded-2xl border p-5 ${s.bg} ${s.border}`}>
                       <div className={`absolute -top-6 -right-6 w-16 h-16 rounded-full blur-2xl opacity-20 ${s.glow}`} />
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-widest mb-2">{s.label}</p>
+                      <p className="text-xs font-medium text-[var(--muted)] uppercase tracking-widest mb-2">{s.label}</p>
                       <p className={`text-2xl font-bold tracking-tight ${s.color}`}>{s.value}</p>
                     </motion.div>
                   ))}
                 </div>
 
-                <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
-                  <div className="px-5 py-4 border-b border-white/8">
-                    <h3 className="text-sm font-semibold text-white">Recommended Budget</h3>
-                    <p className="text-xs text-gray-500 mt-0.5">AI-suggested allocations based on your income and spending</p>
+                <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-[var(--border)]">
+                    <h3 className="text-sm font-semibold text-[var(--text)]">Recommended Budget</h3>
+                    <p className="text-xs text-[var(--muted)] mt-0.5">AI-suggested allocations based on your income and spending</p>
                   </div>
                   <div className="divide-y divide-white/5">
                     {budgetPlan.budgetPlan.map((item, i) => (
@@ -457,7 +457,7 @@ export const UserBudget = () => {
                     <div className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center">
                       <FiZap size={13} className="text-emerald-400" />
                     </div>
-                    <h3 className="text-sm font-semibold text-white">AI Suggestions</h3>
+                    <h3 className="text-sm font-semibold text-[var(--text)]">AI Suggestions</h3>
                   </div>
                   <ul className="space-y-3">
                     {budgetPlan.recommendations.map((tip, i) => (
@@ -481,18 +481,18 @@ export const UserBudget = () => {
             className="space-y-4"
           >
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">{budgets.length} budgets configured</p>
+              <p className="text-sm text-[var(--muted)]">{budgets.length} budgets configured</p>
               <button onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-gray-300 hover:bg-white/10 transition-all">
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-[var(--border)] text-sm text-gray-300 hover:bg-white/10 transition-all">
                 <FiPlus size={14} /> Add
               </button>
             </div>
             {budgets.length === 0 ? (
-              <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-white/8 bg-white/2">
+              <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-[var(--border)] bg-white/2">
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                   <FiTarget size={22} className="text-emerald-400" />
                 </div>
-                <p className="text-sm text-gray-500">No budgets yet.</p>
+                <p className="text-sm text-[var(--muted)]">No budgets yet.</p>
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 gap-4">
@@ -500,14 +500,14 @@ export const UserBudget = () => {
                   <motion.div key={b._id}
                     initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.06 }}
-                    className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5 hover:border-white/20 transition-colors"
+                    className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5 hover:border-[var(--border)] transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-white">
+                        <p className="text-sm font-semibold text-[var(--text)]">
                           {typeof b.categoryID === "object" ? b.categoryID?.name : b.description || "Budget"}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">{b.description || "No description"}</p>
+                        <p className="text-xs text-[var(--muted)] mt-0.5">{b.description || "No description"}</p>
                       </div>
                       <button onClick={() => { setSelectedBudget(b); setConfirmDeleteOpen(true); }}
                         className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-600 hover:bg-rose-500/15 hover:text-rose-400 transition-all">
@@ -538,15 +538,15 @@ export const UserBudget = () => {
               enter="ease-out duration-250" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
               leave="ease-in duration-150" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
               <Dialog.Panel className="w-full max-w-md rounded-2xl bg-[#0f1115] border border-white/12 shadow-2xl overflow-hidden">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-white/8">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center">
                       <FiTarget size={14} className="text-emerald-400" />
                     </div>
-                    <Dialog.Title className="text-sm font-semibold text-white">Add New Budget</Dialog.Title>
+                    <Dialog.Title className="text-sm font-semibold text-[var(--text)]">Add New Budget</Dialog.Title>
                   </div>
                   <button onClick={() => setIsModalOpen(false)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-all">
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/10 transition-all">
                     <XMarkIcon className="h-4 w-4" />
                   </button>
                 </div>
@@ -574,7 +574,7 @@ export const UserBudget = () => {
                     </Field>
                     <button type="submit" disabled={isSubmitting}
                       className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600
-                                 font-semibold text-sm text-white shadow-lg shadow-emerald-500/20
+                                 font-semibold text-sm text-[var(--text)] shadow-lg shadow-emerald-500/20
                                  hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200
                                  disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
                                  flex items-center justify-center gap-2 mt-2">
@@ -606,10 +606,10 @@ export const UserBudget = () => {
                 <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center mx-auto mb-4">
                   <FiTrash2 size={20} className="text-rose-400" />
                 </div>
-                <h3 className="text-base font-semibold text-white mb-2">Delete Budget?</h3>
-                <p className="text-sm text-gray-500 mb-6">
+                <h3 className="text-base font-semibold text-[var(--text)] mb-2">Delete Budget?</h3>
+                <p className="text-sm text-[var(--muted)] mb-6">
                   This will permanently delete the budget for{" "}
-                  <span className="text-white font-medium">
+                  <span className="text-[var(--text)] font-medium">
                     {selectedBudget && (
                       typeof selectedBudget.categoryID === "object"
                         ? selectedBudget.categoryID?.name
@@ -619,11 +619,11 @@ export const UserBudget = () => {
                 </p>
                 <div className="flex gap-3">
                   <button onClick={() => { setConfirmDeleteOpen(false); setSelectedBudget(null); }}
-                    className="flex-1 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-gray-300 hover:bg-white/10 transition-all">
+                    className="flex-1 py-2.5 rounded-xl border border-[var(--border)] bg-white/5 text-sm font-medium text-gray-300 hover:bg-white/10 transition-all">
                     Cancel
                   </button>
                   <button onClick={handleDeleteBudget} disabled={isDeleting}
-                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-sm font-semibold text-white hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-sm font-semibold text-[var(--text)] hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                     {isDeleting ? <><FiRefreshCw size={13} className="animate-spin" /> Deleting...</> : "Delete"}
                   </button>
                 </div>

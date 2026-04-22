@@ -27,8 +27,8 @@ const Shimmer = ({ className = "" }) => (
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#1a1d26] border border-white/15 rounded-xl px-4 py-3 shadow-2xl">
-      <p className="text-xs text-gray-400 mb-1 font-medium">{label}</p>
+    <div className="bg-[#1a1d26] border border-[var(--border)] rounded-xl px-4 py-3 shadow-2xl">
+      <p className="text-xs text-[var(--muted)] mb-1 font-medium">{label}</p>
       {payload.map((p, i) => (
         <p key={i} className="text-sm font-bold" style={{ color: p.color }}>
           ₹{p.value?.toLocaleString("en-IN")}
@@ -41,10 +41,10 @@ const ChartTooltip = ({ active, payload, label }) => {
 /* ─── Field wrapper ─── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
-    <label className="block text-xs font-medium text-gray-400 tracking-wide">{label}</label>
+    <label className="block text-xs font-medium text-[var(--muted)] tracking-wide">{label}</label>
     <div className="relative">
       {icon && (
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-10">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none z-10">
           {icon}
         </span>
       )}
@@ -59,8 +59,8 @@ const Field = ({ label, icon, error, children }) => (
   </div>
 );
 
-const inputCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-rose-500/60 focus:ring-1 focus:ring-rose-500/30 hover:border-white/20 transition-all duration-200";
-const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-gray-100 text-sm focus:outline-none focus:border-rose-500/60 focus:ring-1 focus:ring-rose-500/30 hover:border-white/20 transition-all duration-200 appearance-none";
+const inputCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-rose-500/60 focus:ring-1 focus:ring-rose-500/30 hover:border-[var(--border)] transition-all duration-200";
+const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 text-sm focus:outline-none focus:border-rose-500/60 focus:ring-1 focus:ring-rose-500/30 hover:border-[var(--border)] transition-all duration-200 appearance-none";
 
 /* ══════════════════════════════════════
    MAIN COMPONENT
@@ -152,7 +152,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
   ];
 
   return (
-    <div className="space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text)]">
 
       {/* ══ HEADER ══ */}
       <motion.div
@@ -162,7 +162,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
       >
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Expense Center</h1>
-          <p className="text-gray-500 mt-1 text-sm">Track expenses, analyze patterns, manage your spending.</p>
+          <p className="text-[var(--muted)] mt-1 text-sm">Track expenses, analyze patterns, manage your spending.</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -196,7 +196,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
               <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center mb-3 ${card.bg} border ${card.border}`}>
                 <span className={card.color}>{card.icon}</span>
               </div>
-              <p className="text-[10px] sm:text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">{card.label}</p>
+              <p className="text-[10px] sm:text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">{card.label}</p>
               <p className={`text-lg sm:text-2xl font-bold tracking-tight truncate ${card.color}`}>{card.value}</p>
             </div>
           </motion.div>
@@ -204,7 +204,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
       </div>
 
       {/* ══ PILL TABS ══ */}
-      <div className="flex items-center gap-1 bg-white/4 border border-white/8 rounded-2xl p-1.5 w-fit flex-wrap">
+      <div className="flex items-center gap-1 bg-white/4 border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -212,7 +212,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
               ${activeTab === tab.id
                 ? "bg-gradient-to-r from-rose-500/20 to-pink-600/20 border border-rose-500/30 text-rose-400"
-                : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                : "text-[var(--muted)] hover:text-gray-300 hover:bg-white/5"
               }`}
           >
             {tab.icon}{tab.label}
@@ -233,15 +233,15 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
             transition={{ duration: 0.25 }}
             className="space-y-5"
           >
-            <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
+            <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/20 flex items-center justify-center">
                     <FiShoppingBag size={13} className="text-rose-400" />
                   </div>
-                  <h3 className="text-sm font-semibold text-white">Recent Expenses</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text)]">Recent Expenses</h3>
                 </div>
-                <span className="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded-full">
+                <span className="text-xs text-[var(--muted)] bg-white/5 px-2.5 py-1 rounded-full">
                   {recentExpenses.length} entries
                 </span>
               </div>
@@ -251,7 +251,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
                   <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center">
                     <FiShoppingBag size={20} className="text-rose-400" />
                   </div>
-                  <p className="text-sm text-gray-500">No recent expenses.</p>
+                  <p className="text-sm text-[var(--muted)]">No recent expenses.</p>
                   <button onClick={() => setIsModalOpen(true)}
                     className="text-xs text-rose-400 hover:text-rose-300 transition-colors">
                     + Add your first expense
@@ -305,12 +305,12 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
             className="grid grid-cols-1 xl:grid-cols-2 gap-5"
           >
             {/* Monthly trend */}
-            <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+            <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/20 flex items-center justify-center">
                   <FiBarChart2 size={13} className="text-rose-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-white">Monthly Expenses Trend</h3>
+                <h3 className="text-sm font-semibold text-[var(--text)]">Monthly Expenses Trend</h3>
               </div>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={chartData} barSize={12}>
@@ -324,12 +324,12 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
             </div>
 
             {/* Category breakdown */}
-            <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+            <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
                   <FiTag size={13} className="text-cyan-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-white">Category Breakdown</h3>
+                <h3 className="text-sm font-semibold text-[var(--text)]">Category Breakdown</h3>
               </div>
 
               {categoryBreakdown.length === 0 ? (
@@ -356,7 +356,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
                   {/* Custom legend */}
                   <div className="flex flex-wrap gap-2 mt-3 justify-center">
                     {categoryBreakdown.map((cat, i) => (
-                      <span key={i} className="flex items-center gap-1.5 text-xs text-gray-400">
+                      <span key={i} className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
                         <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                         {cat.name}
                       </span>
@@ -379,30 +379,30 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
             className="space-y-3"
           >
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm text-gray-500">{expenses.length} total records</p>
+              <p className="text-sm text-[var(--muted)]">{expenses.length} total records</p>
               <button onClick={() => setIsModalOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5
-                           border border-white/10 text-sm text-gray-300 hover:bg-white/10
-                           hover:border-white/20 transition-all">
+                           border border-[var(--border)] text-sm text-gray-300 hover:bg-white/10
+                           hover:border-[var(--border)] transition-all">
                 <FiPlus size={14} /> Add
               </button>
             </div>
 
             {expenses.length === 0 ? (
-              <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-white/8 bg-white/2">
+              <div className="flex flex-col items-center gap-3 py-16 text-center rounded-2xl border border-[var(--border)] bg-white/2">
                 <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center">
                   <FiTrendingDown size={22} className="text-rose-400" />
                 </div>
-                <p className="text-sm text-gray-500">No expenses recorded yet.</p>
+                <p className="text-sm text-[var(--muted)]">No expenses recorded yet.</p>
                 <button onClick={() => setIsModalOpen(true)}
                   className="text-xs text-rose-400 hover:text-rose-300 transition-colors">
                   + Add your first expense
                 </button>
               </div>
             ) : (
-              <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden">
+              <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
                 {/* Desktop header */}
-                <div className="hidden sm:grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-5 py-3 border-b border-white/8">
+                <div className="hidden sm:grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-5 py-3 border-b border-[var(--border)]">
                   {["Description", "Category", "Amount", "Date", ""].map((h, i) => (
                     <span key={i} className="text-[11px] font-medium text-gray-600 uppercase tracking-widest">{h}</span>
                   ))}
@@ -475,15 +475,15 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
               <Dialog.Panel className="w-full max-w-md rounded-2xl bg-[#0f1115] border border-white/12 shadow-2xl overflow-hidden">
 
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-white/8">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center">
                       <FiTrendingDown size={14} className="text-rose-400" />
                     </div>
-                    <Dialog.Title className="text-sm font-semibold text-white">Add Expense</Dialog.Title>
+                    <Dialog.Title className="text-sm font-semibold text-[var(--text)]">Add Expense</Dialog.Title>
                   </div>
                   <button onClick={() => setIsModalOpen(false)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-all">
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/10 transition-all">
                     <XMarkIcon className="h-4 w-4" />
                   </button>
                 </div>
@@ -528,7 +528,7 @@ const {categories,recentExpenses,expenses} = useSelector((state) => state.expens
 
                     <button type="submit" disabled={isSubmitting}
                       className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600
-                                 font-semibold text-sm text-white shadow-lg shadow-rose-500/20
+                                 font-semibold text-sm text-[var(--text)] shadow-lg shadow-rose-500/20
                                  hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200
                                  disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
                                  flex items-center justify-center gap-2 mt-2">

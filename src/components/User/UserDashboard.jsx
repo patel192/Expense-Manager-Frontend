@@ -75,7 +75,7 @@ const MetricCard = memo(({ title, value, icon, color, bg, border }) => (
       >
         <span className={color}>{icon}</span>
       </div>
-      <p className="text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">
+      <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">
         {title}
       </p>
       <p className={`text-2xl font-bold tracking-tight ${color}`}>
@@ -99,7 +99,7 @@ const AICard = memo(
         >
           <span className={iconColor}>{icon}</span>
         </div>
-        <h3 className="text-sm font-semibold text-white">{title}</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)]">{title}</h3>
         <div
           className={`ml-auto w-1.5 h-1.5 rounded-full ${accentColor} animate-pulse`}
         />
@@ -123,10 +123,10 @@ const AIButton = ({ onClick, label, color }) => (
 
 /* ─── AI Result ─── */
 const AIResult = ({ content }) => (
-  <div className="mt-3 rounded-xl bg-black/30 border border-white/8 p-4">
+  <div className="mt-3 rounded-xl bg-black/30 border border-[var(--border)] p-4">
     <div
       className="prose prose-invert prose-sm max-w-none text-gray-300
-                    prose-headings:text-white prose-headings:font-semibold
+                    prose-headings:text-[var(--text)] prose-headings:font-semibold
                     prose-li:text-gray-300 prose-p:leading-relaxed"
     >
       <ReactMarkdown>{content}</ReactMarkdown>
@@ -138,9 +138,9 @@ const AIResult = ({ content }) => (
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#1a1d26] border border-white/15 rounded-xl px-4 py-3 shadow-2xl">
-      <p className="text-xs text-gray-400 mb-1">{label}</p>
-      <p className="text-base font-bold text-white">
+    <div className="bg-[#1a1d26] border border-[var(--border)] rounded-xl px-4 py-3 shadow-2xl">
+      <p className="text-xs text-[var(--muted)] mb-1">{label}</p>
+      <p className="text-base font-bold text-[var(--text)]">
         ₹{payload[0].value?.toLocaleString("en-IN")}
       </p>
     </div>
@@ -377,7 +377,7 @@ export const UserDashboard = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2 }}
-      className="space-y-6 text-white pb-6"
+      className="space-y-6 text-[var(--text)] pb-6"
     >
       {/* ══ HEADER ══ */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -385,7 +385,7 @@ export const UserDashboard = () => {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             Financial Overview
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             {new Date().toLocaleDateString("en-IN", {
               weekday: "long",
               year: "numeric",
@@ -453,7 +453,7 @@ export const UserDashboard = () => {
                 {netSavings >= 0 ? "↑ Positive" : "↓ Deficit"}
               </span>
             </div>
-            <p className="text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">
+            <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">
               Net Savings
             </p>
             <p
@@ -476,31 +476,31 @@ export const UserDashboard = () => {
           accentColor="bg-rose-400"
         >
           {loadingRisk ? (
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
+            <div className="flex items-center gap-3 text-[var(--muted)] text-sm">
               <FiRefreshCw size={14} className="animate-spin" />
               Analyzing your spending behavior...
             </div>
           ) : riskData ? (
             <div
-              className={`rounded-xl p-4 border ${riskColors[riskData.riskLevel]?.border || "border-white/10"} ${riskColors[riskData.riskLevel]?.bg || "bg-white/5"}`}
+              className={`rounded-xl p-4 border ${riskColors[riskData.riskLevel]?.border || "border-[var(--border)]"} ${riskColors[riskData.riskLevel]?.bg || "bg-white/5"}`}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold text-white">
+                <span className="text-sm font-semibold text-[var(--text)]">
                   Risk Assessment
                 </span>
                 <span
-                  className={`text-xs font-bold px-2.5 py-1 rounded-full ${riskColors[riskData.riskLevel]?.badge || "bg-white/10 text-white"}`}
+                  className={`text-xs font-bold px-2.5 py-1 rounded-full ${riskColors[riskData.riskLevel]?.badge || "bg-white/10 text-[var(--text)]"}`}
                 >
                   {riskData.riskLevel} Risk
                 </span>
               </div>
               <div className="space-y-2 text-sm">
                 <p className="text-gray-300">
-                  <span className="text-gray-500 font-medium">Category:</span>{" "}
+                  <span className="text-[var(--muted)] font-medium">Category:</span>{" "}
                   {riskData.category}
                 </p>
                 <p className="text-gray-300">
-                  <span className="text-gray-500 font-medium">Reason:</span>{" "}
+                  <span className="text-[var(--muted)] font-medium">Reason:</span>{" "}
                   {riskData.reason}
                 </p>
                 <p
@@ -512,7 +512,7 @@ export const UserDashboard = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--muted)]">
                 Evaluate your current spending for risk patterns and anomalies.
               </p>
               <AIButton
@@ -533,7 +533,7 @@ export const UserDashboard = () => {
           accentColor="bg-violet-400"
         >
           {loadingHealth ? (
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
+            <div className="flex items-center gap-3 text-[var(--muted)] text-sm">
               <FiRefreshCw size={14} className="animate-spin" />
               Evaluating your financial health...
             </div>
@@ -541,7 +541,7 @@ export const UserDashboard = () => {
             <AIResult content={healthScore} />
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--muted)]">
                 Get a comprehensive score based on your income, spending, and
                 savings habits.
               </p>
@@ -563,7 +563,7 @@ export const UserDashboard = () => {
           accentColor="bg-cyan-400"
         >
           {loadingInsights ? (
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
+            <div className="flex items-center gap-3 text-[var(--muted)] text-sm">
               <FiRefreshCw size={14} className="animate-spin" />
               Analyzing your spending patterns...
             </div>
@@ -571,7 +571,7 @@ export const UserDashboard = () => {
             <AIResult content={expenseInsights} />
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--muted)]">
                 Uncover hidden spending patterns and personalized financial
                 insights.
               </p>
@@ -593,7 +593,7 @@ export const UserDashboard = () => {
           accentColor="bg-blue-400"
         >
           {loadingForecast ? (
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
+            <div className="flex items-center gap-3 text-[var(--muted)] text-sm">
               <FiRefreshCw size={14} className="animate-spin" />
               Predicting your financial future...
             </div>
@@ -601,7 +601,7 @@ export const UserDashboard = () => {
             <AIResult content={forecast} />
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--muted)]">
                 See a projection of your financial trajectory based on current
                 patterns.
               </p>
@@ -623,7 +623,7 @@ export const UserDashboard = () => {
           accentColor="bg-emerald-400"
         >
           {loadingSavings ? (
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
+            <div className="flex items-center gap-3 text-[var(--muted)] text-sm">
               <FiRefreshCw size={14} className="animate-spin" />
               Scanning for saving opportunities...
             </div>
@@ -631,7 +631,7 @@ export const UserDashboard = () => {
             <AIResult content={savingOpportunities} />
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--muted)]">
                 Discover where you can cut costs and boost your savings
                 automatically.
               </p>
@@ -659,7 +659,7 @@ export const UserDashboard = () => {
                 <div className="w-10 h-10 rounded-full bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
                   <FiCpu size={18} className="text-amber-400" />
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-[var(--muted)]">
                   Ask anything about your finances
                 </p>
               </div>
@@ -673,8 +673,8 @@ export const UserDashboard = () => {
                   className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed
                   ${
                     msg.role === "user"
-                      ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-br-sm"
-                      : "bg-white/8 border border-white/10 text-gray-200 rounded-bl-sm"
+                      ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-[var(--text)] rounded-br-sm"
+                      : "bg-white/8 border border-[var(--border)] text-gray-200 rounded-bl-sm"
                   }`}
                 >
                   {msg.text}
@@ -683,7 +683,7 @@ export const UserDashboard = () => {
             ))}
             {loadingAI && (
               <div className="flex justify-start">
-                <div className="bg-white/8 border border-white/10 px-4 py-2.5 rounded-2xl rounded-bl-sm">
+                <div className="bg-white/8 border border-[var(--border)] px-4 py-2.5 rounded-2xl rounded-bl-sm">
                   <div className="flex gap-1 items-center">
                     <span
                       className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce"
@@ -709,16 +709,16 @@ export const UserDashboard = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Ask about your finances..."
-              className="flex-1 px-4 py-2.5 rounded-xl bg-black/30 border border-white/10
-                         text-sm text-white placeholder-gray-600
+              className="flex-1 px-4 py-2.5 rounded-xl bg-black/30 border border-[var(--border)]
+                         text-sm text-[var(--text)] placeholder-gray-600
                          focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/25
-                         hover:border-white/20 transition-colors duration-150"
+                         hover:border-[var(--border)] transition-colors duration-150"
             />
             <button
               onClick={sendMessage}
               disabled={loadingAI || !input.trim()}
               className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500
-                         flex items-center justify-center text-white
+                         flex items-center justify-center text-[var(--text)]
                          hover:opacity-90 transition-opacity
                          disabled:opacity-40 disabled:cursor-not-allowed"
             >
@@ -737,12 +737,12 @@ export const UserDashboard = () => {
       ) : (
         (totalIncome > 0 || totalExpenses > 0) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+            <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
                   <FiBarChart2 size={13} className="text-blue-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-sm font-semibold text-[var(--text)]">
                   Income vs Expenses
                 </h3>
               </div>
@@ -781,12 +781,12 @@ export const UserDashboard = () => {
             </div>
 
             {expenses.length > 0 && (
-              <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+              <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
                     <FiPieChart size={13} className="text-cyan-400" />
                   </div>
-                  <h3 className="text-sm font-semibold text-white">
+                  <h3 className="text-sm font-semibold text-[var(--text)]">
                     Expense Distribution
                   </h3>
                 </div>
@@ -834,12 +834,12 @@ export const UserDashboard = () => {
 
       {/* ══ UPCOMING RECURRING ══ */}
       {!loadingSecondary && upcomingRecurring.length > 0 && (
-        <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+        <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
               <FiRepeat size={13} className="text-amber-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">
+            <h3 className="text-sm font-semibold text-[var(--text)]">
               Upcoming Recurring Payments
             </h3>
             <span className="ml-auto text-xs font-medium px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20">
@@ -850,7 +850,7 @@ export const UserDashboard = () => {
             {upcomingRecurring.map((item) => (
               <div
                 key={item._id}
-                className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/4 border border-white/8 hover:border-white/15 transition-colors"
+                className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/4 border border-[var(--border)] hover:border-[var(--border)] transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
@@ -864,7 +864,7 @@ export const UserDashboard = () => {
                   <span className="text-sm font-bold text-rose-400">
                     ₹{item.amount.toLocaleString("en-IN")}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-gray-500">
+                  <span className="flex items-center gap-1 text-xs text-[var(--muted)]">
                     <FiClock size={11} />
                     {new Date(item.nextDate).toLocaleDateString("en-IN", {
                       day: "numeric",
@@ -879,13 +879,13 @@ export const UserDashboard = () => {
       )}
 
       {/* ══ AI INSIGHT HISTORY ══ */}
-      <div className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5">
+      <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
               <FiCpu size={13} className="text-cyan-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">
+            <h3 className="text-sm font-semibold text-[var(--text)]">
               AI Insight History
             </h3>
           </div>
@@ -919,7 +919,7 @@ export const UserDashboard = () => {
             {allInsights.map((item) => (
               <div
                 key={item._id}
-                className="rounded-xl bg-white/4 border border-white/8 p-4 hover:border-white/15 transition-colors"
+                className="rounded-xl bg-white/4 border border-[var(--border)] p-4 hover:border-[var(--border)] transition-colors"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-semibold text-cyan-400 capitalize px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/15">
@@ -934,7 +934,7 @@ export const UserDashboard = () => {
                     })}
                   </span>
                 </div>
-                <div className="prose prose-invert prose-sm max-w-none text-gray-400 prose-headings:text-white prose-strong:text-cyan-400 prose-li:text-gray-400">
+                <div className="prose prose-invert prose-sm max-w-none text-[var(--muted)] prose-headings:text-[var(--text)] prose-strong:text-cyan-400 prose-li:text-[var(--muted)]">
                   <ReactMarkdown>{item.content}</ReactMarkdown>
                 </div>
               </div>

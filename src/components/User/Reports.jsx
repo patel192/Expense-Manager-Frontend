@@ -46,7 +46,7 @@ export const Reports = () => {
   ];
 
   return (
-    <div className="space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text)]">
 
       {/* ══ HEADER ══ */}
       <motion.div
@@ -56,7 +56,7 @@ export const Reports = () => {
       >
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Reports & Insights</h1>
-          <p className="text-gray-500 mt-1 text-sm">Download a comprehensive PDF of your complete financial history.</p>
+          <p className="text-[var(--muted)] mt-1 text-sm">Download a comprehensive PDF of your complete financial history.</p>
         </div>
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border
                         bg-violet-500/10 border-violet-500/20 text-violet-400 text-xs font-medium self-start">
@@ -86,8 +86,8 @@ export const Reports = () => {
               <FiFileText size={26} className="text-violet-400" />
             </div>
             <div className="space-y-1">
-              <h2 className="text-lg font-bold text-white">Financial Report</h2>
-              <p className="text-sm text-gray-400 leading-relaxed max-w-md">
+              <h2 className="text-lg font-bold text-[var(--text)]">Financial Report</h2>
+              <p className="text-sm text-[var(--muted)] leading-relaxed max-w-md">
                 A complete PDF export of your income, expenses, budgets, savings, and recurring payments — all in one document.
               </p>
               <div className="flex flex-wrap gap-2 pt-2">
@@ -97,7 +97,7 @@ export const Reports = () => {
                   { icon: <FiCheckCircle size={11} />, text: "Instant download" },
                 ].map((badge, i) => (
                   <span key={i} className="inline-flex items-center gap-1.5 text-[11px] font-medium
-                                           text-gray-500 bg-white/5 border border-white/8 px-2.5 py-1 rounded-full">
+                                           text-[var(--muted)] bg-white/5 border border-[var(--border)] px-2.5 py-1 rounded-full">
                     {badge.icon}{badge.text}
                   </span>
                 ))}
@@ -112,7 +112,7 @@ export const Reports = () => {
             whileHover={!loading ? { scale: 1.02, y: -2 } : {}}
             whileTap={!loading ? { scale: 0.98 } : {}}
             className={`flex-shrink-0 inline-flex items-center gap-2.5 px-6 py-3 rounded-xl
-                        font-semibold text-sm text-white transition-all duration-200 shadow-lg
+                        font-semibold text-sm text-[var(--text)] transition-all duration-200 shadow-lg
                         ${downloaded
                           ? "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/25"
                           : loading
@@ -136,13 +136,13 @@ export const Reports = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden"
+        className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden"
       >
-        <div className="flex items-center gap-2 px-5 py-4 border-b border-white/8">
+        <div className="flex items-center gap-2 px-5 py-4 border-b border-[var(--border)]">
           <div className="w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/20 flex items-center justify-center">
             <FiFileText size={13} className="text-violet-400" />
           </div>
-          <h3 className="text-sm font-semibold text-white">What's included in your report</h3>
+          <h3 className="text-sm font-semibold text-[var(--text)]">What's included in your report</h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
@@ -159,7 +159,7 @@ export const Reports = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-200">{section.label}</p>
-                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{section.desc}</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{section.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -171,9 +171,9 @@ export const Reports = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm p-5"
+        className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm p-5"
       >
-        <h3 className="text-sm font-semibold text-white mb-4">How it works</h3>
+        <h3 className="text-sm font-semibold text-[var(--text)] mb-4">How it works</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { step: "01", title: "Click Download", desc: "Hit the download button above to trigger your report.", color: "text-violet-400", bg: "bg-violet-500/10 border-violet-500/20" },
@@ -186,7 +186,7 @@ export const Reports = () => {
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-200">{s.title}</p>
-                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{s.desc}</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{s.desc}</p>
               </div>
             </div>
           ))}

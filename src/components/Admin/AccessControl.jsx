@@ -18,8 +18,8 @@ export const AccessControl = () => {
 
   const roleColors = {
     Admin: "from-yellow-400 to-orange-500 text-black",
-    User: "from-blue-400 to-indigo-500 text-white",
-    Manager: "from-purple-400 to-pink-500 text-white",
+    User: "from-blue-400 to-indigo-500 text-[var(--text)]",
+    Manager: "from-purple-400 to-pink-500 text-[var(--text)]",
   };
 
   const filteredUsers = users.filter((user) => {
@@ -58,16 +58,16 @@ export const AccessControl = () => {
       {/* ======= Header ======= */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+          <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] mb-2">
             Access <span className="text-cyan-400">Governance</span>
           </h1>
-          <p className="text-gray-400 text-sm max-w-md">
+          <p className="text-[var(--muted)] text-sm max-w-md">
             Manage system-wide permissions and security roles. Audit user clearance levels and active status.
           </p>
         </div>
         <div className="flex items-center gap-3 bg-white/5 border border-white/5 px-4 py-2 rounded-xl">
            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Security Override Active</span>
+           <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">Security Override Active</span>
         </div>
       </div>
 
@@ -78,7 +78,7 @@ export const AccessControl = () => {
         className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 mb-8 bg-[#0d0f14]/50 border border-white/5 backdrop-blur-md rounded-3xl shadow-2xl"
       >
         <div className="md:col-span-2 relative group">
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
+          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-cyan-400 transition-colors" />
           <input
             type="text"
             placeholder="Search by identity or email..."
@@ -87,7 +87,7 @@ export const AccessControl = () => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-black/20 border border-white/5 text-white placeholder-gray-600 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all font-medium"
+            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-black/20 border border-white/5 text-[var(--text)] placeholder-gray-600 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all font-medium"
           />
         </div>
 
@@ -98,14 +98,14 @@ export const AccessControl = () => {
               setFilterRole(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full py-3 px-4 rounded-2xl bg-black/20 border border-white/5 text-gray-400 focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none cursor-pointer font-medium"
+            className="w-full py-3 px-4 rounded-2xl bg-black/20 border border-white/5 text-[var(--muted)] focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none cursor-pointer font-medium"
           >
             <option value="All">All Clearance Levels</option>
             <option value="Admin">Tier 1: Admin</option>
             <option value="Manager">Tier 2: Manager</option>
             <option value="User">Tier 3: Standard User</option>
           </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--muted)]">
              <FiChevronLeft className="rotate-[-90deg]" size={14} />
           </div>
         </div>
@@ -127,14 +127,14 @@ export const AccessControl = () => {
 
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-center gap-4 mb-4">
-                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-white font-bold text-lg shadow-inner">
+                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 border border-[var(--border)] flex items-center justify-center text-[var(--text)] font-bold text-lg shadow-inner">
                       {user.name?.charAt(0).toUpperCase()}
                    </div>
                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-white text-lg truncate group-hover:text-cyan-400 transition-colors">
+                      <h3 className="font-bold text-[var(--text)] text-lg truncate group-hover:text-cyan-400 transition-colors">
                         {user.name}
                       </h3>
-                      <p className="text-gray-500 text-xs truncate">{user.email}</p>
+                      <p className="text-[var(--muted)] text-xs truncate">{user.email}</p>
                    </div>
                 </div>
 
@@ -143,7 +143,7 @@ export const AccessControl = () => {
                       <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
                         user.roleId?.name === "Admin" ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400" : 
                         user.roleId?.name === "Manager" ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400" : 
-                        "bg-white/5 border-white/10 text-gray-400"
+                        "bg-white/5 border-[var(--border)] text-[var(--muted)]"
                       }`}>
                          {user.roleId?.name || "UNASSIGNED"}
                       </span>
@@ -168,13 +168,13 @@ export const AccessControl = () => {
                 </div>
 
                 {/* Buttons */}
-                <div className="flex gap-3 mt-6 pt-6 border-t border-white/5 group-hover:border-white/10 transition-colors">
-                  <button className="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
+                <div className="flex gap-3 mt-6 pt-6 border-t border-white/5 group-hover:border-[var(--border)] transition-colors">
+                  <button className="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-gray-300 hover:text-[var(--text)] transition-all text-xs font-bold uppercase tracking-widest">
                     CONFIG
                   </button>
                   <button
                     onClick={() => handleDelete(user._id)}
-                    className="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold uppercase tracking-widest"
+                    className="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-[var(--text)] transition-all text-xs font-bold uppercase tracking-widest"
                   >
                     TERMINATE
                   </button>
@@ -183,9 +183,9 @@ export const AccessControl = () => {
             </motion.div>
           ))
         ) : (
-          <div className="col-span-full py-24 text-center rounded-3xl bg-white/5 border border-dashed border-white/10">
+          <div className="col-span-full py-24 text-center rounded-3xl bg-white/5 border border-dashed border-[var(--border)]">
              <FiShield size={48} className="mx-auto text-gray-700 mb-4" />
-             <p className="text-gray-500 font-medium">No subjects detected in current cache scope.</p>
+             <p className="text-[var(--muted)] font-medium">No subjects detected in current cache scope.</p>
           </div>
         )}
       </div>
@@ -200,8 +200,8 @@ export const AccessControl = () => {
                 onClick={() => setCurrentPage(i + 1)}
                 className={`min-w-[40px] h-10 px-3 rounded-xl text-xs font-bold transition-all duration-300
                   ${currentPage === i + 1
-                    ? "bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                    : "text-gray-500 hover:text-white hover:bg-white/5"
+                    ? "bg-cyan-500 text-[var(--text)] shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                    : "text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/5"
                   }`}
               >
                 {String(i + 1).padStart(2, '0')}

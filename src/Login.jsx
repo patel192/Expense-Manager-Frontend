@@ -23,11 +23,11 @@ import {
 /* ── reusable field wrapper ── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
-    <label className="block text-xs font-medium text-gray-400 tracking-wide">
+    <label className="block text-xs font-medium text-[var(--muted)] tracking-wide">
       {label}
     </label>
     <div className="relative">
-      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none">
         {icon}
       </span>
       {children}
@@ -121,7 +121,7 @@ export const Login = () => {
     <div
       className="min-h-screen flex items-center justify-center px-4 py-10
                     bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10]
-                    text-white relative overflow-hidden"
+                    text-[var(--text)] relative overflow-hidden"
     >
       <ToastContainer transition={Bounce} />
 
@@ -131,13 +131,13 @@ export const Login = () => {
 
       <div
         className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-3xl overflow-hidden
-                      border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.7)]"
+                      border border-[var(--border)] shadow-[0_24px_60px_rgba(0,0,0,0.7)]"
       >
         {/* ══ LEFT PANEL — static, no motion, lg only ══ */}
         <div
           className="hidden lg:flex flex-col justify-between
                         bg-gradient-to-br from-[#0d1f2d] via-[#0a1628] to-[#091020]
-                        border-r border-white/10 p-10"
+                        border-r border-[var(--border)] p-10"
         >
           {/* Brand */}
           <div className="flex items-center gap-3">
@@ -145,7 +145,7 @@ export const Login = () => {
               className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600
                             flex items-center justify-center shadow-lg shadow-cyan-500/20"
             >
-              <FiTrendingUp size={16} className="text-white" />
+              <FiTrendingUp size={16} className="text-[var(--text)]" />
             </div>
             <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               FinTrack
@@ -155,10 +155,10 @@ export const Login = () => {
           {/* Content — purely static, zero framer-motion on left panel */}
           <div className="space-y-8">
             <div className="space-y-3">
-              <h2 className="text-2xl font-bold text-white leading-tight">
+              <h2 className="text-2xl font-bold text-[var(--text)] leading-tight">
                 Good to have you back
               </h2>
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className="text-sm text-[var(--muted)] leading-relaxed">
                 Your financial dashboard is waiting. Pick up right where you
                 left off.
               </p>
@@ -204,10 +204,10 @@ export const Login = () => {
               ].map((s, i) => (
                 <div
                   key={i}
-                  className="bg-white/4 border border-white/8 rounded-xl px-3 py-3 text-center"
+                  className="bg-white/4 border border-[var(--border)] rounded-xl px-3 py-3 text-center"
                 >
-                  <p className="text-white font-bold text-sm">{s.value}</p>
-                  <p className="text-gray-500 text-[10px] mt-0.5">{s.label}</p>
+                  <p className="text-[var(--text)] font-bold text-sm">{s.value}</p>
+                  <p className="text-[var(--muted)] text-[10px] mt-0.5">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -223,12 +223,12 @@ export const Login = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="bg-[#111318] px-6 sm:px-8 py-10 flex flex-col justify-center"
+          className="bg-[var(--card)] px-6 sm:px-8 py-10 flex flex-col justify-center"
         >
           {/* Mobile brand */}
           <div className="flex lg:hidden items-center justify-center gap-2 mb-8">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-              <FiTrendingUp size={14} className="text-white" />
+              <FiTrendingUp size={14} className="text-[var(--text)]" />
             </div>
             <span className="text-base font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               FinTrack
@@ -237,8 +237,8 @@ export const Login = () => {
 
           {/* Header */}
           <div className="mb-7 space-y-1">
-            <h2 className="text-xl font-bold text-white">Welcome back</h2>
-            <p className="text-sm text-gray-400">
+            <h2 className="text-xl font-bold text-[var(--text)]">Welcome back</h2>
+            <p className="text-sm text-[var(--muted)]">
               Sign in to your account to continue
             </p>
           </div>
@@ -254,10 +254,10 @@ export const Login = () => {
                 placeholder="john@example.com"
                 autoComplete="email"
                 {...register("email", { required: "Email is required" })}
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/40 border border-white/10
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
                            text-gray-100 placeholder-gray-600 text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
-                           hover:border-white/20 transition-colors duration-150"
+                           hover:border-[var(--border)] transition-colors duration-150"
               />
             </Field>
 
@@ -271,15 +271,15 @@ export const Login = () => {
                 placeholder="Your password"
                 autoComplete="current-password"
                 {...register("password", { required: "Password is required" })}
-                className="w-full pl-10 pr-11 py-3 rounded-xl bg-black/40 border border-white/10
+                className="w-full pl-10 pr-11 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
                            text-gray-100 placeholder-gray-600 text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
-                           hover:border-white/20 transition-colors duration-150"
+                           hover:border-[var(--border)] transition-colors duration-150"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)]
                            hover:text-gray-300 transition-colors p-0.5"
               >
                 {showPassword ? <FiEyeOff size={15} /> : <FiEye size={15} />}
@@ -289,7 +289,7 @@ export const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3.5 rounded-xl font-semibold text-white text-sm mt-2
+              className={`w-full py-3.5 rounded-xl font-semibold text-[var(--text)] text-sm mt-2
                           flex items-center justify-center gap-2 transition-all duration-200
                           ${
                             loading
@@ -350,7 +350,7 @@ export const Login = () => {
             ))}
           </div>
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-[var(--muted)]">
             Don't have an account?{" "}
             <Link
               to="/signup"

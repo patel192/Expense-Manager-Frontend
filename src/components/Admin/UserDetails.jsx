@@ -87,12 +87,12 @@ export const UserDetails = () => {
       <div className="flex items-center gap-4 mb-8">
          <button 
            onClick={() => navigate(-1)}
-           className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition shadow-lg"
+           className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/10 transition shadow-lg"
          >
             <FiChevronLeft size={20} />
          </button>
          <div>
-            <h1 className="text-sm font-bold text-gray-500 uppercase tracking-[0.3em]">Subject Analysis</h1>
+            <h1 className="text-sm font-bold text-[var(--muted)] uppercase tracking-[0.3em]">Subject Analysis</h1>
             <p className="text-xs text-cyan-500/60 font-mono">ID: {userId}</p>
          </div>
       </div>
@@ -115,8 +115,8 @@ export const UserDetails = () => {
                  {user?.profilePic ? (
                    <img src={user.profilePic} alt={user.name} className="w-32 h-32 rounded-3xl border-2 border-cyan-500/30 object-cover shadow-2xl p-1 bg-black/20" />
                  ) : (
-                   <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center shadow-2xl shadow-cyan-500/10">
-                      <FiUser className="w-16 h-16 text-white/50" />
+                   <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-gray-700 to-gray-900 border border-[var(--border)] flex items-center justify-center shadow-2xl shadow-cyan-500/10">
+                      <FiUser className="w-16 h-16 text-[var(--text)]/50" />
                    </div>
                  )}
                  <div className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 shadow-lg backdrop-blur-sm">
@@ -125,16 +125,16 @@ export const UserDetails = () => {
               </div>
 
               <div className="flex-1 space-y-3">
-                 <h2 className="text-4xl font-black text-white tracking-tight">{user.name}</h2>
-                 <p className="text-gray-400 font-medium">{user.email}</p>
+                 <h2 className="text-4xl font-black text-[var(--text)] tracking-tight">{user.name}</h2>
+                 <p className="text-[var(--muted)] font-medium">{user.email}</p>
                  
                  <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start pt-2">
                     <span className={`px-4 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
-                      user.role === "Admin" ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400" : "bg-white/5 border-white/10 text-gray-500"
+                      user.role === "Admin" ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400" : "bg-white/5 border-[var(--border)] text-[var(--muted)]"
                     }`}>
                       {user.role} ACCESS
                     </span>
-                    <div className="flex items-center gap-2 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[var(--muted)] text-[10px] font-bold uppercase tracking-widest">
                        <FiCalendar className="text-cyan-500" />
                        DECRYPTED: {new Date(user.createdAt).toLocaleDateString()}
                     </div>
@@ -142,7 +142,7 @@ export const UserDetails = () => {
               </div>
 
               <div className="flex gap-2">
-                 <button className="px-6 py-3 rounded-2xl bg-white/5 border border-white/5 text-xs font-bold uppercase tracking-widest text-gray-300 hover:bg-white/10 hover:text-white transition">
+                 <button className="px-6 py-3 rounded-2xl bg-white/5 border border-white/5 text-xs font-bold uppercase tracking-widest text-gray-300 hover:bg-white/10 hover:text-[var(--text)] transition">
                    MODERATE
                  </button>
               </div>
@@ -162,8 +162,8 @@ export const UserDetails = () => {
                 className={`p-6 rounded-3xl bg-gradient-to-br ${card.color} border border-white/5 shadow-xl flex items-center justify-between group`}
               >
                 <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{card.label}</p>
-                  <h3 className="text-3xl font-black text-white">₹{card.value.toLocaleString()}</h3>
+                  <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">{card.label}</p>
+                  <h3 className="text-3xl font-black text-[var(--text)]">₹{card.value.toLocaleString()}</h3>
                 </div>
                 <div className={`p-4 rounded-2xl bg-black/20 ${card.accent} shadow-inner group-hover:scale-110 transition-transform`}>
                    {card.icon}
@@ -176,7 +176,7 @@ export const UserDetails = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Distribution View */}
             <motion.div className="p-8 rounded-[2.5rem] bg-[#0d0f14]/50 border border-white/5 backdrop-blur-xl shadow-2xl">
-              <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-8">Convergent Distribution</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[var(--muted)] mb-8">Convergent Distribution</h3>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={[{ name: "Inflow", amount: totalIncome }, { name: "Outflow", amount: totalExpense }]}>
                   <defs>
@@ -195,7 +195,7 @@ export const UserDetails = () => {
 
             {/* Cyclical Trends */}
             <motion.div className="p-8 rounded-[2.5rem] bg-[#0d0f14]/50 border border-white/5 backdrop-blur-xl shadow-2xl">
-              <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-8">Cyclical Velocity</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[var(--muted)] mb-8">Cyclical Velocity</h3>
               <ResponsiveContainer width="100%" height={260}>
                 <AreaChart data={monthlyData}>
                   <defs>
@@ -214,7 +214,7 @@ export const UserDetails = () => {
 
           {/* ===================== TIMELINE (RECENT ACTIVITY) ===================== */}
           <motion.div className="p-8 rounded-[2.5rem] bg-[#0d0f14]/80 border border-white/5 backdrop-blur-2xl shadow-3xl">
-            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mb-8 flex items-center gap-3">
+            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[var(--muted)] mb-8 flex items-center gap-3">
                Sequence Transactional Log
                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-ping" />
             </h3>
@@ -236,7 +236,7 @@ export const UserDetails = () => {
 
                   <div className="flex-1 grid grid-cols-1 md:grid-cols-4 items-center p-5 rounded-2xl bg-white/[0.01] border border-white/[0.03] hover:bg-white/[0.03] transition-all">
                      <div className="md:col-span-2">
-                        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{new Date(tx.date).toLocaleString()}</p>
+                        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">{new Date(tx.date).toLocaleString()}</p>
                         <h4 className="font-bold text-gray-200">Execution Block: {tx.description || "System Payload"}</h4>
                      </div>
                      <div className="text-right flex items-center gap-3 md:justify-end">

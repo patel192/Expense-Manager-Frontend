@@ -20,10 +20,10 @@ const Shimmer = ({ className = "" }) => (
 /* ─── Field wrapper ─── */
 const Field = ({ label, icon, children }) => (
   <div className="space-y-1.5">
-    <label className="block text-xs font-medium text-gray-400 tracking-wide">{label}</label>
+    <label className="block text-xs font-medium text-[var(--muted)] tracking-wide">{label}</label>
     <div className="relative">
       {icon && (
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-10">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none z-10">
           {icon}
         </span>
       )}
@@ -32,8 +32,8 @@ const Field = ({ label, icon, children }) => (
   </div>
 );
 
-const inputCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-white/20 transition-all duration-200";
-const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-gray-100 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-white/20 transition-all duration-200 appearance-none";
+const inputCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-[var(--border)] transition-all duration-200";
+const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-[var(--border)] transition-all duration-200 appearance-none";
 
 /* ─── Frequency badge colors ─── */
 const freqConfig = {
@@ -133,7 +133,7 @@ export const RecurringTransactions = () => {
     .sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate))[0];
 
   return (
-    <div className="space-y-6 text-white">
+    <div className="space-y-6 text-[var(--text)]">
 
       {/* ══ HEADER ══ */}
       <motion.div
@@ -143,10 +143,10 @@ export const RecurringTransactions = () => {
       >
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Recurring Transactions</h1>
-          <p className="text-gray-500 mt-1 text-sm">Manage your scheduled payments and subscriptions.</p>
+          <p className="text-[var(--muted)] mt-1 text-sm">Manage your scheduled payments and subscriptions.</p>
         </div>
         <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium self-start
-          ${activeCount > 0 ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400" : "bg-white/5 border-white/10 text-gray-500"}`}>
+          ${activeCount > 0 ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400" : "bg-white/5 border-[var(--border)] text-[var(--muted)]"}`}>
           <FiActivity size={12} />
           {activeCount} active · {pausedCount} paused
         </div>
@@ -173,7 +173,7 @@ export const RecurringTransactions = () => {
               <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center mb-3 ${card.bg} border ${card.border}`}>
                 <span className={card.color}>{card.icon}</span>
               </div>
-              <p className="text-[10px] sm:text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">{card.label}</p>
+              <p className="text-[10px] sm:text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">{card.label}</p>
               <p className={`text-lg sm:text-xl font-bold tracking-tight truncate ${card.color}`}>{card.value}</p>
               {card.suffix && <p className="text-[10px] text-gray-600 mt-0.5 truncate">{card.suffix}</p>}
             </div>
@@ -186,10 +186,10 @@ export const RecurringTransactions = () => {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden"
+        className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden"
       >
         {/* Form header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
           <div className="flex items-center gap-3">
             <div className={`w-8 h-8 rounded-xl flex items-center justify-center border
               ${editingId
@@ -200,7 +200,7 @@ export const RecurringTransactions = () => {
                 : <FiPlus size={14} className="text-cyan-400" />}
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-white">
+              <h2 className="text-sm font-semibold text-[var(--text)]">
                 {editingId ? "Edit Recurring Payment" : "Add New Recurring Payment"}
               </h2>
               {editingId && (
@@ -211,7 +211,7 @@ export const RecurringTransactions = () => {
           {editingId && (
             <button
               onClick={handleCancelEdit}
-              className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-300 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/5"
+              className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-gray-300 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/5"
             >
               <FiX size={12} /> Cancel
             </button>
@@ -256,7 +256,7 @@ export const RecurringTransactions = () => {
             {/* Submit spans remaining column on lg */}
             <div className="flex items-end">
               <button type="submit" disabled={submitting}
-                className={`w-full py-2.5 rounded-xl font-semibold text-sm text-white
+                className={`w-full py-2.5 rounded-xl font-semibold text-sm text-[var(--text)]
                             flex items-center justify-center gap-2 transition-all duration-200
                             shadow-lg hover:opacity-90 hover:-translate-y-0.5
                             disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
@@ -281,16 +281,16 @@ export const RecurringTransactions = () => {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="rounded-2xl bg-[#0d0f14]/80 border border-white/10 backdrop-blur-sm overflow-hidden"
+        className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden"
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
               <FiRepeat size={13} className="text-cyan-400" />
             </div>
-            <h2 className="text-sm font-semibold text-white">Your Recurring Payments</h2>
+            <h2 className="text-sm font-semibold text-[var(--text)]">Your Recurring Payments</h2>
           </div>
-          <span className="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded-full">
+          <span className="text-xs text-[var(--muted)] bg-white/5 px-2.5 py-1 rounded-full">
             {recurringList.length} total
           </span>
         </div>
@@ -304,7 +304,7 @@ export const RecurringTransactions = () => {
             <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
               <FiRepeat size={22} className="text-cyan-400" />
             </div>
-            <p className="text-sm text-gray-500">No recurring transactions yet.</p>
+            <p className="text-sm text-[var(--muted)]">No recurring transactions yet.</p>
             <p className="text-xs text-gray-600">Fill the form above to add your first one.</p>
           </div>
         ) : (
@@ -313,7 +313,7 @@ export const RecurringTransactions = () => {
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/8">
+                  <tr className="border-b border-[var(--border)]">
                     {["Title", "Amount", "Frequency", "Next Date", "Status", "Actions"].map(h => (
                       <th key={h} className="text-left px-5 py-3 text-[11px] font-medium text-gray-600 uppercase tracking-widest">{h}</th>
                     ))}
@@ -339,7 +339,7 @@ export const RecurringTransactions = () => {
                           <td className="px-5 py-3.5">
                             <div className="flex items-center gap-2.5">
                               <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
-                                ${isActive ? "bg-cyan-500/10 border border-cyan-500/20" : "bg-white/5 border border-white/10"}`}>
+                                ${isActive ? "bg-cyan-500/10 border border-cyan-500/20" : "bg-white/5 border border-[var(--border)]"}`}>
                                 <FiRepeat size={12} className={isActive ? "text-cyan-400" : "text-gray-600"} />
                               </div>
                               <span className="font-medium text-gray-200">{item.title}</span>
@@ -353,7 +353,7 @@ export const RecurringTransactions = () => {
                               {item.frequency}
                             </span>
                           </td>
-                          <td className="px-5 py-3.5 text-xs text-gray-400">
+                          <td className="px-5 py-3.5 text-xs text-[var(--muted)]">
                             <div className="flex items-center gap-1.5">
                               <FiClock size={11} className="text-gray-600" />
                               {new Date(item.nextDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -363,7 +363,7 @@ export const RecurringTransactions = () => {
                             <span className={`text-xs px-2.5 py-1 rounded-full border font-medium
                               ${isActive
                                 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                                : "bg-gray-500/10 border-gray-500/20 text-gray-500"
+                                : "bg-gray-500/10 border-gray-500/20 text-[var(--muted)]"
                               }`}>
                               {isActive ? "Active" : "Paused"}
                             </span>
@@ -406,7 +406,7 @@ export const RecurringTransactions = () => {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
-                          ${isActive ? "bg-cyan-500/10 border border-cyan-500/20" : "bg-white/5 border border-white/10"}`}>
+                          ${isActive ? "bg-cyan-500/10 border border-cyan-500/20" : "bg-white/5 border border-[var(--border)]"}`}>
                           <FiRepeat size={15} className={isActive ? "text-cyan-400" : "text-gray-600"} />
                         </div>
                         <div className="min-w-0">
@@ -417,7 +417,7 @@ export const RecurringTransactions = () => {
                               {item.frequency}
                             </span>
                             <span className={`text-[10px] px-2 py-0.5 rounded-full border
-                              ${isActive ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-gray-500/10 border-gray-500/20 text-gray-500"}`}>
+                              ${isActive ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-gray-500/10 border-gray-500/20 text-[var(--muted)]"}`}>
                               {isActive ? "Active" : "Paused"}
                             </span>
                           </div>

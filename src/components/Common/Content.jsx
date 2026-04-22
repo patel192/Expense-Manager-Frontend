@@ -64,18 +64,18 @@ const AppWindow = () => {
   return (
     <div
       ref={ref}
-      className="w-full max-w-md rounded-2xl bg-[var(--card)] border border-white/10
+      className="w-full max-w-md rounded-2xl bg-[var(--card)] border border-[var(--border)]
                  shadow-[0_24px_80px_rgba(6,182,212,0.10),0_20px_60px_rgba(0,0,0,0.7)]
                  overflow-hidden"
     >
       {/* Window chrome */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#181b22]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[#181b22]">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
         </div>
-        <p className="text-xs text-gray-400 font-medium">FinTrack · Overview</p>
+        <p className="text-xs text-[var(--muted)] font-medium">FinTrack · Overview</p>
         <span className="px-2 py-0.5 rounded-full text-[10px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
           Live
         </span>
@@ -86,15 +86,15 @@ const AppWindow = () => {
         {/* Header row */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-500 font-medium">
+            <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-medium">
               Current month
             </p>
-            <p className="text-base font-semibold text-white mt-0.5">
+            <p className="text-base font-semibold text-[var(--text)] mt-0.5">
               Financial Snapshot
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] text-[var(--muted)] uppercase tracking-wide">
               Net saved
             </p>
             <p className="text-sm font-bold text-cyan-400">{fmt(savings)}</p>
@@ -129,7 +129,7 @@ const AppWindow = () => {
             <div key={i} className={`rounded-xl border p-2.5 ${m.bg}`}>
               <div className={`flex items-center gap-1 ${m.color} mb-1`}>
                 {m.icon}
-                <p className="text-[10px] text-gray-400">{m.label}</p>
+                <p className="text-[10px] text-[var(--muted)]">{m.label}</p>
               </div>
               <p className={`text-xs font-bold ${m.color}`}>{m.value}</p>
             </div>
@@ -137,9 +137,9 @@ const AppWindow = () => {
         </div>
 
         {/* Budget progress bar */}
-        <div className="rounded-xl bg-black/40 border border-white/8 p-3 space-y-2">
+        <div className="rounded-xl bg-[var(--card)] border border-[var(--border)] p-3 space-y-2">
           <div className="flex items-center justify-between text-[11px]">
-            <span className="text-gray-400 font-medium">Budget usage</span>
+            <span className="text-[var(--muted)] font-medium">Budget usage</span>
             <span className="text-amber-300 font-semibold">72%</span>
           </div>
           <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
@@ -153,8 +153,8 @@ const AppWindow = () => {
         </div>
 
         {/* Recent highlights */}
-        <div className="rounded-xl bg-black/40 border border-white/8 p-3 space-y-1.5">
-          <p className="text-[10px] uppercase tracking-widest text-gray-500 font-medium mb-2">
+        <div className="rounded-xl bg-[var(--card)] border border-[var(--border)] p-3 space-y-1.5">
+          <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-medium mb-2">
             Recent highlights
           </p>
           {[
@@ -175,7 +175,7 @@ const AppWindow = () => {
             },
           ].map((row, i) => (
             <div key={i} className="flex items-center justify-between text-xs">
-              <span className="text-gray-400">{row.label}</span>
+              <span className="text-[var(--muted)]">{row.label}</span>
               <span className={`font-medium ${row.color}`}>{row.value}</span>
             </div>
           ))}
@@ -258,7 +258,7 @@ const featureSections = [
       {
         label: "Sources",
         value: "Multiple",
-        valueColor: "text-white",
+        valueColor: "text-[var(--text)]",
         sub: "Separate salary, freelance, investments and more.",
       },
       {
@@ -283,7 +283,7 @@ const featureSections = [
       {
         label: "Categories",
         value: "Customizable",
-        valueColor: "text-white",
+        valueColor: "text-[var(--text)]",
         sub: "Group expenses by needs, wants, bills and more.",
       },
       {
@@ -308,7 +308,7 @@ const featureSections = [
       {
         label: "Limits",
         value: "Per category",
-        valueColor: "text-white",
+        valueColor: "text-[var(--text)]",
         sub: "Keep groceries, bills, and fun under control.",
       },
       {
@@ -333,7 +333,7 @@ const featureSections = [
       {
         label: "Visuals",
         value: "Charts & summaries",
-        valueColor: "text-white",
+        valueColor: "text-[var(--text)]",
         sub: "Compare months, track categories, and see progress.",
       },
       {
@@ -394,7 +394,7 @@ tracking-tight "
             <Link
               to="/signup"
               className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600
-                         text-white font-semibold shadow-lg shadow-cyan-500/25
+                         text-[var(--text)] font-semibold shadow-lg shadow-cyan-500/25
                          hover:opacity-90 hover:shadow-cyan-500/40 hover:-translate-y-0.5
                          transition-all duration-200 flex items-center justify-center gap-2"
             >
@@ -403,8 +403,8 @@ tracking-tight "
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-white/10 bg-white/5
-                         text-white font-medium hover:bg-white/10 hover:border-white/20
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-[var(--border)] bg-white/5
+                         text-[var(--text)] font-medium hover:bg-white/10 hover:border-[var(--border)]
                          transition-all duration-200 flex items-center justify-center gap-2"
             >
               Explore Features
@@ -432,7 +432,7 @@ tracking-tight "
             ].map((pill, i) => (
               <span
                 key={i}
-                className={`flex items-center gap-1.5 text-xs font-medium ${pill.color} bg-white/5 border border-white/8 px-3 py-1.5 rounded-full`}
+                className={`flex items-center gap-1.5 text-xs font-medium ${pill.color} bg-white/5 border border-[var(--border)] px-3 py-1.5 rounded-full`}
               >
                 {pill.icon}
                 {pill.text}
@@ -466,10 +466,10 @@ tracking-tight "
           <p className="text-xs font-medium tracking-widest uppercase text-cyan-500">
             Why FinTrack
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)]">
             Everything you need to manage your money
           </h2>
-          <p className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-base text-[var(--muted)] max-w-2xl mx-auto leading-relaxed">
             FinTrack combines income tracking, expense logging, budgeting and
             reporting into one simple, focused interface.
           </p>
@@ -484,12 +484,12 @@ tracking-tight "
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className={`group bg-[var(--card)] border border-white/8 rounded-2xl p-5
-                          hover:border-white/20 hover:shadow-xl ${f.glow}
+              className={`group bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5
+                          hover:border-[var(--border)] hover:shadow-xl ${f.glow}
                           hover:-translate-y-1 transition-all duration-300 cursor-default`}
             >
               <div
-                className={`w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${f.color} group-hover:scale-110 transition-transform duration-300`}
+                className={`w-10 h-10 rounded-xl bg-white/5 border border-[var(--border)] flex items-center justify-center mb-4 ${f.color} group-hover:scale-110 transition-transform duration-300`}
               >
                 {f.icon}
               </div>
@@ -498,7 +498,7 @@ tracking-tight "
               >
                 {f.title}
               </h3>
-              <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
+              <p className="text-xs md:text-sm text-[var(--muted)] leading-relaxed">
                 {f.desc}
               </p>
             </motion.div>
@@ -519,7 +519,7 @@ tracking-tight "
           <p className="text-xs font-medium tracking-widest uppercase text-cyan-500">
             How it works
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)]">
             Up and running in 3 steps
           </h2>
         </motion.div>
@@ -536,19 +536,19 @@ tracking-tight "
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.12 }}
-              className="relative bg-[var(--card)] border border-white/8 rounded-2xl p-6 text-center
-                         hover:border-white/20 hover:-translate-y-1 transition-all duration-300"
+              className="relative bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 text-center
+                         hover:border-[var(--border)] hover:-translate-y-1 transition-all duration-300"
             >
               <div
-                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mx-auto mb-4 shadow-lg text-white`}
+                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mx-auto mb-4 shadow-lg text-[var(--text)]`}
               >
                 {s.icon}
               </div>
               <p className="text-[10px] font-bold tracking-widest text-gray-600 uppercase mb-2">
                 {s.step}
               </p>
-              <h3 className="text-white font-semibold mb-2">{s.title}</h3>
-              <p className="text-sm text-gray-400 leading-relaxed">{s.desc}</p>
+              <h3 className="text-[var(--text)] font-semibold mb-2">{s.title}</h3>
+              <p className="text-sm text-[var(--muted)] leading-relaxed">{s.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -567,7 +567,7 @@ tracking-tight "
           <p className="text-xs font-medium tracking-widest uppercase text-cyan-500">
             Deep dive
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)]">
             Built for every part of your finances
           </h2>
         </motion.div>
@@ -582,10 +582,10 @@ tracking-tight "
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className={`bg-[var(--card)] border border-white/8 border-l-2 ${sec.accent}
+              className={`bg-[var(--card)] border border-[var(--border)] border-l-2 ${sec.accent}
                           rounded-2xl p-5 md:p-7
                           grid grid-cols-1 md:grid-cols-3 gap-6
-                          hover:border-white/15 transition-all duration-300`}
+                          hover:border-[var(--border)] transition-all duration-300`}
             >
               {/* Left: info */}
               <div className="md:col-span-1 space-y-3">
@@ -594,10 +594,10 @@ tracking-tight "
                 >
                   {sec.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-[var(--text)]">
                   {sec.title}
                 </h3>
-                <p className="text-sm text-gray-400 leading-relaxed">
+                <p className="text-sm text-[var(--muted)] leading-relaxed">
                   {sec.desc}
                 </p>
                 <Link
@@ -614,9 +614,9 @@ tracking-tight "
                 {sec.cards.map((card, j) => (
                   <div
                     key={j}
-                    className="bg-black/30 border border-white/8 rounded-xl p-4 hover:border-white/15 transition-colors"
+                    className="bg-black/30 border border-[var(--border)] rounded-xl p-4 hover:border-[var(--border)] transition-colors"
                   >
-                    <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-2">
+                    <p className="text-xs text-[var(--muted)] uppercase tracking-wide font-medium mb-2">
                       {card.label}
                     </p>
                     <p
@@ -624,7 +624,7 @@ tracking-tight "
                     >
                       {card.value}
                     </p>
-                    <p className="text-xs text-gray-500 leading-relaxed">
+                    <p className="text-xs text-[var(--muted)] leading-relaxed">
                       {card.sub}
                     </p>
                   </div>
@@ -643,7 +643,7 @@ tracking-tight "
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f2027] via-[#111827] to-[#0f1115]
-                   border border-white/10 p-8 md:p-12 text-center"
+                   border border-[var(--border)] p-8 md:p-12 text-center"
       >
         {/* Glow orbs */}
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-cyan-500/8 blur-3xl pointer-events-none" />
@@ -654,13 +654,13 @@ tracking-tight "
             <FiZap size={11} />
             Start for free today
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--text)] leading-tight">
             Take control of your{" "}
             <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               financial life
             </span>
           </h2>
-          <p className="text-gray-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          <p className="text-[var(--muted)] text-sm md:text-base max-w-xl mx-auto leading-relaxed">
             Join thousands of users who already track their money smarter with
             FinTrack. It's free, fast, and built for clarity.
           </p>
@@ -668,7 +668,7 @@ tracking-tight "
             <Link
               to="/signup"
               className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600
-                         text-white font-semibold shadow-lg shadow-cyan-500/30
+                         text-[var(--text)] font-semibold shadow-lg shadow-cyan-500/30
                          hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200
                          flex items-center justify-center gap-2"
             >
@@ -677,7 +677,7 @@ tracking-tight "
             </Link>
             <Link
               to="/login"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-white/10 bg-white/5
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-[var(--border)] bg-white/5
                          text-gray-200 font-medium hover:bg-white/10 transition-all duration-200
                          flex items-center justify-center"
             >

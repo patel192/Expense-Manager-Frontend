@@ -506,7 +506,7 @@ export const UserDashboard = () =&gt; {
   const totalExpenses = expenses.reduce(<span class="fstat-no" title="function not covered" >(a</span>, e) =&gt; <span class="cstat-no" title="statement not covered" >a + e.amount, 0</span>);
 &nbsp;
   return (
-    &lt;div className="text-white space-y-10"&gt;
+    &lt;div className="text-[var(--text)] space-y-10"&gt;
       {/* ========== HEADER ========== */}
       &lt;motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -514,7 +514,7 @@ export const UserDashboard = () =&gt; {
         transition={{ duration: 0.4 }}
       &gt;
         &lt;h1 className="text-3xl md:text-4xl font-bold"&gt;Financial Overview&lt;/h1&gt;
-        &lt;p className="text-gray-400 mt-2"&gt;
+        &lt;p className="text-[var(--muted)] mt-2"&gt;
           A consolidated view of your financial performance.
         &lt;/p&gt;
       &lt;/motion.div&gt;
@@ -538,9 +538,9 @@ export const UserDashboard = () =&gt; {
             key={i}
             whileHover={{ y: -4 }}
             transition={{ duration: 0.25 }}
-            className="rounded-2xl bg-[#111318] border border-white/10 p-6 shadow-lg"
+            className="rounded-2xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-lg"
           &gt;
-            &lt;h2 className="text-gray-400 text-sm"&gt;{item.title}&lt;/h2&gt;
+            &lt;h2 className="text-[var(--muted)] text-sm"&gt;{item.title}&lt;/h2&gt;
             &lt;p className={`mt-2 text-3xl font-bold ${item.color}`}&gt;
               ₹{item.value.toLocaleString()}
             &lt;/p&gt;
@@ -555,9 +555,9 @@ export const UserDashboard = () =&gt; {
           initial={{ opacity: 0, x: -15 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
+          className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-lg"
         &gt;
-          &lt;h3 className="text-lg font-semibold mb-4 text-white"&gt;
+          &lt;h3 className="text-lg font-semibold mb-4 text-[var(--text)]"&gt;
             Income vs Expenses
           &lt;/h3&gt;
 &nbsp;
@@ -587,9 +587,9 @@ export const UserDashboard = () =&gt; {
           initial={{ opacity: 0, x: 15 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-3xl bg-[#111318] border border-white/10 p-6 shadow-lg"
+          className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-lg"
         &gt;
-          &lt;h3 className="text-lg font-semibold mb-4 text-white"&gt;
+          &lt;h3 className="text-lg font-semibold mb-4 text-[var(--text)]"&gt;
             Expense Distribution
           &lt;/h3&gt;
 &nbsp;

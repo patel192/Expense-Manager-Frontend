@@ -53,7 +53,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
           x: 0,
         }}
         className={`fixed top-0 left-0 h-screen z-[70] 
-                   bg-[#0d0f14]/80 backdrop-blur-2xl border-r border-white/10
+                   bg-[#0d0f14]/80 backdrop-blur-2xl border-r border-[var(--border)]
                    flex flex-col transition-shadow duration-300
                    ${isOpen ? "shadow-2xl shadow-cyan-500/5" : ""}
                    lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
@@ -70,7 +70,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                 className="flex items-center gap-3"
               >
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <FiShield size={18} className="text-white" />
+                  <FiShield size={18} className="text-[var(--text)]" />
                 </div>
                 <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
                   FinTrack <span className="text-cyan-400">Admin</span>
@@ -85,14 +85,14 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                 className="mx-auto"
               >
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <FiShield size={20} className="text-white" />
+                  <FiShield size={20} className="text-[var(--text)]" />
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
           {/* Mobile Close Button */}
-          <button onClick={toggleSidebar} className="lg:hidden text-gray-400 hover:text-white transition">
+          <button onClick={toggleSidebar} className="lg:hidden text-[var(--muted)] hover:text-[var(--text)] transition">
             <FiX size={20} />
           </button>
         </div>
@@ -108,8 +108,8 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                   whileTap={{ scale: 0.98 }}
                   className={`group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200
                              ${isActive 
-                               ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-white" 
-                               : "text-gray-400 hover:bg-white/5 hover:text-white"}`}
+                               ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-[var(--text)]" 
+                               : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--text)]"}`}
                 >
                   <span className={`text-xl transition-colors duration-200 ${isActive ? "text-cyan-400" : "group-hover:text-cyan-300"}`}>
                     {item.icon}
@@ -141,12 +141,12 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
         <div className="p-4 border-t border-white/5">
           <div className={`flex items-center gap-3 p-2 rounded-2xl bg-white/5 border border-white/5
                          ${!isOpen && "justify-center"}`}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-purple-700 flex items-center justify-center text-white font-bold text-sm shadow-inner">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-purple-700 flex items-center justify-center text-[var(--text)] font-bold text-sm shadow-inner">
               {user?.name?.charAt(0).toUpperCase() || "A"}
             </div>
             {isOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{user?.name || "Admin"}</p>
+                <p className="text-sm font-semibold text-[var(--text)] truncate">{user?.name || "Admin"}</p>
                 <p className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider">System Administrator</p>
               </div>
             )}
@@ -154,7 +154,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
           
           {isOpen && (
              <div className="mt-4 px-2">
-                <p className="text-[10px] text-gray-500 text-center">
+                <p className="text-[10px] text-[var(--muted)] text-center">
                   © 2026 FinTrack • v2.4.0
                 </p>
              </div>
@@ -165,8 +165,8 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
         <button
           onClick={toggleSidebar}
           className="hidden lg:flex absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-cyan-500 
-                     border border-white/10 shadow-lg shadow-cyan-500/30 items-center justify-center
-                     text-white hover:bg-cyan-400 transition-colors z-[80]"
+                     border border-[var(--border)] shadow-lg shadow-cyan-500/30 items-center justify-center
+                     text-[var(--text)] hover:bg-cyan-400 transition-colors z-[80]"
         >
           {isOpen ? <FiChevronLeft size={14} /> : <FiChevronRight size={14} />}
         </button>

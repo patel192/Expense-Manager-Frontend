@@ -5,7 +5,7 @@ const Card = ({ title, value }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
-      className="backdrop-blur-xl bg-white/10 border border-white/20 
+      className="backdrop-blur-xl bg-white/10 border border-[var(--border)] 
                  rounded-2xl shadow-lg p-6 w-52 text-center cursor-pointer 
                  transition duration-300"
     >
