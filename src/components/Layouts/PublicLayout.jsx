@@ -5,9 +5,14 @@ import { motion } from "framer-motion";
 
 export const PublicLayout = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-white">
+    <div
+      className="
+  min-h-screen
+  bg-[var(--bg)]
+  text-[var(--text)]
+"
+    >
       <Navbar />
-
       {/* Page wrapper */}
       <motion.div
         initial={{ opacity: 0, y: 18 }}

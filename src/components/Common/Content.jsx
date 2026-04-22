@@ -53,7 +53,7 @@ const AppWindow = () => {
   return (
     <div
       ref={ref}
-      className="w-full max-w-md rounded-2xl bg-[#111318] border border-white/10
+      className="w-full max-w-md rounded-2xl bg-[var(--card)] border border-white/10
                  shadow-[0_24px_80px_rgba(6,182,212,0.10),0_20px_60px_rgba(0,0,0,0.7)]
                  overflow-hidden"
     >
@@ -332,7 +332,7 @@ export const Content = () => {
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className={`group bg-[#111318] border border-white/8 rounded-2xl p-5
+              className={`group bg-[var(--card)] border border-white/8 rounded-2xl p-5
                           hover:border-white/20 hover:shadow-xl ${f.glow}
                           hover:-translate-y-1 transition-all duration-300 cursor-default`}
             >
@@ -376,7 +376,7 @@ export const Content = () => {
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.12 }}
-              className="relative bg-[#111318] border border-white/8 rounded-2xl p-6 text-center
+              className="relative bg-[var(--card)] border border-white/8 rounded-2xl p-6 text-center
                          hover:border-white/20 hover:-translate-y-1 transition-all duration-300"
             >
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mx-auto mb-4 shadow-lg text-white`}>
@@ -414,7 +414,7 @@ export const Content = () => {
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className={`bg-[#111318] border border-white/8 border-l-2 ${sec.accent}
+              className={`bg-[var(--card)] border border-white/8 border-l-2 ${sec.accent}
                           rounded-2xl p-5 md:p-7
                           grid grid-cols-1 md:grid-cols-3 gap-6
                           hover:border-white/15 transition-all duration-300`}
