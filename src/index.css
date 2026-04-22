@@ -7,11 +7,18 @@
 
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
+
+  /* slightly darker for readability */
+  --text-muted: #64748b;
 
   --border: #e2e8f0;
 
   --primary: #06b6d4;
+
+  /* COMPATIBILITY (critical) */
+  --text: var(--text-primary);
+  --muted: var(--text-secondary);
+  --card: var(--surface-primary);
 }
 
 .dark {
