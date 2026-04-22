@@ -56,14 +56,13 @@ export const Navbar = () => {
   return (
     <header
       ref={menuRef}
-      className={`sticky top-0 z-50 border-b border-white/10 transition-all duration-300 ${
+      className={`sticky top-0 z-50 border-b border-[var(--border)] transition-all duration-300 ${
         scrolled
-          ? "bg-[#0d0f12]/95 backdrop-blur-2xl py-0"
-          : "bg-[#0d0f12]/80 backdrop-blur-xl"
+          ? "bg-[var(--bg)]/95 backdrop-blur-2xl py-0"
+          : "bg-[var(--bg)]/80 backdrop-blur-xl"
       }`}
     >
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
-
         {/* ── Logo ── */}
         <motion.div
           initial={{ opacity: 0, x: -18 }}
@@ -73,8 +72,18 @@ export const Navbar = () => {
         >
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
             {/* Inline SVG fallback — no broken image on mobile */}
-            <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth={2.2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v1m0 9v1M5.05 5.05A9 9 0 1118.95 18.95" />
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className="w-4 h-4 text-white"
+              stroke="currentColor"
+              strokeWidth={2.2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v1m0 9v1M5.05 5.05A9 9 0 1118.95 18.95"
+              />
             </svg>
           </div>
           <span className="text-[1.1rem] font-semibold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -110,7 +119,7 @@ export const Navbar = () => {
               >
                 {link.label}
               </Link>
-            )
+            ),
           )}
 
           {/* Divider */}
@@ -118,7 +127,7 @@ export const Navbar = () => {
 
           <Link
             to="/login"
-            className="px-4 py-2 rounded-lg text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+            className="px-4 py-2 rounded-lg text-gray-300 bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-white/20 transition-all duration-200"
           >
             Login
           </Link>
@@ -135,7 +144,7 @@ export const Navbar = () => {
         <div className="flex md:hidden items-center gap-2">
           <Link
             to="/login"
-            className="px-3 py-1.5 text-sm rounded-lg text-gray-300 border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+            className="px-3 py-1.5 text-sm rounded-lg text-gray-300 border border-[var(--border)] bg-white/5 hover:bg-white/10 transition-all"
           >
             Login
           </Link>
@@ -175,7 +184,7 @@ export const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden border-t border-white/10 bg-[#0d0f12]/98 backdrop-blur-2xl"
+            className="md:hidden overflow-hidden border-t border-[var(--border)] bg-[#0d0f12]/98 backdrop-blur-2xl"
           >
             <div className="px-4 py-3 flex flex-col">
               {/* Nav section label */}
@@ -204,10 +213,12 @@ export const Navbar = () => {
                         : "text-gray-300 hover:text-white hover:bg-white/5"
                     }`}
                   >
-                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isHomeActive ? "bg-cyan-400" : "bg-gray-600"}`} />
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isHomeActive ? "bg-cyan-400" : "bg-gray-600"}`}
+                    />
                     {link.label}
                   </Link>
-                )
+                ),
               )}
 
               {/* Divider */}
@@ -222,7 +233,7 @@ export const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-center text-sm font-medium text-gray-200 transition-all min-h-[44px] flex items-center justify-center"
+                  className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-white/20 text-center text-sm font-medium text-gray-200 transition-all min-h-[44px] flex items-center justify-center"
                 >
                   Login
                 </Link>
