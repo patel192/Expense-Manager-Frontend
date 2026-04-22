@@ -1,5 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
+import "./index.css";
+
 import { Login } from "./Login";
 import { Signup } from "./Signup";
 import { Content } from "./components/Common/Content";
