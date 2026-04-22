@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX ,FiMoon,FiSun } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 
 export const Navbar = () => {
@@ -139,7 +139,7 @@ export const Navbar = () => {
     transition
   "
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            {theme === "dark" ? <FiSun size={17} /> : <FiMoon size={17} />}
           </button>
           <Link
             to="/login"
