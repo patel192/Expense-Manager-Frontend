@@ -16,6 +16,12 @@ import {
   FiLock,
 } from "react-icons/fi";
 import { DashboardPreviewTabs } from "../landing/DashboardPreviewTabs";
+import { StatsRow } from "../landing/StatsRow";
+import { ActivityFeed } from "../landing/ActivityFeed";
+import { IntegrationsGrid } from "../landing/IntegrationsGrid";
+import { Testimonials } from "../landing/Testimonials";
+import { PricingPlans } from "../landing/PricingPlans";
+import { FAQSection } from "../landing/FAQSection";
 /* ── animation variant ── */
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -366,7 +372,6 @@ px-6
 "
     >
       {/* ═══════════ HERO ═══════════ */}
-      <DashboardPreviewTabs />
       <section
         id="home"
         className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-24 md:pt-20 pb-12"
@@ -466,7 +471,10 @@ tracking-tight "
           <AppWindow />
         </motion.div>
       </section>
-
+      {/* Preview */}
+      <DashboardPreviewTabs />
+      {/* Stats */}
+      <StatsRow />
       {/* ═══════════ FEATURES ═══════════ */}
       <section
         id="features"
@@ -581,6 +589,17 @@ px-6
         </div>
       </section>
 
+      {/* Activity */}
+      <ActivityFeed />
+
+      {/* Integrations */}
+      <IntegrationsGrid />
+      {/* Testimonials */}
+      <Testimonials />
+      {/* Pricing plans */}
+      <PricingPlans />
+      {/* FAQ Section */}
+      <FAQSection />
       {/* ═══════════ FEATURE SECTIONS ═══════════ */}
       <section className="space-y-8">
         <motion.div
