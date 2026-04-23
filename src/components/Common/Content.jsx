@@ -15,7 +15,7 @@ import {
   FiZap,
   FiLock,
 } from "react-icons/fi";
-
+import { DashboardPreviewTabs } from "../landing/DashboardPreviewTabs";
 /* ── animation variant ── */
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -366,7 +366,7 @@ px-6
 "
     >
       {/* ═══════════ HERO ═══════════ */}
-
+      <DashboardPreviewTabs />
       <section
         id="home"
         className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-24 md:pt-20 pb-12"
@@ -469,15 +469,15 @@ tracking-tight "
 
       {/* ═══════════ FEATURES ═══════════ */}
       <section
-id="features"
-className="
+        id="features"
+        className="
 space-y-10
 py-20
 bg-[var(--surface-secondary)]
 rounded-3xl
 px-6
 "
->
+      >
         <motion.div
           variants={fadeUp}
           initial="hidden"
