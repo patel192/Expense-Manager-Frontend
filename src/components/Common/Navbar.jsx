@@ -230,7 +230,7 @@ hover:bg-[var(--surface-tertiary)] transition-all"
                   <button
                     key={i}
                     onClick={(e) => scrollToSection(e, link.id)}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-300 hover:text-[var(--text)] hover:bg-[var(--surface-secondary)] text-sm font-medium transition-all text-left min-h-[44px]"
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)] text-sm font-medium transition-all text-left min-h-[44px]"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/60 flex-shrink-0" />
                     {link.label}
@@ -243,7 +243,7 @@ hover:bg-[var(--surface-tertiary)] transition-all"
                     className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px] ${
                       isHomeActive
                         ? "text-cyan-400 bg-cyan-500/8"
-                        : "text-gray-300 hover:text-[var(--text)] hover:bg-[var(--surface-secondary)]"
+                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"
                     }`}
                   >
                     <span
@@ -266,7 +266,7 @@ hover:bg-[var(--surface-tertiary)] transition-all"
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-[var(--border)] hover:border-[var(--border)] text-center text-sm font-medium text-gray-200 transition-all min-h-[44px] flex items-center justify-center"
+                  className="w-full py-3 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-tertiary)] border border-[var(--border)] hover:border-[var(--border)] text-center text-sm font-medium text-[var(--text-secondary)] transition-all min-h-[44px] flex items-center justify-center"
                 >
                   Login
                 </Link>

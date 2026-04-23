@@ -69,7 +69,7 @@ const AppWindow = () => {
                  overflow-hidden"
     >
       {/* Window chrome */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[#181b22]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[var(--surface-tertiary)]">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
@@ -165,17 +165,17 @@ const AppWindow = () => {
             {
               label: "Recurring bills",
               value: "5 active",
-              color: "text-gray-100",
+              color: "text-[var(--text-primary)]",
             },
             {
               label: "Tracked transactions",
               value: "120 this month",
-              color: "text-gray-100",
+              color: "text-[var(--text-primary)]",
             },
             {
               label: "Top category",
               value: "Food & Dining",
-              color: "text-cyan-300",
+              color: "text-cyan-400",
             },
           ].map((row, i) => (
             <div key={i} className="flex items-center justify-between text-xs">
@@ -494,7 +494,7 @@ tracking-tight "
                           hover:-translate-y-1 transition-all duration-300 cursor-default`}
             >
               <div
-                className={`w-10 h-10 rounded-xl bg-white/5 border border-[var(--border)] flex items-center justify-center mb-4 ${f.color} group-hover:scale-110 transition-transform duration-300`}
+                className={`w-10 h-10 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center mb-4 ${f.color} group-hover:scale-110 transition-transform duration-300`}
               >
                 {f.icon}
               </div>
@@ -692,8 +692,8 @@ transition
             </Link>
             <Link
               to="/login"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-[var(--border)] bg-white/5
-                         text-gray-200 font-medium hover:bg-white/10 transition-all duration-200
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-secondary)]
+                         text-[var(--text-secondary)] font-medium hover:bg-[var(--surface-tertiary)] transition-all duration-200
                          flex items-center justify-center"
             >
               Already have an account? Login
