@@ -588,18 +588,6 @@ px-6
           ))}
         </div>
       </section>
-
-      {/* Activity */}
-      <ActivityFeed />
-
-      {/* Integrations */}
-      <IntegrationsGrid />
-      {/* Testimonials */}
-      <Testimonials />
-      {/* Pricing plans */}
-      <PricingPlans />
-      {/* FAQ Section */}
-      <FAQSection />
       {/* ═══════════ FEATURE SECTIONS ═══════════ */}
       <section className="space-y-8">
         <motion.div
@@ -686,6 +674,18 @@ transition
           ))}
         </div>
       </section>
+
+      {/* Activity */}
+      <ActivityFeed />
+
+      {/* Integrations */}
+      <IntegrationsGrid />
+      {/* Testimonials */}
+      <Testimonials />
+      {/* Pricing plans */}
+      <PricingPlans />
+      {/* FAQ Section */}
+      <FAQSection />
 
       {/* ═══════════ CTA BANNER ═══════════ */}
       <motion.section
