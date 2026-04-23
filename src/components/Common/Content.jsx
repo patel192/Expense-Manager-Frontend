@@ -355,12 +355,21 @@ const featureSections = [
 ══════════════════════════════════════════ */
 export const Content = () => {
   return (
-    <div className="min-h-[calc(100vh-80px)] pb-20 space-y-32">
+    <div
+      className="
+min-h-[calc(100vh-80px)]
+pb-24
+space-y-32
+max-w-7xl
+mx-auto
+px-6
+"
+    >
       {/* ═══════════ HERO ═══════════ */}
 
       <section
         id="home"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-16 md:pt-12"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-24 md:pt-20 pb-12"
       >
         {/* Left: text */}
         <motion.div
@@ -409,7 +418,7 @@ tracking-tight "
             <a
               href="#features"
               className="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-secondary)]
-                         text-[var(--text)] font-medium hover:bg-white/10 hover:border-[var(--border)]
+                         text-[var(--text)] font-medium hover:bg-[var(--surface-tertiary)] hover:border-[var(--border)]
                          transition-all duration-200 flex items-center justify-center gap-2"
             >
               Explore Features
@@ -459,7 +468,16 @@ tracking-tight "
       </section>
 
       {/* ═══════════ FEATURES ═══════════ */}
-      <section id="features" className="space-y-10">
+      <section
+id="features"
+className="
+space-y-10
+py-20
+bg-[var(--surface-secondary)]
+rounded-3xl
+px-6
+"
+>
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -480,7 +498,7 @@ tracking-tight "
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((f, i) => (
             <motion.div
               key={i}
@@ -657,7 +675,13 @@ transition
         whileInView="visible"
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-3xl bg-[var(--surface-primary)]
+        className="relative overflow-hidden rounded-3xl
+bg-[var(--surface-primary)]
+border
+border-[var(--border)]
+shadow-xl
+hover:shadow-2xl
+transition
                    border border-[var(--border)] p-8 md:p-12 text-center"
       >
         {/* Glow orbs */}
