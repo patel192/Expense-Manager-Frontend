@@ -65,7 +65,7 @@ export const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-[var(--bg)] text-[var(--text-primary)] relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8 bg-[var(--bg)] text-[var(--text-primary)] relative overflow-hidden transition-colors duration-300">
 
       <ToastContainer transition={Bounce} theme="dark" />
 

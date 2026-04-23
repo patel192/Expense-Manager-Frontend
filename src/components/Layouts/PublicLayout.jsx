@@ -29,7 +29,7 @@ export const PublicLayout = () => {
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
-        className="px-4 sm:px-8 lg:px-14 py-8"
+        className="px-4 sm:px-8 lg:px-14 pb-8"
       >
         <Outlet />
       </motion.div>
