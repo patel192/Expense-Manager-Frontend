@@ -62,7 +62,7 @@ export const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10
-                    bg-gradient-to-b from-[#0c0e12] via-[#0f1115] to-[#0b0c10] text-[var(--text)] relative overflow-hidden">
+                    bg-[var(--bg)] text-[var(--text)] relative overflow-hidden">
 
       <ToastContainer transition={Bounce} />
 
@@ -74,7 +74,7 @@ export const Signup = () => {
                       border border-[var(--border)] shadow-[0_32px_80px_rgba(0,0,0,0.8)]">
 
         {/* ── LEFT: Decorative Panel (desktop only) ── */}
-        <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#0d1f2d] via-[#0a1628] to-[#091020]
+        <div className="hidden lg:flex flex-col justify-between bg-[var(--surface-secondary)]
                         border-r border-[var(--border)] p-10">
 
           {/* Brand */}
@@ -109,7 +109,7 @@ export const Signup = () => {
                   <div className={`w-8 h-8 rounded-lg border flex items-center justify-center flex-shrink-0 ${item.bg} ${item.color}`}>
                     {item.icon}
                   </div>
-                  <p className="text-sm text-gray-300">{item.text}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -120,7 +120,7 @@ export const Signup = () => {
                 { label: "Free", sublabel: "Always" },
                 { label: "Secure", sublabel: "& Private" },
               ].map((s, i) => (
-                <div key={i} className="flex-1 bg-white/4 border border-[var(--border)] rounded-xl px-4 py-3 text-center">
+                <div key={i} className="flex-1 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-xl px-4 py-3 text-center">
                   <p className="text-[var(--text)] font-bold text-sm">{s.label}</p>
                   <p className="text-[var(--muted)] text-xs">{s.sublabel}</p>
                 </div>
@@ -129,7 +129,7 @@ export const Signup = () => {
           </div>
 
           {/* Footer note */}
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-[var(--text-muted)]">
             © 2025 FinTrack. All rights reserved.
           </p>
         </div>
@@ -166,7 +166,7 @@ export const Signup = () => {
                 placeholder="John Doe"
                 {...register("name", { required: "Name is required" })}
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
-                           text-gray-100 placeholder-gray-600 text-sm
+                           text-[var(--text)] placeholder-[var(--text-muted)] text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
                            hover:border-[var(--border)] transition-all duration-200"
               />
@@ -181,7 +181,7 @@ export const Signup = () => {
                 placeholder="25"
                 {...register("age", { required: "Age is required", min: 18 })}
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
-                           text-gray-100 placeholder-gray-600 text-sm
+                           text-[var(--text)] placeholder-[var(--text-muted)] text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
                            hover:border-[var(--border)] transition-all duration-200"
               />
@@ -194,7 +194,7 @@ export const Signup = () => {
                 placeholder="john@example.com"
                 {...register("email", { required: "Email is required" })}
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
-                           text-gray-100 placeholder-gray-600 text-sm
+                           text-[var(--text)] placeholder-[var(--text-muted)] text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
                            hover:border-[var(--border)] transition-all duration-200"
               />
@@ -210,14 +210,14 @@ export const Signup = () => {
                   minLength: { value: 8, message: "Password must be at least 8 characters" },
                 })}
                 className="w-full pl-10 pr-11 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)]
-                           text-gray-100 placeholder-gray-600 text-sm
+                           text-[var(--text)] placeholder-[var(--text-muted)] text-sm
                            focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40
                            hover:border-[var(--border)] transition-all duration-200"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-gray-300 transition-colors p-0.5"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)] transition-colors p-0.5"
               >
                 {showPassword ? <FiEyeOff size={15} /> : <FiEye size={15} />}
               </button>
@@ -253,9 +253,9 @@ export const Signup = () => {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-white/8" />
-            <span className="text-xs text-gray-600">or</span>
-            <div className="flex-1 h-px bg-white/8" />
+            <div className="flex-1 h-px bg-[var(--border)]" />
+            <span className="text-xs text-[var(--text-muted)]">or</span>
+            <div className="flex-1 h-px bg-[var(--border)]" />
           </div>
 
           {/* Trust badges */}
@@ -265,7 +265,7 @@ export const Signup = () => {
               { icon: <FiCheckCircle size={12} />, text: "Free forever" },
               { icon: <FiLock size={12} />, text: "Private" },
             ].map((b, i) => (
-              <span key={i} className="flex items-center gap-1 text-[11px] text-gray-600">
+              <span key={i} className="flex items-center gap-1 text-[11px] text-[var(--text-muted)]">
                 {b.icon}
                 {b.text}
               </span>
