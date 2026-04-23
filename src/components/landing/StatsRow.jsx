@@ -5,91 +5,78 @@ import {
   FiUsers,
   FiShield,
   FiZap,
+  FiTerminal,
 } from "react-icons/fi";
 
 const stats = [
   {
-    icon: <FiDollarSign size={18} />,
-    value: "₹2.4L+",
-    label: "Tracked monthly",
-    color: "text-emerald-400",
+    icon: <FiDollarSign size={16} />,
+    value: "₹2.4M+",
+    label: "Flow throughput",
+    color: "text-emerald-500",
   },
   {
-    icon: <FiUsers size={18} />,
+    icon: <FiUsers size={16} />,
     value: "10K+",
-    label: "Active users",
-    color: "text-cyan-400",
+    label: "Active nodes",
+    color: "text-cyan-500",
   },
   {
-    icon: <FiShield size={18} />,
-    value: "99.9%",
-    label: "System uptime",
-    color: "text-blue-400",
+    icon: <FiShield size={16} />,
+    value: "99.99%",
+    label: "SLA Uptime",
+    color: "text-blue-500",
   },
   {
-    icon: <FiZap size={18} />,
-    value: "100%",
-    label: "Free to use",
-    color: "text-amber-400",
+    icon: <FiZap size={16} />,
+    value: "< 50ms",
+    label: "Sync latency",
+    color: "text-amber-500",
   },
 ];
 
 export const StatsRow = () => {
   return (
-    <section className="py-14">
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
+    <section className="py-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.35, delay: i * 0.08 }}
-            className="
-              bg-[var(--surface-primary)]
-              border
-              border-[var(--border)]
-              rounded-2xl
-              p-5
-              text-center
-              shadow-sm
-              hover:shadow-md
-              transition
-            "
+            transition={{ duration: 0.4, delay: i * 0.1 }}
+            className="group relative bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 overflow-hidden"
           >
-            <div
-              className={`
-                w-10
-                h-10
-                mx-auto
-                mb-3
-                rounded-xl
-                flex
-                items-center
-                justify-center
-                bg-[var(--surface-secondary)]
-                border
-                border-[var(--border)]
-                ${stat.color}
-              `}
-            >
-              {stat.icon}
+            {/* Minimal line decoration */}
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-transparent via-cyan-500/5 to-transparent rotate-45 transform translate-x-12 -translate-y-12" />
+            
+            <div className={`mb-4 flex items-center gap-2 ${stat.color} font-mono text-[10px] font-bold uppercase tracking-widest`}>
+              <FiTerminal size={12} />
+              METRIC_{i+1}
             </div>
 
-            <p className={`text-xl font-bold ${stat.color}`}>
-              {stat.value}
-            </p>
+            <div className="space-y-1">
+              <p className={`text-2xl font-bold text-[var(--text-primary)] tracking-tight`}>
+                {stat.value}
+              </p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                {stat.label}
+              </p>
+            </div>
 
-            <p className="text-xs text-[var(--muted)] mt-1">
-              {stat.label}
-            </p>
+            {/* Micro progress bar */}
+            <div className="mt-4 h-1 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden">
+               <motion.div 
+                 initial={{ width: 0 }}
+                 whileInView={{ width: "100%" }}
+                 transition={{ duration: 1, delay: 0.5 }}
+                 className={`h-full ${stat.color.replace('text-', 'bg-')}`}
+               />
+            </div>
           </motion.div>
         ))}
-
       </div>
-
     </section>
   );
-};
+};
