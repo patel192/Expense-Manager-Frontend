@@ -8,6 +8,7 @@ import {
   FiShield,
   FiBarChart2,
   FiRepeat,
+  FiActivity,
   FiCheckCircle,
   FiArrowRight,
   FiDollarSign,
@@ -95,7 +96,9 @@ const AppWindow = () => {
         </p>
         <div className="flex items-center gap-1">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">Sync</span>
+          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">
+            Sync
+          </span>
         </div>
       </div>
 
@@ -147,7 +150,9 @@ const AppWindow = () => {
             <div key={i} className={`rounded-xl border p-3 ${m.bg}`}>
               <div className={`flex items-center gap-1.5 ${m.color} mb-1.5`}>
                 {m.icon}
-                <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">{m.label}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">
+                  {m.label}
+                </p>
               </div>
               <p className={`text-xs font-bold ${m.color}`}>{m.value}</p>
             </div>
@@ -157,7 +162,9 @@ const AppWindow = () => {
         {/* System Load / Budget */}
         <div className="rounded-xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] p-4 space-y-3">
           <div className="flex items-center justify-between text-[10px] font-mono">
-            <span className="text-[var(--text-muted)] uppercase">Budget Utilization</span>
+            <span className="text-[var(--text-muted)] uppercase">
+              Budget Utilization
+            </span>
             <span className="text-amber-500 font-bold">72.4%</span>
           </div>
           <div className="h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
@@ -177,20 +184,27 @@ const AppWindow = () => {
 
         {/* Activity log */}
         <div className="space-y-2">
-           <div className="flex items-center gap-2 mb-3">
-             <FiActivity size={12} className="text-cyan-500" />
-             <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-muted)] font-bold">Event Log</p>
-           </div>
+          <div className="flex items-center gap-2 mb-3">
+            <FiActivity size={12} className="text-cyan-500" />
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-muted)] font-bold">
+              Event Log
+            </p>
+          </div>
           {[
             { label: "Stripe Webhook", status: "Success", time: "2m ago" },
             { label: "AWS Lambda / Calc", status: "Active", time: "Now" },
             { label: "DB Migration", status: "Stable", time: "1h ago" },
           ].map((row, i) => (
-            <div key={i} className="flex items-center justify-between text-[11px] font-mono py-1 border-b border-[var(--border)]/50 last:border-0">
+            <div
+              key={i}
+              className="flex items-center justify-between text-[11px] font-mono py-1 border-b border-[var(--border)]/50 last:border-0"
+            >
               <span className="text-[var(--text-secondary)]">{row.label}</span>
               <div className="flex items-center gap-3">
                 <span className="text-cyan-500 opacity-60">{row.time}</span>
-                <span className="text-emerald-500 font-bold tracking-tighter">{row.status}</span>
+                <span className="text-emerald-500 font-bold tracking-tighter">
+                  {row.status}
+                </span>
               </div>
             </div>
           ))}
@@ -264,8 +278,9 @@ export const Content = () => {
             </h1>
 
             <p className="text-[var(--text-secondary)] text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">
-              FinTrack is the high-performance dashboard for engineers of their own finances. 
-              Track, analyze, and optimize your wealth with technical precision.
+              FinTrack is the high-performance dashboard for engineers of their
+              own finances. Track, analyze, and optimize your wealth with
+              technical precision.
             </p>
 
             {/* CTA buttons */}
@@ -290,15 +305,15 @@ export const Content = () => {
 
             {/* Tech Stack Icons / Proof */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-6 pt-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-               <div className="flex items-center gap-2 text-xs font-mono font-bold">
-                 <FiCheckCircle className="text-cyan-500" /> AES-256
-               </div>
-               <div className="flex items-center gap-2 text-xs font-mono font-bold">
-                 <FiCheckCircle className="text-cyan-500" /> SOC2
-               </div>
-               <div className="flex items-center gap-2 text-xs font-mono font-bold">
-                 <FiCheckCircle className="text-cyan-500" /> PCI-DSS
-               </div>
+              <div className="flex items-center gap-2 text-xs font-mono font-bold">
+                <FiCheckCircle className="text-cyan-500" /> AES-256
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono font-bold">
+                <FiCheckCircle className="text-cyan-500" /> SOC2
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono font-bold">
+                <FiCheckCircle className="text-cyan-500" /> PCI-DSS
+              </div>
             </div>
           </motion.div>
 
@@ -338,11 +353,17 @@ export const Content = () => {
                 className="group relative bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8 hover:border-cyan-500/50 transition-all duration-500"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-                <div className={`w-12 h-12 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center mb-6 ${f.color} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm`}>
+                <div
+                  className={`w-12 h-12 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center mb-6 ${f.color} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm`}
+                >
                   {f.icon}
                 </div>
-                <h3 className="font-bold text-lg mb-3 text-[var(--text-primary)]">{f.title}</h3>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{f.desc}</p>
+                <h3 className="font-bold text-lg mb-3 text-[var(--text-primary)]">
+                  {f.title}
+                </h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {f.desc}
+                </p>
                 <div className="mt-6 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity">
                   Read Documentation <FiArrowUpRight size={14} />
                 </div>
@@ -356,12 +377,12 @@ export const Content = () => {
 
         {/* Activity & Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-           <div className="lg:col-span-1">
-             <ActivityFeed />
-           </div>
-           <div className="lg:col-span-2">
-             <StatsRow />
-           </div>
+          <div className="lg:col-span-1">
+            <ActivityFeed />
+          </div>
+          <div className="lg:col-span-2">
+            <StatsRow />
+          </div>
         </div>
 
         {/* Testimonials & Pricing */}
@@ -376,36 +397,42 @@ export const Content = () => {
           variants={fadeUp}
           className="relative overflow-hidden rounded-[2.5rem] bg-[var(--text-primary)] p-12 md:p-20 text-center"
         >
-           {/* Background Mesh */}
-           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `radial-gradient(circle at 2px 2px, var(--border) 1px, transparent 0)`, backgroundSize: "32px 32px" }} />
-           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-cyan-500/10 to-blue-600/10" />
+          {/* Background Mesh */}
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, var(--border) 1px, transparent 0)`,
+              backgroundSize: "32px 32px",
+            }}
+          />
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-cyan-500/10 to-blue-600/10" />
 
-           <div className="relative z-10 max-w-3xl mx-auto space-y-8">
-             <h2 className="text-4xl md:text-6xl font-bold text-[var(--card)] tracking-tight">
-               Ready to upgrade your <br />
-               <span className="text-cyan-400">financial stack?</span>
-             </h2>
-             <p className="text-[var(--card)]/70 text-lg md:text-xl leading-relaxed">
-               Deploy your personal finance instance in under 60 seconds. 
-               Open-source spirit, enterprise-grade performance.
-             </p>
-             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-               <Link
-                 to="/signup"
-                 className="w-full sm:w-auto px-10 py-5 rounded-2xl bg-cyan-500 text-[var(--text-primary)] font-black text-lg
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            <h2 className="text-4xl md:text-6xl font-bold text-[var(--card)] tracking-tight">
+              Ready to upgrade your <br />
+              <span className="text-cyan-400">financial stack?</span>
+            </h2>
+            <p className="text-[var(--card)]/70 text-lg md:text-xl leading-relaxed">
+              Deploy your personal finance instance in under 60 seconds.
+              Open-source spirit, enterprise-grade performance.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+              <Link
+                to="/signup"
+                className="w-full sm:w-auto px-10 py-5 rounded-2xl bg-cyan-500 text-[var(--text-primary)] font-black text-lg
                             hover:scale-105 active:scale-95 transition-all shadow-[0_20px_40px_rgba(6,182,212,0.3)]"
-               >
-                 Create Main Instance
-               </Link>
-               <Link
-                 to="/login"
-                 className="w-full sm:w-auto px-10 py-5 rounded-2xl border-2 border-[var(--card)]/20 text-[var(--card)] font-bold
+              >
+                Create Main Instance
+              </Link>
+              <Link
+                to="/login"
+                className="w-full sm:w-auto px-10 py-5 rounded-2xl border-2 border-[var(--card)]/20 text-[var(--card)] font-bold
                             hover:bg-[var(--card)]/10 transition-all"
-               >
-                 Access Console
-               </Link>
-             </div>
-           </div>
+              >
+                Access Console
+              </Link>
+            </div>
+          </div>
         </motion.section>
 
         <FAQSection />

@@ -124,4 +124,4 @@ export const ActivityFeed = () => {
       </div>
     </section>
   );
-};
+};
