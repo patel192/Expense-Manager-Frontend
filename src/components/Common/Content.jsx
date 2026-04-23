@@ -27,6 +27,7 @@ import { Testimonials } from "../landing/Testimonials";
 import { PricingPlans } from "../landing/PricingPlans";
 import { FAQSection } from "../landing/FAQSection";
 import { DevBackground } from "../landing/DevBackground";
+import { Footer } from "./Footer";
 
 /* ── animation variant ── */
 const fadeUp = {
@@ -437,6 +438,7 @@ export const Content = () => {
 
         <FAQSection />
         <IntegrationsGrid />
+        <Footer />
       </div>
     </DevBackground>
   );
