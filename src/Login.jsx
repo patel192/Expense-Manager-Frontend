@@ -337,7 +337,7 @@ export const Login = () => {
               to="/signup"
               className="text-cyan-500 hover:text-cyan-600 font-bold transition-colors ml-1"
             >
-              Create free account
+              Create Your free account
             </Link>
           </p>
         </div>
