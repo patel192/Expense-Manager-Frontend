@@ -251,7 +251,7 @@ const features = [
 export const Content = () => {
   return (
     <DevBackground>
-      <div className="max-w-7xl mx-auto px-6 pb-24 space-y-32">
+      <div className="max-w-7xl mx-auto pb-24 space-y-32">
         {/* ═══════════ HERO ═══════════ */}
         <section
           id="home"
