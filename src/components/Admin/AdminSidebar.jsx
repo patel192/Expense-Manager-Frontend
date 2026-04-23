@@ -53,13 +53,13 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
           x: 0,
         }}
         className={`fixed top-0 left-0 h-screen z-[70] 
-                   bg-[#0d0f14]/80 backdrop-blur-2xl border-r border-[var(--border)]
+                   bg-[var(--bg)]/80 backdrop-blur-2xl border-r border-[var(--border)]
                    flex flex-col transition-shadow duration-300
                    ${isOpen ? "shadow-2xl shadow-cyan-500/5" : ""}
                    lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Header / Logo */}
-        <div className="h-20 flex items-center justify-between px-6 border-b border-white/5">
+        <div className="h-20 flex items-center justify-between px-6 border-b border-[var(--border)]">
           <AnimatePresence mode="wait">
             {isOpen ? (
               <motion.div
@@ -72,7 +72,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
                   <FiShield size={18} className="text-[var(--text)]" />
                 </div>
-                <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-muted)] bg-clip-text text-transparent">
                   FinTrack <span className="text-cyan-400">Admin</span>
                 </span>
               </motion.div>
@@ -138,15 +138,15 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
         </nav>
 
         {/* Footer / User Hub */}
-        <div className="p-4 border-t border-white/5">
-          <div className={`flex items-center gap-3 p-2 rounded-2xl bg-white/5 border border-white/5
+        <div className="p-4 border-t border-[var(--border)]">
+          <div className={`flex items-center gap-3 p-2 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]
                          ${!isOpen && "justify-center"}`}>
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-purple-700 flex items-center justify-center text-[var(--text)] font-bold text-sm shadow-inner">
               {user?.name?.charAt(0).toUpperCase() || "A"}
             </div>
             {isOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[var(--text)] truncate">{user?.name || "Admin"}</p>
+                <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{user?.name || "Admin"}</p>
                 <p className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider">System Administrator</p>
               </div>
             )}
@@ -154,7 +154,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
           
           {isOpen && (
              <div className="mt-4 px-2">
-                <p className="text-[10px] text-[var(--muted)] text-center">
+                <p className="text-[10px] text-[var(--text-muted)] text-center">
                   © 2026 FinTrack • v2.4.0
                 </p>
              </div>
@@ -180,11 +180,11 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
           background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.05);
+          background: var(--surface-tertiary);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: var(--border);
         }
       `}</style>
     </>

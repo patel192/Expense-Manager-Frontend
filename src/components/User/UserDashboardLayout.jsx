@@ -14,62 +14,27 @@ import {
   FiList,
   FiSun,
   FiMoon,
+  FiUser,
 } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 
 const navTabs = [
-  {
-    label: "Overview",
-    path: "/private/userdashboard",
-    icon: <FiBarChart2 size={17} />,
-  },
-  {
-    label: "Income",
-    path: "/private/income",
-    icon: <FiTrendingUp size={17} />,
-  },
-  {
-    label: "Expenses",
-    path: "/private/expenses",
-    icon: <FiTrendingDown size={17} />,
-  },
-  {
-    label: "Recurring",
-    path: "/private/recurring",
-    icon: <FiRepeat size={17} />,
-  },
-  { label: "Budgets", path: "/private/budget", icon: <FiTarget size={17} /> },
-  {
-    label: "Reports",
-    path: "/private/reports",
-    icon: <FiPieChart size={17} />,
-  },
-  {
-    label: "Transaction",
-    path: "/private/transactions",
-    icon: <FiList size={17} />,
-  },
+  { label: "Matrix", path: "/private/userdashboard", icon: <FiBarChart2 size={16} /> },
+  { label: "Inflow", path: "/private/income", icon: <FiTrendingUp size={16} /> },
+  { label: "Outflow", path: "/private/expenses", icon: <FiTrendingDown size={16} /> },
+  { label: "Flows", path: "/private/recurring", icon: <FiRepeat size={16} /> },
+  { label: "Budgets", path: "/private/budget", icon: <FiTarget size={16} /> },
+  { label: "Reports", path: "/private/reports", icon: <FiPieChart size={16} /> },
+  { label: "History", path: "/private/transactions", icon: <FiList size={16} /> },
 ];
 
 const bottomTabs = [
-  {
-    label: "Overview",
-    path: "/private/userdashboard",
-    icon: <FiBarChart2 size={20} />,
-  },
-  {
-    label: "Income",
-    path: "/private/income",
-    icon: <FiTrendingUp size={20} />,
-  },
-  {
-    label: "Expenses",
-    path: "/private/expenses",
-    icon: <FiTrendingDown size={20} />,
-  },
-  { label: "Budgets", path: "/private/budget", icon: <FiTarget size={20} /> },
-  { label: "More", path: null, icon: <FiMenu size={20} />, isMore: true },
+  { label: "Matrix", path: "/private/userdashboard", icon: <FiBarChart2 size={18} /> },
+  { label: "Inflow", path: "/private/income", icon: <FiTrendingUp size={18} /> },
+  { label: "Outflow", path: "/private/expenses", icon: <FiTrendingDown size={18} /> },
+  { label: "Budgets", path: "/private/budget", icon: <FiTarget size={18} /> },
+  { label: "More", path: null, icon: <FiMenu size={18} />, isMore: true },
 ];
 
 export const UserDashboardLayout = () => {
@@ -80,156 +45,82 @@ export const UserDashboardLayout = () => {
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   return (
-    <div
-      className="min-h-screen flex flex-col
-                    bg-gray-50 dark:bg-[#0b0c10]
-                    text-gray-900 dark:text-[var(--text)]
-                    transition-colors duration-200"
-    >
-      {/* ══ TOP NAVBAR ══ */}
-      <header
-        className="sticky top-0 z-50
-                          bg-white/90 dark:bg-[var(--bg)]/90
-                          backdrop-blur-xl
-                          border-b border-gray-200 dark:border-[var(--border)]
-                          shadow-sm dark:shadow-none
-                          transition-colors duration-200"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
-          <Link
-            to="/private/userdashboard"
-            className="flex items-center gap-2.5 flex-shrink-0"
-          >
-            <div
-              className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600
-                            flex items-center justify-center shadow-md shadow-cyan-500/20"
-            >
-              <FiTrendingUp size={14} className="text-[var(--text)]" />
+    <div className="min-h-screen flex flex-col bg-[var(--surface-secondary)]/50 text-[var(--text-primary)] font-sans antialiased">
+      {/* ══ PARAMETRIC TOP NAV ══ */}
+      <header className="sticky top-0 z-[60] bg-[var(--surface-primary)]/80 backdrop-blur-2xl border-b border-[var(--border)] shadow-xl transition-all duration-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between gap-6">
+          <Link to="/private/userdashboard" className="flex items-center gap-3.5 group flex-shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-cyan-500/20 group-hover:rotate-12 transition-all duration-300">
+              <span className="font-black text-white text-xl">T</span>
             </div>
-            <span className="text-base font-bold bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-              FinTrack
+            <span className="text-xl font-black bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent group-hover:from-cyan-500 group-hover:to-blue-600 transition-all duration-300 uppercase tracking-tighter">
+              Trackit
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1 flex-1 mx-6">
+          {/* DESKTOP NAV MATRIX */}
+          <nav className="hidden lg:flex items-center gap-1.5 bg-[var(--surface-secondary)]/50 p-1.5 rounded-2xl border border-[var(--border)] shadow-inner">
             {navTabs.map((tab, i) => {
               const isActive = location.pathname === tab.path;
               return (
-                <div key={i} className="relative">
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-cyan-500/10 dark:bg-white/10 rounded-lg border border-cyan-500/20 dark:border-[var(--border)]"
-                      transition={{
-                        type: "spring",
-                        stiffness: 350,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-                  <Link
-                    to={tab.path}
-                    className={`relative flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg z-10 transition-colors duration-200
-                      ${
-                        isActive
-                          ? "text-cyan-600 dark:text-[var(--text)] font-medium"
-                          : "text-[var(--muted)] dark:text-[var(--muted)] hover:text-gray-900 dark:hover:text-[var(--text)]"
-                      }`}
-                  >
+                <Link key={i} to={tab.path} className="relative group">
+                  <div className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 z-10 relative
+                    ${isActive ? "text-white" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"}`}>
                     {tab.icon}
-                    <span className="hidden xl:inline">{tab.label}</span>
-                  </Link>
-                </div>
+                    <span>{tab.label}</span>
+                  </div>
+                  {isActive && (
+                    <motion.div layoutId="activeTab" className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl shadow-lg shadow-cyan-500/20" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />
+                  )}
+                </Link>
               );
             })}
           </nav>
 
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <button
-              onClick={toggleTheme}
-              className="
-                px-3 py-2
-                rounded-lg
-                border
-                border-[var(--border)]
-                bg-[var(--card)]
-                text-[var(--text)]
-                hover:bg-[var(--muted)]
-                transition
-              "
-            >
-              {theme === "dark" ? <FiSun size={17} /> : <FiMoon size={17} />}
+          {/* COMMAND CENTER */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button onClick={toggleTheme} className="w-10 h-10 rounded-xl border border-[var(--border)] bg-[var(--surface-primary)] text-[var(--text-primary)] hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all flex items-center justify-center shadow-sm group">
+              {theme === "dark" ? <FiSun size={18} className="group-hover:rotate-90 transition-transform duration-500" /> : <FiMoon size={18} className="group-hover:-rotate-12 transition-transform duration-500" />}
             </button>
 
-            <Link
-              to={`/private/account/${user?._id || user?.id || ""}`}
-              className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/8 transition-all group"
-            >
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-[var(--text)] text-xs font-bold flex-shrink-0">
-                {userInitial}
+            <Link to={`/private/account/${user?._id || user?.id || ""}`} className="flex items-center gap-3 pl-1 pr-1 py-1 rounded-2xl hover:bg-cyan-500/5 transition-all group border border-transparent hover:border-cyan-500/20 shadow-none hover:shadow-lg hover:shadow-cyan-500/5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-600/10 flex items-center justify-center border border-cyan-500/20 group-hover:border-cyan-500 transition-colors">
+                <FiUser size={16} className="text-cyan-500" />
               </div>
-              <span className="hidden sm:block text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-[var(--text)] transition-colors max-w-[80px] truncate">
-                {user?.name || "Account"}
+              <span className="hidden xl:block text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest max-w-[80px] truncate group-hover:text-cyan-500">
+                {user?.name?.split(" ")[0] || "USER"}
               </span>
             </Link>
 
-            <button
-              onClick={logout}
-              className="p-2 rounded-lg text-[var(--muted)] dark:text-[var(--muted)] hover:bg-red-50 dark:hover:bg-red-500/15 hover:text-red-500 dark:hover:text-red-400 transition-all"
-            >
-              <FiLogOut size={17} />
+            <button onClick={logout} className="w-10 h-10 rounded-xl text-[var(--text-muted)] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/30 border border-transparent transition-all flex items-center justify-center">
+              <FiLogOut size={18} />
             </button>
 
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-[var(--muted)] dark:text-[var(--muted)] hover:bg-gray-100 dark:hover:bg-white/8 transition-all"
-            >
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center transition-all shadow-lg shadow-cyan-500/10">
               {mobileMenuOpen ? <FiX size={18} /> : <FiMenu size={18} />}
             </button>
           </div>
         </div>
 
+        {/* MOBILE OVERLAY MENU */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: "easeInOut" }}
-              className="lg:hidden overflow-hidden border-t border-gray-200 dark:border-[var(--border)] bg-white dark:bg-[var(--bg)]/98 backdrop-blur-2xl"
-            >
-              <div className="px-4 py-3 grid grid-cols-2 gap-1.5">
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="lg:hidden absolute top-full left-0 w-full bg-[var(--surface-primary)] border-b border-[var(--border)] shadow-2xl overflow-hidden">
+              <div className="p-6 grid grid-cols-2 gap-3 sm:gap-4">
                 {navTabs.map((tab, i) => {
                   const isActive = location.pathname === tab.path;
                   return (
-                    <Link
-                      key={i}
-                      to={tab.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all min-h-[44px]
-                        ${
-                          isActive
-                            ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20"
-                            : "text-gray-600 dark:text-[var(--muted)] hover:bg-gray-100 dark:hover:bg-white/8 hover:text-gray-900 dark:hover:text-[var(--text)]"
-                        }`}
-                    >
-                      <span className={isActive ? "text-cyan-500" : ""}>
-                        {tab.icon}
-                      </span>
+                    <Link key={i} to={tab.path} onClick={() => setMobileMenuOpen(false)} className={`flex items-center gap-3 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border shadow-sm
+                        ${isActive ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-transparent shadow-lg shadow-cyan-500/20" : "bg-[var(--surface-secondary)]/50 text-[var(--text-muted)] border-[var(--border)] hover:bg-[var(--surface-tertiary)]"}`}>
+                      {tab.icon}
                       {tab.label}
                     </Link>
                   );
                 })}
               </div>
-              <div className="px-4 pb-3 pt-1 border-t border-gray-100 dark:border-[var(--border)]">
-                <button
-                  onClick={() => {
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all min-h-[44px]"
-                >
-                  <FiLogOut size={17} /> Logout
+              <div className="px-6 pb-6 pt-4 border-t border-[var(--border)]/50 bg-[var(--surface-secondary)]/30">
+                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-rose-500 bg-rose-500/5 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
+                  <FiLogOut size={16} /> EMERGENCY LOGOUT
                 </button>
               </div>
             </motion.div>
@@ -237,52 +128,33 @@ export const UserDashboardLayout = () => {
         </AnimatePresence>
       </header>
 
-      {/* ══ MAIN CONTENT ══ */}
-      <motion.main
-        key={location.pathname}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-        className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 pb-24 lg:pb-8"
-      >
-        <Outlet />
-      </motion.main>
+      {/* ══ APPLICATION CORE ══ */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 pb-32 lg:pb-12">
+        <AnimatePresence mode="wait">
+          <motion.div key={location.pathname} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4, ease: "circOut" }}>
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
+      </main>
 
-      {/* ══ MOBILE BOTTOM NAV ══ */}
-      <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50
-                      bg-white/95 dark:bg-[var(--bg)]/95 backdrop-blur-xl
-                      border-t border-gray-200 dark:border-[var(--border)]"
-      >
-        <div className="flex items-center justify-around h-16 px-2">
+      {/* ══ DOCK NAVIGATION (MOBILE) ══ */}
+      <nav className="lg:hidden fixed bottom-6 left-6 right-6 z-[60]">
+        <div className="bg-[var(--surface-primary)]/80 backdrop-blur-2xl border border-[var(--border)] rounded-[2.5rem] shadow-2xl px-6 py-3 flex items-center justify-around">
           {bottomTabs.map((tab, i) => {
             const isActive = !tab.isMore && location.pathname === tab.path;
             const isMoreActive = tab.isMore && mobileMenuOpen;
             return (
-              <button
-                key={i}
-                onClick={() => {
-                  if (tab.isMore) setMobileMenuOpen(!mobileMenuOpen);
-                }}
-                className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors duration-200 min-w-[44px]
-                            ${isActive || isMoreActive ? "text-cyan-500 dark:text-cyan-400" : "text-[var(--muted)] dark:text-[var(--muted)]"}`}
-              >
+              <button key={i} onClick={() => { if (tab.isMore) setMobileMenuOpen(!mobileMenuOpen); }} className={`flex flex-col items-center justify-center gap-1 transition-all duration-300 min-w-[50px]
+                            ${isActive || isMoreActive ? "text-cyan-500 scale-110" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"}`}>
                 {tab.isMore ? (
                   <>
-                    <span>{tab.icon}</span>
-                    <span className="text-[10px] font-medium">More</span>
+                    <div className={`p-2 rounded-xl ${isMoreActive ? "bg-cyan-500 text-white" : "bg-[var(--surface-secondary)]"}`}>{tab.icon}</div>
+                    <span className="text-[8px] font-black uppercase tracking-widest mt-1">Protocal</span>
                   </>
                 ) : (
-                  <Link
-                    to={tab.path}
-                    className={`flex flex-col items-center gap-1 w-full ${isActive ? "text-cyan-500 dark:text-cyan-400" : ""}`}
-                  >
-                    <span
-                      className={`transition-transform duration-200 ${isActive ? "scale-110" : ""}`}
-                    >
-                      {tab.icon}
-                    </span>
-                    <span className="text-[10px] font-medium">{tab.label}</span>
+                  <Link to={tab.path} className="flex flex-col items-center w-full">
+                    <div className={`p-2 rounded-xl transition-all ${isActive ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/20" : "bg-transparent group-hover:bg-[var(--surface-secondary)]"}`}>{tab.icon}</div>
+                    <span className="text-[8px] font-black uppercase tracking-widest mt-1">{tab.label}</span>
                   </Link>
                 )}
               </button>
@@ -293,3 +165,5 @@ export const UserDashboardLayout = () => {
     </div>
   );
 };
+
+export default UserDashboardLayout;

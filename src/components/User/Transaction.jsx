@@ -17,50 +17,39 @@ import {
   FiInbox,
 } from "react-icons/fi";
 
-/* ─── Shimmer ─── */
+/* ─── Shimmer skeleton ─── */
 const Shimmer = ({ className = "" }) => (
-  <div
-    className={`relative overflow-hidden bg-white/5 rounded-xl ${className}`}
-  >
-    <div
-      className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite]
-                    bg-gradient-to-r from-transparent via-white/8 to-transparent"
-    />
+  <div className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}>
+    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite]
+                    bg-gradient-to-r from-transparent via-[var(--surface-primary)]/10 to-transparent" />
   </div>
 );
 
 /* ─── Loading skeleton ─── */
 const TransactionSkeleton = () => (
-  <div className="space-y-3 p-4">
+  <div className="space-y-4 p-6">
     {[1, 2, 3, 4, 5].map((i) => (
-      <div key={i} className="flex items-center gap-3">
-        <Shimmer className="w-9 h-9 rounded-xl flex-shrink-0" />
+      <div key={i} className="flex items-center gap-4">
+        <Shimmer className="w-12 h-12 rounded-2xl flex-shrink-0" />
         <div className="flex-1 space-y-2">
-          <Shimmer className="h-3.5 w-1/3 rounded" />
-          <Shimmer className="h-2.5 w-1/4 rounded" />
+          <Shimmer className="h-4 w-1/3 rounded-lg" />
+          <Shimmer className="h-3 w-1/4 rounded-lg" />
         </div>
-        <Shimmer className="h-4 w-16 rounded" />
+        <Shimmer className="h-5 w-20 rounded-lg" />
       </div>
     ))}
   </div>
 );
 
-/* ══════════════════════════════════════
-   MAIN COMPONENT
-══════════════════════════════════════ */
 export const Transaction = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const { transactions, summary, loading } = useSelector(
-    (state) => state.transaction,
-  );
-  /* ── ALL ORIGINAL STATE — UNTOUCHED ── */
+  const { transactions, summary, loading } = useSelector((state) => state.transaction);
   const [activeTab, setActiveTab] = useState("All");
 
   const tabTypes = { All: null, Expenses: "Expense", Incomes: "Income" };
   const userId = useMemo(() => user?._id, [user]);
 
-  /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
   useEffect(() => {
     if (!userId) return;
     dispatch(fetchTransactions(userId));
@@ -75,7 +64,12 @@ export const Transaction = () => {
 
   const groupedByDate = useMemo(() => {
     return filteredSorted.reduce((acc, t) => {
-      const date = new Date(t.date).toLocaleDateString();
+      const date = new Date(t.date).toLocaleDateString("en-IN", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
       if (!acc[date]) acc[date] = [];
       acc[date].push(t);
       return acc;
@@ -83,135 +77,93 @@ export const Transaction = () => {
   }, [filteredSorted]);
 
   const handlePlanBudget = (expense) => {
-    alert(`Plan budget for ${expense.categoryID?.name || "Uncategorized"}`);
+    alert(`Initiating budget planning for ${expense.categoryID?.name || "Uncategorized"}...`);
   };
 
-  /* ── derived ── */
-  const savingsRate =
-    summary.totalIncome > 0
-      ? Math.round(
-          ((summary.totalIncome - summary.totalExpense) / summary.totalIncome) *
-            100,
-        )
-      : 0;
+  const savingsRate = summary.totalIncome > 0
+    ? Math.round(((summary.totalIncome - summary.totalExpense) / summary.totalIncome) * 100)
+    : 0;
 
   const tabs = [
-    { key: "All", label: "All", count: transactions.length },
-    {
-      key: "Expenses",
-      label: "Expenses",
-      count: transactions.filter((t) => t.type === "Expense").length,
-    },
-    {
-      key: "Incomes",
-      label: "Incomes",
-      count: transactions.filter((t) => t.type === "Income").length,
-    },
+    { key: "All", label: "Omni", count: transactions.length },
+    { key: "Expenses", label: "Outflow", count: transactions.filter((t) => t.type === "Expense").length },
+    { key: "Incomes", label: "Inflow", count: transactions.filter((t) => t.type === "Income").length },
   ];
 
   return (
-    <div className="space-y-6 text-[var(--text)]">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-8 text-[var(--text-primary)] pb-10"
+    >
       {/* ══ HEADER ══ */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-      >
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-            Transactions
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent uppercase">
+            Transaction Ledger
           </h1>
-          <p className="text-[var(--muted)] mt-1 text-sm">
-            All your incomes and expenses — filter, inspect and plan budgets.
+          <p className="text-sm font-bold text-[var(--text-muted)] mt-1 uppercase tracking-[0.2em]">
+            Comprehensive Financial Audit Log
           </p>
         </div>
-        <div
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border
-                        bg-white/5 border-[var(--border)] text-[var(--muted)] text-xs font-medium self-start"
-        >
-          <FiCalendar size={12} />
-          {new Date().toLocaleDateString("en-IN", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border bg-[var(--surface-primary)] border-[var(--border)] text-[var(--text-muted)] text-[10px] font-black uppercase tracking-widest shadow-sm">
+          <FiCalendar size={12} className="text-cyan-500" />
+          {new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
         </div>
-      </motion.div>
+      </div>
 
       {/* ══ STAT CARDS ══ */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {[
           {
-            title: "Total Income",
+            title: "Aggregate Inflow",
             value: summary.totalIncome,
-            color: "text-emerald-400",
-            bg: "bg-emerald-500/5",
+            color: "text-emerald-500",
+            bg: "bg-emerald-500/10",
             border: "border-emerald-500/20",
-            glow: "bg-emerald-400",
-            icon: <FiTrendingUp size={17} />,
-            arrow: <FiArrowUpRight size={13} className="text-emerald-400" />,
+            glow: "bg-emerald-500",
+            icon: <FiTrendingUp size={18} />,
           },
           {
-            title: "Total Expense",
+            title: "Aggregate Outflow",
             value: summary.totalExpense,
-            color: "text-rose-400",
-            bg: "bg-rose-500/5",
+            color: "text-rose-500",
+            bg: "bg-rose-500/10",
             border: "border-rose-500/20",
-            glow: "bg-rose-400",
-            icon: <FiTrendingDown size={17} />,
-            arrow: <FiArrowDownRight size={13} className="text-rose-400" />,
+            glow: "bg-rose-500",
+            icon: <FiTrendingDown size={18} />,
           },
           {
-            title: "Net Balance",
+            title: "Net Equilibrium",
             value: summary.balance,
-            color: summary.balance >= 0 ? "text-cyan-400" : "text-rose-400",
-            bg: "bg-cyan-500/5",
-            border: "border-cyan-500/20",
-            glow: "bg-cyan-400",
-            icon: <FiDollarSign size={17} />,
-            arrow: null,
+            color: summary.balance >= 0 ? "text-cyan-500" : "text-rose-500",
+            bg: summary.balance >= 0 ? "bg-cyan-500/10" : "bg-rose-500/10",
+            border: summary.balance >= 0 ? "border-cyan-500/20" : "border-rose-500/20",
+            glow: summary.balance >= 0 ? "bg-cyan-500" : "bg-rose-500",
+            icon: <FiDollarSign size={18} />,
           },
         ].map((card, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: idx * 0.07 }}
-            whileHover={{ y: -3, transition: { duration: 0.2 } }}
-            className={`relative overflow-hidden rounded-2xl border p-5 ${card.bg} ${card.border} backdrop-blur-sm`}
+            transition={{ duration: 0.4, delay: idx * 0.1 }}
+            className={`relative overflow-hidden rounded-[2rem] border p-6 bg-[var(--surface-primary)] ${card.border} shadow-xl backdrop-blur-md group hover:-translate-y-1 transition-all duration-300`}
           >
-            <div
-              className={`absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-15 ${card.glow}`}
-            />
+            <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-3xl opacity-10 ${card.glow} transition-opacity group-hover:opacity-20`} />
             <div className="relative">
-              <div className="flex items-start justify-between mb-3">
-                <div
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center ${card.bg} border ${card.border}`}
-                >
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-inner ${card.bg} ${card.border}`}>
                   <span className={card.color}>{card.icon}</span>
                 </div>
-                {card.arrow && (
-                  <span className="flex items-center gap-1 text-xs font-medium opacity-70">
-                    {card.arrow}
-                  </span>
-                )}
                 {idx === 2 && (
-                  <span
-                    className={`text-xs font-medium px-2 py-0.5 rounded-full border
-                    ${
-                      savingsRate >= 0
-                        ? "bg-emerald-500/15 border-emerald-500/20 text-emerald-400"
-                        : "bg-rose-500/15 border-rose-500/20 text-rose-400"
-                    }`}
-                  >
-                    {savingsRate}% saved
+                  <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border ${savingsRate >= 0 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-rose-500/10 border-rose-500/20 text-rose-500"}`}>
+                    {savingsRate}% SURPLUS
                   </span>
                 )}
               </div>
-              <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">
-                {card.title}
-              </p>
-              <p className={`text-2xl font-bold tracking-tight ${card.color}`}>
+              <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] mb-1">{card.title}</p>
+              <p className={`text-3xl font-black tracking-tighter ${card.color}`}>
                 ₹{Math.abs(card.value).toLocaleString("en-IN")}
               </p>
             </div>
@@ -219,46 +171,43 @@ export const Transaction = () => {
         ))}
       </div>
 
-      {/* ══ MAIN LAYOUT ══ */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* ── LEFT: Transaction list (2 cols) ── */}
-        <div className="lg:col-span-2 space-y-4">
-          {/* Pill tabs with counts */}
-          <div className="flex items-center gap-1 bg-white/4 border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap">
+      {/* ══ MAIN INTERFACE ══ */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ── CENTRAL FEED ── */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* CONTROL STRIP */}
+          <div className="flex items-center gap-1.5 bg-[var(--surface-primary)] border border-[var(--border)] rounded-[1.5rem] p-2 w-fit shadow-lg backdrop-blur-md">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                  ${
-                    activeTab === tab.key
-                      ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 text-cyan-400"
-                      : "text-[var(--muted)] hover:text-gray-300 hover:bg-white/5"
-                  }`}
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 active:scale-95
+                  ${activeTab === tab.key
+                    ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/20"
+                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"}`}
               >
                 {tab.label}
-                <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
-                  ${activeTab === tab.key ? "bg-cyan-500/20 text-cyan-300" : "bg-white/8 text-gray-600"}`}
-                >
+                <span className={`text-[9px] px-2 py-0.5 rounded-md font-black
+                  ${activeTab === tab.key ? "bg-white/20 text-white" : "bg-[var(--surface-tertiary)] text-[var(--text-muted)]"}`}>
                   {tab.count}
                 </span>
               </button>
             ))}
           </div>
 
-          {/* Transaction card */}
-          <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
+          {/* ACTIVITY CONTAINER */}
+          <div className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden backdrop-blur-md">
             {loading ? (
               <TransactionSkeleton />
             ) : filteredSorted.length === 0 ? (
-              <div className="flex flex-col items-center gap-3 py-16 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-[var(--border)] flex items-center justify-center">
-                  <FiInbox size={22} className="text-gray-600" />
+              <div className="flex flex-col items-center gap-4 py-24 text-center">
+                <div className="w-16 h-16 rounded-[2rem] bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center shadow-inner">
+                  <FiInbox size={32} className="text-[var(--text-muted)] opacity-20" />
                 </div>
-                <p className="text-sm text-[var(--muted)]">
-                  No {activeTab.toLowerCase()} transactions found.
-                </p>
+                <div className="space-y-1">
+                  <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">No activity detected</p>
+                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">In the current {activeTab.toLowerCase()} vector.</p>
+                </div>
               </div>
             ) : (
               <AnimatePresence mode="wait">
@@ -267,100 +216,79 @@ export const Transaction = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  className="divide-y divide-[var(--border)]"
                 >
                   {Object.keys(groupedByDate).map((date, groupIdx) => (
                     <div key={date}>
-                      {/* Date separator */}
-                      <div
-                        className={`flex items-center gap-3 px-4 py-2.5
-                        ${groupIdx > 0 ? "border-t border-white/5" : ""}`}
-                      >
-                        <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-widest whitespace-nowrap">
+                      {/* TEMPORAL MARKER */}
+                      <div className={`flex items-center gap-4 px-8 py-5 bg-[var(--surface-secondary)]/30`}>
+                        <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.4)]" />
+                        <span className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.3em]">
                           {date}
                         </span>
-                        <div className="flex-1 h-px bg-white/5" />
-                        <span className="text-[10px] text-gray-700">
-                          {groupedByDate[date].length} txn
-                          {groupedByDate[date].length !== 1 ? "s" : ""}
+                        <div className="flex-1 h-px bg-[var(--border)]/50" />
+                        <span className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-[0.1em] border border-[var(--border)] px-2 py-1 rounded-md">
+                          {groupedByDate[date].length} OPERATIONS
                         </span>
                       </div>
 
-                      {/* Transactions for this date */}
-                      <ul className="divide-y divide-white/4">
+                      {/* OPERATION ENTRIES */}
+                      <div className="divide-y divide-[var(--border)]/50">
                         {groupedByDate[date].map((t, i) => (
-                          <motion.li
+                          <motion.div
                             key={t._id}
-                            initial={{ opacity: 0, x: -8 }}
+                            initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.2, delay: i * 0.03 }}
-                            className="flex items-center gap-3 px-4 py-3.5 hover:bg-white/3 transition-colors"
+                            transition={{ duration: 0.3, delay: i * 0.05 }}
+                            className="flex items-center gap-5 px-8 py-6 hover:bg-[var(--surface-secondary)]/50 transition-all group"
                           >
-                            {/* Type icon */}
-                            <div
-                              className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border
-                              ${
-                                t.type === "Income"
-                                  ? "bg-emerald-500/10 border-emerald-500/20"
-                                  : "bg-rose-500/10 border-rose-500/20"
-                              }`}
-                            >
-                              {t.type === "Income" ? (
-                                <FiArrowUpRight
-                                  size={15}
-                                  className="text-emerald-400"
-                                />
-                              ) : (
-                                <FiArrowDownRight
-                                  size={15}
-                                  className="text-rose-400"
-                                />
-                              )}
+                            {/* VECTOR ICON */}
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border shadow-inner transition-transform group-hover:scale-110
+                              ${t.type === "Income" ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20"}`}>
+                              {t.type === "Income" ? <FiArrowUpRight size={18} className="text-emerald-500" /> : <FiArrowDownRight size={18} className="text-rose-500" />}
                             </div>
 
-                            {/* Info */}
+                            {/* CORE TELEMETRY */}
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-200 truncate">
-                                {t.description || t.source || "No description"}
-                              </p>
-                              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                                {t.categoryID?.name && (
-                                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/6 border border-[var(--border)] text-[var(--muted)]">
-                                    {t.categoryID.name}
+                              <div className="flex items-center gap-3">
+                                <h5 className="text-sm font-black text-[var(--text-primary)] truncate uppercase tracking-tight">
+                                  {t.description || t.source || "Unknown Vector"}
+                                </h5>
+                                {t.type === "Expense" && t.hasBudget && (
+                                  <span className="text-[8px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20 uppercase tracking-widest">
+                                    Strategic
                                   </span>
                                 )}
-                                {t.type === "Expense" && t.hasBudget && (
-                                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/15 text-emerald-500">
-                                    Budgeted
+                              </div>
+                              <div className="flex items-center gap-2 mt-2">
+                                {t.categoryID?.name && (
+                                  <span className="text-[9px] font-bold px-2.5 py-1 rounded-full bg-[var(--surface-tertiary)] border border-[var(--border)] text-[var(--text-muted)] uppercase tracking-widest">
+                                    {t.categoryID.name}
                                   </span>
                                 )}
                               </div>
                             </div>
 
-                            {/* Amount + action */}
-                            <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                              <p
-                                className={`text-sm font-bold ${t.type === "Income" ? "text-emerald-400" : "text-rose-400"}`}
-                              >
-                                {t.type === "Income" ? "+" : "−"}₹
-                                {Number(t.amount || 0).toLocaleString("en-IN")}
+                            {/* QUANTUM DATA */}
+                            <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                              <p className={`text-lg font-black tracking-tighter ${t.type === "Income" ? "text-emerald-500" : "text-rose-500"}`}>
+                                {t.type === "Income" ? "+" : "−"}₹{Number(t.amount || 0).toLocaleString("en-IN")}
                               </p>
                               {t.type === "Expense" && !t.hasBudget && (
                                 <button
                                   onClick={() => handlePlanBudget(t)}
-                                  className="text-[10px] font-semibold px-2.5 py-1 rounded-lg
-                                             bg-gradient-to-r from-cyan-500/15 to-blue-600/15
-                                             border border-cyan-500/25 text-cyan-400
-                                             hover:from-cyan-500/25 hover:to-blue-600/25
-                                             transition-all duration-200 whitespace-nowrap"
+                                  className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl
+                                             bg-cyan-500/10 border border-cyan-500/20 text-cyan-500
+                                             hover:bg-cyan-500 hover:text-white shadow-lg shadow-cyan-500/10
+                                             transition-all duration-300 whitespace-nowrap active:scale-95"
                                 >
-                                  + Plan Budget
+                                  Strategize
                                 </button>
                               )}
                             </div>
-                          </motion.li>
+                          </motion.div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   ))}
                 </motion.div>
@@ -369,40 +297,34 @@ export const Transaction = () => {
           </div>
         </div>
 
-        {/* ── RIGHT: Sidebar ── */}
-        <aside className="space-y-4">
-          {/* Quick Filters */}
-          <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3.5 border-b border-[var(--border)]">
-              <div className="w-6 h-6 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
-                <FiFilter size={11} className="text-cyan-400" />
+        {/* ── SIDEBAR ANALYTICS ── */}
+        <div className="space-y-6">
+          {/* PARAMETRIC FILTERS */}
+          <div className="rounded-[2rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-xl overflow-hidden backdrop-blur-md">
+            <div className="px-6 py-5 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                <FiFilter size={14} className="text-cyan-500" />
               </div>
-              <h4 className="text-xs font-semibold text-[var(--text)] uppercase tracking-widest">
-                Quick Filters
-              </h4>
+              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.2em]">Parameter Matrix</h4>
             </div>
-            <div className="p-2 space-y-1">
+            <div className="p-3 space-y-1.5">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all
-                    ${
-                      activeTab === tab.key
-                        ? "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-medium"
-                        : "text-[var(--muted)] hover:text-gray-200 hover:bg-white/5 border border-transparent"
-                    }`}
+                  className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all
+                    ${activeTab === tab.key
+                      ? "bg-cyan-500/10 border border-cyan-500/20 text-cyan-500"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"}`}
                 >
-                  <span className="flex items-center gap-2">
-                    {tab.key === "All" && <FiList size={13} />}
-                    {tab.key === "Expenses" && <FiTrendingDown size={13} />}
-                    {tab.key === "Incomes" && <FiTrendingUp size={13} />}
-                    {tab.label} transactions
+                  <span className="flex items-center gap-3">
+                    {tab.key === "All" && <FiList size={14} />}
+                    {tab.key === "Expenses" && <FiTrendingDown size={14} />}
+                    {tab.key === "Incomes" && <FiTrendingUp size={14} />}
+                    {tab.label} UNIT
                   </span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
-                    ${activeTab === tab.key ? "bg-cyan-500/20 text-cyan-300" : "bg-white/8 text-gray-600"}`}
-                  >
+                  <span className={`text-[9px] px-2 py-0.5 rounded-md font-black
+                    ${activeTab === tab.key ? "bg-cyan-500/20 text-cyan-500" : "bg-[var(--surface-tertiary)] text-[var(--text-muted)]"}`}>
                     {tab.count}
                   </span>
                 </button>
@@ -410,70 +332,45 @@ export const Transaction = () => {
             </div>
           </div>
 
-          {/* Summary panel */}
-          <div className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3.5 border-b border-[var(--border)]">
-              <div className="w-6 h-6 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
-                <FiDollarSign size={11} className="text-blue-400" />
+          {/* TOTALITY SUMMARY */}
+          <div className="rounded-[2rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-xl overflow-hidden backdrop-blur-md">
+            <div className="px-6 py-5 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                <FiDollarSign size={14} className="text-blue-500" />
               </div>
-              <h4 className="text-xs font-semibold text-[var(--text)] uppercase tracking-widest">
-                Summary
-              </h4>
+              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.2em]">Totality Ledger</h4>
             </div>
-            <div className="p-4 space-y-3">
+            <div className="p-6 space-y-5">
               {[
-                {
-                  label: "Total Income",
-                  value: summary.totalIncome,
-                  color: "text-emerald-400",
-                },
-                {
-                  label: "Total Expense",
-                  value: summary.totalExpense,
-                  color: "text-rose-400",
-                },
-                {
-                  label: "Net Balance",
-                  value: summary.balance,
-                  color:
-                    summary.balance >= 0 ? "text-cyan-400" : "text-rose-400",
-                },
+                { label: "Gross Inflow", value: summary.totalIncome, color: "text-emerald-500" },
+                { label: "Gross Outflow", value: summary.totalExpense, color: "text-rose-500" },
+                { label: "Net Surplus", value: summary.balance, color: summary.balance >= 0 ? "text-cyan-500" : "text-rose-500" },
               ].map((row, i) => (
-                <div
-                  key={i}
-                  className={`flex items-center justify-between text-sm ${i < 2 ? "pb-3 border-b border-white/5" : ""}`}
-                >
-                  <span className="text-[var(--muted)]">{row.label}</span>
-                  <span className={`font-bold ${row.color}`}>
-                    {row.value < 0 ? "−" : ""}₹
-                    {Math.abs(row.value).toLocaleString("en-IN")}
+                <div key={i} className={`flex items-center justify-between group ${i < 2 ? "pb-4 border-b border-[var(--border)]/50" : ""}`}>
+                  <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">{row.label}</span>
+                  <span className={`text-sm font-black tracking-tight ${row.color}`}>
+                    {row.value < 0 ? "−" : ""}₹{Math.abs(row.value).toLocaleString("en-IN")}
                   </span>
                 </div>
               ))}
 
-              {/* Savings rate bar */}
-              <div className="pt-1">
-                <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="text-gray-600">Savings rate</span>
-                  <span
-                    className={`font-bold ${savingsRate >= 20 ? "text-emerald-400" : savingsRate >= 0 ? "text-amber-400" : "text-rose-400"}`}
-                  >
+              {/* SAVINGS PROGRESS VIZ */}
+              <div className="pt-2">
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest mb-3">
+                  <span className="text-[var(--text-muted)]">Efficiency Score</span>
+                  <span className={savingsRate >= 20 ? "text-emerald-500" : savingsRate >= 0 ? "text-amber-500" : "text-rose-500"}>
                     {savingsRate}%
                   </span>
                 </div>
-                <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
+                <div className="h-2 rounded-full bg-[var(--surface-tertiary)] overflow-hidden shadow-inner">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{
-                      width: `${Math.max(0, Math.min(savingsRate, 100))}%`,
-                    }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className={`h-full rounded-full ${
-                      savingsRate >= 20
-                        ? "bg-gradient-to-r from-emerald-400 to-teal-500"
-                        : savingsRate >= 0
-                          ? "bg-gradient-to-r from-amber-400 to-orange-500"
-                          : "bg-gradient-to-r from-rose-500 to-red-600"
+                    animate={{ width: `${Math.max(0, Math.min(savingsRate, 100))}%` }}
+                    transition={{ duration: 1.5, ease: "circOut" }}
+                    className={`h-full rounded-full shadow-[0_0_12px_rgba(0,0,0,0.2)] ${
+                      savingsRate >= 20 ? "bg-gradient-to-r from-emerald-500 to-teal-600" :
+                      savingsRate >= 0 ? "bg-gradient-to-r from-amber-500 to-orange-600" :
+                      "bg-gradient-to-r from-rose-500 to-red-700"
                     }`}
                   />
                 </div>
@@ -481,47 +378,29 @@ export const Transaction = () => {
             </div>
           </div>
 
-          {/* Tips */}
-          <div className="rounded-2xl bg-[#0d0f14]/80 border border-amber-500/20 backdrop-blur-sm overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3.5 border-b border-amber-500/15">
-              <div className="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
-                <FiZap size={11} className="text-amber-400" />
+          {/* STRATEGIC PROTOCOLS */}
+          <div className="rounded-[2rem] bg-gradient-to-br from-[var(--surface-primary)] to-[var(--surface-secondary)] border border-amber-500/20 shadow-xl overflow-hidden">
+            <div className="px-6 py-5 border-b border-amber-500/10 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                <FiZap size={14} className="text-amber-500" />
               </div>
-              <h4 className="text-xs font-semibold text-amber-300 uppercase tracking-widest">
-                Tips
-              </h4>
+              <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">Operational Protocols</h4>
             </div>
-            <div className="p-4 space-y-2.5">
+            <div className="p-6 space-y-4">
               {[
-                {
-                  icon: <FiTarget size={12} />,
-                  text: 'Tap "Plan Budget" on unbudgeted expenses.',
-                },
-                {
-                  icon: <FiFilter size={12} />,
-                  text: "Use filters to focus on specific transaction types.",
-                },
-                {
-                  icon: <FiRefreshCw size={12} />,
-                  text: "Check monthly trends in the Reports page.",
-                },
+                { icon: <FiTarget className="text-amber-500" />, text: 'Convert "Ad-Hoc" entries to "Strategic" assets.' },
+                { icon: <FiFilter className="text-amber-500" />, text: "Isolate vectors via parametric matrix." },
+                { icon: <FiRefreshCw className="text-amber-500" />, text: "Audit temporal trends monthly." },
               ].map((tip, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-2.5 text-xs text-[var(--muted)]"
-                >
-                  <span className="text-amber-500 flex-shrink-0 mt-0.5">
-                    {tip.icon}
-                  </span>
-                  {tip.text}
+                <div key={i} className="flex items-start gap-4">
+                  <span className="flex-shrink-0 mt-0.5">{tip.icon}</span>
+                  <p className="text-[11px] font-bold text-[var(--text-secondary)] leading-relaxed tracking-tight">{tip.text}</p>
                 </div>
               ))}
             </div>
           </div>
-        </aside>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
-};
-
-export default Transaction;
+}

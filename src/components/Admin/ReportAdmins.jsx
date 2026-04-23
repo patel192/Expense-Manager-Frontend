@@ -91,7 +91,7 @@ export const ReportAdmins = () => {
             Aggregated analytical insights across all system nodes. High-fidelity data visualization for ecosystem health monitoring.
           </p>
         </div>
-        <div className="flex items-center gap-3 bg-[#0d0f14]/80 px-4 py-2.5 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-md">
+        <div className="flex items-center gap-3 bg-[var(--surface-primary)] px-4 py-2.5 rounded-2xl border border-[var(--border)] shadow-2xl backdrop-blur-md">
            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
            <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest whitespace-nowrap">Node Analytics: Synchronized</span>
         </div>
@@ -105,12 +105,12 @@ export const ReportAdmins = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
-            className="group p-5 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
+            className="group p-5 rounded-3xl bg-[var(--surface-secondary)] border border-[var(--border)] backdrop-blur-md hover:bg-[var(--surface-tertiary)] transition-all duration-300 relative overflow-hidden"
           >
              <div className="relative z-10">
-                <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-[0.2em] mb-2">{kpi.label}</p>
-                <h3 className={`text-2xl font-black text-[var(--text)] group-hover:text-cyan-400 transition-colors truncate`}>
-                  {kpi.value}
+                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-2">{kpi.label}</p>
+                <h3 className={`text-2xl font-black text-[var(--text-primary)] group-hover:text-cyan-400 transition-colors truncate`}>
+                   {kpi.value}
                 </h3>
                 <div className="mt-4 flex items-center justify-between">
                    <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20">{kpi.trend}</span>
@@ -128,11 +128,11 @@ export const ReportAdmins = () => {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="xl:col-span-3 rounded-[2.5rem] bg-[#0d0f14]/50 border border-white/5 p-8 shadow-2xl backdrop-blur-xl group"
+          className="xl:col-span-3 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] p-8 shadow-2xl backdrop-blur-xl group"
         >
           <div className="flex items-center justify-between mb-8">
              <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-[var(--muted)]">Financial Convergence</h2>
-             <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-cyan-400">
+             <div className="w-10 h-10 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center text-cyan-400">
                 <FiActivity size={18} />
              </div>
           </div>
@@ -145,11 +145,11 @@ export const ReportAdmins = () => {
                     <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.1}/>
                  </linearGradient>
               </defs>
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 700 }} />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 10, fontWeight: 700 }} />
               <YAxis hide />
               <Tooltip 
-                cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }} 
+                cursor={{ fill: 'var(--surface-tertiary)' }}
+                contentStyle={{ background: 'var(--surface-primary)', border: '1px solid var(--border)', borderRadius: '20px', color: 'var(--text-primary)' }} 
               />
               <Bar dataKey="amount" fill="url(#barGradient)" radius={[15, 15, 5, 5]} barSize={60} />
             </BarChart>
@@ -160,11 +160,11 @@ export const ReportAdmins = () => {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="xl:col-span-2 rounded-[2.5rem] bg-[#0d0f14]/50 border border-white/5 p-8 shadow-2xl backdrop-blur-xl"
+          className="xl:col-span-2 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] p-8 shadow-2xl backdrop-blur-xl"
         >
           <div className="flex items-center justify-between mb-8">
              <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-[var(--muted)]">Class Distribution</h2>
-             <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-purple-400">
+             <div className="w-10 h-10 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center text-purple-400">
                 <FiPieChart size={18} />
              </div>
           </div>
@@ -188,7 +188,7 @@ export const ReportAdmins = () => {
                      ))}
                    </Pie>
                    <Tooltip 
-                      contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px' }}
+                      contentStyle={{ background: 'var(--surface-primary)', border: '1px solid var(--border)', borderRadius: '15px', color: 'var(--text-primary)' }}
                    />
                  </PieChart>
                </ResponsiveContainer>
@@ -196,14 +196,14 @@ export const ReportAdmins = () => {
                   {pieData.slice(0, 4).map((entry, i) => (
                      <div key={i} className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="text-[10px] font-bold text-[var(--muted)] uppercase truncate">{entry.name}</span>
+                        <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase truncate">{entry.name}</span>
                      </div>
                   ))}
                </div>
             </div>
           ) : (
             <div className="h-[280px] flex items-center justify-center border border-dashed border-[var(--border)] rounded-3xl">
-               <p className="text-gray-600 font-bold uppercase tracking-widest text-[10px]">Registry Empty</p>
+               <p className="text-[var(--text-muted)] font-bold uppercase tracking-widest text-[10px]">Registry Empty</p>
             </div>
           )}
         </motion.div>
@@ -214,14 +214,14 @@ export const ReportAdmins = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-[2.5rem] bg-gradient-to-br from-[#0d0f14] to-[#040506] border border-white/5 p-10 shadow-3xl relative overflow-hidden group"
+        className="rounded-[2.5rem] bg-gradient-to-br from-[var(--surface-primary)] to-[var(--surface-secondary)] border border-[var(--border)] p-10 shadow-3xl relative overflow-hidden group"
       >
         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
            <FiGrid size={120} className="text-[var(--muted)]" />
         </div>
         
         <div className="relative z-10 w-full lg:w-2/3">
-           <h2 className="text-2xl font-bold text-[var(--text)] mb-6">Strategic Highlights</h2>
+           <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6">Strategic Highlights</h2>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                  <div className="flex items-start gap-4">
@@ -230,7 +230,7 @@ export const ReportAdmins = () => {
                     </div>
                     <div>
                        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Peak Capital Flow</p>
-                       <h4 className="text-xl font-bold text-gray-200">₹{stats.totalIncome.toLocaleString()}</h4>
+                       <h4 className="text-xl font-bold text-[var(--text-primary)]">₹{stats.totalIncome.toLocaleString()}</h4>
                     </div>
                  </div>
                  <div className="flex items-start gap-4">
@@ -239,7 +239,7 @@ export const ReportAdmins = () => {
                     </div>
                     <div>
                        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Primary Operator</p>
-                       <h4 className="text-xl font-bold text-gray-200">{stats.mostActiveUser || "STANDBY"}</h4>
+                       <h4 className="text-xl font-bold text-[var(--text-primary)]">{stats.mostActiveUser || "STANDBY"}</h4>
                     </div>
                  </div>
               </div>
@@ -251,7 +251,7 @@ export const ReportAdmins = () => {
                     </div>
                     <div>
                        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Dormant Accounts</p>
-                       <h4 className="text-xl font-bold text-gray-200">{stats.deactivatedUsers} NODES</h4>
+                       <h4 className="text-xl font-bold text-[var(--text-primary)]">{stats.deactivatedUsers} NODES</h4>
                     </div>
                  </div>
                  <div className="flex items-start gap-4">
@@ -260,7 +260,7 @@ export const ReportAdmins = () => {
                     </div>
                     <div>
                        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-1">Operational Outlay</p>
-                       <h4 className="text-xl font-bold text-gray-200">₹{stats.totalExpense.toLocaleString()}</h4>
+                       <h4 className="text-xl font-bold text-[var(--text-primary)]">₹{stats.totalExpense.toLocaleString()}</h4>
                     </div>
                  </div>
               </div>

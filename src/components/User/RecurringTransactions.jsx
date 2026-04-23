@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchRecurring } from "../../redux/income/incomeSlice";
@@ -9,21 +9,21 @@ import {
   FiDollarSign, FiClock, FiRefreshCw, FiActivity,
 } from "react-icons/fi";
 
-/* ─── Shimmer ─── */
+/* ─── Shimmer skeleton ─── */
 const Shimmer = ({ className = "" }) => (
-  <div className={`relative overflow-hidden bg-white/5 rounded-xl ${className}`}>
+  <div className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}>
     <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite]
-                    bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+                    bg-gradient-to-r from-transparent via-[var(--surface-primary)]/10 to-transparent" />
   </div>
 );
 
 /* ─── Field wrapper ─── */
 const Field = ({ label, icon, children }) => (
-  <div className="space-y-1.5">
-    <label className="block text-xs font-medium text-[var(--muted)] tracking-wide">{label}</label>
-    <div className="relative">
+  <div className="space-y-2">
+    <label className="block text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">{label}</label>
+    <div className="relative group">
       {icon && (
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none z-10">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-500 transition-colors z-10 pointer-events-none">
           {icon}
         </span>
       )}
@@ -32,15 +32,15 @@ const Field = ({ label, icon, children }) => (
   </div>
 );
 
-const inputCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 placeholder-gray-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-[var(--border)] transition-all duration-200";
-const selectCls = "w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--card)] border border-[var(--border)] text-gray-100 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 hover:border-[var(--border)] transition-all duration-200 appearance-none";
+const inputCls = "w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/5 transition-all duration-300";
+const selectCls = "w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/5 transition-all duration-300 appearance-none cursor-pointer";
 
-/* ─── Frequency badge colors ─── */
+/* ─── Frequency badge configs ─── */
 const freqConfig = {
-  daily:   { color: "text-rose-400",   bg: "bg-rose-500/10 border-rose-500/20" },
-  weekly:  { color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/20" },
-  monthly: { color: "text-cyan-400",   bg: "bg-cyan-500/10 border-cyan-500/20" },
-  yearly:  { color: "text-violet-400", bg: "bg-violet-500/10 border-violet-500/20" },
+  daily:   { color: "text-rose-500",   bg: "bg-rose-500/10 border-rose-500/20" },
+  weekly:  { color: "text-amber-500",  bg: "bg-amber-500/10 border-amber-500/20" },
+  monthly: { color: "text-cyan-500",   bg: "bg-cyan-500/10 border-cyan-500/20" },
+  yearly:  { color: "text-violet-500", bg: "bg-violet-500/10 border-violet-500/20" },
 };
 
 export const RecurringTransactions = () => {
@@ -81,14 +81,12 @@ export const RecurringTransactions = () => {
     try {
       setSubmitting(true);
       const payload = { ...formData, amount: Number(formData.amount), userId };
-      let res;
       if (editingId) {
-        res = await axiosInstance.put(`/recurring/${editingId}`, payload);
+        await axiosInstance.put(`/recurring/${editingId}`, payload);
       } else {
-        res = await axiosInstance.post("/recurring", payload);
+        await axiosInstance.post("/recurring", payload);
       }
       await fetchRecurringList();
-      console.log(editingId ? "Recurring updated" : "Recurring created", res.data);
       setFormData({ title: "", amount: "", category: "", frequency: "monthly", nextDate: "" });
       setEditingId(null);
     } catch (error) {
@@ -116,7 +114,7 @@ export const RecurringTransactions = () => {
     fetchRecurringList();
   }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* ── Derived stats ── */
+  /* ── Derived analytics ── */
   const activeCount   = recurringList.filter(r => r.isActive !== false).length;
   const pausedCount   = recurringList.filter(r => r.isActive === false).length;
   const monthlyTotal  = recurringList
@@ -133,324 +131,219 @@ export const RecurringTransactions = () => {
     .sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate))[0];
 
   return (
-    <div className="space-y-6 text-[var(--text)]">
-
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-8 text-[var(--text-primary)] pb-10"
+    >
       {/* ══ HEADER ══ */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-      >
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Recurring Transactions</h1>
-          <p className="text-[var(--muted)] mt-1 text-sm">Manage your scheduled payments and subscriptions.</p>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent uppercase">
+            Automated Flows
+          </h1>
+          <p className="text-sm font-bold text-[var(--text-muted)] mt-1 uppercase tracking-[0.2em]">
+            Protocols for Recurring Capital Events
+          </p>
         </div>
-        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium self-start
-          ${activeCount > 0 ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400" : "bg-white/5 border-[var(--border)] text-[var(--muted)]"}`}>
-          <FiActivity size={12} />
-          {activeCount} active · {pausedCount} paused
+        <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-widest shadow-sm transition-all
+          ${activeCount > 0 ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-500" : "bg-[var(--surface-primary)] border-[var(--border)] text-[var(--text-muted)]"}`}>
+          <FiActivity size={12} className={activeCount > 0 ? "animate-pulse" : ""} />
+          {activeCount} OPERATIONAL · {pausedCount} SUSPENDED
         </div>
-      </motion.div>
+      </div>
 
-      {/* ══ STAT CARDS ══ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ══ ANALYTICS GRID ══ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {[
-          { label: "Total Recurring",   value: recurringList.length,                    suffix: "entries",  color: "text-cyan-400",   bg: "bg-cyan-500/5",   border: "border-cyan-500/20",   glow: "bg-cyan-400",   icon: <FiRepeat size={17} /> },
-          { label: "Active",             value: activeCount,                              suffix: "running",  color: "text-emerald-400", bg: "bg-emerald-500/5",border: "border-emerald-500/20",glow: "bg-emerald-400",icon: <FiPlay size={17} /> },
-          { label: "Monthly Cost",       value: `₹${Math.round(monthlyTotal).toLocaleString("en-IN")}`, suffix: "/mo", color: "text-rose-400", bg: "bg-rose-500/5", border: "border-rose-500/20", glow: "bg-rose-400", icon: <FiDollarSign size={17} /> },
-          { label: "Next Due",           value: nextDue ? new Date(nextDue.nextDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—", suffix: nextDue?.title || "", color: "text-amber-400", bg: "bg-amber-500/5", border: "border-amber-500/20", glow: "bg-amber-400", icon: <FiCalendar size={17} /> },
+          { label: "Total Vectors",   value: recurringList.length,                    suffix: "PROTOCALS",  color: "text-cyan-500",   bg: "bg-cyan-500/10",   border: "border-cyan-500/20",   glow: "bg-cyan-500",   icon: <FiRepeat size={18} /> },
+          { label: "Active Nodes",    value: activeCount,                              suffix: "EXECUTING",  color: "text-emerald-500", bg: "bg-emerald-500/10",border: "border-emerald-500/20",glow: "bg-emerald-500",icon: <FiPlay size={18} /> },
+          { label: "Burn Velocity",   value: `₹${Math.round(monthlyTotal).toLocaleString("en-IN")}`, suffix: "PER CYCLE", color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20", glow: "bg-rose-500", icon: <FiDollarSign size={18} /> },
+          { label: "Critical Marker", value: nextDue ? new Date(nextDue.nextDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "N/A", suffix: nextDue?.title || "NO PENDING", color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20", glow: "bg-amber-500", icon: <FiCalendar size={18} /> },
         ].map((card, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: idx * 0.07 }}
-            whileHover={{ y: -3, transition: { duration: 0.2 } }}
-            className={`relative overflow-hidden rounded-2xl border p-4 sm:p-5 ${card.bg} ${card.border} backdrop-blur-sm`}
+            transition={{ duration: 0.4, delay: idx * 0.1 }}
+            className={`relative overflow-hidden rounded-[2rem] border p-6 bg-[var(--surface-primary)] ${card.border} shadow-xl backdrop-blur-md group hover:-translate-y-1 transition-all duration-300`}
           >
-            <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-15 ${card.glow}`} />
+            <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-3xl opacity-10 ${card.glow} group-hover:opacity-20 transition-opacity`} />
             <div className="relative">
-              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center mb-3 ${card.bg} border ${card.border}`}>
+              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center mb-4 border shadow-inner ${card.bg} ${card.border}`}>
                 <span className={card.color}>{card.icon}</span>
               </div>
-              <p className="text-[10px] sm:text-[11px] font-medium text-[var(--muted)] uppercase tracking-widest mb-1">{card.label}</p>
-              <p className={`text-lg sm:text-xl font-bold tracking-tight truncate ${card.color}`}>{card.value}</p>
-              {card.suffix && <p className="text-[10px] text-gray-600 mt-0.5 truncate">{card.suffix}</p>}
+              <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] mb-1">{card.label}</p>
+              <p className={`text-2xl font-black tracking-tighter truncate ${card.color}`}>{card.value}</p>
+              <p className="text-[9px] font-bold text-[var(--text-muted)] mt-1 uppercase tracking-widest opacity-60 truncate">{card.suffix}</p>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* ══ FORM ══ */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden"
-      >
-        {/* Form header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
-          <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center border
-              ${editingId
-                ? "bg-amber-500/15 border-amber-500/25"
-                : "bg-cyan-500/15 border-cyan-500/25"}`}>
-              {editingId
-                ? <FiEdit2 size={14} className="text-amber-400" />
-                : <FiPlus size={14} className="text-cyan-400" />}
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold text-[var(--text)]">
-                {editingId ? "Edit Recurring Payment" : "Add New Recurring Payment"}
-              </h2>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* ── CONSTRUCT MODULE (FORM) ── */}
+        <div className="lg:col-span-5">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden backdrop-blur-md sticky top-24"
+          >
+            <div className="flex items-center justify-between px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-secondary)]/30">
+              <div className="flex items-center gap-4">
+                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-inner
+                  ${editingId ? "bg-amber-500/10 border-amber-500/20 text-amber-500" : "bg-cyan-500/10 border-cyan-500/20 text-cyan-500"}`}>
+                  {editingId ? <FiEdit2 size={18} /> : <FiPlus size={18} />}
+                </div>
+                <div>
+                  <h2 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-widest">
+                    {editingId ? "Modify Protocol" : "Initialize Flow"}
+                  </h2>
+                  <p className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mt-0.5">Vector Definition</p>
+                </div>
+              </div>
               {editingId && (
-                <p className="text-xs text-amber-400 mt-0.5">Editing — changes will update this entry</p>
+                <button onClick={handleCancelEdit} className="p-2 rounded-xl text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all active:scale-90">
+                  <FiX size={18} />
+                </button>
               )}
             </div>
-          </div>
-          {editingId && (
-            <button
-              onClick={handleCancelEdit}
-              className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-gray-300 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/5"
-            >
-              <FiX size={12} /> Cancel
-            </button>
-          )}
-        </div>
 
-        <form onSubmit={handleSubmit} className="p-5">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Field label="Title" icon={<FiRepeat size={14} />}>
-              <input type="text" name="title" value={formData.title}
-                onChange={handleChange} placeholder="Netflix Subscription"
-                className={inputCls} />
-            </Field>
+            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+              <Field label="Protocol Title" icon={<FiRepeat size={14} />}>
+                <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Subscription Alpha..." className={inputCls} required />
+              </Field>
 
-            <Field label="Amount (₹)" icon={<FiDollarSign size={14} />}>
-              <input type="number" name="amount" value={formData.amount}
-                onChange={handleChange} placeholder="499"
-                className={inputCls} />
-            </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Magnitude (₹)" icon={<FiDollarSign size={14} />}>
+                  <input type="number" name="amount" value={formData.amount} onChange={handleChange} placeholder="0.00" className={inputCls} required />
+                </Field>
+                <Field label="Temporal Cycle" icon={<FiRefreshCw size={14} />}>
+                  <select name="frequency" value={formData.frequency} onChange={handleChange} className={selectCls}>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                  </select>
+                </Field>
+              </div>
 
-            <Field label="Category" icon={<FiTag size={14} />}>
-              <input type="text" name="category" value={formData.category}
-                onChange={handleChange} placeholder="Subscription"
-                className={inputCls} />
-            </Field>
+              <Field label="Sector Category" icon={<FiTag size={14} />}>
+                <input type="text" name="category" value={formData.category} onChange={handleChange} placeholder="Infrastructure..." className={inputCls} />
+              </Field>
 
-            <Field label="Frequency" icon={<FiRefreshCw size={14} />}>
-              <select name="frequency" value={formData.frequency}
-                onChange={handleChange} className={selectCls}>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-            </Field>
+              <Field label="Target Execution" icon={<FiCalendar size={14} />}>
+                <input type="date" name="nextDate" value={formData.nextDate} onChange={handleChange} className={inputCls} required />
+              </Field>
 
-            <Field label="Next Payment Date" icon={<FiCalendar size={14} />}>
-              <input type="date" name="nextDate" value={formData.nextDate}
-                onChange={handleChange} className={inputCls} />
-            </Field>
-
-            {/* Submit spans remaining column on lg */}
-            <div className="flex items-end">
               <button type="submit" disabled={submitting}
-                className={`w-full py-2.5 rounded-xl font-semibold text-sm text-[var(--text)]
-                            flex items-center justify-center gap-2 transition-all duration-200
-                            shadow-lg hover:opacity-90 hover:-translate-y-0.5
-                            disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
-                            ${editingId
-                              ? "bg-gradient-to-r from-amber-500 to-orange-500 shadow-amber-500/20"
-                              : "bg-gradient-to-r from-cyan-500 to-blue-600 shadow-cyan-500/20"
-                            }`}>
-                {submitting
-                  ? <><FiRefreshCw size={13} className="animate-spin" /> Saving...</>
-                  : editingId
-                    ? <><FiCheck size={14} /> Update Payment</>
-                    : <><FiPlus size={14} /> Add Recurring</>
-                }
+                className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] text-white transition-all duration-300 shadow-2xl active:scale-[0.98] disabled:opacity-50
+                ${editingId ? "bg-gradient-to-r from-amber-500 to-orange-600 shadow-amber-500/30" : "bg-gradient-to-r from-cyan-500 to-blue-600 shadow-cyan-500/30"}`}>
+                {submitting ? <FiRefreshCw size={16} className="animate-spin mx-auto" /> : editingId ? "Save Modification" : "Deploy Protocol"}
               </button>
-            </div>
-          </div>
-        </form>
-      </motion.div>
-
-      {/* ══ RECURRING LIST ══ */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="rounded-2xl bg-[#0d0f14]/80 border border-[var(--border)] backdrop-blur-sm overflow-hidden"
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
-              <FiRepeat size={13} className="text-cyan-400" />
-            </div>
-            <h2 className="text-sm font-semibold text-[var(--text)]">Your Recurring Payments</h2>
-          </div>
-          <span className="text-xs text-[var(--muted)] bg-white/5 px-2.5 py-1 rounded-full">
-            {recurringList.length} total
-          </span>
+            </form>
+          </motion.div>
         </div>
 
-        {loading ? (
-          <div className="p-5 space-y-3">
-            {[1,2,3].map(i => <Shimmer key={i} className="h-16 rounded-xl" />)}
-          </div>
-        ) : recurringList.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-              <FiRepeat size={22} className="text-cyan-400" />
+        {/* ── OPERATION LEDGER (LIST) ── */}
+        <div className="lg:col-span-7 space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[var(--surface-primary)] border border-[var(--border)] flex items-center justify-center shadow-inner">
+                <FiRepeat size={16} className="text-cyan-500" />
+              </div>
+              <div>
+                <h2 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-widest">Active Inventory</h2>
+                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mt-0.5">Execution Registry</p>
+              </div>
             </div>
-            <p className="text-sm text-[var(--muted)]">No recurring transactions yet.</p>
-            <p className="text-xs text-gray-600">Fill the form above to add your first one.</p>
+            <span className="text-[9px] font-black text-cyan-500 bg-cyan-500/10 px-3 py-1.5 rounded-lg border border-cyan-500/20 uppercase tracking-[0.2em]">
+              {recurringList.length} TELEMETRIES
+            </span>
           </div>
-        ) : (
-          <>
-            {/* Desktop table */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--border)]">
-                    {["Title", "Amount", "Frequency", "Next Date", "Status", "Actions"].map(h => (
-                      <th key={h} className="text-left px-5 py-3 text-[11px] font-medium text-gray-600 uppercase tracking-widest">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <AnimatePresence>
-                    {recurringList.map((item, i) => {
-                      const freq = freqConfig[item.frequency] || freqConfig.monthly;
-                      const isActive = item.isActive !== false;
-                      const isEditing = editingId === item._id;
-                      return (
-                        <motion.tr
-                          key={item._id}
-                          initial={{ opacity: 0, x: -12 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 12 }}
-                          transition={{ delay: i * 0.04 }}
-                          className={`border-b border-white/5 transition-colors
-                            ${isEditing ? "bg-amber-500/5" : "hover:bg-white/3"}
-                            ${!isActive ? "opacity-60" : ""}`}
-                        >
-                          <td className="px-5 py-3.5">
-                            <div className="flex items-center gap-2.5">
-                              <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
-                                ${isActive ? "bg-cyan-500/10 border border-cyan-500/20" : "bg-white/5 border border-[var(--border)]"}`}>
-                                <FiRepeat size={12} className={isActive ? "text-cyan-400" : "text-gray-600"} />
-                              </div>
-                              <span className="font-medium text-gray-200">{item.title}</span>
-                            </div>
-                          </td>
-                          <td className="px-5 py-3.5 font-semibold text-emerald-400">
-                            ₹{Number(item.amount).toLocaleString("en-IN")}
-                          </td>
-                          <td className="px-5 py-3.5">
-                            <span className={`text-xs px-2.5 py-1 rounded-full border capitalize ${freq.bg} ${freq.color}`}>
-                              {item.frequency}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3.5 text-xs text-[var(--muted)]">
-                            <div className="flex items-center gap-1.5">
-                              <FiClock size={11} className="text-gray-600" />
-                              {new Date(item.nextDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                            </div>
-                          </td>
-                          <td className="px-5 py-3.5">
-                            <span className={`text-xs px-2.5 py-1 rounded-full border font-medium
-                              ${isActive
-                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                                : "bg-gray-500/10 border-gray-500/20 text-[var(--muted)]"
-                              }`}>
-                              {isActive ? "Active" : "Paused"}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3.5">
-                            <div className="flex items-center gap-1">
-                              <button onClick={() => handleEdit(item)} title="Edit"
-                                className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-600 hover:bg-amber-500/15 hover:text-amber-400 transition-all">
-                                <FiEdit2 size={13} />
-                              </button>
-                              <button onClick={() => toggleRecurring(item._id)} title={isActive ? "Pause" : "Resume"}
-                                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all
-                                  ${isActive
-                                    ? "text-gray-600 hover:bg-amber-500/15 hover:text-amber-400"
-                                    : "text-gray-600 hover:bg-emerald-500/15 hover:text-emerald-400"
-                                  }`}>
-                                {isActive ? <FiPause size={13} /> : <FiPlay size={13} />}
-                              </button>
-                              <button onClick={() => deleteRecurring(item._id)} title="Delete"
-                                className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-600 hover:bg-rose-500/15 hover:text-rose-400 transition-all">
-                                <FiTrash2 size={13} />
-                              </button>
-                            </div>
-                          </td>
-                        </motion.tr>
-                      );
-                    })}
-                  </AnimatePresence>
-                </tbody>
-              </table>
-            </div>
 
-            {/* Mobile card list */}
-            <div className="sm:hidden divide-y divide-white/5">
-              {recurringList.map((item) => {
-                const freq = freqConfig[item.frequency] || freqConfig.monthly;
-                const isActive = item.isActive !== false;
-                return (
-                  <div key={item._id} className={`px-4 py-4 ${!isActive ? "opacity-60" : ""}`}>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
-                          ${isActive ? "bg-cyan-500/10 border border-cyan-500/20" : "bg-white/5 border border-[var(--border)]"}`}>
-                          <FiRepeat size={15} className={isActive ? "text-cyan-400" : "text-gray-600"} />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-gray-200 truncate">{item.title}</p>
-                          <div className="flex items-center gap-2 mt-1 flex-wrap">
-                            <span className="text-emerald-400 text-xs font-bold">₹{Number(item.amount).toLocaleString("en-IN")}</span>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full border capitalize ${freq.bg} ${freq.color}`}>
-                              {item.frequency}
-                            </span>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full border
-                              ${isActive ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-gray-500/10 border-gray-500/20 text-[var(--muted)]"}`}>
-                              {isActive ? "Active" : "Paused"}
-                            </span>
+          <div className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden backdrop-blur-md">
+            {loading ? (
+              <div className="p-8 space-y-4">
+                {[1,2,3].map(i => <Shimmer key={i} className="h-24 rounded-[2rem]" />)}
+              </div>
+            ) : recurringList.length === 0 ? (
+              <div className="flex flex-col items-center gap-4 py-24 text-center">
+                <div className="w-20 h-20 rounded-[2.5rem] bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center shadow-inner">
+                  <FiRepeat size={40} className="text-[var(--text-muted)] opacity-20" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">No active protocols</p>
+                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest max-w-[200px]">Define your first recurring capital event in the constructor.</p>
+                </div>
+              </div>
+            ) : (
+              <div className="divide-y divide-[var(--border)]">
+                <AnimatePresence>
+                  {recurringList.map((item, i) => {
+                    const freq = freqConfig[item.frequency] || freqConfig.monthly;
+                    const isActive = item.isActive !== false;
+                    const isEditing = editingId === item._id;
+                    return (
+                      <motion.div
+                        key={item._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ delay: i * 0.05 }}
+                        className={`p-8 hover:bg-[var(--surface-secondary)]/50 transition-all group flex flex-col sm:flex-row items-center gap-6
+                          ${isEditing ? "bg-amber-500/5 ring-2 ring-inset ring-amber-500/20 shadow-inner" : ""}
+                          ${!isActive ? "opacity-60 grayscale" : ""}`}
+                      >
+                        {/* Status + Label */}
+                        <div className="flex-1 min-w-0 flex items-center gap-6 w-full">
+                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 border shadow-inner transition-transform group-hover:scale-110
+                            ${isActive ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-500" : "bg-[var(--surface-tertiary)] border-[var(--border)] text-[var(--text-muted)]"}`}>
+                            <FiRepeat size={24} />
                           </div>
-                          <p className="text-[11px] text-gray-600 mt-1 flex items-center gap-1">
-                            <FiClock size={10} />
-                            {new Date(item.nextDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                          </p>
+                          <div className="min-w-0 space-y-2">
+                            <h4 className="text-base font-black text-[var(--text-primary)] uppercase tracking-tight truncate group-hover:text-cyan-500 transition-colors">{item.title}</h4>
+                            <div className="flex flex-wrap items-center gap-3">
+                              <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-lg border ${freq.bg} ${freq.color}`}>
+                                {item.frequency}
+                              </span>
+                              <div className="flex items-center gap-1.5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                                <FiClock size={11} className="text-cyan-500" />
+                                {new Date(item.nextDate).toLocaleDateString("en-IN", { day: "numeric", month: "long" })}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      {/* Actions */}
-                      <div className="flex gap-1 flex-shrink-0">
-                        <button onClick={() => handleEdit(item)}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-600 hover:bg-amber-500/15 hover:text-amber-400 transition-all">
-                          <FiEdit2 size={14} />
-                        </button>
-                        <button onClick={() => toggleRecurring(item._id)}
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all
-                            ${isActive ? "text-gray-600 hover:bg-amber-500/15 hover:text-amber-400" : "text-gray-600 hover:bg-emerald-500/15 hover:text-emerald-400"}`}>
-                          {isActive ? <FiPause size={14} /> : <FiPlay size={14} />}
-                        </button>
-                        <button onClick={() => deleteRecurring(item._id)}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-600 hover:bg-rose-500/15 hover:text-rose-400 transition-all">
-                          <FiTrash2 size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-      </motion.div>
-    </div>
+
+                        {/* Value + Actions */}
+                        <div className="flex flex-col sm:items-end gap-4 w-full sm:w-auto">
+                          <p className="text-2xl font-black tracking-tighter text-emerald-500 group-hover:scale-105 transition-transform origin-right">
+                            ₹{Number(item.amount).toLocaleString("en-IN")}
+                          </p>
+                          <div className="flex items-center gap-1.5 bg-[var(--surface-tertiary)]/50 p-1.5 rounded-2xl border border-[var(--border)] self-start sm:self-auto">
+                            <button onClick={() => handleEdit(item)} className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-amber-500 hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/20">
+                              <FiEdit2 size={16} />
+                            </button>
+                            <button onClick={() => toggleRecurring(item._id)} className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all border border-transparent
+                              ${isActive 
+                                ? "text-amber-500 hover:bg-amber-500/10 hover:border-amber-500/20" 
+                                : "text-emerald-500 hover:bg-emerald-500/10 hover:border-emerald-500/20"}`}>
+                              {isActive ? <FiPause size={16} /> : <FiPlay size={16} />}
+                            </button>
+                            <button onClick={() => deleteRecurring(item._id)} className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20">
+                              <FiTrash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };

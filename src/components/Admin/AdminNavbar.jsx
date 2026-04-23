@@ -10,9 +10,9 @@ import {
 
 export const AdminNavbar = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-[var(--text)]">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/10 border-b border-[var(--border)] shadow-md">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-[var(--surface-primary)]/80 border-b border-[var(--border)] shadow-md">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-3 sm:py-4 gap-3 sm:gap-0">
           {/* Logo */}
           <Link
