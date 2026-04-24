@@ -9,6 +9,8 @@ import categoryReducer from "./category/categorySlice";
 import logReducer from "./log/logSlice"
 import adminReportReducer from "./adminReport/adminReportSlice"
 
+import uiReducer from "./ui/uiSlice";
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -20,5 +22,6 @@ export const store = configureStore({
     category:categoryReducer,
     log:logReducer,
     adminReport:adminReportReducer,
+    ui: uiReducer,
   },
 });

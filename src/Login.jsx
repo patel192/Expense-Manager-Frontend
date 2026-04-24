@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "./redux/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { toast, ToastContainer, Bounce } from "react-toastify";
@@ -48,18 +48,17 @@ const Field = ({ label, icon, error, children }) => (
 
 export const Login = () => {
   const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.ui);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
   const submitHandler = async (data) => {
-    setLoading(true);
     let wakingUpToast = null;
     
     const wakingUpTimer = setTimeout(() => {
@@ -114,8 +113,6 @@ export const Login = () => {
         position: "top-center",
         autoClose: 3000,
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -304,16 +301,16 @@ export const Login = () => {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className={`w-full py-4 rounded-2xl font-bold text-white text-sm mt-2
                           flex items-center justify-center gap-3 transition-all duration-300 shadow-xl
                           ${
-                            loading
+                            isLoading
                               ? "bg-cyan-500/50 cursor-not-allowed"
                               : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:scale-[1.02] hover:shadow-cyan-500/25 active:scale-[0.98]"
                           }`}
             >
-              {loading ? (
+              {isLoading ? (
                 <>
                   <FiRefreshCw className="animate-spin" size={18} />
                   Authenticating...

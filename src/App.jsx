@@ -9,6 +9,7 @@ import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
 import { UserBudget } from "./components/User/Budget/UserBudget";
 import { UserIncome } from "./components/User/Income/UserIncome";
+import GlobalLoader from "./components/Common/GlobalLoader";
 
 import { UserExpenses } from "./components/User/Expense/UserExpenses";
 import { Reports } from "./components/User/Reports";
@@ -45,7 +46,9 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <Routes>
+    <>
+      <GlobalLoader />
+      <Routes>
       {/* Public Routes */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Content />} />
@@ -81,6 +84,7 @@ function App() {
         </Route>
       </Route>
     </Routes>
+    </>
   );
 }
 

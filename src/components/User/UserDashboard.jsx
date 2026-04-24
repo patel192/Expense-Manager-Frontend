@@ -37,6 +37,7 @@ import {
   FiShield,
   FiInbox,
 } from "react-icons/fi";
+import LoadingSpinner from "../Common/LoadingSpinner";
 
 const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
 
@@ -201,22 +202,22 @@ export const UserDashboard = () => {
   };
 
   const fetchExpenseInsights = async () => {
-    try { setLoadingInsights(true); const res = await axiosInstance.get(`/ai/expense-insights/${userId}`); setExpenseInsights(res.data.insights); } finally { setLoadingInsights(false); }
+    try { setLoadingInsights(true); const res = await axiosInstance.get(`/ai/expense-insights/${userId}`, { skipGlobalLoader: true }); setExpenseInsights(res.data.insights); } finally { setLoadingInsights(false); }
   };
   const fetchForecast = async () => {
-    try { setLoadingForecast(true); const res = await axiosInstance.get(`/ai/financial-forecast/${userId}`); setForecast(res.data.forecast); } finally { setLoadingForecast(false); }
+    try { setLoadingForecast(true); const res = await axiosInstance.get(`/ai/financial-forecast/${userId}`, { skipGlobalLoader: true }); setForecast(res.data.forecast); } finally { setLoadingForecast(false); }
   };
   const fetchSavingOpportunities = async () => {
-    try { setLoadingSavings(true); const res = await axiosInstance.get(`/ai/saving-opportunities/${userId}`); setSavingOpportunities(res.data.opportunities); } finally { setLoadingSavings(false); }
+    try { setLoadingSavings(true); const res = await axiosInstance.get(`/ai/saving-opportunities/${userId}`, { skipGlobalLoader: true }); setSavingOpportunities(res.data.opportunities); } finally { setLoadingSavings(false); }
   };
   const fetchHealthScore = async () => {
-    try { setLoadingHealth(true); const res = await axiosInstance.get(`/ai/financial-health/${userId}`); setHealthScore(res.data.healthScore); } finally { setLoadingHealth(false); }
+    try { setLoadingHealth(true); const res = await axiosInstance.get(`/ai/financial-health/${userId}`, { skipGlobalLoader: true }); setHealthScore(res.data.healthScore); } finally { setLoadingHealth(false); }
   };
   const fetchRisk = async () => {
-    try { setLoadingRisk(true); const res = await axiosInstance.get(`/ai/spending-risk/${userId}`); setRiskData(res.data.risk); } finally { setLoadingRisk(false); }
+    try { setLoadingRisk(true); const res = await axiosInstance.get(`/ai/spending-risk/${userId}`, { skipGlobalLoader: true }); setRiskData(res.data.risk); } finally { setLoadingRisk(false); }
   };
   const fetchAllInsights = async () => {
-    try { setLoadingHistory(true); const res = await axiosInstance.get(`/ai/insights/${userId}`); setAllInsights(res.data.insights); } finally { setLoadingHistory(false); }
+    try { setLoadingHistory(true); const res = await axiosInstance.get(`/ai/insights/${userId}`, { skipGlobalLoader: true }); setAllInsights(res.data.insights); } finally { setLoadingHistory(false); }
   };
 
   useEffect(() => {
@@ -313,10 +314,7 @@ export const UserDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AICard title="Spending Risk Analysis" icon={<FiAlertTriangle size={15} />} iconColor="text-rose-500" iconBg="bg-rose-500/10 border border-rose-500/20" borderColor="border-rose-500/20" accentColor="bg-rose-500" isLoading={loadingRisk} onRefresh={fetchRisk}>
           {loadingRisk ? (
-            <div className="flex flex-col items-center justify-center py-6 gap-3 text-[var(--text-muted)]">
-              <FiRefreshCw size={24} className="animate-spin text-rose-500" />
-              <p className="text-xs font-bold uppercase tracking-widest">Scanning transactions...</p>
-            </div>
+            <LoadingSpinner color="text-rose-500" label="Scanning transactions..." className="py-6" />
           ) : riskData ? (
             <div className={`rounded-[1.5rem] p-5 border ${riskColors[riskData.riskLevel]?.border} ${riskColors[riskData.riskLevel]?.bg} shadow-inner`}>
               <div className="flex items-center justify-between mb-4">
@@ -349,10 +347,7 @@ export const UserDashboard = () => {
 
         <AICard title="Financial Health Quotient" icon={<FiShield size={16} />} iconColor="text-violet-500" iconBg="bg-violet-500/10 border border-violet-500/20" borderColor="border-violet-500/20" accentColor="bg-violet-500" isLoading={loadingHealth} onRefresh={fetchHealthScore}>
           {loadingHealth ? (
-            <div className="flex flex-col items-center justify-center py-6 gap-3">
-              <FiRefreshCw size={24} className="animate-spin text-violet-500" />
-              <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">Calculating metrics...</p>
-            </div>
+            <LoadingSpinner color="text-violet-500" label="Calculating metrics..." className="py-6" />
           ) : healthScore ? (
             <AIResult content={healthScore} />
           ) : (
@@ -365,10 +360,7 @@ export const UserDashboard = () => {
 
         <AICard title="Structural Insights" icon={<FiBarChart2 size={16} />} iconColor="text-cyan-500" iconBg="bg-cyan-500/10 border border-cyan-500/20" borderColor="border-cyan-500/20" accentColor="bg-cyan-500" isLoading={loadingInsights} onRefresh={fetchExpenseInsights}>
           {loadingInsights ? (
-             <div className="flex flex-col items-center justify-center py-6 gap-3">
-               <FiRefreshCw size={24} className="animate-spin text-cyan-500" />
-               <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">Extracting patterns...</p>
-             </div>
+             <LoadingSpinner color="text-cyan-500" label="Extracting patterns..." className="py-6" />
           ) : expenseInsights ? (
             <AIResult content={expenseInsights} />
           ) : (
@@ -381,10 +373,7 @@ export const UserDashboard = () => {
 
         <AICard title="AI Predictive Projection" icon={<FiTrendingUp size={16} />} iconColor="text-blue-500" iconBg="bg-blue-500/10 border border-blue-500/20" borderColor="border-blue-500/20" accentColor="bg-blue-400" isLoading={loadingForecast} onRefresh={fetchForecast}>
           {loadingForecast ? (
-            <div className="flex flex-col items-center justify-center py-6 gap-3">
-              <FiRefreshCw size={24} className="animate-spin text-blue-500" />
-              <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">Modeling future...</p>
-            </div>
+            <LoadingSpinner color="text-blue-500" label="Modeling future..." className="py-6" />
           ) : forecast ? (
             <AIResult content={forecast} />
           ) : (
@@ -397,10 +386,7 @@ export const UserDashboard = () => {
 
         <AICard title="Optimization Protocol" icon={<FiZap size={16} />} iconColor="text-emerald-500" iconBg="bg-emerald-500/10 border border-emerald-500/20" borderColor="border-emerald-500/20" accentColor="bg-emerald-500" isLoading={loadingSavings} onRefresh={fetchSavingOpportunities}>
           {loadingSavings ? (
-            <div className="flex flex-col items-center justify-center py-6 gap-3">
-              <FiRefreshCw size={24} className="animate-spin text-emerald-500" />
-              <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">Optimizing surplus...</p>
-            </div>
+            <LoadingSpinner color="text-emerald-500" label="Optimizing surplus..." className="py-6" />
           ) : savingOpportunities ? (
             <AIResult content={savingOpportunities} />
           ) : (

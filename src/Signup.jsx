@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "./components/Utils/axiosInstance";
@@ -37,14 +38,13 @@ const Field = ({ label, icon, error, children }) => (
 );
 
 export const Signup = () => {
+  const { isLoading } = useSelector((state) => state.ui);
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   /* ── ALL ORIGINAL LOGIC UNTOUCHED ── */
   const submitHandler = async (data) => {
-    setLoading(true);
     try {
       const res = await axiosInstance.post("/user", { ...data, role: "User" });
       if (res.status === 201) {
@@ -59,8 +59,6 @@ export const Signup = () => {
         error.response?.data?.message || "Signup failed. Try again.",
         { position: "top-center", autoClose: 3000 }
       );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -239,15 +237,15 @@ export const Signup = () => {
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className={`w-full py-4 rounded-2xl font-bold text-white text-sm mt-4
                           flex items-center justify-center gap-3 transition-all duration-300 shadow-xl
-                          ${loading
+                          ${isLoading
                             ? "bg-cyan-500/50 cursor-not-allowed"
                             : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:scale-[1.02] hover:shadow-cyan-500/25 active:scale-[0.98]"
                           }`}
             >
-              {loading ? (
+              {isLoading ? (
                 <>
                   <FiRefreshCw className="animate-spin" size={18} />
                   Creating account...
