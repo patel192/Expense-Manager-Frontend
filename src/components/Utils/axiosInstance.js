@@ -1,6 +1,6 @@
 import axios from "axios";
 import { startLoading, stopLoading } from "../../redux/ui/uiSlice";
-import { logout } from "../../redux/auth/authSlice";
+import { logout, updateToken } from "../../redux/auth/authSlice";
 
 let store;
 
@@ -24,6 +24,13 @@ axiosInstance.interceptors.request.use(
       config._globalLoading = true;
       store.dispatch(startLoading(config.loadingText));
     }
+
+    // Add Authorization header fallback
+    const token = store?.getState()?.auth?.token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => {
@@ -50,11 +57,17 @@ axiosInstance.interceptors.response.use(
       config._retry = true;
       try {
         // Attempt to refresh token
-        await axios.post(
+        const refreshRes = await axios.post(
           "https://learn-25-node.onrender.com/api/user/refresh-token",
           {},
           { withCredentials: true }
         );
+
+        const newToken = refreshRes.data.token;
+        if (newToken && store) {
+          store.dispatch(updateToken(newToken));
+        }
+
         // Retry original request
         return axiosInstance(config);
       } catch (refreshError) {

@@ -16,10 +16,12 @@ const getStoredUser = () => {
 
 const savedUser = getStoredUser();
 const savedRole = localStorage.getItem("role");
+const savedToken = localStorage.getItem("token");
 
 const initialState = {
   user: savedUser,
   role: savedRole && savedRole !== "undefined" ? savedRole : null,
+  token: savedToken && savedToken !== "undefined" ? savedToken : null,
   isAuthenticated: !!savedUser,
   loading: false,
 };
@@ -28,23 +30,32 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      const { user, role } = action.payload;
+      const { user, role, token } = action.payload;
       state.user = user || null;
       state.role = role || null;
+      state.token = token || null;
       state.isAuthenticated = !!user;
       state.loading = false;
 
       if (user) localStorage.setItem("user", JSON.stringify(user));
       if (role) localStorage.setItem("role", role);
+      if (token) localStorage.setItem("token", token);
+    },
+
+    updateToken: (state, action) => {
+      state.token = action.payload;
+      localStorage.setItem("token", action.payload);
     },
 
     logout: (state) => {
       state.user = null;
       state.role = null;
+      state.token = null;
       state.isAuthenticated = false;
 
       localStorage.removeItem("user");
       localStorage.removeItem("role");
+      localStorage.removeItem("token");
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -60,5 +71,5 @@ const authSlice = createSlice({
     });
   },
 });
-export const { loginSuccess, logout, setLoading } = authSlice.actions;
+export const { loginSuccess, logout, setLoading, updateToken } = authSlice.actions;
 export default authSlice.reducer;
