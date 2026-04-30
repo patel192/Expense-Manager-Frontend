@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, memo } from "react";
 import ReactMarkdown from "react-markdown";
 import axiosInstance from "../Utils/axiosInstance";
 import {
@@ -53,7 +53,7 @@ const Shimmer = ({ className = "" }) => (
 );
 
 /* ─── Metric Card ─── */
-const MetricCard = useMemo(({ title, value, icon, color, bg, border, glow }) => (
+const MetricCard = memo(({ title, value, icon, color, bg, border, glow }) => (
   <div className={`relative overflow-hidden rounded-2xl border p-5 bg-[var(--surface-primary)] ${border} shadow-sm backdrop-blur-md group hover:-translate-y-1 transition-all duration-300`}>
     <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-3xl opacity-10 ${glow} transition-opacity group-hover:opacity-20`} />
     <div className="relative">
@@ -67,7 +67,7 @@ const MetricCard = useMemo(({ title, value, icon, color, bg, border, glow }) => 
 ));
 
 /* ─── AI Card ─── */
-const AICard = useMemo(({ title, icon, iconColor, iconBg, borderColor, accentColor, children, isLoading, onRefresh }) => (
+const AICard = memo(({ title, icon, iconColor, iconBg, borderColor, accentColor, children, isLoading, onRefresh }) => (
   <div className={`rounded-[2rem] bg-[var(--surface-primary)] border ${borderColor} backdrop-blur-md overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl`}>
     <div className={`flex items-center justify-between px-6 py-5 border-b ${borderColor} bg-[var(--surface-secondary)]/30`}>
       <div className="flex items-center gap-3">
