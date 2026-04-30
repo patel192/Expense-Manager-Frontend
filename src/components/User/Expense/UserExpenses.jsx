@@ -72,6 +72,14 @@ export const UserExpenses = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [filters, setFilters] = useState({
+    startDate: "",
+    endDate: "",
+    categoryID: "",
+    minAmount: "",
+    maxAmount: "",
+    datePreset: "all",
+  });
 
   const userId = useMemo(() => user?._id, [user]);
   const COLORS = ["#ef4444", "#06b6d4", "#10b981", "#f59e0b", "#6366f1", "#ec4899", "#8b5cf6"];
@@ -83,9 +91,43 @@ export const UserExpenses = () => {
       setValue("userID", userId);
       dispatch(fetchCategories());
       dispatch(fetchRecentExpenses(userId));
-      dispatch(fetchAllExpenses(userId));
+      dispatch(fetchAllExpenses({ userId, filters }));
     }
-  }, [dispatch, userId, setValue]);
+  }, [dispatch, userId, setValue, filters]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    let newFilters = { ...filters, [name]: value };
+
+    if (name === "datePreset") {
+      const now = new Date();
+      let start = "";
+      let end = "";
+
+      if (value === "thisMonth") {
+        start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
+      } else if (value === "last3Months") {
+        start = new Date(now.getFullYear(), now.getMonth() - 3, 1).toISOString().split("T")[0];
+        end = now.toISOString().split("T")[0];
+      }
+      
+      newFilters = { ...newFilters, startDate: start, endDate: end };
+    }
+
+    setFilters(newFilters);
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      startDate: "",
+      endDate: "",
+      categoryID: "",
+      minAmount: "",
+      maxAmount: "",
+      datePreset: "all",
+    });
+  };
 
   const { chartData, categoryBreakdown } = useMemo(() => {
     const monthly = Array.from({ length: 12 }, () => 0);
@@ -125,7 +167,7 @@ export const UserExpenses = () => {
       reset({ userID: userId });
       setIsModalOpen(false);
       dispatch(fetchRecentExpenses(userId));
-      dispatch(fetchAllExpenses(userId));
+      dispatch(fetchAllExpenses({ userId, filters }));
     } catch (error) {
       console.error(error);
     } finally {
@@ -137,7 +179,7 @@ export const UserExpenses = () => {
     if (!window.confirm("Delete this expense permanently?")) return;
     try {
       await axiosInstance.delete(`/expenses/${id}`);
-      dispatch(fetchAllExpenses(userId));
+      dispatch(fetchAllExpenses({ userId, filters }));
       dispatch(fetchRecentExpenses(userId));
     } catch (error) { console.error("Delete error:", error); }
   };
@@ -397,12 +439,42 @@ export const UserExpenses = () => {
                 <h3 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">Financial Ledger</h3>
                 <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{expenses.length} Records</span>
               </div>
-              <button onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface-secondary)]
-                           border border-[var(--border)] text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]
-                           hover:border-rose-500/30 transition-all shadow-sm active:scale-95">
-                <FiPlus size={14} className="text-rose-500" /> NEW RECORD
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={clearFilters} className="text-[10px] font-bold text-rose-500 uppercase tracking-widest hover:underline px-2">Clear All</button>
+                <button onClick={() => setIsModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface-secondary)]
+                            border border-[var(--border)] text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]
+                            hover:border-rose-500/30 transition-all shadow-sm active:scale-95">
+                  <FiPlus size={14} className="text-rose-500" /> NEW RECORD
+                </button>
+              </div>
+            </div>
+
+            {/* Filter Bar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 p-4 bg-[var(--surface-primary)] border border-[var(--border)] rounded-2xl shadow-sm">
+               <select name="datePreset" value={filters.datePreset} onChange={handleFilterChange} className="bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs font-bold text-[var(--text-primary)] outline-none focus:border-rose-500/50">
+                  <option value="all">All Time</option>
+                  <option value="thisMonth">This Month</option>
+                  <option value="last3Months">Last 3 Months</option>
+                  <option value="custom">Custom Range</option>
+               </select>
+
+               {filters.datePreset === "custom" && (
+                 <>
+                   <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none" />
+                   <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none" />
+                 </>
+               )}
+
+               <select name="categoryID" value={filters.categoryID} onChange={handleFilterChange} className="bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs font-bold text-[var(--text-primary)] outline-none focus:border-rose-500/50">
+                  <option value="">All Categories</option>
+                  {categories.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+               </select>
+
+               <div className="flex items-center gap-2">
+                 <input type="number" name="minAmount" value={filters.minAmount} onChange={handleFilterChange} placeholder="Min ₹" className="w-full bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none" />
+                 <input type="number" name="maxAmount" value={filters.maxAmount} onChange={handleFilterChange} placeholder="Max ₹" className="w-full bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] outline-none" />
+               </div>
             </div>
 
             {expenses.length === 0 ? (

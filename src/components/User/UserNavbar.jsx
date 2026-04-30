@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { logout } from "../Utils/Logout";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../redux/auth/authSlice";
 import {
   FaBars,
   FaTimes,
@@ -14,6 +15,13 @@ import { FiLogOut } from "react-icons/fi";
 
 export const UserNavbar = ({ toggleSidebar }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    navigate("/login");
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[var(--surface-primary)]/80 border-b border-[var(--border)] shadow-sm">
@@ -63,7 +71,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
           <div className="h-6 w-px bg-[var(--border)]" />
 
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface-tertiary)] border border-[var(--border)] text-sm font-semibold text-[var(--text-primary)] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/30 transition-all active:scale-95 shadow-sm"
           >
             <FiLogOut size={16} />
@@ -93,7 +101,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
 
             <button
               onClick={() => {
-                logout();
+                handleLogout();
                 setMenuOpen(false);
               }}
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"

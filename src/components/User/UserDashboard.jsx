@@ -4,8 +4,11 @@ import axiosInstance from "../Utils/axiosInstance";
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   PieChart,
   Pie,
@@ -256,6 +259,40 @@ export const UserDashboard = () => {
   const netSavings = totalIncome - totalExpenses;
   const savingsRate = totalIncome > 0 ? Math.round((netSavings / totalIncome) * 100) : 0;
 
+  // Calculate 30-day trend
+  const trendData = useMemo(() => {
+    const last30Days = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      last30Days.push({
+        date: d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+        fullDate: d.toISOString().split("T")[0],
+        amount: 0,
+      });
+    }
+
+    expenses.forEach((exp) => {
+      const expDate = new Date(exp.date).toISOString().split("T")[0];
+      const day = last30Days.find((d) => d.fullDate === expDate);
+      if (day) {
+        day.amount += exp.amount;
+      }
+    });
+
+    return last30Days;
+  }, [expenses]);
+
+  // Calculate category breakdown
+  const categoryData = useMemo(() => {
+    const map = {};
+    expenses.forEach((exp) => {
+      const cat = exp.categoryID?.name || "Other";
+      map[cat] = (map[cat] || 0) + exp.amount;
+    });
+    return Object.entries(map).map(([name, value]) => ({ name, value }));
+  }, [expenses]);
+
   if (loadingDashboard) return <DashboardSkeleton />;
 
   const riskColors = {
@@ -461,6 +498,31 @@ export const UserDashboard = () => {
       ) : (
         (totalIncome > 0 || totalExpenses > 0) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Spending Trend Line Chart */}
+            <div className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] p-8 shadow-2xl relative overflow-hidden lg:col-span-2">
+              <div className="absolute top-0 left-0 w-64 h-64 bg-rose-500/5 blur-[100px]" />
+              <div className="flex items-center justify-between mb-8 relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shadow-inner">
+                    <FiTrendingDown size={16} className="text-rose-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--text-primary)]">Velocity Analytics</h3>
+                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">30-Day Outflow Trajectory</p>
+                  </div>
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} opacity={0.1} />
+                  <XAxis dataKey="date" stroke="var(--border)" tick={{ fill: "var(--text-muted)", fontSize: 9, fontWeight: 700 }} axisLine={false} tickLine={false} interval={2} />
+                  <YAxis stroke="var(--border)" tick={{ fill: "var(--text-muted)", fontSize: 9, fontWeight: 700 }} axisLine={false} tickLine={false} tickFormatter={(v) => `₹${v}`} />
+                  <Tooltip content={<ChartTooltip />} />
+                  <Line type="monotone" dataKey="amount" stroke="#f43f5e" strokeWidth={4} dot={{ r: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
             <div className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] p-8 shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 left-0 w-48 h-48 bg-blue-500/5 blur-[80px]" />
               <div className="flex items-center gap-3 mb-8 relative z-10">
@@ -485,7 +547,7 @@ export const UserDashboard = () => {
               </ResponsiveContainer>
             </div>
 
-            {expenses.length > 0 && (
+            {categoryData.length > 0 && (
               <div className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] p-8 shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 blur-[80px]" />
                 <div className="flex items-center gap-3 mb-8 relative z-10">
@@ -499,8 +561,8 @@ export const UserDashboard = () => {
                 </div>
                 <ResponsiveContainer width="100%" height={260}>
                   <PieChart>
-                    <Pie data={expenses.map(e => ({ name: e.categoryID?.name || "Other", value: e.amount }))} dataKey="value" outerRadius={90} innerRadius={55} paddingAngle={4} stroke="none">
-                      {expenses.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                    <Pie data={categoryData} dataKey="value" outerRadius={90} innerRadius={55} paddingAngle={4} stroke="none">
+                      {categoryData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                     </Pie>
                     <Legend iconType="circle" iconSize={6} wrapperStyle={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)", paddingTop: 20 }} />
                     <Tooltip content={<ChartTooltip />} />

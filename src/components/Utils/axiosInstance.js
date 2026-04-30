@@ -9,24 +9,19 @@ export const injectStore = (_store) => {
 
 const axiosInstance = axios.create({
   baseURL: "https://learn-25-node.onrender.com/api",
-  timeout: 120000, // 120 seconds to allow for Render cold starts
+  timeout: 120000,
+  withCredentials: true, // Send cookies with every request
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Add token automatically if available
+// Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Start global loader unless skipped
     if (store && !config.skipGlobalLoader) {
       config._globalLoading = true;
       store.dispatch(startLoading(config.loadingText));
-    }
-    
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -38,7 +33,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Add retry logic for cold starts and network errors
+// Response Interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
     if (store && response.config?._globalLoading) {
@@ -47,22 +42,42 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const { config, message } = error;
-    
-    // Retry logic... (unchanged logic omitted for brevity in instruction, will be handled in ReplacementContent)
+    const { config, response } = error;
+
+    // Handle 401 Unauthorized (Token Expired)
+    if (response?.status === 401 && !config._retry) {
+      config._retry = true;
+      try {
+        // Attempt to refresh token
+        await axios.post(
+          "https://learn-25-node.onrender.com/api/user/refresh-token",
+          {},
+          { withCredentials: true }
+        );
+        // Retry original request
+        return axiosInstance(config);
+      } catch (refreshError) {
+        // Refresh failed, logout user
+        if (store) {
+          // store.dispatch(logout()); // Uncomment if you have logout action
+          // window.location.href = "/login";
+        }
+        return Promise.reject(refreshError);
+      }
+    }
+
     if (config && !config._retry) {
       config._retry = true;
-      
+      const message = error.message || "";
       const isTimeout = message.includes("timeout") || error.code === "ECONNABORTED";
       const isNetworkError = message.includes("Network Error") || !error.response;
 
       if (isTimeout || isNetworkError) {
-        console.warn("API Error (Possible Cold Start): Retrying request...", message);
         await new Promise((resolve) => setTimeout(resolve, 2000));
         return axiosInstance(config);
       }
     }
-    
+
     if (store && config?._globalLoading) {
       store.dispatch(stopLoading());
     }

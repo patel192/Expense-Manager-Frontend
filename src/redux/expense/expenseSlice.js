@@ -17,9 +17,10 @@ export const fetchRecentExpenses = createAsyncThunk(
 
 export const fetchAllExpenses = createAsyncThunk(
     "expense/fetchAllExpenses",
-    async (userId) => {
+    async ({ userId, filters = {} }) => {
         if (!userId) return [];
-        const res = await axiosInstance.get(`/expensesbyUserID/${userId}`);
+        const params = new URLSearchParams(filters).toString();
+        const res = await axiosInstance.get(`/expensesbyUserID/${userId}?${params}`);
         return res.data.data || res.data || [];
     }
 );

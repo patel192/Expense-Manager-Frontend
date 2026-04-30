@@ -75,10 +75,9 @@ export const Login = () => {
 
       if (res.status === 200) {
         const user = res.data.data && res.data.data._id ? res.data.data : (res.data.user || null);
-        const token = res.data.token || (res.data.data && res.data.data.token);
         const role = user?.role || res.data.role;
 
-        const loginData = { user, token, role };
+        const loginData = { user, role };
         
         if (!loginData.user || !loginData.user._id) {
           console.error("User details missing or invalid in API response:", res.data);
