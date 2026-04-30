@@ -43,13 +43,30 @@ const expenseSlice = createSlice ({
             state.loading = false,
             state.categories = action.payload;
         })
-
-        .addCase(fetchRecentExpenses.fulfilled , (state,action)  => {
-           state.recentExpenses = action.payload;
+        .addCase(fetchCategories.rejected, (state) => {
+            state.loading = false;
         })
 
+        .addCase(fetchRecentExpenses.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(fetchRecentExpenses.fulfilled , (state,action)  => {
+           state.loading = false;
+           state.recentExpenses = action.payload;
+        })
+        .addCase(fetchRecentExpenses.rejected, (state) => {
+            state.loading = false;
+        })
+
+        .addCase(fetchAllExpenses.pending, (state) => {
+            state.loading = true;
+        })
         .addCase(fetchAllExpenses.fulfilled,(state,action)=> {
+            state.loading = false;
             state.expenses = action.payload;
+        })
+        .addCase(fetchAllExpenses.rejected, (state) => {
+            state.loading = false;
         });
     }
 });

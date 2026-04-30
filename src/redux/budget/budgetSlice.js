@@ -139,7 +139,10 @@ const budgetSlice = createSlice({
             action.payload;
 
         }
-      );
+      )
+      .addCase(fetchBudgetData.rejected, (state) => {
+        state.loading = false;
+      });
 
   },
 

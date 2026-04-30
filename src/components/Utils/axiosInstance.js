@@ -1,5 +1,6 @@
 import axios from "axios";
 import { startLoading, stopLoading } from "../../redux/ui/uiSlice";
+import { logout } from "../../redux/auth/authSlice";
 
 let store;
 
@@ -59,8 +60,8 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed, logout user
         if (store) {
-          // store.dispatch(logout()); // Uncomment if you have logout action
-          // window.location.href = "/login";
+          store.dispatch(logout());
+          window.location.href = "/login";
         }
         return Promise.reject(refreshError);
       }
