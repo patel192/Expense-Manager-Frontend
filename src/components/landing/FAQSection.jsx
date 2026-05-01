@@ -34,7 +34,6 @@ export const FAQSection = () => {
 
   return (
     <section className="py-20 space-y-10">
-
       {/* Header */}
       <div className="text-center space-y-2">
         <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
@@ -52,7 +51,6 @@ export const FAQSection = () => {
 
       {/* FAQ List */}
       <div className="max-w-2xl mx-auto space-y-3">
-
         {faqs.map((faq, index) => (
           <div
             key={index}
@@ -64,7 +62,6 @@ export const FAQSection = () => {
               overflow-hidden
             "
           >
-
             {/* Question */}
             <button
               onClick={() => toggle(index)}
@@ -112,12 +109,9 @@ export const FAQSection = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-
           </div>
         ))}
-
       </div>
-
     </section>
   );
 };

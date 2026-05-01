@@ -25,7 +25,6 @@ const integrations = [
 export const IntegrationsGrid = () => {
   return (
     <section className="py-20 space-y-10">
-
       {/* Header */}
       <div className="text-center space-y-2">
         <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
@@ -37,13 +36,13 @@ export const IntegrationsGrid = () => {
         </h2>
 
         <p className="text-[var(--muted)] max-w-xl mx-auto text-sm">
-          Export data, generate reports, and keep everything secure with built-in integrations.
+          Export data, generate reports, and keep everything secure with
+          built-in integrations.
         </p>
       </div>
 
       {/* Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-
         {integrations.map((item, i) => (
           <motion.div
             key={i}
@@ -89,12 +88,9 @@ export const IntegrationsGrid = () => {
             <p className="text-xs font-medium text-[var(--text-secondary)]">
               {item.name}
             </p>
-
           </motion.div>
         ))}
-
       </div>
-
     </section>
   );
 };

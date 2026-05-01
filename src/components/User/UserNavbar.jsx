@@ -36,10 +36,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
             <FaBars size={20} />
           </button>
 
-          <Link
-            to="/user/dashboard"
-            className="flex items-center gap-2 group"
-          >
+          <Link to="/user/dashboard" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 group-hover:rotate-6 transition-transform">
               <span className="font-bold text-lg">T</span>
             </div>
@@ -84,7 +81,11 @@ export const UserNavbar = ({ toggleSidebar }) => {
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-tertiary)] transition-all active:scale-95"
         >
-          {menuOpen ? <FaTimes size={20} /> : <FaChevronDown size={20} className={menuOpen ? "rotate-180" : ""} />}
+          {menuOpen ? (
+            <FaTimes size={20} />
+          ) : (
+            <FaChevronDown size={20} className={menuOpen ? "rotate-180" : ""} />
+          )}
         </button>
       </div>
 
@@ -93,10 +94,21 @@ export const UserNavbar = ({ toggleSidebar }) => {
         <div className="md:hidden absolute top-full left-0 w-full bg-[var(--surface-primary)] border-b border-[var(--border)] shadow-xl animate-in slide-in-from-top-4 duration-200">
           <div className="flex flex-col items-center px-6 py-6 gap-6">
             <div className="flex gap-8 text-2xl text-[var(--text-muted)]">
-              <a href="#" className="hover:text-cyan-400 transition-all"><FaTwitter /></a>
-              <a href="#" className="hover:text-blue-500 transition-all"><FaFacebookF /></a>
-              <a href="#" className="hover:text-pink-500 transition-all"><FaInstagram /></a>
-              <a href="#" className="hover:text-[var(--text-primary)] transition-all"><FaGithub /></a>
+              <a href="#" className="hover:text-cyan-400 transition-all">
+                <FaTwitter />
+              </a>
+              <a href="#" className="hover:text-blue-500 transition-all">
+                <FaFacebookF />
+              </a>
+              <a href="#" className="hover:text-pink-500 transition-all">
+                <FaInstagram />
+              </a>
+              <a
+                href="#"
+                className="hover:text-[var(--text-primary)] transition-all"
+              >
+                <FaGithub />
+              </a>
             </div>
 
             <button

@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchLogs } from "../../redux/log/logSlice";
-import { FiLayout, FiSearch, FiClipboard, FiClock, FiActivity, FiShield, FiRefreshCw } from "react-icons/fi";
+import {
+  FiSearch,
+  FiClipboard,
+  FiClock,
+  FiActivity,
+  FiShield,
+  FiUser
+} from "react-icons/fi";
 
 export const Systemlog = () => {
   const dispatch = useDispatch();
@@ -24,9 +31,12 @@ export const Systemlog = () => {
   const getBadgeColor = (action) => {
     if (!action) return "bg-gray-500/10 border-gray-500/20 text-gray-500";
     const act = action.toLowerCase();
-    if (act.includes("delete")) return "bg-rose-500/10 border-rose-500/20 text-rose-500";
-    if (act.includes("update")) return "bg-cyan-500/10 border-cyan-500/20 text-cyan-500";
-    if (act.includes("create")) return "bg-emerald-500/10 border-emerald-500/20 text-emerald-500";
+    if (act.includes("delete"))
+      return "bg-rose-500/10 border-rose-500/20 text-rose-500";
+    if (act.includes("update"))
+      return "bg-cyan-500/10 border-cyan-500/20 text-cyan-500";
+    if (act.includes("create"))
+      return "bg-emerald-500/10 border-emerald-500/20 text-emerald-500";
     return "bg-violet-500/10 border-violet-500/20 text-violet-500";
   };
 
@@ -46,7 +56,7 @@ export const Systemlog = () => {
             Immutable Transactional Integrity Audit
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <div className="px-4 py-2 rounded-2xl border bg-violet-500/10 border-violet-500/20 text-violet-500 text-[10px] font-black uppercase tracking-widest shadow-sm flex items-center gap-3">
             <FiShield size={12} className="animate-pulse" />
@@ -59,7 +69,7 @@ export const Systemlog = () => {
       <div className="relative overflow-hidden p-8 sm:p-10 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl group">
         <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />
-        
+
         <div className="relative flex flex-col lg:flex-row items-center gap-6">
           <div className="flex-1 relative group w-full">
             <FiSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-violet-500 transition-colors z-10" />
@@ -89,18 +99,29 @@ export const Systemlog = () => {
           <div className="flex flex-col items-center justify-center py-32 gap-6">
             <div className="w-12 h-12 rounded-2xl border-4 border-violet-500/10 border-t-violet-500 animate-spin" />
             <div className="space-y-1 text-center">
-              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest animate-pulse">Synchronizing Ledger...</p>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Compiling Historical Telemetry</p>
+              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest animate-pulse">
+                Synchronizing Ledger...
+              </p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                Compiling Historical Telemetry
+              </p>
             </div>
           </div>
         ) : filteredLogs.length === 0 ? (
           <div className="py-32 text-center space-y-4">
             <div className="w-20 h-20 rounded-[2.5rem] bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center mx-auto shadow-inner">
-              <FiClipboard size={40} className="text-[var(--text-muted)] opacity-20" />
+              <FiClipboard
+                size={40}
+                className="text-[var(--text-muted)] opacity-20"
+              />
             </div>
             <div className="space-y-1">
-              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">No match in registry</p>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Modify taxonomy filters to access data nodes.</p>
+              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">
+                No match in registry
+              </p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                Modify taxonomy filters to access data nodes.
+              </p>
             </div>
           </div>
         ) : (
@@ -128,7 +149,9 @@ export const Systemlog = () => {
                         <td className="px-8 py-6 font-mono text-[11px] font-bold text-[var(--text-muted)] group-hover:text-violet-500 transition-colors">
                           <div className="flex items-center gap-3">
                             <FiClock size={12} className="opacity-50" />
-                            {new Date(log.timestamp || log.createdAt).toLocaleString()}
+                            {new Date(
+                              log.timestamp || log.createdAt,
+                            ).toLocaleString()}
                           </div>
                         </td>
                         <td className="px-8 py-6">
@@ -142,11 +165,16 @@ export const Systemlog = () => {
                           </div>
                         </td>
                         <td className="px-8 py-6">
-                          <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black border uppercase tracking-widest shadow-sm ${getBadgeColor(log.action)}`}>
+                          <span
+                            className={`px-4 py-1.5 rounded-xl text-[9px] font-black border uppercase tracking-widest shadow-sm ${getBadgeColor(log.action)}`}
+                          >
                             {log.action}
                           </span>
                         </td>
-                        <td className="px-8 py-6 text-xs font-bold text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors max-w-sm truncate" title={log.description}>
+                        <td
+                          className="px-8 py-6 text-xs font-bold text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors max-w-sm truncate"
+                          title={log.description}
+                        >
                           {log.description}
                         </td>
                       </motion.tr>
@@ -170,9 +198,13 @@ export const Systemlog = () => {
                   </div>
                   <div className="flex items-center justify-between gap-4 mb-6">
                     <p className="text-[10px] font-black font-mono text-violet-500 uppercase tracking-widest">
-                      {new Date(log.timestamp || log.createdAt).toLocaleString()}
+                      {new Date(
+                        log.timestamp || log.createdAt,
+                      ).toLocaleString()}
                     </p>
-                    <span className={`px-3 py-1 rounded-lg text-[9px] font-black border uppercase tracking-widest ${getBadgeColor(log.action)}`}>
+                    <span
+                      className={`px-3 py-1 rounded-lg text-[9px] font-black border uppercase tracking-widest ${getBadgeColor(log.action)}`}
+                    >
                       {log.action}
                     </span>
                   </div>
@@ -194,4 +226,3 @@ export const Systemlog = () => {
     </motion.div>
   );
 };
-

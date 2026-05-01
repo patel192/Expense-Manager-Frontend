@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "./redux/auth/authSlice";
@@ -18,7 +18,7 @@ import {
   FiShield,
   FiCheckCircle,
   FiBarChart2,
-  FiRefreshCw
+  FiRefreshCw,
 } from "react-icons/fi";
 
 /* ── REUSABLE FIELD WRAPPER ── */
@@ -34,7 +34,7 @@ const Field = ({ label, icon, error, children }) => (
       {children}
     </div>
     {error && (
-      <motion.p 
+      <motion.p
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         className="flex items-center gap-1.5 text-rose-500 text-xs mt-1.5 font-medium"
@@ -60,12 +60,15 @@ export const Login = () => {
   /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
   const submitHandler = async (data) => {
     let wakingUpToast = null;
-    
+
     const wakingUpTimer = setTimeout(() => {
-      wakingUpToast = toast.info("Backend is waking up... this might take a minute.", {
-        position: "top-center",
-        autoClose: false,
-      });
+      wakingUpToast = toast.info(
+        "Backend is waking up... this might take a minute.",
+        {
+          position: "top-center",
+          autoClose: false,
+        },
+      );
     }, 10000);
 
     try {
@@ -74,14 +77,20 @@ export const Login = () => {
       if (wakingUpToast) toast.dismiss(wakingUpToast);
 
       if (res.status === 200) {
-        const user = res.data.data && res.data.data._id ? res.data.data : (res.data.user || null);
+        const user =
+          res.data.data && res.data.data._id
+            ? res.data.data
+            : res.data.user || null;
         const role = user?.role || res.data.role;
         const token = res.data.token;
 
         const loginData = { user, role, token };
-        
+
         if (!loginData.user || !loginData.user._id) {
-          console.error("User details missing or invalid in API response:", res.data);
+          console.error(
+            "User details missing or invalid in API response:",
+            res.data,
+          );
           toast.error("Login failed: User details not found in response.", {
             position: "top-center",
             autoClose: 3000,
@@ -95,7 +104,7 @@ export const Login = () => {
         });
 
         dispatch(loginSuccess(loginData));
-        
+
         if (role === "Admin") {
           navigate("/admin/admindashboard");
         } else {
@@ -106,9 +115,12 @@ export const Login = () => {
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
 
-      const errorMessage = error.response?.data?.message || 
-                          (error.code === "ECONNABORTED" ? "Login timed out. Please try again." : "Login failed");
-      
+      const errorMessage =
+        error.response?.data?.message ||
+        (error.code === "ECONNABORTED"
+          ? "Login timed out. Please try again."
+          : "Login failed");
+
       toast.error(errorMessage, {
         position: "top-center",
         autoClose: 3000,
@@ -117,9 +129,7 @@ export const Login = () => {
   };
 
   return (
-    <div
-      className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8 bg-[var(--bg)] text-[var(--text-primary)] relative overflow-hidden transition-colors duration-300"
-    >
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8 bg-[var(--bg)] text-[var(--text-primary)] relative overflow-hidden transition-colors duration-300">
       <ToastContainer transition={Bounce} theme="dark" />
 
       {/* Dynamic ambient lights */}
@@ -133,17 +143,13 @@ export const Login = () => {
         className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-[2.5rem] overflow-hidden border border-[var(--border)] shadow-[0_32px_80px_rgba(0,0,0,0.15)] bg-[var(--surface-primary)]"
       >
         {/* ══ LEFT PANEL ══ */}
-        <div
-          className="hidden lg:flex flex-col justify-between bg-[var(--surface-secondary)] border-r border-[var(--border)] p-12 relative overflow-hidden"
-        >
+        <div className="hidden lg:flex flex-col justify-between bg-[var(--surface-secondary)] border-r border-[var(--border)] p-12 relative overflow-hidden">
           {/* Subtle pattern or gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-600/5 pointer-events-none" />
-          
+
           {/* Brand */}
           <div className="flex items-center gap-3.5 relative z-10">
-            <div
-              className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-cyan-500/20"
-            >
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-cyan-500/20">
               <FiTrendingUp size={18} className="text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent tracking-tight">
@@ -155,11 +161,12 @@ export const Login = () => {
           <div className="space-y-10 relative z-10">
             <div className="space-y-4">
               <h2 className="text-4xl font-extrabold text-[var(--text-primary)] leading-tight tracking-tight">
-                Master Your <br /> 
+                Master Your <br />
                 <span className="text-cyan-500">Financial Future.</span>
               </h2>
               <p className="text-lg text-[var(--text-secondary)] leading-relaxed max-w-sm">
-                Join thousands of users tracking their wealth with precision and style.
+                Join thousands of users tracking their wealth with precision and
+                style.
               </p>
             </div>
 
@@ -207,16 +214,20 @@ export const Login = () => {
                   key={i}
                   className="bg-[var(--surface-primary)] border border-[var(--border)] rounded-2xl p-4 text-center shadow-sm hover:shadow-md transition-all cursor-default"
                 >
-                  <p className="text-[var(--text-primary)] font-bold text-base tracking-tight">{s.value}</p>
-                  <p className="text-[var(--text-muted)] text-[10px] uppercase font-bold tracking-widest mt-1">{s.label}</p>
+                  <p className="text-[var(--text-primary)] font-bold text-base tracking-tight">
+                    {s.value}
+                  </p>
+                  <p className="text-[var(--text-muted)] text-[10px] uppercase font-bold tracking-widest mt-1">
+                    {s.label}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
 
           <p className="text-xs font-medium text-[var(--text-muted)] relative z-10 flex items-center gap-2">
-            <FiCheckCircle className="text-emerald-500" />
-            © 2025 FinTrack. Trusted globally.
+            <FiCheckCircle className="text-emerald-500" />© 2025 FinTrack.
+            Trusted globally.
           </p>
         </div>
 
@@ -234,7 +245,9 @@ export const Login = () => {
 
           {/* Header */}
           <div className="mb-10 space-y-2">
-            <h2 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">Welcome back</h2>
+            <h2 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">
+              Welcome back
+            </h2>
             <p className="text-[var(--text-secondary)] font-medium">
               Enter your details to access your dashboard.
             </p>
@@ -250,12 +263,12 @@ export const Login = () => {
                 type="email"
                 placeholder="name@example.com"
                 autoComplete="email"
-                {...register("email", { 
+                {...register("email", {
                   required: "Email is required",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address"
-                  }
+                    message: "Invalid email address",
+                  },
                 })}
                 className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]
                            text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm
@@ -291,10 +304,19 @@ export const Login = () => {
 
             <div className="flex items-center justify-between py-1">
               <label className="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" className="w-4 h-4 rounded border-[var(--border)] text-cyan-500 focus:ring-cyan-500 bg-[var(--surface-secondary)]" />
-                <span className="text-xs font-semibold text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors">Remember me</span>
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-[var(--border)] text-cyan-500 focus:ring-cyan-500 bg-[var(--surface-secondary)]"
+                />
+                <span className="text-xs font-semibold text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors">
+                  Remember me
+                </span>
               </label>
-              <Link to="/forgot-password" size={14} className="text-xs font-semibold text-cyan-500 hover:text-cyan-600 transition-colors">
+              <Link
+                to="/forgot-password"
+                size={14}
+                className="text-xs font-semibold text-cyan-500 hover:text-cyan-600 transition-colors"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -325,7 +347,9 @@ export const Login = () => {
 
           <div className="flex items-center gap-4 my-8">
             <div className="flex-1 h-px bg-[var(--border)]" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Secure Access</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
+              Secure Access
+            </span>
             <div className="flex-1 h-px bg-[var(--border)]" />
           </div>
 

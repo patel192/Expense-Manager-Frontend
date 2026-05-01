@@ -23,7 +23,6 @@ const testimonials = [
 export const Testimonials = () => {
   return (
     <section className="py-20 space-y-10">
-
       {/* Header */}
       <div className="text-center space-y-2">
         <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
@@ -35,13 +34,13 @@ export const Testimonials = () => {
         </h2>
 
         <p className="text-[var(--muted)] max-w-xl mx-auto text-sm">
-          Real users sharing how FinTrack helps them stay in control of their money.
+          Real users sharing how FinTrack helps them stay in control of their
+          money.
         </p>
       </div>
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
         {testimonials.map((t, i) => (
           <motion.div
             key={i}
@@ -78,16 +77,11 @@ export const Testimonials = () => {
               <p className="text-sm font-semibold text-[var(--text)]">
                 {t.name}
               </p>
-              <p className="text-xs text-[var(--muted)]">
-                {t.role}
-              </p>
+              <p className="text-xs text-[var(--muted)]">{t.role}</p>
             </div>
-
           </motion.div>
         ))}
-
       </div>
-
     </section>
   );
 };

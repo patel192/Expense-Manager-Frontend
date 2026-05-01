@@ -7,7 +7,13 @@ import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
-import { FiGrid, FiUsers, FiFilter, FiActivity, FiArrowLeft, FiArrowRight, FiUserCheck } from "react-icons/fi";
+import {
+  FiUsers,
+  FiFilter,
+  FiActivity,
+  FiArrowLeft,
+  FiArrowRight,
+} from "react-icons/fi";
 
 export const ManageUsers = () => {
   const dispatch = useDispatch();
@@ -32,9 +38,10 @@ export const ManageUsers = () => {
     let filtered = [...users];
 
     if (search) {
-      filtered = filtered.filter((u) =>
-        u.name?.toLowerCase().includes(search.toLowerCase()) ||
-        u.email?.toLowerCase().includes(search.toLowerCase())
+      filtered = filtered.filter(
+        (u) =>
+          u.name?.toLowerCase().includes(search.toLowerCase()) ||
+          u.email?.toLowerCase().includes(search.toLowerCase()),
       );
     }
     if (roleFilter !== "all") {
@@ -52,7 +59,8 @@ export const ManageUsers = () => {
 
   // Archive Sequence
   const handleDelete = async (userId) => {
-    if (!window.confirm("Commence permanent data deletion for this entity?")) return;
+    if (!window.confirm("Commence permanent data deletion for this entity?"))
+      return;
 
     try {
       await dispatch(deleteUser(userId));
@@ -96,7 +104,7 @@ export const ManageUsers = () => {
             Central Entity Access & Vector Management
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <div className="px-4 py-2 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 text-[10px] font-black uppercase tracking-widest shadow-sm flex items-center gap-3">
             <FiActivity size={12} className="animate-pulse" />
@@ -109,7 +117,7 @@ export const ManageUsers = () => {
       <div className="relative overflow-hidden p-8 sm:p-10 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl group">
         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/5 blur-[100px] pointer-events-none" />
-        
+
         <div className="relative grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 relative group w-full">
             <IoSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-500 transition-colors z-10" />
@@ -121,7 +129,7 @@ export const ManageUsers = () => {
               className="w-full pl-14 pr-4 py-4 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/5 transition-all duration-300 font-bold tracking-tight"
             />
           </div>
-          
+
           <div className="relative group">
             <FiFilter className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-indigo-500 transition-colors z-10 pointer-events-none" />
             <select
@@ -149,18 +157,29 @@ export const ManageUsers = () => {
           <div className="flex flex-col items-center justify-center py-32 gap-6">
             <div className="w-12 h-12 rounded-2xl border-4 border-cyan-500/10 border-t-cyan-500 animate-spin" />
             <div className="space-y-1 text-center">
-              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest animate-pulse">Synchronizing Nodes...</p>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Querying Distributed Registry</p>
+              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest animate-pulse">
+                Synchronizing Nodes...
+              </p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                Querying Distributed Registry
+              </p>
             </div>
           </div>
         ) : displayedUsers.length === 0 ? (
           <div className="py-32 text-center space-y-4">
             <div className="w-20 h-20 rounded-[2.5rem] bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center mx-auto shadow-inner">
-              <FiUsers size={40} className="text-[var(--text-muted)] opacity-20" />
+              <FiUsers
+                size={40}
+                className="text-[var(--text-muted)] opacity-20"
+              />
             </div>
             <div className="space-y-1">
-              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">No entities detected</p>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Broaden your search parameters.</p>
+              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">
+                No entities detected
+              </p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                Broaden your search parameters.
+              </p>
             </div>
           </div>
         ) : (
@@ -173,7 +192,9 @@ export const ManageUsers = () => {
                     <th className="px-8 py-6">Metric (Age)</th>
                     <th className="px-8 py-6">Comm Signature</th>
                     <th className="px-8 py-6">Privilege Level</th>
-                    <th className="px-8 py-6 text-center">Operational Controls</th>
+                    <th className="px-8 py-6 text-center">
+                      Operational Controls
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
@@ -203,20 +224,24 @@ export const ManageUsers = () => {
                           {user.email}
                         </td>
                         <td className="px-8 py-6">
-                          <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black border uppercase tracking-widest shadow-sm ${
-                            user.role === "Admin"
-                              ? "bg-violet-500/10 border-violet-500/20 text-violet-500"
-                              : user.role === "Manager"
-                                ? "bg-blue-500/10 border-blue-500/20 text-blue-500"
-                                : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
-                          }`}>
+                          <span
+                            className={`px-4 py-1.5 rounded-xl text-[9px] font-black border uppercase tracking-widest shadow-sm ${
+                              user.role === "Admin"
+                                ? "bg-violet-500/10 border-violet-500/20 text-violet-500"
+                                : user.role === "Manager"
+                                  ? "bg-blue-500/10 border-blue-500/20 text-blue-500"
+                                  : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                            }`}
+                          >
                             {user.role}
                           </span>
                         </td>
                         <td className="px-8 py-6">
                           <div className="flex justify-center gap-3">
                             <button
-                              onClick={() => navigate(`/admin/user/${user._id}`)}
+                              onClick={() =>
+                                navigate(`/admin/user/${user._id}`)
+                              }
                               className="w-10 h-10 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-cyan-500 hover:bg-cyan-500 hover:text-white transition-all shadow-sm flex items-center justify-center active:scale-90"
                               title="INSPECT VECTOR"
                             >
@@ -240,7 +265,7 @@ export const ManageUsers = () => {
 
             {/* RESPONSIVE ENTITIES (MOBILE) */}
             <div className="lg:hidden p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              {currentUsers.map((user, i) => (
+              {currentUsers.map((user) => (
                 <motion.div
                   key={user._id}
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -249,26 +274,44 @@ export const ManageUsers = () => {
                   className="p-8 rounded-[2.5rem] bg-[var(--surface-secondary)]/30 border border-[var(--border)] shadow-xl space-y-6 relative overflow-hidden group"
                 >
                   <div className="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/5 blur-[50px] pointer-events-none group-hover:scale-150 transition-transform duration-700" />
-                  
+
                   <div className="flex items-center gap-5">
                     <div className="w-14 h-14 rounded-2xl bg-[var(--surface-primary)] border border-[var(--border)] flex items-center justify-center text-cyan-500 font-black text-xl shadow-inner">
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-black text-[var(--text-primary)] uppercase tracking-tighter truncate">{user.name}</h4>
-                      <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest truncate">{user.email}</p>
+                      <h4 className="font-black text-[var(--text-primary)] uppercase tracking-tighter truncate">
+                        {user.name}
+                      </h4>
+                      <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest truncate">
+                        {user.email}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between pt-6 border-t border-[var(--border)]">
-                    <span className={`px-3 py-1 rounded-lg text-[8px] font-black border uppercase tracking-widest ${
-                      user.role === "Admin" ? "bg-violet-500/10 border-violet-500/20 text-violet-500" : "bg-cyan-500/10 border-cyan-500/20 text-cyan-500"
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-lg text-[8px] font-black border uppercase tracking-widest ${
+                        user.role === "Admin"
+                          ? "bg-violet-500/10 border-violet-500/20 text-violet-500"
+                          : "bg-cyan-500/10 border-cyan-500/20 text-cyan-500"
+                      }`}
+                    >
                       {user.role} ACCESS
                     </span>
                     <div className="flex gap-2">
-                       <button onClick={() => navigate(`/admin/user/${user._id}`)} className="p-3 rounded-xl bg-cyan-500 text-white shadow-lg shadow-cyan-500/20 active:scale-90 transition-all"><FaEye size={14}/></button>
-                       <button onClick={() => handleDelete(user._id)} className="p-3 rounded-xl bg-rose-500 text-white shadow-lg shadow-rose-500/20 active:scale-90 transition-all"><FaTrash size={14}/></button>
+                      <button
+                        onClick={() => navigate(`/admin/user/${user._id}`)}
+                        className="p-3 rounded-xl bg-cyan-500 text-white shadow-lg shadow-cyan-500/20 active:scale-90 transition-all"
+                      >
+                        <FaEye size={14} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user._id)}
+                        className="p-3 rounded-xl bg-rose-500 text-white shadow-lg shadow-rose-500/20 active:scale-90 transition-all"
+                      >
+                        <FaTrash size={14} />
+                      </button>
                     </div>
                   </div>
                 </motion.div>
@@ -283,31 +326,32 @@ export const ManageUsers = () => {
         <div className="flex justify-center mt-10">
           <div className="flex items-center gap-2 p-2 bg-[var(--surface-primary)] rounded-3xl border border-[var(--border)] shadow-2xl">
             <button
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
               className="w-11 h-11 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--surface-secondary)] disabled:opacity-30 disabled:pointer-events-none transition-all"
             >
               <FiArrowLeft size={18} />
             </button>
-            
+
             <div className="flex items-center gap-1.5 px-2">
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i}
                   className={`min-w-[44px] h-11 rounded-2xl text-[10px] font-black transition-all duration-500
-                    ${currentPage === i + 1
-                      ? "bg-gradient-to-tr from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30 active:scale-95"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"
+                    ${
+                      currentPage === i + 1
+                        ? "bg-gradient-to-tr from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30 active:scale-95"
+                        : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"
                     }`}
                   onClick={() => setCurrentPage(i + 1)}
                 >
-                  {String(i + 1).padStart(2, '0')}
+                  {String(i + 1).padStart(2, "0")}
                 </button>
               ))}
             </div>
 
             <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
               className="w-11 h-11 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--surface-secondary)] disabled:opacity-30 disabled:pointer-events-none transition-all"
             >
@@ -319,4 +363,3 @@ export const ManageUsers = () => {
     </motion.div>
   );
 };
-

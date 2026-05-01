@@ -8,7 +8,7 @@ export const fetchCategories = createAsyncThunk(
   async () => {
     const res = await axiosInstance.get("/categories");
     return res.data.data || res.data || [];
-  }
+  },
 );
 
 /* Fetch Budget + Expenses */
@@ -54,7 +54,7 @@ export const fetchBudgetData = createAsyncThunk(
       expenses,
       summary,
     };
-  }
+  },
 );
 
 /* AI Budget Plan */
@@ -65,11 +65,10 @@ export const fetchBudgetPlan = createAsyncThunk(
     if (!userId) return null;
     const res = await axiosInstance.get(`/ai/budget-plan/${userId}`);
     return res.data.budgetPlan || res.data;
-  }
+  },
 );
 
 const initialState = {
-
   budgets: [],
 
   expenses: [],
@@ -81,11 +80,9 @@ const initialState = {
   budgetPlan: null,
 
   loading: false,
-
 };
 
 const budgetSlice = createSlice({
-
   name: "budget",
 
   initialState,
@@ -93,59 +90,33 @@ const budgetSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
-
     builder
 
-      .addCase(
-        fetchBudgetData.pending,
-        (state) => {
-          state.loading = true;
-        }
-      )
+      .addCase(fetchBudgetData.pending, (state) => {
+        state.loading = true;
+      })
 
-      .addCase(
-        fetchBudgetData.fulfilled,
-        (state, action) => {
+      .addCase(fetchBudgetData.fulfilled, (state, action) => {
+        state.loading = false;
 
-          state.loading = false;
+        state.budgets = action.payload.budgets;
 
-          state.budgets =
-            action.payload.budgets;
+        state.expenses = action.payload.expenses;
 
-          state.expenses =
-            action.payload.expenses;
+        state.summary = action.payload.summary;
+      })
 
-          state.summary =
-            action.payload.summary;
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
+      })
 
-        }
-      )
-
-      .addCase(
-        fetchCategories.fulfilled,
-        (state, action) => {
-
-          state.categories =
-            action.payload;
-
-        }
-      )
-
-      .addCase(
-        fetchBudgetPlan.fulfilled,
-        (state, action) => {
-
-          state.budgetPlan =
-            action.payload;
-
-        }
-      )
+      .addCase(fetchBudgetPlan.fulfilled, (state, action) => {
+        state.budgetPlan = action.payload;
+      })
       .addCase(fetchBudgetData.rejected, (state) => {
         state.loading = false;
       });
-
   },
-
 });
 
 export default budgetSlice.reducer;

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -24,7 +23,11 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
     { label: "Dashboard", path: "/admin/admindashboard", icon: <FiLayout /> },
     { label: "Manage Users", path: "/admin/manageusers", icon: <FiUsers /> },
     { label: "Categories", path: "/admin/managecategories", icon: <FiGrid /> },
-    { label: "Access Control", path: "/admin/accesscontrol", icon: <FiShield /> },
+    {
+      label: "Access Control",
+      path: "/admin/accesscontrol",
+      icon: <FiShield />,
+    },
     { label: "Reports", path: "/admin/reportadmins", icon: <FiFileText /> },
     { label: "System Logs", path: "/admin/systemlogs", icon: <FiActivity /> },
     { label: "My Account", path: `/admin/account/${userId}`, icon: <FiUser /> },
@@ -48,7 +51,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
       {/* Sidebar Container */}
       <motion.aside
         initial={false}
-        animate={{ 
+        animate={{
           width: isOpen ? 260 : 80,
           x: 0,
         }}
@@ -92,7 +95,10 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
           </AnimatePresence>
 
           {/* Mobile Close Button */}
-          <button onClick={toggleSidebar} className="lg:hidden text-[var(--muted)] hover:text-[var(--text)] transition">
+          <button
+            onClick={toggleSidebar}
+            className="lg:hidden text-[var(--muted)] hover:text-[var(--text)] transition"
+          >
             <FiX size={20} />
           </button>
         </div>
@@ -107,14 +113,18 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                   whileHover={{ x: 4 }}
                   whileTap={{ scale: 0.98 }}
                   className={`group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200
-                             ${isActive 
-                               ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-[var(--text)]" 
-                               : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--text)]"}`}
+                             ${
+                               isActive
+                                 ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-[var(--text)]"
+                                 : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--text)]"
+                             }`}
                 >
-                  <span className={`text-xl transition-colors duration-200 ${isActive ? "text-cyan-400" : "group-hover:text-cyan-300"}`}>
+                  <span
+                    className={`text-xl transition-colors duration-200 ${isActive ? "text-cyan-400" : "group-hover:text-cyan-300"}`}
+                  >
                     {item.icon}
                   </span>
-                  
+
                   {isOpen && (
                     <motion.span
                       initial={{ opacity: 0 }}
@@ -126,7 +136,7 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
                   )}
 
                   {isActive && isOpen && (
-                    <motion.div 
+                    <motion.div
                       layoutId="active-pill"
                       className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]"
                     />
@@ -139,25 +149,31 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
 
         {/* Footer / User Hub */}
         <div className="p-4 border-t border-[var(--border)]">
-          <div className={`flex items-center gap-3 p-2 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]
-                         ${!isOpen && "justify-center"}`}>
+          <div
+            className={`flex items-center gap-3 p-2 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]
+                         ${!isOpen && "justify-center"}`}
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-purple-700 flex items-center justify-center text-[var(--text)] font-bold text-sm shadow-inner">
               {user?.name?.charAt(0).toUpperCase() || "A"}
             </div>
             {isOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{user?.name || "Admin"}</p>
-                <p className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider">System Administrator</p>
+                <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                  {user?.name || "Admin"}
+                </p>
+                <p className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider">
+                  System Administrator
+                </p>
               </div>
             )}
           </div>
-          
+
           {isOpen && (
-             <div className="mt-4 px-2">
-                <p className="text-[10px] text-[var(--text-muted)] text-center">
-                  © 2026 FinTrack • v2.4.0
-                </p>
-             </div>
+            <div className="mt-4 px-2">
+              <p className="text-[10px] text-[var(--text-muted)] text-center">
+                © 2026 FinTrack • v2.4.0
+              </p>
+            </div>
           )}
         </div>
 
@@ -190,4 +206,3 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
     </>
   );
 };
-

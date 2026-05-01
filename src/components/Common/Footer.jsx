@@ -1,14 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FiTwitter,
   FiGithub,
   FiLinkedin,
   FiArrowUpRight,
-  FiMail,
-  FiMapPin,
-  FiPhone,
 } from "react-icons/fi";
 
 export const Footer = () => {
@@ -71,8 +67,9 @@ export const Footer = () => {
               </span>
             </div>
             <p className="text-[var(--text-secondary)] text-base leading-relaxed max-w-sm">
-              The high-performance dashboard for engineers of their own finances. 
-              Track, analyze, and optimize your wealth with technical precision.
+              The high-performance dashboard for engineers of their own
+              finances. Track, analyze, and optimize your wealth with technical
+              precision.
             </p>
             <div className="flex items-center gap-4">
               {socialLinks.map((social, i) => (
@@ -102,7 +99,10 @@ export const Footer = () => {
                     className="text-[var(--text-secondary)] hover:text-cyan-500 transition-colors flex items-center gap-1 group"
                   >
                     {link.label}
-                    <FiArrowUpRight className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" size={14} />
+                    <FiArrowUpRight
+                      className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all"
+                      size={14}
+                    />
                   </a>
                 </li>
               ))}
@@ -121,7 +121,10 @@ export const Footer = () => {
                     className="text-[var(--text-secondary)] hover:text-cyan-500 transition-colors flex items-center gap-1 group"
                   >
                     {link.label}
-                    <FiArrowUpRight className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" size={14} />
+                    <FiArrowUpRight
+                      className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all"
+                      size={14}
+                    />
                   </a>
                 </li>
               ))}
@@ -140,7 +143,10 @@ export const Footer = () => {
                     className="text-[var(--text-secondary)] hover:text-cyan-500 transition-colors flex items-center gap-1 group"
                   >
                     {link.label}
-                    <FiArrowUpRight className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" size={14} />
+                    <FiArrowUpRight
+                      className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all"
+                      size={14}
+                    />
                   </a>
                 </li>
               ))}

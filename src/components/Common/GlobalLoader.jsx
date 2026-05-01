@@ -29,7 +29,7 @@ const GlobalLoader = () => {
               }}
               className="absolute inset-0 bg-cyan-500 blur-2xl rounded-full"
             />
-            
+
             {/* Spinner Container */}
             <div className="relative bg-slate-800 p-8 rounded-3xl border border-white/10 shadow-2xl flex flex-col items-center gap-4">
               <motion.div
@@ -43,7 +43,7 @@ const GlobalLoader = () => {
               >
                 <FiRefreshCw size={48} />
               </motion.div>
-              
+
               <div className="flex flex-col items-center gap-1">
                 <motion.h3
                   initial={{ opacity: 0, y: 10 }}

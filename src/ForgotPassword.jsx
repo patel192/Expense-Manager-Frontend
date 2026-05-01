@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "./components/Utils/axiosInstance";
 import { toast, ToastContainer, Bounce } from "react-toastify";
@@ -22,7 +22,7 @@ export const ForgotPassword = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to send reset link",
-        { position: "top-center", autoClose: 3000, theme: "colored" }
+        { position: "top-center", autoClose: 3000, theme: "colored" },
       );
     } finally {
       setLoading(false);
@@ -52,7 +52,9 @@ export const ForgotPassword = () => {
             type="submit"
             disabled={loading}
             className={`w-full py-3 text-[var(--text)] rounded-lg font-semibold shadow-md transition-all ${
-              loading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"
+              loading
+                ? "bg-purple-400 cursor-not-allowed"
+                : "bg-purple-600 hover:bg-purple-700"
             }`}
           >
             {loading ? "Sending..." : "Send Reset Link"}

@@ -10,7 +10,7 @@ export const ThemeProvider = ({ children }) => {
 
     // fallback to system preference
     const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
+      "(prefers-color-scheme: dark)",
     ).matches;
 
     return prefersDark ? "dark" : "light";

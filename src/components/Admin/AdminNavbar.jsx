@@ -33,19 +33,34 @@ export const AdminNavbar = () => {
 
             {/* Socials */}
             <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 text-lg sm:text-xl md:text-2xl">
-              <a href="#" className="hover:text-blue-400 hover:scale-110 transition-transform">
+              <a
+                href="#"
+                className="hover:text-blue-400 hover:scale-110 transition-transform"
+              >
                 <FaTwitter />
               </a>
-              <a href="#" className="hover:text-blue-600 hover:scale-110 transition-transform">
+              <a
+                href="#"
+                className="hover:text-blue-600 hover:scale-110 transition-transform"
+              >
                 <FaFacebookF />
               </a>
-              <a href="#" className="hover:text-yellow-400 hover:scale-110 transition-transform">
+              <a
+                href="#"
+                className="hover:text-yellow-400 hover:scale-110 transition-transform"
+              >
                 <FaSnapchatGhost />
               </a>
-              <a href="#" className="hover:text-pink-500 hover:scale-110 transition-transform">
+              <a
+                href="#"
+                className="hover:text-pink-500 hover:scale-110 transition-transform"
+              >
                 <FaInstagram />
               </a>
-              <a href="#" className="hover:text-green-400 hover:scale-110 transition-transform">
+              <a
+                href="#"
+                className="hover:text-green-400 hover:scale-110 transition-transform"
+              >
                 <FaMediumM />
               </a>
             </div>

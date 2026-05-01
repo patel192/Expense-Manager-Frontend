@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "sonner";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
-import "./index.css"
+import "./index.css";
 import { injectStore } from "./components/Utils/axiosInstance.js";
 
 injectStore(store);

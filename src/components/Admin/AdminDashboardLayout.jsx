@@ -18,7 +18,7 @@ export const AdminDashboardLayout = () => {
       <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main Wrapper */}
-      <div 
+      <div
         className={`transition-all duration-300 min-h-screen flex flex-col
                    ${isSidebarOpen ? "lg:pl-[260px]" : "lg:pl-[80px]"}`}
       >
@@ -33,10 +33,10 @@ export const AdminDashboardLayout = () => {
               >
                 <FiMenu size={20} className="text-[var(--text-secondary)]" />
               </button>
-              
+
               <div className="hidden sm:block">
                 <h2 className="text-sm font-medium text-[var(--muted)] capitalize">
-                  Admin <span className="mx-2 text-[var(--text-muted)]">/</span> 
+                  Admin <span className="mx-2 text-[var(--text-muted)]">/</span>
                   <span className="text-[var(--text-primary)]">Workspace</span>
                 </h2>
               </div>
@@ -55,19 +55,25 @@ export const AdminDashboardLayout = () => {
             </div>
 
             {/* Right: Actions */}
-             <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Notifications */}
               <button className="relative p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] hover:bg-[var(--surface-tertiary)] transition group shadow-sm">
-                <FiBell size={20} className="text-[var(--muted)] group-hover:text-[var(--text-primary)] transition" />
+                <FiBell
+                  size={20}
+                  className="text-[var(--muted)] group-hover:text-[var(--text-primary)] transition"
+                />
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.5)] border-2 border-[var(--surface-primary)]" />
               </button>
 
               {/* Settings */}
-              <button 
+              <button
                 onClick={() => navigate(`/admin/account/${user?._id}`)}
                 className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] hover:bg-[var(--surface-tertiary)] transition group shadow-sm"
               >
-                <FiSettings size={20} className="text-[var(--muted)] group-hover:text-[var(--text-primary)] transition" />
+                <FiSettings
+                  size={20}
+                  className="text-[var(--muted)] group-hover:text-[var(--text-primary)] transition"
+                />
               </button>
 
               {/* Divider */}
@@ -108,13 +114,18 @@ export const AdminDashboardLayout = () => {
         <footer className="py-6 px-10 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)] font-medium tracking-wide">
           <p>© 2026 FINTRACK ANALYTICS ENGINE. ALL RIGHTS RESERVED.</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-cyan-400 transition">SUPPORT</a>
-            <a href="#" className="hover:text-cyan-400 transition">API DOCS</a>
-            <a href="#" className="hover:text-cyan-400 transition">PRIVACY</a>
+            <a href="#" className="hover:text-cyan-400 transition">
+              SUPPORT
+            </a>
+            <a href="#" className="hover:text-cyan-400 transition">
+              API DOCS
+            </a>
+            <a href="#" className="hover:text-cyan-400 transition">
+              PRIVACY
+            </a>
           </div>
         </footer>
       </div>
     </div>
   );
 };
-

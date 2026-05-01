@@ -5,7 +5,7 @@ export const DevBackground = ({ children }) => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[var(--background)]">
       {/* Fixed Grid Background */}
-      <div 
+      <div
         className="fixed inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]"
         style={{
           backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
@@ -54,9 +54,7 @@ export const DevBackground = ({ children }) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
     </div>
   );
 };

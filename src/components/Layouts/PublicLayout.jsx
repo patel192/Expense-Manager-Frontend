@@ -5,14 +5,17 @@ import { motion } from "framer-motion";
 
 export const PublicLayout = () => {
   return (
-    <div className="
+    <div
+      className="
   min-h-screen
   bg-[var(--bg)]
   text-[var(--text)]
   relative
   overflow-hidden
-">
-  <div className="
+"
+    >
+      <div
+        className="
   absolute
   top-[-200px]
   left-[-200px]
@@ -22,7 +25,8 @@ export const PublicLayout = () => {
   blur-3xl
   rounded-full
   pointer-events-none
-"/>
+"
+      />
       <Navbar />
       {/* Page wrapper */}
       <motion.div

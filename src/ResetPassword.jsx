@@ -28,10 +28,11 @@ export const ResetPassword = () => {
         setTimeout(() => navigate("/login"), 2000);
       }
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to reset password",
-        { position: "top-center", autoClose: 3000, theme: "colored" }
-      );
+      toast.error(error.response?.data?.message || "Failed to reset password", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "colored",
+      });
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,9 @@ export const ResetPassword = () => {
             type="submit"
             disabled={loading}
             className={`w-full py-3 text-[var(--text)] rounded-lg font-semibold shadow-md transition-all ${
-              loading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"
+              loading
+                ? "bg-purple-400 cursor-not-allowed"
+                : "bg-purple-600 hover:bg-purple-700"
             }`}
           >
             {loading ? "Updating..." : "Reset Password"}

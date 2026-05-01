@@ -49,41 +49,41 @@ function App() {
     <>
       <GlobalLoader />
       <Routes>
-      {/* Public Routes */}
-      <Route element={<PublicLayout />}>
-        <Route path="/" element={<Content />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-      </Route>
-
-      {/* Protected User Routes */}
-      <Route element={<PrivateRoutes />}>
-        <Route path="/private" element={<UserDashboardLayout />}>
-          <Route path="expenses" element={<UserExpenses />} />
-          <Route path="budget" element={<UserBudget />} />
-          <Route path="income" element={<UserIncome />} />
-          <Route path="recurring" element={<RecurringTransactions />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="transactions" element={<Transaction />} />
-          <Route path="userdashboard" element={<UserDashboard />} />
-          <Route path="account/:userId" element={<Account />} />
+        {/* Public Routes */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Content />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Route>
-      </Route>
 
-      {/* Protected Admin Routes */}
-      <Route element={<PrivateRoutes />}>
-        <Route path="/admin" element={<AdminDashboardLayout />}>
-          <Route path="admindashboard" element={<AdminDashboard />} />
-          <Route path="accesscontrol" element={<AccessControl />} />
-          <Route path="managecategories" element={<ManageCategories />} />
-          <Route path="manageusers" element={<ManageUsers />} />
-          <Route path="reportadmins" element={<ReportAdmins />} />
-          <Route path="systemlogs" element={<Systemlog />} />
-          <Route path="user/:userId" element={<UserDetails />} />
-          <Route path="account/:userId" element={<Account />} />
+        {/* Protected User Routes */}
+        <Route element={<PrivateRoutes />}>
+          <Route path="/private" element={<UserDashboardLayout />}>
+            <Route path="expenses" element={<UserExpenses />} />
+            <Route path="budget" element={<UserBudget />} />
+            <Route path="income" element={<UserIncome />} />
+            <Route path="recurring" element={<RecurringTransactions />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="transactions" element={<Transaction />} />
+            <Route path="userdashboard" element={<UserDashboard />} />
+            <Route path="account/:userId" element={<Account />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+
+        {/* Protected Admin Routes */}
+        <Route element={<PrivateRoutes />}>
+          <Route path="/admin" element={<AdminDashboardLayout />}>
+            <Route path="admindashboard" element={<AdminDashboard />} />
+            <Route path="accesscontrol" element={<AccessControl />} />
+            <Route path="managecategories" element={<ManageCategories />} />
+            <Route path="manageusers" element={<ManageUsers />} />
+            <Route path="reportadmins" element={<ReportAdmins />} />
+            <Route path="systemlogs" element={<Systemlog />} />
+            <Route path="user/:userId" element={<UserDetails />} />
+            <Route path="account/:userId" element={<Account />} />
+          </Route>
+        </Route>
+      </Routes>
     </>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX ,FiMoon,FiSun } from "react-icons/fi";
+import { FiMenu, FiX, FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 
 export const Navbar = () => {
@@ -159,8 +159,8 @@ export const Navbar = () => {
         {/* ── Mobile: auth buttons + hamburger ── */}
         <div className="flex md:hidden items-center gap-2">
           <button
-  onClick={toggleTheme}
-  className="
+            onClick={toggleTheme}
+            className="
     px-3 py-2
     rounded-lg
     border
@@ -170,9 +170,9 @@ export const Navbar = () => {
     hover:bg-[var(--muted)]
     transition
   "
->
-  {theme === "dark" ? "☀️" : "🌙"}
-</button>
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
           <Link
             to="/login"
             className="px-3 py-1.5 text-sm rounded-lg text-[var(--text-secondary)]

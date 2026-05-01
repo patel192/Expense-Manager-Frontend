@@ -19,9 +19,13 @@ import {
 
 /* ─── Shimmer skeleton ─── */
 const Shimmer = ({ className = "" }) => (
-  <div className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}>
-    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite]
-                    bg-gradient-to-r from-transparent via-[var(--surface-primary)]/10 to-transparent" />
+  <div
+    className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}
+  >
+    <div
+      className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite]
+                    bg-gradient-to-r from-transparent via-[var(--surface-primary)]/10 to-transparent"
+    />
   </div>
 );
 
@@ -44,7 +48,9 @@ const TransactionSkeleton = () => (
 export const Transaction = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const { transactions, summary, loading } = useSelector((state) => state.transaction);
+  const { transactions, summary, loading } = useSelector(
+    (state) => state.transaction,
+  );
   const [activeTab, setActiveTab] = useState("All");
 
   const tabTypes = { All: null, Expenses: "Expense", Incomes: "Income" };
@@ -68,7 +74,7 @@ export const Transaction = () => {
         weekday: "short",
         day: "numeric",
         month: "short",
-        year: "numeric"
+        year: "numeric",
       });
       if (!acc[date]) acc[date] = [];
       acc[date].push(t);
@@ -77,17 +83,31 @@ export const Transaction = () => {
   }, [filteredSorted]);
 
   const handlePlanBudget = (expense) => {
-    alert(`Initiating budget planning for ${expense.categoryID?.name || "Uncategorized"}...`);
+    alert(
+      `Initiating budget planning for ${expense.categoryID?.name || "Uncategorized"}...`,
+    );
   };
 
-  const savingsRate = summary.totalIncome > 0
-    ? Math.round(((summary.totalIncome - summary.totalExpense) / summary.totalIncome) * 100)
-    : 0;
+  const savingsRate =
+    summary.totalIncome > 0
+      ? Math.round(
+          ((summary.totalIncome - summary.totalExpense) / summary.totalIncome) *
+            100,
+        )
+      : 0;
 
   const tabs = [
     { key: "All", label: "Omni", count: transactions.length },
-    { key: "Expenses", label: "Outflow", count: transactions.filter((t) => t.type === "Expense").length },
-    { key: "Incomes", label: "Inflow", count: transactions.filter((t) => t.type === "Income").length },
+    {
+      key: "Expenses",
+      label: "Outflow",
+      count: transactions.filter((t) => t.type === "Expense").length,
+    },
+    {
+      key: "Incomes",
+      label: "Inflow",
+      count: transactions.filter((t) => t.type === "Income").length,
+    },
   ];
 
   return (
@@ -108,7 +128,11 @@ export const Transaction = () => {
         </div>
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border bg-[var(--surface-primary)] border-[var(--border)] text-[var(--text-muted)] text-[10px] font-black uppercase tracking-widest shadow-sm">
           <FiCalendar size={12} className="text-cyan-500" />
-          {new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+          {new Date().toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
         </div>
       </div>
 
@@ -138,7 +162,10 @@ export const Transaction = () => {
             value: summary.balance,
             color: summary.balance >= 0 ? "text-cyan-500" : "text-rose-500",
             bg: summary.balance >= 0 ? "bg-cyan-500/10" : "bg-rose-500/10",
-            border: summary.balance >= 0 ? "border-cyan-500/20" : "border-rose-500/20",
+            border:
+              summary.balance >= 0
+                ? "border-cyan-500/20"
+                : "border-rose-500/20",
             glow: summary.balance >= 0 ? "bg-cyan-500" : "bg-rose-500",
             icon: <FiDollarSign size={18} />,
           },
@@ -150,20 +177,30 @@ export const Transaction = () => {
             transition={{ duration: 0.4, delay: idx * 0.1 }}
             className={`relative overflow-hidden rounded-[2rem] border p-6 bg-[var(--surface-primary)] ${card.border} shadow-xl backdrop-blur-md group hover:-translate-y-1 transition-all duration-300`}
           >
-            <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-3xl opacity-10 ${card.glow} transition-opacity group-hover:opacity-20`} />
+            <div
+              className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-3xl opacity-10 ${card.glow} transition-opacity group-hover:opacity-20`}
+            />
             <div className="relative">
               <div className="flex items-start justify-between mb-4">
-                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-inner ${card.bg} ${card.border}`}>
+                <div
+                  className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-inner ${card.bg} ${card.border}`}
+                >
                   <span className={card.color}>{card.icon}</span>
                 </div>
                 {idx === 2 && (
-                  <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border ${savingsRate >= 0 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-rose-500/10 border-rose-500/20 text-rose-500"}`}>
+                  <span
+                    className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border ${savingsRate >= 0 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-rose-500/10 border-rose-500/20 text-rose-500"}`}
+                  >
                     {savingsRate}% SURPLUS
                   </span>
                 )}
               </div>
-              <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] mb-1">{card.title}</p>
-              <p className={`text-3xl font-black tracking-tighter ${card.color}`}>
+              <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] mb-1">
+                {card.title}
+              </p>
+              <p
+                className={`text-3xl font-black tracking-tighter ${card.color}`}
+              >
                 ₹{Math.abs(card.value).toLocaleString("en-IN")}
               </p>
             </div>
@@ -182,13 +219,17 @@ export const Transaction = () => {
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 active:scale-95
-                  ${activeTab === tab.key
-                    ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/20"
-                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"}`}
+                  ${
+                    activeTab === tab.key
+                      ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/20"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"
+                  }`}
               >
                 {tab.label}
-                <span className={`text-[9px] px-2 py-0.5 rounded-md font-black
-                  ${activeTab === tab.key ? "bg-white/20 text-white" : "bg-[var(--surface-tertiary)] text-[var(--text-muted)]"}`}>
+                <span
+                  className={`text-[9px] px-2 py-0.5 rounded-md font-black
+                  ${activeTab === tab.key ? "bg-white/20 text-white" : "bg-[var(--surface-tertiary)] text-[var(--text-muted)]"}`}
+                >
                   {tab.count}
                 </span>
               </button>
@@ -202,11 +243,18 @@ export const Transaction = () => {
             ) : filteredSorted.length === 0 ? (
               <div className="flex flex-col items-center gap-4 py-24 text-center">
                 <div className="w-16 h-16 rounded-[2rem] bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center shadow-inner">
-                  <FiInbox size={32} className="text-[var(--text-muted)] opacity-20" />
+                  <FiInbox
+                    size={32}
+                    className="text-[var(--text-muted)] opacity-20"
+                  />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">No activity detected</p>
-                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">In the current {activeTab.toLowerCase()} vector.</p>
+                  <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">
+                    No activity detected
+                  </p>
+                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                    In the current {activeTab.toLowerCase()} vector.
+                  </p>
                 </div>
               </div>
             ) : (
@@ -218,10 +266,12 @@ export const Transaction = () => {
                   exit={{ opacity: 0 }}
                   className="divide-y divide-[var(--border)]"
                 >
-                  {Object.keys(groupedByDate).map((date, groupIdx) => (
+                  {Object.keys(groupedByDate).map((date) => (
                     <div key={date}>
                       {/* TEMPORAL MARKER */}
-                      <div className={`flex items-center gap-4 px-8 py-5 bg-[var(--surface-secondary)]/30`}>
+                      <div
+                        className={`flex items-center gap-4 px-8 py-5 bg-[var(--surface-secondary)]/30`}
+                      >
                         <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.4)]" />
                         <span className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.3em]">
                           {date}
@@ -243,16 +293,30 @@ export const Transaction = () => {
                             className="flex items-center gap-5 px-8 py-6 hover:bg-[var(--surface-secondary)]/50 transition-all group"
                           >
                             {/* VECTOR ICON */}
-                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border shadow-inner transition-transform group-hover:scale-110
-                              ${t.type === "Income" ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20"}`}>
-                              {t.type === "Income" ? <FiArrowUpRight size={18} className="text-emerald-500" /> : <FiArrowDownRight size={18} className="text-rose-500" />}
+                            <div
+                              className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border shadow-inner transition-transform group-hover:scale-110
+                              ${t.type === "Income" ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20"}`}
+                            >
+                              {t.type === "Income" ? (
+                                <FiArrowUpRight
+                                  size={18}
+                                  className="text-emerald-500"
+                                />
+                              ) : (
+                                <FiArrowDownRight
+                                  size={18}
+                                  className="text-rose-500"
+                                />
+                              )}
                             </div>
 
                             {/* CORE TELEMETRY */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3">
                                 <h5 className="text-sm font-black text-[var(--text-primary)] truncate uppercase tracking-tight">
-                                  {t.description || t.source || "Unknown Vector"}
+                                  {t.description ||
+                                    t.source ||
+                                    "Unknown Vector"}
                                 </h5>
                                 {t.type === "Expense" && t.hasBudget && (
                                   <span className="text-[8px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20 uppercase tracking-widest">
@@ -271,8 +335,11 @@ export const Transaction = () => {
 
                             {/* QUANTUM DATA */}
                             <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                              <p className={`text-lg font-black tracking-tighter ${t.type === "Income" ? "text-emerald-500" : "text-rose-500"}`}>
-                                {t.type === "Income" ? "+" : "−"}₹{Number(t.amount || 0).toLocaleString("en-IN")}
+                              <p
+                                className={`text-lg font-black tracking-tighter ${t.type === "Income" ? "text-emerald-500" : "text-rose-500"}`}
+                              >
+                                {t.type === "Income" ? "+" : "−"}₹
+                                {Number(t.amount || 0).toLocaleString("en-IN")}
                               </p>
                               {t.type === "Expense" && !t.hasBudget && (
                                 <button
@@ -305,7 +372,9 @@ export const Transaction = () => {
               <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
                 <FiFilter size={14} className="text-cyan-500" />
               </div>
-              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.2em]">Parameter Matrix</h4>
+              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.2em]">
+                Parameter Matrix
+              </h4>
             </div>
             <div className="p-3 space-y-1.5">
               {tabs.map((tab) => (
@@ -313,9 +382,11 @@ export const Transaction = () => {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all
-                    ${activeTab === tab.key
-                      ? "bg-cyan-500/10 border border-cyan-500/20 text-cyan-500"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"}`}
+                    ${
+                      activeTab === tab.key
+                        ? "bg-cyan-500/10 border border-cyan-500/20 text-cyan-500"
+                        : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     {tab.key === "All" && <FiList size={14} />}
@@ -323,8 +394,10 @@ export const Transaction = () => {
                     {tab.key === "Incomes" && <FiTrendingUp size={14} />}
                     {tab.label} UNIT
                   </span>
-                  <span className={`text-[9px] px-2 py-0.5 rounded-md font-black
-                    ${activeTab === tab.key ? "bg-cyan-500/20 text-cyan-500" : "bg-[var(--surface-tertiary)] text-[var(--text-muted)]"}`}>
+                  <span
+                    className={`text-[9px] px-2 py-0.5 rounded-md font-black
+                    ${activeTab === tab.key ? "bg-cyan-500/20 text-cyan-500" : "bg-[var(--surface-tertiary)] text-[var(--text-muted)]"}`}
+                  >
                     {tab.count}
                   </span>
                 </button>
@@ -338,18 +411,41 @@ export const Transaction = () => {
               <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
                 <FiDollarSign size={14} className="text-blue-500" />
               </div>
-              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.2em]">Totality Ledger</h4>
+              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-[0.2em]">
+                Totality Ledger
+              </h4>
             </div>
             <div className="p-6 space-y-5">
               {[
-                { label: "Gross Inflow", value: summary.totalIncome, color: "text-emerald-500" },
-                { label: "Gross Outflow", value: summary.totalExpense, color: "text-rose-500" },
-                { label: "Net Surplus", value: summary.balance, color: summary.balance >= 0 ? "text-cyan-500" : "text-rose-500" },
+                {
+                  label: "Gross Inflow",
+                  value: summary.totalIncome,
+                  color: "text-emerald-500",
+                },
+                {
+                  label: "Gross Outflow",
+                  value: summary.totalExpense,
+                  color: "text-rose-500",
+                },
+                {
+                  label: "Net Surplus",
+                  value: summary.balance,
+                  color:
+                    summary.balance >= 0 ? "text-cyan-500" : "text-rose-500",
+                },
               ].map((row, i) => (
-                <div key={i} className={`flex items-center justify-between group ${i < 2 ? "pb-4 border-b border-[var(--border)]/50" : ""}`}>
-                  <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">{row.label}</span>
-                  <span className={`text-sm font-black tracking-tight ${row.color}`}>
-                    {row.value < 0 ? "−" : ""}₹{Math.abs(row.value).toLocaleString("en-IN")}
+                <div
+                  key={i}
+                  className={`flex items-center justify-between group ${i < 2 ? "pb-4 border-b border-[var(--border)]/50" : ""}`}
+                >
+                  <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                    {row.label}
+                  </span>
+                  <span
+                    className={`text-sm font-black tracking-tight ${row.color}`}
+                  >
+                    {row.value < 0 ? "−" : ""}₹
+                    {Math.abs(row.value).toLocaleString("en-IN")}
                   </span>
                 </div>
               ))}
@@ -357,20 +453,34 @@ export const Transaction = () => {
               {/* SAVINGS PROGRESS VIZ */}
               <div className="pt-2">
                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest mb-3">
-                  <span className="text-[var(--text-muted)]">Efficiency Score</span>
-                  <span className={savingsRate >= 20 ? "text-emerald-500" : savingsRate >= 0 ? "text-amber-500" : "text-rose-500"}>
+                  <span className="text-[var(--text-muted)]">
+                    Efficiency Score
+                  </span>
+                  <span
+                    className={
+                      savingsRate >= 20
+                        ? "text-emerald-500"
+                        : savingsRate >= 0
+                          ? "text-amber-500"
+                          : "text-rose-500"
+                    }
+                  >
                     {savingsRate}%
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-[var(--surface-tertiary)] overflow-hidden shadow-inner">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: `${Math.max(0, Math.min(savingsRate, 100))}%` }}
+                    animate={{
+                      width: `${Math.max(0, Math.min(savingsRate, 100))}%`,
+                    }}
                     transition={{ duration: 1.5, ease: "circOut" }}
                     className={`h-full rounded-full shadow-[0_0_12px_rgba(0,0,0,0.2)] ${
-                      savingsRate >= 20 ? "bg-gradient-to-r from-emerald-500 to-teal-600" :
-                      savingsRate >= 0 ? "bg-gradient-to-r from-amber-500 to-orange-600" :
-                      "bg-gradient-to-r from-rose-500 to-red-700"
+                      savingsRate >= 20
+                        ? "bg-gradient-to-r from-emerald-500 to-teal-600"
+                        : savingsRate >= 0
+                          ? "bg-gradient-to-r from-amber-500 to-orange-600"
+                          : "bg-gradient-to-r from-rose-500 to-red-700"
                     }`}
                   />
                 </div>
@@ -384,17 +494,30 @@ export const Transaction = () => {
               <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
                 <FiZap size={14} className="text-amber-500" />
               </div>
-              <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">Operational Protocols</h4>
+              <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">
+                Operational Protocols
+              </h4>
             </div>
             <div className="p-6 space-y-4">
               {[
-                { icon: <FiTarget className="text-amber-500" />, text: 'Convert "Ad-Hoc" entries to "Strategic" assets.' },
-                { icon: <FiFilter className="text-amber-500" />, text: "Isolate vectors via parametric matrix." },
-                { icon: <FiRefreshCw className="text-amber-500" />, text: "Audit temporal trends monthly." },
+                {
+                  icon: <FiTarget className="text-amber-500" />,
+                  text: 'Convert "Ad-Hoc" entries to "Strategic" assets.',
+                },
+                {
+                  icon: <FiFilter className="text-amber-500" />,
+                  text: "Isolate vectors via parametric matrix.",
+                },
+                {
+                  icon: <FiRefreshCw className="text-amber-500" />,
+                  text: "Audit temporal trends monthly.",
+                },
               ].map((tip, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <span className="flex-shrink-0 mt-0.5">{tip.icon}</span>
-                  <p className="text-[11px] font-bold text-[var(--text-secondary)] leading-relaxed tracking-tight">{tip.text}</p>
+                  <p className="text-[11px] font-bold text-[var(--text-secondary)] leading-relaxed tracking-tight">
+                    {tip.text}
+                  </p>
                 </div>
               ))}
             </div>
@@ -403,4 +526,4 @@ export const Transaction = () => {
       </div>
     </motion.div>
   );
-}
+};

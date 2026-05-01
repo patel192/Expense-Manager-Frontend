@@ -8,19 +8,16 @@ export const fetchAdminReport = createAsyncThunk(
   async () => {
     const res = await axiosInstance.get("/adminreport");
     return res.data.data || res.data || {};
-  }
+  },
 );
 
 const initialState = {
-
   stats: null,
   loading: false,
   error: null,
-
 };
 
 const adminReportSlice = createSlice({
-
   name: "adminReport",
 
   initialState,
@@ -28,41 +25,24 @@ const adminReportSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
-
     builder
 
-      .addCase(
-        fetchAdminReport.pending,
-        (state) => {
-          state.loading = true;
-        }
-      )
+      .addCase(fetchAdminReport.pending, (state) => {
+        state.loading = true;
+      })
 
-      .addCase(
-        fetchAdminReport.fulfilled,
-        (state, action) => {
+      .addCase(fetchAdminReport.fulfilled, (state, action) => {
+        state.loading = false;
 
-          state.loading = false;
+        state.stats = action.payload;
+      })
 
-          state.stats =
-            action.payload;
+      .addCase(fetchAdminReport.rejected, (state) => {
+        state.loading = false;
 
-        }
-      )
-
-      .addCase(
-        fetchAdminReport.rejected,
-        (state) => {
-
-          state.loading = false;
-
-          state.error =
-            "Failed to fetch admin report";
-
-        });
-
+        state.error = "Failed to fetch admin report";
+      });
   },
-
 });
 
 export default adminReportSlice.reducer;

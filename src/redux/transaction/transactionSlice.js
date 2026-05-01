@@ -4,75 +4,54 @@ import axiosInstance from "../../components/Utils/axiosInstance";
 export const fetchTransactions = createAsyncThunk(
   "transaction/fetchTransactions",
   async (userId) => {
+    const [expenseRes, incomeRes, budgetRes] = await Promise.all([
+      axiosInstance.get(`/expensesbyUserID/${userId}`),
+      axiosInstance.get(`/incomesbyUserID/${userId}`),
+      axiosInstance.get(`/budgetsbyUserID/${userId}`),
+    ]);
 
-    const [expenseRes, incomeRes, budgetRes] =
-      await Promise.all([
-        axiosInstance.get(`/expensesbyUserID/${userId}`),
-        axiosInstance.get(`/incomesbyUserID/${userId}`),
-        axiosInstance.get(`/budgetsbyUserID/${userId}`),
-      ]);
-
-    const expenses =
-      (expenseRes.data.data || expenseRes.data || []).map((e) => ({
+    const expenses = (expenseRes.data.data || expenseRes.data || []).map(
+      (e) => ({
         ...e,
         type: "Expense",
-      }));
+      }),
+    );
 
-    const incomes =
-      (incomeRes.data.data || incomeRes.data || []).map((i) => ({
-        ...i,
-        type: "Income",
-      }));
+    const incomes = (incomeRes.data.data || incomeRes.data || []).map((i) => ({
+      ...i,
+      type: "Income",
+    }));
 
-    const budgets =
-      budgetRes?.data?.data || budgetRes?.data || [];
+    const budgets = budgetRes?.data?.data || budgetRes?.data || [];
 
-    const merged =
-      [...expenses, ...incomes].map((t) => {
+    const merged = [...expenses, ...incomes].map((t) => {
+      if (t.type === "Expense") {
+        const hasBudget = budgets.some(
+          (b) => b.categoryID?._id === t.categoryID?._id,
+        );
 
-        if (t.type === "Expense") {
+        return {
+          ...t,
+          hasBudget,
+        };
+      }
 
-          const hasBudget =
-            budgets.some(
-              (b) =>
-                (b.categoryID?._id) ===
-                (t.categoryID?._id)
-            );
+      return t;
+    });
 
-          return {
-            ...t,
-            hasBudget,
-          };
+    const totalIncome = incomes.reduce((acc, i) => acc + (i.amount || 0), 0);
 
-        }
-
-        return t;
-
-      });
-
-    const totalIncome =
-      incomes.reduce(
-        (acc, i) => acc + (i.amount || 0),
-        0
-      );
-
-    const totalExpense =
-      expenses.reduce(
-        (acc, e) => acc + (e.amount || 0),
-        0
-      );
+    const totalExpense = expenses.reduce((acc, e) => acc + (e.amount || 0), 0);
 
     return {
       transactions: merged,
       summary: {
         totalIncome,
         totalExpense,
-        balance:
-          totalIncome - totalExpense,
+        balance: totalIncome - totalExpense,
       },
     };
-
-  }
+  },
 );
 
 export const fetchAllTransactions = createAsyncThunk(
@@ -83,10 +62,12 @@ export const fetchAllTransactions = createAsyncThunk(
       axiosInstance.get("/incomes"),
     ]);
 
-    const expenses = (expenseRes.data.data || expenseRes.data || []).map((e) => ({
-      ...e,
-      type: "Expense",
-    }));
+    const expenses = (expenseRes.data.data || expenseRes.data || []).map(
+      (e) => ({
+        ...e,
+        type: "Expense",
+      }),
+    );
 
     const incomes = (incomeRes.data.data || incomeRes.data || []).map((i) => ({
       ...i,
@@ -94,7 +75,7 @@ export const fetchAllTransactions = createAsyncThunk(
     }));
 
     const merged = [...expenses, ...incomes].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
     );
 
     return {
@@ -104,11 +85,10 @@ export const fetchAllTransactions = createAsyncThunk(
         totalExpense: expenses.reduce((acc, e) => acc + (e.amount || 0), 0),
       },
     };
-  }
+  },
 );
 
 const initialState = {
-
   transactions: [],
 
   summary: {
@@ -118,11 +98,9 @@ const initialState = {
   },
 
   loading: true,
-
 };
 
 const transactionSlice = createSlice({
-
   name: "transaction",
 
   initialState,
@@ -130,32 +108,19 @@ const transactionSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
-
     builder
 
-      .addCase(
-        fetchTransactions.pending,
-        (state) => {
+      .addCase(fetchTransactions.pending, (state) => {
+        state.loading = true;
+      })
 
-          state.loading = true;
+      .addCase(fetchTransactions.fulfilled, (state, action) => {
+        state.loading = false;
 
-        }
-      )
+        state.transactions = action.payload.transactions;
 
-      .addCase(
-        fetchTransactions.fulfilled,
-        (state, action) => {
-
-          state.loading = false;
-
-          state.transactions =
-            action.payload.transactions;
-
-          state.summary =
-            action.payload.summary;
-
-        }
-      )
+        state.summary = action.payload.summary;
+      })
 
       .addCase(fetchTransactions.rejected, (state) => {
         state.loading = false;
@@ -168,15 +133,15 @@ const transactionSlice = createSlice({
         state.transactions = action.payload.transactions;
         state.summary = {
           ...action.payload.summary,
-          balance: action.payload.summary.totalIncome - action.payload.summary.totalExpense,
+          balance:
+            action.payload.summary.totalIncome -
+            action.payload.summary.totalExpense,
         };
       })
       .addCase(fetchAllTransactions.rejected, (state) => {
         state.loading = false;
       });
-
   },
-
 });
 
 export default transactionSlice.reducer;

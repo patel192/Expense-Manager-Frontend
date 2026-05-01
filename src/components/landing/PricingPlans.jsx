@@ -45,7 +45,6 @@ const plans = [
 export const PricingPlans = () => {
   return (
     <section className="py-20 space-y-10">
-
       {/* Header */}
       <div className="text-center space-y-2">
         <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
@@ -63,7 +62,6 @@ export const PricingPlans = () => {
 
       {/* Plans */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
         {plans.map((plan, i) => (
           <motion.div
             key={i}
@@ -86,7 +84,6 @@ export const PricingPlans = () => {
               bg-[var(--surface-primary)]
             `}
           >
-
             {/* Badge */}
             {plan.highlight && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 text-xs font-medium bg-cyan-500 text-white rounded-full">
@@ -100,18 +97,13 @@ export const PricingPlans = () => {
                 {plan.name}
               </p>
 
-              <p className="text-3xl font-bold text-cyan-400">
-                {plan.price}
-              </p>
+              <p className="text-3xl font-bold text-cyan-400">{plan.price}</p>
 
-              <p className="text-xs text-[var(--muted)]">
-                {plan.period}
-              </p>
+              <p className="text-xs text-[var(--muted)]">{plan.period}</p>
             </div>
 
             {/* Features */}
             <div className="space-y-2">
-
               {plan.features.map((feature, index) => (
                 <div
                   key={index}
@@ -121,7 +113,6 @@ export const PricingPlans = () => {
                   {feature}
                 </div>
               ))}
-
             </div>
 
             {/* Button */}
@@ -144,12 +135,9 @@ export const PricingPlans = () => {
             >
               Get Started
             </Link>
-
           </motion.div>
         ))}
-
       </div>
-
     </section>
   );
 };

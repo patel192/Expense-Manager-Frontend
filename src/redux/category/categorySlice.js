@@ -8,7 +8,7 @@ export const fetchCategories = createAsyncThunk(
   async () => {
     const res = await axiosInstance.get("/categories");
     return res.data.data || res.data || [];
-  }
+  },
 );
 
 /* Add */
@@ -16,12 +16,9 @@ export const fetchCategories = createAsyncThunk(
 export const addCategory = createAsyncThunk(
   "category/addCategory",
   async (data) => {
-    const res = await axiosInstance.post(
-      "/categories",
-      data
-    );
+    const res = await axiosInstance.post("/categories", data);
     return res.data.data;
-  }
+  },
 );
 
 /* Delete */
@@ -29,11 +26,9 @@ export const addCategory = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   "category/deleteCategory",
   async (id) => {
-    await axiosInstance.delete(
-      `/categories/${id}`
-    );
+    await axiosInstance.delete(`/categories/${id}`);
     return id;
-  }
+  },
 );
 
 /* Update */
@@ -41,12 +36,9 @@ export const deleteCategory = createAsyncThunk(
 export const updateCategory = createAsyncThunk(
   "category/updateCategory",
   async ({ id, data }) => {
-    const res = await axiosInstance.put(
-      `/categories/${id}`,
-      data
-    );
+    const res = await axiosInstance.put(`/categories/${id}`, data);
     return res.data.data;
-  }
+  },
 );
 
 const initialState = {
@@ -79,21 +71,18 @@ const categorySlice = createSlice({
       })
 
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        state.categories =
-          state.categories.filter(
-            (c) => c._id !== action.payload
-          );
+        state.categories = state.categories.filter(
+          (c) => c._id !== action.payload,
+        );
       })
 
       .addCase(updateCategory.fulfilled, (state, action) => {
-        const index =
-          state.categories.findIndex(
-            (c) => c._id === action.payload._id
-          );
+        const index = state.categories.findIndex(
+          (c) => c._id === action.payload._id,
+        );
 
         if (index !== -1) {
-          state.categories[index] =
-            action.payload;
+          state.categories[index] = action.payload;
         }
       });
   },

@@ -3,9 +3,18 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../Utils/axiosInstance";
 import { motion } from "framer-motion";
 import {
-  FiDownload, FiFileText, FiTrendingUp, FiTrendingDown,
-  FiPieChart, FiTarget, FiRepeat, FiBarChart2,
-  FiShield, FiCheckCircle, FiRefreshCw, FiCalendar,
+  FiDownload,
+  FiFileText,
+  FiTrendingUp,
+  FiTrendingDown,
+  FiPieChart,
+  FiTarget,
+  FiRepeat,
+  FiBarChart2,
+  FiShield,
+  FiCheckCircle,
+  FiRefreshCw,
+  FiCalendar,
 } from "react-icons/fi";
 
 export const Reports = () => {
@@ -37,12 +46,48 @@ export const Reports = () => {
   };
 
   const reportSections = [
-    { icon: <FiTrendingUp size={16} />,   label: "Income Summary",        desc: "Comprehensive inflow tracking & monthly velocity",   color: "text-emerald-500", bg: "bg-emerald-500/10 border-emerald-500/20" },
-    { icon: <FiTrendingDown size={16} />, label: "Expense Breakdown",     desc: "Granular sector allocation & spending heatmaps",        color: "text-rose-500",    bg: "bg-rose-500/10 border-rose-500/20" },
-    { icon: <FiTarget size={16} />,       label: "Budget Performance",    desc: "Strategic deviation analysis vs allocated capital",color: "text-cyan-500",    bg: "bg-cyan-500/10 border-cyan-500/20" },
-    { icon: <FiPieChart size={16} />,     label: "Savings Analysis",      desc: "Net surplus trajectory and efficiency metrics",  color: "text-blue-500",    bg: "bg-blue-500/10 border-blue-500/20" },
-    { icon: <FiRepeat size={16} />,       label: "Recurring Payments",    desc: "Automated subscription auditing & schedules",   color: "text-amber-500",   bg: "bg-amber-500/10 border-amber-500/20" },
-    { icon: <FiBarChart2 size={16} />,    label: "Monthly Comparison",    desc: "Temporal performance delta & benchmarks", color: "text-violet-500",  bg: "bg-violet-500/10 border-violet-500/20" },
+    {
+      icon: <FiTrendingUp size={16} />,
+      label: "Income Summary",
+      desc: "Comprehensive inflow tracking & monthly velocity",
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10 border-emerald-500/20",
+    },
+    {
+      icon: <FiTrendingDown size={16} />,
+      label: "Expense Breakdown",
+      desc: "Granular sector allocation & spending heatmaps",
+      color: "text-rose-500",
+      bg: "bg-rose-500/10 border-rose-500/20",
+    },
+    {
+      icon: <FiTarget size={16} />,
+      label: "Budget Performance",
+      desc: "Strategic deviation analysis vs allocated capital",
+      color: "text-cyan-500",
+      bg: "bg-cyan-500/10 border-cyan-500/20",
+    },
+    {
+      icon: <FiPieChart size={16} />,
+      label: "Savings Analysis",
+      desc: "Net surplus trajectory and efficiency metrics",
+      color: "text-blue-500",
+      bg: "bg-blue-500/10 border-blue-500/20",
+    },
+    {
+      icon: <FiRepeat size={16} />,
+      label: "Recurring Payments",
+      desc: "Automated subscription auditing & schedules",
+      color: "text-amber-500",
+      bg: "bg-amber-500/10 border-amber-500/20",
+    },
+    {
+      icon: <FiBarChart2 size={16} />,
+      label: "Monthly Comparison",
+      desc: "Temporal performance delta & benchmarks",
+      color: "text-violet-500",
+      bg: "bg-violet-500/10 border-violet-500/20",
+    },
   ];
 
   return (
@@ -85,19 +130,30 @@ export const Reports = () => {
               <FiFileText size={32} className="text-white" />
             </div>
             <div className="space-y-3">
-              <h2 className="text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">Full Spectrum Export</h2>
+              <h2 className="text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">
+                Full Spectrum Export
+              </h2>
               <p className="text-sm font-medium text-[var(--text-muted)] leading-relaxed max-w-lg">
-                Compile and synchronize your entire financial history into a cryptographic, human-readable PDF document spanning all vectors: Inflow, Outflow, Strategic Budgets, and Automated Protocols.
+                Compile and synchronize your entire financial history into a
+                cryptographic, human-readable PDF document spanning all vectors:
+                Inflow, Outflow, Strategic Budgets, and Automated Protocols.
               </p>
               <div className="flex flex-wrap justify-center sm:justify-start gap-3 pt-3">
                 {[
-                  { icon: <FiCalendar size={12} />,    text: "REAL-TIME SYNC" },
-                  { icon: <FiShield size={12} />,      text: "AES-256 SECURE" },
-                  { icon: <FiCheckCircle size={12} />, text: "INSTANT COMPILER" },
+                  { icon: <FiCalendar size={12} />, text: "REAL-TIME SYNC" },
+                  { icon: <FiShield size={12} />, text: "AES-256 SECURE" },
+                  {
+                    icon: <FiCheckCircle size={12} />,
+                    text: "INSTANT COMPILER",
+                  },
                 ].map((badge, i) => (
-                  <span key={i} className="inline-flex items-center gap-2 text-[9px] font-black
-                                           text-[var(--text-muted)] bg-[var(--surface-secondary)]/50 border border-[var(--border)] px-3 py-1.5 rounded-full uppercase tracking-widest">
-                    {badge.icon}{badge.text}
+                  <span
+                    key={i}
+                    className="inline-flex items-center gap-2 text-[9px] font-black
+                                           text-[var(--text-muted)] bg-[var(--surface-secondary)]/50 border border-[var(--border)] px-3 py-1.5 rounded-full uppercase tracking-widest"
+                  >
+                    {badge.icon}
+                    {badge.text}
                   </span>
                 ))}
               </div>
@@ -112,19 +168,26 @@ export const Reports = () => {
             whileTap={!loading ? { scale: 0.95 } : {}}
             className={`flex-shrink-0 inline-flex items-center gap-3 px-10 py-5 rounded-3xl
                         font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl text-white
-                        ${downloaded
-                          ? "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/40"
-                          : loading
-                            ? "bg-[var(--surface-tertiary)] cursor-wait text-[var(--text-muted)]"
-                            : "bg-gradient-to-r from-violet-600 to-blue-700 shadow-violet-600/40 hover:shadow-violet-600/60"
+                        ${
+                          downloaded
+                            ? "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/40"
+                            : loading
+                              ? "bg-[var(--surface-tertiary)] cursor-wait text-[var(--text-muted)]"
+                              : "bg-gradient-to-r from-violet-600 to-blue-700 shadow-violet-600/40 hover:shadow-violet-600/60"
                         }`}
           >
             {loading ? (
-              <><FiRefreshCw size={18} className="animate-spin" /> Compiling...</>
+              <>
+                <FiRefreshCw size={18} className="animate-spin" /> Compiling...
+              </>
             ) : downloaded ? (
-              <><FiCheckCircle size={18} /> Sync Complete</>
+              <>
+                <FiCheckCircle size={18} /> Sync Complete
+              </>
             ) : (
-              <><FiDownload size={18} /> Initiate Download</>
+              <>
+                <FiDownload size={18} /> Initiate Download
+              </>
             )}
           </motion.button>
         </div>
@@ -137,8 +200,12 @@ export const Reports = () => {
             <FiFileText size={16} className="text-violet-500" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-widest">Data Matrix Components</h3>
-            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mt-1">Included Intelligence Modules</p>
+            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-widest">
+              Data Matrix Components
+            </h3>
+            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mt-1">
+              Included Intelligence Modules
+            </p>
           </div>
         </div>
 
@@ -151,12 +218,18 @@ export const Reports = () => {
               transition={{ delay: 0.2 + i * 0.05 }}
               className="flex items-start gap-4 p-6 rounded-[2rem] bg-[var(--surface-primary)] border border-[var(--border)] hover:bg-[var(--surface-secondary)]/50 transition-all group border-dashed"
             >
-              <div className={`w-11 h-11 rounded-2xl border flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-110 transition-transform ${section.bg}`}>
+              <div
+                className={`w-11 h-11 rounded-2xl border flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-110 transition-transform ${section.bg}`}
+              >
                 <span className={section.color}>{section.icon}</span>
               </div>
               <div className="space-y-1">
-                <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-tight">{section.label}</p>
-                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-loose mt-1">{section.desc}</p>
+                <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-tight">
+                  {section.label}
+                </p>
+                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-loose mt-1">
+                  {section.desc}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -166,20 +239,49 @@ export const Reports = () => {
       {/* ══ OPERATIONAL FLOW ══ */}
       <div className="rounded-[2.5rem] bg-[var(--surface-secondary)]/30 border border-[var(--border)] p-8 sm:p-10 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 blur-[80px] pointer-events-none" />
-        <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-[0.2em] mb-8 px-2">Operational Protocol</h3>
+        <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-[0.2em] mb-8 px-2">
+          Operational Protocol
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {[
-            { step: "01", title: "VECTOR TRIGGER", desc: "Initiate the download command via the primary interface module.", color: "text-violet-500", bg: "bg-violet-500/10 border-violet-500/20" },
-            { step: "02", title: "DATA SYNTHESIS", desc: "System compiles historical telemetry into a structured document ledger.", color: "text-blue-500",   bg: "bg-blue-500/10 border-blue-500/20" },
-            { step: "03", title: "HARDWARE SYNC",   desc: "The synthesized document is securely transferred to your local hardware storage.", color: "text-emerald-500", bg: "bg-emerald-500/10 border-emerald-500/20" },
+            {
+              step: "01",
+              title: "VECTOR TRIGGER",
+              desc: "Initiate the download command via the primary interface module.",
+              color: "text-violet-500",
+              bg: "bg-violet-500/10 border-violet-500/20",
+            },
+            {
+              step: "02",
+              title: "DATA SYNTHESIS",
+              desc: "System compiles historical telemetry into a structured document ledger.",
+              color: "text-blue-500",
+              bg: "bg-blue-500/10 border-blue-500/20",
+            },
+            {
+              step: "03",
+              title: "HARDWARE SYNC",
+              desc: "The synthesized document is securely transferred to your local hardware storage.",
+              color: "text-emerald-500",
+              bg: "bg-emerald-500/10 border-emerald-500/20",
+            },
           ].map((s, i) => (
-            <div key={i} className="flex flex-col gap-4 p-6 rounded-[2rem] bg-[var(--surface-primary)]/50 border border-[var(--border)] relative group">
-              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center text-xs font-black ${s.bg} ${s.color} shadow-inner`}>
+            <div
+              key={i}
+              className="flex flex-col gap-4 p-6 rounded-[2rem] bg-[var(--surface-primary)]/50 border border-[var(--border)] relative group"
+            >
+              <div
+                className={`w-10 h-10 rounded-xl border flex items-center justify-center text-xs font-black ${s.bg} ${s.color} shadow-inner`}
+              >
                 {s.step}
               </div>
               <div className="space-y-1">
-                <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">{s.title}</p>
-                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-loose mt-1">{s.desc}</p>
+                <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">
+                  {s.title}
+                </p>
+                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-loose mt-1">
+                  {s.desc}
+                </p>
               </div>
             </div>
           ))}

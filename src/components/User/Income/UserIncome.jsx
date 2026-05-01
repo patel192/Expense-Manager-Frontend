@@ -22,10 +22,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import { XMarkIcon, TrashIcon } from "@heroicons/react/24/outline";
-import {
-  FaPauseCircle,
-  FaTrashAlt,
-} from "react-icons/fa";
+import { FaPauseCircle, FaTrashAlt } from "react-icons/fa";
 import {
   FiTrendingUp,
   FiTrendingDown,
@@ -44,9 +41,13 @@ import {
 
 /* ─── Shimmer skeleton ─── */
 const Shimmer = ({ className = "" }) => (
-  <div className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}>
-    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite]
-                    bg-gradient-to-r from-transparent via-[var(--surface-primary)]/10 to-transparent" />
+  <div
+    className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}
+  >
+    <div
+      className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite]
+                    bg-gradient-to-r from-transparent via-[var(--surface-primary)]/10 to-transparent"
+    />
   </div>
 );
 
@@ -55,7 +56,9 @@ const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-[var(--surface-primary)] border border-[var(--border)] rounded-xl px-4 py-3 shadow-2xl backdrop-blur-md">
-      <p className="text-xs text-[var(--text-muted)] mb-2 font-medium">{label}</p>
+      <p className="text-xs text-[var(--text-muted)] mb-2 font-medium">
+        {label}
+      </p>
       {payload.map((p, i) => (
         <p key={i} className="text-sm font-bold" style={{ color: p.color }}>
           {p.name}: ₹{p.value?.toLocaleString("en-IN")}
@@ -140,7 +143,7 @@ export const UserIncome = () => {
     formState: { errors },
   } = useForm();
   const userId = useMemo(() => user?._id, [user]);
-  
+
   const [recurringForm, setRecurringForm] = useState({
     name: "",
     amount: "",
@@ -149,18 +152,19 @@ export const UserIncome = () => {
     category: "",
   });
   const [recurringLoading, setRecurringLoading] = useState(false);
-
-  const COLORS = ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
-
   const computeAnalytics = (incomesData, expensesData) => {
     const totalIncome = incomesData.reduce((sum, i) => sum + i.amount, 0);
     const totalExpense = expensesData.reduce((sum, e) => sum + e.amount, 0);
     const netSavings = totalIncome - totalExpense;
-    const savingsRate = totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(2) : 0;
-    
+    const savingsRate =
+      totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(2) : 0;
+
     setStats({ totalIncome, totalExpense, netSavings, savingsRate });
-    
-    const months = Array.from({ length: 12 }, () => ({ income: 0, expense: 0 }));
+
+    const months = Array.from({ length: 12 }, () => ({
+      income: 0,
+      expense: 0,
+    }));
     incomesData.forEach((inc) => {
       const date = new Date(inc.date);
       if (!isNaN(date)) {
@@ -175,17 +179,19 @@ export const UserIncome = () => {
         months[m].expense += exp.amount;
       }
     });
-    
+
     const monthly = months.map((m, idx) => ({
       month: new Date(0, idx).toLocaleString("default", { month: "short" }),
       income: m.income,
       expense: m.expense,
     }));
-    
+
     setMonthlyIncomeExpense(monthly);
-    setMonthlyIncomeTrend(monthly.map((m) => ({ month: m.month, amount: m.income })));
+    setMonthlyIncomeTrend(
+      monthly.map((m) => ({ month: m.month, amount: m.income })),
+    );
     setAvgIncome(months.reduce((a, b) => a + b.income, 0) / 12);
-    
+
     let suggestedTips = [];
     if (savingsRate < 20) {
       suggestedTips = [
@@ -288,8 +294,10 @@ export const UserIncome = () => {
     { id: "recurring", label: "Recurring", icon: <FiRepeat size={14} /> },
   ];
 
-  const inputCls = "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 shadow-sm";
-  const selectCls = "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 appearance-none shadow-sm cursor-pointer";
+  const inputCls =
+    "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 shadow-sm";
+  const selectCls =
+    "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 appearance-none shadow-sm cursor-pointer";
 
   return (
     <div className="space-y-6 text-[var(--text-primary)]">
@@ -325,12 +333,14 @@ export const UserIncome = () => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all duration-200
-              ${activeTab === tab.id
-                ? "bg-[var(--surface-primary)] border border-[var(--border)] text-cyan-500 shadow-sm"
-                : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]"
+              ${
+                activeTab === tab.id
+                  ? "bg-[var(--surface-primary)] border border-[var(--border)] text-cyan-500 shadow-sm"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]"
               }`}
           >
-            {tab.icon}{tab.label}
+            {tab.icon}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -361,10 +371,42 @@ export const UserIncome = () => {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { label: "Total Wealth", value: `₹${stats.totalIncome.toLocaleString("en-IN")}`, color: "text-emerald-500", bg: "bg-emerald-500/5", border: "border-emerald-500/20", glow: "bg-emerald-500", icon: <FiTrendingUp size={18} /> },
-                  { label: "Withdrawals", value: `₹${stats.totalExpense.toLocaleString("en-IN")}`, color: "text-rose-500", bg: "bg-rose-500/5", border: "border-rose-500/20", glow: "bg-rose-500", icon: <FiTrendingDown size={18} /> },
-                  { label: "Net Surplus", value: `₹${stats.netSavings.toLocaleString("en-IN")}`, color: "text-cyan-500", bg: "bg-cyan-500/5", border: "border-cyan-500/20", glow: "bg-cyan-500", icon: <FiDollarSign size={18} /> },
-                  { label: "Efficiency", value: `${stats.savingsRate}%`, color: "text-amber-500", bg: "bg-amber-500/5", border: "border-amber-500/20", glow: "bg-amber-500", icon: <FiPercent size={18} /> },
+                  {
+                    label: "Total Wealth",
+                    value: `₹${stats.totalIncome.toLocaleString("en-IN")}`,
+                    color: "text-emerald-500",
+                    bg: "bg-emerald-500/5",
+                    border: "border-emerald-500/20",
+                    glow: "bg-emerald-500",
+                    icon: <FiTrendingUp size={18} />,
+                  },
+                  {
+                    label: "Withdrawals",
+                    value: `₹${stats.totalExpense.toLocaleString("en-IN")}`,
+                    color: "text-rose-500",
+                    bg: "bg-rose-500/5",
+                    border: "border-rose-500/20",
+                    glow: "bg-rose-500",
+                    icon: <FiTrendingDown size={18} />,
+                  },
+                  {
+                    label: "Net Surplus",
+                    value: `₹${stats.netSavings.toLocaleString("en-IN")}`,
+                    color: "text-cyan-500",
+                    bg: "bg-cyan-500/5",
+                    border: "border-cyan-500/20",
+                    glow: "bg-cyan-500",
+                    icon: <FiDollarSign size={18} />,
+                  },
+                  {
+                    label: "Efficiency",
+                    value: `${stats.savingsRate}%`,
+                    color: "text-amber-500",
+                    bg: "bg-amber-500/5",
+                    border: "border-amber-500/20",
+                    glow: "bg-amber-500",
+                    icon: <FiPercent size={18} />,
+                  },
                 ].map((card, idx) => (
                   <motion.div
                     key={idx}
@@ -374,13 +416,23 @@ export const UserIncome = () => {
                     whileHover={{ y: -3 }}
                     className={`relative overflow-hidden rounded-2xl border p-5 bg-[var(--surface-primary)] ${card.border} shadow-sm backdrop-blur-sm`}
                   >
-                    <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-3xl opacity-10 ${card.glow}`} />
+                    <div
+                      className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-3xl opacity-10 ${card.glow}`}
+                    />
                     <div className="relative">
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${card.bg} border ${card.border} shadow-inner`}>
+                      <div
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${card.bg} border ${card.border} shadow-inner`}
+                      >
                         <span className={card.color}>{card.icon}</span>
                       </div>
-                      <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">{card.label}</p>
-                      <p className={`text-2xl font-bold tracking-tight ${card.color}`}>{card.value}</p>
+                      <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">
+                        {card.label}
+                      </p>
+                      <p
+                        className={`text-2xl font-bold tracking-tight ${card.color}`}
+                      >
+                        {card.value}
+                      </p>
                     </div>
                   </motion.div>
                 ))}
@@ -398,13 +450,20 @@ export const UserIncome = () => {
                     <FiZap size={18} className="text-cyan-500" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[var(--text-primary)]">Wealth Optimization Insights</h3>
-                    <p className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mt-0.5">AI-Powered Recommendations</p>
+                    <h3 className="text-sm font-bold text-[var(--text-primary)]">
+                      Wealth Optimization Insights
+                    </h3>
+                    <p className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest mt-0.5">
+                      AI-Powered Recommendations
+                    </p>
                   </div>
                 </div>
                 <ul className="space-y-4 relative z-10">
                   {tips.map((tip, idx) => (
-                    <li key={idx} className="flex items-start gap-4 text-xs font-medium text-[var(--text-secondary)] leading-relaxed">
+                    <li
+                      key={idx}
+                      className="flex items-start gap-4 text-xs font-medium text-[var(--text-secondary)] leading-relaxed"
+                    >
                       <span className="w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0 mt-1 shadow-lg shadow-cyan-500/50" />
                       {tip}
                     </li>
@@ -428,17 +487,64 @@ export const UserIncome = () => {
                   <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-inner">
                     <FiBarChart2 size={14} className="text-blue-500" />
                   </div>
-                  <h3 className="text-sm font-bold text-[var(--text-primary)]">Monthly Cash Flow</h3>
+                  <h3 className="text-sm font-bold text-[var(--text-primary)]">
+                    Monthly Cash Flow
+                  </h3>
                 </div>
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={monthlyIncomeExpense} barSize={12}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} opacity={0.3} />
-                    <XAxis dataKey="month" stroke="var(--border)" tick={{ fill: "var(--text-muted)", fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
-                    <YAxis stroke="var(--border)" tick={{ fill: "var(--text-muted)", fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--surface-tertiary)", opacity: 0.1 }} />
-                    <Legend wrapperStyle={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)", paddingTop: 16 }} />
-                    <Bar dataKey="income" fill="#10b981" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="expense" fill="#f43f5e" radius={[6, 6, 0, 0]} />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--border)"
+                      vertical={false}
+                      opacity={0.3}
+                    />
+                    <XAxis
+                      dataKey="month"
+                      stroke="var(--border)"
+                      tick={{
+                        fill: "var(--text-muted)",
+                        fontSize: 11,
+                        fontWeight: 500,
+                      }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      stroke="var(--border)"
+                      tick={{
+                        fill: "var(--text-muted)",
+                        fontSize: 11,
+                        fontWeight: 500,
+                      }}
+                      axisLine={false}
+                      tickLine={false}
+                      tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+                    />
+                    <Tooltip
+                      content={<ChartTooltip />}
+                      cursor={{ fill: "var(--surface-tertiary)", opacity: 0.1 }}
+                    />
+                    <Legend
+                      wrapperStyle={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        color: "var(--text-muted)",
+                        paddingTop: 16,
+                      }}
+                    />
+                    <Bar
+                      dataKey="income"
+                      fill="#10b981"
+                      radius={[6, 6, 0, 0]}
+                    />
+                    <Bar
+                      dataKey="expense"
+                      fill="#f43f5e"
+                      radius={[6, 6, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -448,16 +554,66 @@ export const UserIncome = () => {
                   <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shadow-inner">
                     <FiTrendingUp size={14} className="text-cyan-500" />
                   </div>
-                  <h3 className="text-sm font-bold text-[var(--text-primary)]">Income Projection & Baseline</h3>
+                  <h3 className="text-sm font-bold text-[var(--text-primary)]">
+                    Income Projection & Baseline
+                  </h3>
                 </div>
                 <ResponsiveContainer width="100%" height={280}>
                   <LineChart data={monthlyIncomeTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} opacity={0.3} />
-                    <XAxis dataKey="month" stroke="var(--border)" tick={{ fill: "var(--text-muted)", fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
-                    <YAxis stroke="var(--border)" tick={{ fill: "var(--text-muted)", fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--border)"
+                      vertical={false}
+                      opacity={0.3}
+                    />
+                    <XAxis
+                      dataKey="month"
+                      stroke="var(--border)"
+                      tick={{
+                        fill: "var(--text-muted)",
+                        fontSize: 11,
+                        fontWeight: 500,
+                      }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      stroke="var(--border)"
+                      tick={{
+                        fill: "var(--text-muted)",
+                        fontSize: 11,
+                        fontWeight: 500,
+                      }}
+                      axisLine={false}
+                      tickLine={false}
+                      tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+                    />
                     <Tooltip content={<ChartTooltip />} />
-                    <ReferenceLine y={avgIncome} stroke="var(--text-muted)" strokeDasharray="5 5" label={{ value: `AVG ₹${Math.round(avgIncome/1000)}K`, position: 'right', fill: 'var(--text-muted)', fontSize: 10, fontWeight: 700 }} />
-                    <Line type="monotone" dataKey="amount" stroke="#06b6d4" strokeWidth={3} dot={{ r: 4, fill: "#06b6d4", strokeWidth: 2, stroke: "var(--surface-primary)" }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                    <ReferenceLine
+                      y={avgIncome}
+                      stroke="var(--text-muted)"
+                      strokeDasharray="5 5"
+                      label={{
+                        value: `AVG ₹${Math.round(avgIncome / 1000)}K`,
+                        position: "right",
+                        fill: "var(--text-muted)",
+                        fontSize: 10,
+                        fontWeight: 700,
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#06b6d4"
+                      strokeWidth={3}
+                      dot={{
+                        r: 4,
+                        fill: "#06b6d4",
+                        strokeWidth: 2,
+                        stroke: "var(--surface-primary)",
+                      }}
+                      activeDot={{ r: 6, strokeWidth: 0 }}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -475,8 +631,12 @@ export const UserIncome = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-baseline gap-2">
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">Financial Records</h3>
-                  <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{incomes.length} Entries</span>
+                  <h3 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">
+                    Financial Records
+                  </h3>
+                  <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                    {incomes.length} Entries
+                  </span>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(true)}
@@ -491,14 +651,20 @@ export const UserIncome = () => {
               {incomes.length === 0 ? (
                 <div className="flex flex-col items-center gap-4 py-24 text-center rounded-3xl border border-[var(--border)] bg-[var(--surface-secondary)]/20 shadow-inner">
                   <div className="w-16 h-16 rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] flex items-center justify-center shadow-lg">
-                    <FiTrendingUp size={32} className="text-[var(--text-muted)] opacity-30" />
+                    <FiTrendingUp
+                      size={32}
+                      className="text-[var(--text-muted)] opacity-30"
+                    />
                   </div>
-                  <p className="text-sm font-bold text-[var(--text-primary)]">Income ledger is empty</p>
+                  <p className="text-sm font-bold text-[var(--text-primary)]">
+                    Income ledger is empty
+                  </p>
                 </div>
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {incomes.map((income, idx) => {
-                    const src = sourceConfig[income.source] || sourceConfig.Other;
+                    const src =
+                      sourceConfig[income.source] || sourceConfig.Other;
                     return (
                       <motion.div
                         key={income._id}
@@ -510,7 +676,9 @@ export const UserIncome = () => {
                       >
                         <div className="absolute top-0 right-0 w-20 h-20 bg-cyan-500/5 rotate-45 translate-x-10 -translate-y-10" />
                         <div className="flex items-start justify-between relative z-10 mb-6">
-                          <span className={`inline-flex items-center gap-2 text-[10px] font-extrabold px-3 py-1.5 rounded-full border shadow-sm uppercase tracking-wider ${src.bg} ${src.color}`}>
+                          <span
+                            className={`inline-flex items-center gap-2 text-[10px] font-extrabold px-3 py-1.5 rounded-full border shadow-sm uppercase tracking-wider ${src.bg} ${src.color}`}
+                          >
                             {income.source}
                           </span>
                           <button
@@ -521,12 +689,18 @@ export const UserIncome = () => {
                           </button>
                         </div>
                         <div className="relative z-10">
-                          <p className={`text-3xl font-extrabold tracking-tight ${src.color}`}>
+                          <p
+                            className={`text-3xl font-extrabold tracking-tight ${src.color}`}
+                          >
                             ₹{income.amount.toLocaleString("en-IN")}
                           </p>
                           <p className="flex items-center gap-2 text-[10px] font-bold text-[var(--text-muted)] mt-2 uppercase tracking-widest">
                             <FiCalendar size={12} className="text-cyan-500" />
-                            {new Date(income.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                            {new Date(income.date).toLocaleDateString("en-IN", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
                           </p>
                         </div>
                       </motion.div>
@@ -551,8 +725,12 @@ export const UserIncome = () => {
                   <FiRepeat size={20} className="text-cyan-500" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[var(--text-primary)]">Wealth Management</h2>
-                  <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Configure recurring revenue & automation</p>
+                  <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                    Wealth Management
+                  </h2>
+                  <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                    Configure recurring revenue & automation
+                  </p>
                 </div>
               </div>
 
@@ -568,10 +746,31 @@ export const UserIncome = () => {
                   PROVISION NEW AUTOMATION
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <input type="text" name="name" placeholder="Wealth description" value={recurringForm.name} onChange={handleRecurringChange} className={inputCls} required />
-                  <input type="number" name="amount" placeholder="Revenue (₹)" value={recurringForm.amount} onChange={handleRecurringChange} className={inputCls} required />
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Wealth description"
+                    value={recurringForm.name}
+                    onChange={handleRecurringChange}
+                    className={inputCls}
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="Revenue (₹)"
+                    value={recurringForm.amount}
+                    onChange={handleRecurringChange}
+                    className={inputCls}
+                    required
+                  />
                   <div className="relative group">
-                    <select name="frequency" value={recurringForm.frequency} onChange={handleRecurringChange} className={selectCls}>
+                    <select
+                      name="frequency"
+                      value={recurringForm.frequency}
+                      onChange={handleRecurringChange}
+                      className={selectCls}
+                    >
                       <option value="Daily">Daily</option>
                       <option value="Weekly">Weekly</option>
                       <option value="Monthly">Monthly</option>
@@ -579,8 +778,22 @@ export const UserIncome = () => {
                     </select>
                     <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none group-focus-within:text-cyan-500" />
                   </div>
-                  <input type="date" name="startDate" value={recurringForm.startDate} onChange={handleRecurringChange} className={inputCls} required />
-                  <input type="text" name="category" placeholder="Classification (LOB)" value={recurringForm.category} onChange={handleRecurringChange} className={inputCls} />
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={recurringForm.startDate}
+                    onChange={handleRecurringChange}
+                    className={inputCls}
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="category"
+                    placeholder="Classification (LOB)"
+                    value={recurringForm.category}
+                    onChange={handleRecurringChange}
+                    className={inputCls}
+                  />
                   <button
                     type="submit"
                     disabled={recurringLoading}
@@ -590,9 +803,14 @@ export const UserIncome = () => {
                                disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0"
                   >
                     {recurringLoading ? (
-                      <><FiRefreshCw size={16} className="animate-spin" /> EXECUTING...</>
+                      <>
+                        <FiRefreshCw size={16} className="animate-spin" />{" "}
+                        EXECUTING...
+                      </>
                     ) : (
-                      <><FiZap size={16} /> ACTIVATE TASK</>
+                      <>
+                        <FiZap size={16} /> ACTIVATE TASK
+                      </>
                     )}
                   </button>
                 </div>
@@ -600,7 +818,9 @@ export const UserIncome = () => {
 
               <div className="rounded-2xl bg-[var(--surface-primary)] border border-[var(--border)] overflow-hidden shadow-2xl">
                 <div className="px-6 py-5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--surface-secondary)]/50">
-                  <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-widest">Active Revenue Operations</h3>
+                  <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-widest">
+                    Active Revenue Operations
+                  </h3>
                   <span className="text-[10px] font-extrabold text-cyan-500 bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/20 uppercase tracking-widest">
                     {recurringPayments.length} RUNNING
                   </span>
@@ -611,7 +831,9 @@ export const UserIncome = () => {
                     <div className="w-14 h-14 rounded-2xl bg-[var(--surface-tertiary)] border border-[var(--border)] flex items-center justify-center opacity-30">
                       <FiRepeat size={24} />
                     </div>
-                    <p className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider">No active schedules</p>
+                    <p className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                      No active schedules
+                    </p>
                   </div>
                 ) : (
                   <>
@@ -619,8 +841,19 @@ export const UserIncome = () => {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-[var(--border)] bg-[var(--surface-secondary)]/30">
-                            {["Description", "Amount", "Interval", "Next Run", "Actions"].map((h) => (
-                              <th key={h} className="text-left px-6 py-4 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em]">{h}</th>
+                            {[
+                              "Description",
+                              "Amount",
+                              "Interval",
+                              "Next Run",
+                              "Actions",
+                            ].map((h) => (
+                              <th
+                                key={h}
+                                className="text-left px-6 py-4 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em]"
+                              >
+                                {h}
+                              </th>
                             ))}
                           </tr>
                         </thead>
@@ -633,9 +866,13 @@ export const UserIncome = () => {
                               transition={{ delay: i * 0.04 }}
                               className="hover:bg-[var(--surface-secondary)]/50 transition-colors"
                             >
-                              <td className="px-6 py-5 font-bold text-[var(--text-primary)]">{pay.name}</td>
+                              <td className="px-6 py-5 font-bold text-[var(--text-primary)]">
+                                {pay.name}
+                              </td>
                               <td className="px-6 py-5">
-                                <span className="text-emerald-500 font-extrabold text-base">₹{pay.amount.toLocaleString("en-IN")}</span>
+                                <span className="text-emerald-500 font-extrabold text-base">
+                                  ₹{pay.amount.toLocaleString("en-IN")}
+                                </span>
                               </td>
                               <td className="px-6 py-5">
                                 <span className="text-[10px] font-extrabold px-2.5 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 uppercase tracking-widest">
@@ -643,14 +880,29 @@ export const UserIncome = () => {
                                 </span>
                               </td>
                               <td className="px-6 py-5 text-[var(--text-muted)] font-bold text-xs uppercase tracking-wider">
-                                {new Date(pay.startDate).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                                {new Date(pay.startDate).toLocaleDateString(
+                                  "en-IN",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )}
                               </td>
                               <td className="px-6 py-5">
                                 <div className="flex items-center gap-3">
-                                  <button onClick={() => alert("Logic coming soon")} className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:bg-amber-500/10 hover:text-amber-500 transition-all active:scale-90 border border-transparent hover:border-amber-500/20">
+                                  <button
+                                    onClick={() => alert("Logic coming soon")}
+                                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:bg-amber-500/10 hover:text-amber-500 transition-all active:scale-90 border border-transparent hover:border-amber-500/20"
+                                  >
                                     <FaPauseCircle size={15} />
                                   </button>
-                                  <button onClick={() => handleRecurringDelete(pay._id)} className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:bg-rose-500/10 hover:text-rose-500 transition-all active:scale-90 border border-transparent hover:border-rose-500/20">
+                                  <button
+                                    onClick={() =>
+                                      handleRecurringDelete(pay._id)
+                                    }
+                                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:bg-rose-500/10 hover:text-rose-500 transition-all active:scale-90 border border-transparent hover:border-rose-500/20"
+                                  >
                                     <FaTrashAlt size={14} />
                                   </button>
                                 </div>
@@ -663,18 +915,28 @@ export const UserIncome = () => {
 
                     <div className="md:hidden divide-y divide-[var(--border)]">
                       {recurringPayments.map((pay) => (
-                        <div key={pay._id} className="p-5 flex items-center justify-between group hover:bg-[var(--surface-secondary)]/50 transition-colors">
+                        <div
+                          key={pay._id}
+                          className="p-5 flex items-center justify-between group hover:bg-[var(--surface-secondary)]/50 transition-colors"
+                        >
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-[var(--text-primary)] truncate uppercase tracking-wide">{pay.name}</p>
+                            <p className="text-sm font-bold text-[var(--text-primary)] truncate uppercase tracking-wide">
+                              {pay.name}
+                            </p>
                             <div className="flex items-center gap-3 mt-2">
-                              <span className="text-emerald-500 text-sm font-extrabold">₹{pay.amount.toLocaleString("en-IN")}</span>
+                              <span className="text-emerald-500 text-sm font-extrabold">
+                                ₹{pay.amount.toLocaleString("en-IN")}
+                              </span>
                               <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 uppercase">
                                 {pay.frequency}
                               </span>
                             </div>
                           </div>
                           <div className="flex gap-2 relative z-10">
-                            <button onClick={() => handleRecurringDelete(pay._id)} className="w-10 h-10 rounded-xl flex items-center justify-center text-rose-500 bg-rose-500/5 border border-rose-500/10 active:scale-95 shadow-sm">
+                            <button
+                              onClick={() => handleRecurringDelete(pay._id)}
+                              className="w-10 h-10 rounded-xl flex items-center justify-center text-rose-500 bg-rose-500/5 border border-rose-500/10 active:scale-95 shadow-sm"
+                            >
                               <FaTrashAlt size={14} />
                             </button>
                           </div>
@@ -691,17 +953,33 @@ export const UserIncome = () => {
 
       {/* ══ ADD INCOME MODAL ══ */}
       <Transition appear show={isModalOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setIsModalOpen(false)}>
-          <Transition.Child as={Fragment}
-            enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100"
-            leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+        <Dialog
+          as="div"
+          className="relative z-50"
+          onClose={() => setIsModalOpen(false)}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
             <div className="fixed inset-0 bg-black/75 backdrop-blur-md" />
           </Transition.Child>
 
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Transition.Child as={Fragment}
-              enter="ease-out duration-300" enterFrom="opacity-0 scale-95 translate-y-8" enterTo="opacity-100 scale-100 translate-y-0"
-              leave="ease-in duration-200" leaveFrom="opacity-100 scale-100 translate-y-0" leaveTo="opacity-0 scale-95 translate-y-8">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95 translate-y-8"
+              enterTo="opacity-100 scale-100 translate-y-0"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100 translate-y-0"
+              leaveTo="opacity-0 scale-95 translate-y-8"
+            >
               <Dialog.Panel className="w-full max-w-md rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden p-0">
                 <div className="flex items-center justify-between px-8 py-7 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
                   <div className="flex items-center gap-4">
@@ -709,24 +987,51 @@ export const UserIncome = () => {
                       <FiTrendingUp size={20} className="text-emerald-500" />
                     </div>
                     <div>
-                      <Dialog.Title className="text-xl font-bold text-[var(--text-primary)]">Wealth Creation</Dialog.Title>
-                      <p className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-widest mt-0.5">Record new liquidity</p>
+                      <Dialog.Title className="text-xl font-bold text-[var(--text-primary)]">
+                        Wealth Creation
+                      </Dialog.Title>
+                      <p className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-widest mt-0.5">
+                        Record new liquidity
+                      </p>
                     </div>
                   </div>
-                  <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border border-[var(--border)] active:scale-95">
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border border-[var(--border)] active:scale-95"
+                  >
                     <XMarkIcon className="h-5 w-5" />
                   </button>
                 </div>
 
                 <div className="px-8 py-8">
-                  <form onSubmit={handleSubmit(onSubmitIncome)} className="space-y-6">
-                    <Field label="Amount (INR)" error={errors.amount?.message} icon={<FiDollarSign size={16} />}>
-                      <input type="number" step="0.01" placeholder="0.00" {...register("amount", { required: "Required" })} className={inputCls + " pl-10"} />
+                  <form
+                    onSubmit={handleSubmit(onSubmitIncome)}
+                    className="space-y-6"
+                  >
+                    <Field
+                      label="Amount (INR)"
+                      error={errors.amount?.message}
+                      icon={<FiDollarSign size={16} />}
+                    >
+                      <input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        {...register("amount", { required: "Required" })}
+                        className={inputCls + " pl-10"}
+                      />
                     </Field>
 
-                    <Field label="Source Channel" error={errors.source?.message} icon={<FiList size={16} />}>
+                    <Field
+                      label="Source Channel"
+                      error={errors.source?.message}
+                      icon={<FiList size={16} />}
+                    >
                       <div className="relative group">
-                        <select {...register("source", { required: "Required" })} className={selectCls + " pl-10"}>
+                        <select
+                          {...register("source", { required: "Required" })}
+                          className={selectCls + " pl-10"}
+                        >
                           <option value="">Select channel</option>
                           <option value="Salary">Salary</option>
                           <option value="Freelancing">Freelancing</option>
@@ -737,8 +1042,16 @@ export const UserIncome = () => {
                       </div>
                     </Field>
 
-                    <Field label="Value Date" error={errors.date?.message} icon={<FiCalendar size={16} />}>
-                      <input type="date" {...register("date", { required: "Required" })} className={inputCls + " pl-10"} />
+                    <Field
+                      label="Value Date"
+                      error={errors.date?.message}
+                      icon={<FiCalendar size={16} />}
+                    >
+                      <input
+                        type="date"
+                        {...register("date", { required: "Required" })}
+                        className={inputCls + " pl-10"}
+                      />
                     </Field>
 
                     <input type="hidden" {...register("userID")} />
@@ -753,9 +1066,14 @@ export const UserIncome = () => {
                                  flex items-center justify-center gap-3 mt-4"
                     >
                       {isSubmitting ? (
-                        <><FiRefreshCw size={18} className="animate-spin" /> COMMITTING...</>
+                        <>
+                          <FiRefreshCw size={18} className="animate-spin" />{" "}
+                          COMMITTING...
+                        </>
                       ) : (
-                        <><FiPlus size={20} /> AUTHORIZE ENTRY</>
+                        <>
+                          <FiPlus size={20} /> AUTHORIZE ENTRY
+                        </>
                       )}
                     </button>
                   </form>

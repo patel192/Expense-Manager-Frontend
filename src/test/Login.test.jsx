@@ -1,5 +1,5 @@
-import {  screen } from "@testing-library/react";
-import {renderWithProviders as render} from "./test-utils"
+import { screen } from "@testing-library/react";
+import { renderWithProviders as render } from "./test-utils";
 import { MemoryRouter } from "react-router-dom";
 import { Login } from "../Login";
 import { expect } from "vitest";
@@ -16,7 +16,7 @@ describe("Login Component", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: /welcome back/i })
+      screen.getByRole("heading", { name: /welcome back/i }),
     ).toBeInTheDocument();
   });
 });

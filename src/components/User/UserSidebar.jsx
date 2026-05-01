@@ -26,7 +26,11 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const [expandedItems, setExpandedItems] = useState({});
 
   const menuItems = [
-    { label: "Dashboard", path: "/private/userdashboard", icon: <FaTachometerAlt /> },
+    {
+      label: "Dashboard",
+      path: "/private/userdashboard",
+      icon: <FaTachometerAlt />,
+    },
     { label: "Account", path: `/private/account/${userId}`, icon: <FaUser /> },
     {
       label: "Expenses",
@@ -55,7 +59,11 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
         { label: "Budget Summary", path: "/private/budgetsummary" },
       ],
     },
-    { label: "Transactions", path: "/private/transaction", icon: <FaExchangeAlt /> },
+    {
+      label: "Transactions",
+      path: "/private/transaction",
+      icon: <FaExchangeAlt />,
+    },
     { label: "Reports", path: "/private/reports", icon: <FaFileAlt /> },
   ];
 
@@ -64,11 +72,13 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
 
   const matchesSearch = (item) => {
     if (!searchTerm) return true;
-    const labelMatch = item.label.toLowerCase().includes(searchTerm.toLowerCase());
+    const labelMatch = item.label
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const childMatch =
       item.children &&
       item.children.some((child) =>
-        child.label.toLowerCase().includes(searchTerm.toLowerCase())
+        child.label.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     return labelMatch || childMatch;
   };
@@ -116,7 +126,10 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
         {/* Search */}
         <div className="px-6 py-4">
           <div className="relative group">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-400 transition-colors" size={14} />
+            <FaSearch
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-400 transition-colors"
+              size={14}
+            />
             <input
               type="text"
               placeholder="Search features..."
@@ -132,26 +145,34 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
           <nav className="space-y-1.5">
             {menuItems.filter(matchesSearch).map((item, index) => {
               const isExpanded = expandedItems[item.label] || searchTerm !== "";
-              const isActive = location.pathname === item.path || (item.children && item.children.some(c => location.pathname === c.path));
+              const isActive =
+                location.pathname === item.path ||
+                (item.children &&
+                  item.children.some((c) => location.pathname === c.path));
 
               if (item.children) {
                 const childMatches = item.children.filter((child) =>
-                  child.label.toLowerCase().includes(searchTerm.toLowerCase())
+                  child.label.toLowerCase().includes(searchTerm.toLowerCase()),
                 );
-                const shouldShowChildren = searchTerm ? childMatches.length > 0 : isExpanded;
+                const shouldShowChildren = searchTerm
+                  ? childMatches.length > 0
+                  : isExpanded;
 
                 return (
                   <div key={index} className="space-y-1">
                     <button
                       onClick={() => toggleExpand(item.label)}
                       className={`w-full flex items-center justify-between py-2.5 px-4 rounded-xl transition-all duration-200 group
-                        ${shouldShowChildren || isActive 
-                          ? "bg-[var(--surface-tertiary)] text-cyan-400 font-semibold" 
-                          : "text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]"
+                        ${
+                          shouldShowChildren || isActive
+                            ? "bg-[var(--surface-tertiary)] text-cyan-400 font-semibold"
+                            : "text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]"
                         }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className={`${isActive ? "text-cyan-400" : "text-[var(--text-muted)] group-hover:text-cyan-400"} transition-colors`}>
+                        <span
+                          className={`${isActive ? "text-cyan-400" : "text-[var(--text-muted)] group-hover:text-cyan-400"} transition-colors`}
+                        >
                           {item.icon}
                         </span>
                         <span className="text-sm">{item.label}</span>
@@ -173,11 +194,14 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                             <li key={idx}>
                               <Link
                                 to={child.path}
-                                onClick={() => window.innerWidth < 768 && toggleSidebar()}
+                                onClick={() =>
+                                  window.innerWidth < 768 && toggleSidebar()
+                                }
                                 className={`block py-1.5 px-4 rounded-lg text-sm transition-all duration-200
-                                  ${location.pathname === child.path
-                                    ? "text-cyan-400 bg-cyan-500/5 font-medium shadow-sm"
-                                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"
+                                  ${
+                                    location.pathname === child.path
+                                      ? "text-cyan-400 bg-cyan-500/5 font-medium shadow-sm"
+                                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]"
                                   }`}
                               >
                                 {child.label}
@@ -196,12 +220,15 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
                     to={item.path}
                     onClick={() => window.innerWidth < 768 && toggleSidebar()}
                     className={`flex items-center gap-3 py-2.5 px-4 rounded-xl transition-all duration-200 group
-                      ${location.pathname === item.path
-                        ? "bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 font-semibold shadow-sm border-l-2 border-cyan-500"
-                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]"
+                      ${
+                        location.pathname === item.path
+                          ? "bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 font-semibold shadow-sm border-l-2 border-cyan-500"
+                          : "text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]"
                       }`}
                   >
-                    <span className={`${location.pathname === item.path ? "text-cyan-400" : "text-[var(--text-muted)] group-hover:text-cyan-400"} transition-colors`}>
+                    <span
+                      className={`${location.pathname === item.path ? "text-cyan-400" : "text-[var(--text-muted)] group-hover:text-cyan-400"} transition-colors`}
+                    >
                       {item.icon}
                     </span>
                     <span className="text-sm">{item.label}</span>
@@ -214,9 +241,14 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
 
         {/* Footer Support Section */}
         <div className="p-6 border-t border-[var(--border)] bg-[var(--surface-secondary)]/30 backdrop-blur-sm">
-          <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">Support Hub</p>
+          <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">
+            Support Hub
+          </p>
           <div className="space-y-3">
-            <a href="mailto:support@trackit.com" className="flex items-center gap-3 text-xs text-[var(--text-secondary)] hover:text-cyan-400 transition-colors group">
+            <a
+              href="mailto:support@trackit.com"
+              className="flex items-center gap-3 text-xs text-[var(--text-secondary)] hover:text-cyan-400 transition-colors group"
+            >
               <div className="w-7 h-7 rounded-lg bg-[var(--surface-tertiary)] flex items-center justify-center group-hover:bg-cyan-500/10 transition-colors">
                 <FaEnvelope className="text-[var(--text-muted)] group-hover:text-cyan-400" />
               </div>
@@ -228,7 +260,12 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
               </div>
               <span>+91 8980380280</span>
             </div>
-            <a href="https://github.com/patel192" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors group">
+            <a
+              href="https://github.com/patel192"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors group"
+            >
               <div className="w-7 h-7 rounded-lg bg-[var(--surface-tertiary)] flex items-center justify-center group-hover:bg-[var(--text-primary)]/10 transition-colors">
                 <FaGithub className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" />
               </div>

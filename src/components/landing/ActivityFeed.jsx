@@ -103,10 +103,10 @@ export const ActivityFeed = () => {
                   {item.text}
                 </p>
                 <div className="flex items-center gap-2 mt-0.5">
-                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40" />
-                   <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-tighter">
-                     Verified_Block
-                   </p>
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40" />
+                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-tighter">
+                    Verified_Block
+                  </p>
                 </div>
               </div>
             </div>

@@ -1,8 +1,8 @@
 @import "tailwindcss";
-@import '@fontsource/roboto/300.css';
-@import '@fontsource/roboto/400.css';
-@import '@fontsource/roboto/500.css';
-@import '@fontsource/roboto/700.css';
+@import "@fontsource/roboto/300.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -52,100 +52,100 @@
   --radius: 0.75rem;
 
   /* Page & surface backgrounds */
-  --background:        oklch(0.985 0.005 235);        /* Very soft slate-tinted white */
-  --foreground:        oklch(0.15 0.02 240);          /* Dark slate */
-  --card:              oklch(1 0 0);                  /* Pure white */
-  --card-foreground:   oklch(0.15 0.02 240);
-  --popover:           oklch(1 0 0);
-  --popover-foreground:oklch(0.15 0.02 240);
-  --primary:           oklch(0.6 0.2 240);            /* Vibrant blue */
-  --primary-foreground:oklch(1 0 0);
-  --secondary:         oklch(0.96 0.01 240);          /* Light slate */
-  --secondary-foreground:oklch(0.15 0.02 240);
-  --muted:             oklch(0.96 0.01 240);
-  --muted-foreground:  oklch(0.55 0.02 240);
-  --accent:            oklch(0.96 0.01 240);
+  --background: oklch(0.985 0.005 235); /* Very soft slate-tinted white */
+  --foreground: oklch(0.15 0.02 240); /* Dark slate */
+  --card: oklch(1 0 0); /* Pure white */
+  --card-foreground: oklch(0.15 0.02 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 240);
+  --primary: oklch(0.6 0.2 240); /* Vibrant blue */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.01 240); /* Light slate */
+  --secondary-foreground: oklch(0.15 0.02 240);
+  --muted: oklch(0.96 0.01 240);
+  --muted-foreground: oklch(0.55 0.02 240);
+  --accent: oklch(0.96 0.01 240);
   --accent-foreground: oklch(0.15 0.02 240);
-  --destructive:       oklch(0.6 0.2 25);
-  --border:            oklch(0.92 0.01 240);          /* Subtle border */
-  --input:             oklch(0.94 0.01 240);
-  --ring:              oklch(0.6 0.2 240 / 0.5);
+  --destructive: oklch(0.6 0.2 25);
+  --border: oklch(0.92 0.01 240); /* Subtle border */
+  --input: oklch(0.94 0.01 240);
+  --ring: oklch(0.6 0.2 240 / 0.5);
   --chart-1: oklch(0.6 0.2 240);
   --chart-2: oklch(0.65 0.18 190);
   --chart-3: oklch(0.75 0.15 150);
   --chart-4: oklch(0.85 0.12 80);
   --chart-5: oklch(0.8 0.18 40);
   --sidebar: oklch(0.99 0 0);
-  --sidebar-foreground:oklch(0.15 0.02 240);
-  --sidebar-primary:   oklch(0.15 0.02 240);
-  --sidebar-primary-foreground:oklch(1 0 0);
-  --sidebar-accent:    oklch(0.96 0.01 240);
-  --sidebar-accent-foreground:oklch(0.15 0.02 240);
-  --sidebar-border:    oklch(0.94 0.01 240);
-  --sidebar-ring:      oklch(0.6 0.2 240 / 0.5);
+  --sidebar-foreground: oklch(0.15 0.02 240);
+  --sidebar-primary: oklch(0.15 0.02 240);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.01 240);
+  --sidebar-accent-foreground: oklch(0.15 0.02 240);
+  --sidebar-border: oklch(0.94 0.01 240);
+  --sidebar-ring: oklch(0.6 0.2 240 / 0.5);
 
   /* ── Custom vars: map hardcoded dark hex → light equivalents ── */
-  --surface-primary:   #ffffff;
+  --surface-primary: #ffffff;
   --surface-secondary: #f8fafc;
-  --surface-tertiary:  #f1f5f9;
-  --surface-overlay:   rgba(0,0,0,0.02);
-  --surface-subtle:    rgba(0,0,0,0.03);
-  --border-subtle:     rgba(0,0,0,0.06);
-  --border-medium:     rgba(0,0,0,0.1);
-  --text-primary:      #0f172a;
-  --text-secondary:    #334155;
-  --text-tertiary:     #64748b;
-  --text-muted:        #94a3b8;
+  --surface-tertiary: #f1f5f9;
+  --surface-overlay: rgba(0, 0, 0, 0.02);
+  --surface-subtle: rgba(0, 0, 0, 0.03);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-medium: rgba(0, 0, 0, 0.1);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
 }
 
 /* ============================================================
    DARK MODE VARIABLES  (active when .dark IS on <html>)
    ============================================================ */
 .dark {
-  --background:        oklch(0.141 0.005 285.823);
-  --foreground:        oklch(0.985 0 0);
-  --card:              oklch(0.21 0.006 285.885);
-  --card-foreground:   oklch(0.985 0 0);
-  --popover:           oklch(0.21 0.006 285.885);
-  --popover-foreground:oklch(0.985 0 0);
-  --primary:           oklch(0.92 0.004 286.32);
-  --primary-foreground:oklch(0.21 0.006 285.885);
-  --secondary:         oklch(0.274 0.006 286.033);
-  --secondary-foreground:oklch(0.985 0 0);
-  --muted:             oklch(0.274 0.006 286.033);
-  --muted-foreground:  oklch(0.705 0.015 286.067);
-  --accent:            oklch(0.274 0.006 286.033);
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.92 0.004 286.32);
+  --primary-foreground: oklch(0.21 0.006 285.885);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive:       oklch(0.704 0.191 22.216);
-  --border:            oklch(1 0 0 / 10%);
-  --input:             oklch(1 0 0 / 15%);
-  --ring:              oklch(0.552 0.016 285.938);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground:oklch(0.985 0 0);
-  --sidebar-primary:   oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground:oklch(0.985 0 0);
-  --sidebar-accent:    oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:oklch(0.985 0 0);
-  --sidebar-border:    oklch(1 0 0 / 10%);
-  --sidebar-ring:      oklch(0.552 0.016 285.938);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.274 0.006 286.033);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.552 0.016 285.938);
 
   /* ── Custom vars: keep original dark hex values in dark mode ── */
-  --surface-primary:   #111318;
+  --surface-primary: #111318;
   --surface-secondary: #0d0f14;
-  --surface-tertiary:  #0c0e12;
-  --surface-overlay:   rgba(0,0,0,0.40);
-  --surface-subtle:    rgba(255,255,255,0.05);
-  --border-subtle:     rgba(255,255,255,0.10);
-  --border-medium:     rgba(255,255,255,0.15);
-  --text-primary:      #ffffff;
-  --text-secondary:    #d1d5db;
-  --text-tertiary:     #9ca3af;
-  --text-muted:        #6b7280;
+  --surface-tertiary: #0c0e12;
+  --surface-overlay: rgba(0, 0, 0, 0.4);
+  --surface-subtle: rgba(255, 255, 255, 0.05);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --text-muted: #6b7280;
 }
 
 /* ============================================================
@@ -160,11 +160,15 @@
 
   body {
     @apply bg-background text-foreground;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   /* Smooth theme transition on all elements */
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     transition-property: background-color, border-color, color;
     transition-duration: 0.15s;
     transition-timing-function: ease;
@@ -206,8 +210,10 @@
 
   /* ── Text overrides ── */
   /* text-[var(--text)] in component context → theme-aware */
-  .user-layout [class*="text-[var(--text)]"]:not([class*="text-[var(--text)]/"]),
-  .admin-layout [class*="text-[var(--text)]"]:not([class*="text-[var(--text)]/"]) {
+  .user-layout
+    [class*="text-[var(--text)]"]:not([class*="text-[var(--text)]/"]),
+  .admin-layout
+    [class*="text-[var(--text)]"]:not([class*="text-[var(--text)]/"]) {
     color: var(--text-primary);
   }
 
@@ -239,5 +245,7 @@
    SHIMMER ANIMATION
    ============================================================ */
 @keyframes shimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }

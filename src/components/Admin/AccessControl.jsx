@@ -1,5 +1,5 @@
-import  { useEffect, useState } from "react";
-import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import { FiChevronLeft, FiShield } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
@@ -49,7 +49,9 @@ export const AccessControl = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
         <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
-        <p className="text-xs font-bold text-cyan-500/60 uppercase tracking-widest animate-pulse">Syncing Permissions...</p>
+        <p className="text-xs font-bold text-cyan-500/60 uppercase tracking-widest animate-pulse">
+          Syncing Permissions...
+        </p>
       </div>
     );
   }
@@ -63,12 +65,15 @@ export const AccessControl = () => {
             Access <span className="text-cyan-400">Governance</span>
           </h1>
           <p className="text-[var(--text-secondary)] text-sm max-w-md">
-            Manage system-wide permissions and security roles. Audit user clearance levels and active status.
+            Manage system-wide permissions and security roles. Audit user
+            clearance levels and active status.
           </p>
         </div>
         <div className="flex items-center gap-3 bg-[var(--surface-secondary)] border border-[var(--border)] px-4 py-2 rounded-xl">
-           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-           <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Security Override Active</span>
+          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+            Security Override Active
+          </span>
         </div>
       </div>
 
@@ -101,13 +106,21 @@ export const AccessControl = () => {
             }}
             className="w-full py-3 px-4 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-secondary)] focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none cursor-pointer font-medium shadow-inner"
           >
-            <option value="All" className="bg-[var(--surface-primary)]">All Clearance Levels</option>
-            <option value="Admin" className="bg-[var(--surface-primary)]">Tier 1: Admin</option>
-            <option value="Manager" className="bg-[var(--surface-primary)]">Tier 2: Manager</option>
-            <option value="User" className="bg-[var(--surface-primary)]">Tier 3: Standard User</option>
+            <option value="All" className="bg-[var(--surface-primary)]">
+              All Clearance Levels
+            </option>
+            <option value="Admin" className="bg-[var(--surface-primary)]">
+              Tier 1: Admin
+            </option>
+            <option value="Manager" className="bg-[var(--surface-primary)]">
+              Tier 2: Manager
+            </option>
+            <option value="User" className="bg-[var(--surface-primary)]">
+              Tier 3: Standard User
+            </option>
           </select>
           <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]">
-             <FiChevronLeft className="rotate-[-90deg]" size={14} />
+            <FiChevronLeft className="rotate-[-90deg]" size={14} />
           </div>
         </div>
       </motion.div>
@@ -123,49 +136,71 @@ export const AccessControl = () => {
               transition={{ delay: index * 0.05 }}
               className="group p-6 rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md shadow-xl hover:bg-[var(--surface-secondary)] transition-all duration-300 border-t-2 border-t-[var(--border)] overflow-hidden relative"
             >
-               {/* Accent Gradient */}
-               <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${roleColors[user.roleId?.name]?.split(' ')[0] || "from-gray-500"} to-transparent opacity-[0.03] -mr-8 -mt-8 rounded-full blur-2xl group-hover:opacity-[0.08] transition-opacity`} />
+              {/* Accent Gradient */}
+              <div
+                className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${roleColors[user.roleId?.name]?.split(" ")[0] || "from-gray-500"} to-transparent opacity-[0.03] -mr-8 -mt-8 rounded-full blur-2xl group-hover:opacity-[0.08] transition-opacity`}
+              />
 
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-center gap-4 mb-4">
-                   <div className="w-12 h-12 rounded-2xl bg-[var(--surface-tertiary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-primary)] font-bold text-lg shadow-inner">
-                      {user.name?.charAt(0).toUpperCase()}
-                   </div>
-                   <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-[var(--text-primary)] text-lg truncate group-hover:text-cyan-400 transition-colors">
-                        {user.name}
-                      </h3>
-                      <p className="text-[var(--text-muted)] text-xs truncate">{user.email}</p>
-                   </div>
+                  <div className="w-12 h-12 rounded-2xl bg-[var(--surface-tertiary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-primary)] font-bold text-lg shadow-inner">
+                    {user.name?.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-[var(--text-primary)] text-lg truncate group-hover:text-cyan-400 transition-colors">
+                      {user.name}
+                    </h3>
+                    <p className="text-[var(--text-muted)] text-xs truncate">
+                      {user.email}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-4 flex-1">
-                   <div className="flex flex-wrap items-center gap-2">
-                      <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
-                        user.roleId?.name === "Admin" ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400" : 
-                        user.roleId?.name === "Manager" ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400" : 
-                        "bg-[var(--surface-tertiary)] border-[var(--border)] text-[var(--text-muted)]"
-                      }`}>
-                         {user.roleId?.name || "UNASSIGNED"}
-                      </span>
-                      
-                      <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
-                        user.is_active ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                      }`}>
-                         {user.is_active ? "VERIFIED" : "RESTRICTED"}
-                      </span>
-                   </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
+                        user.roleId?.name === "Admin"
+                          ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                          : user.roleId?.name === "Manager"
+                            ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400"
+                            : "bg-[var(--surface-tertiary)] border-[var(--border)] text-[var(--text-muted)]"
+                      }`}
+                    >
+                      {user.roleId?.name || "UNASSIGNED"}
+                    </span>
 
-                   <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]">
-                      <div>
-                         <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-0.5">METRIC/AGE</p>
-                         <p className="text-xs font-mono text-[var(--text-secondary)]">{user.age || "N/A"}</p>
-                      </div>
-                      <div className="text-right">
-                         <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-0.5">ENROLLED</p>
-                         <p className="text-xs font-mono text-[var(--text-secondary)]">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</p>
-                      </div>
-                   </div>
+                    <span
+                      className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
+                        user.is_active
+                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                          : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                      }`}
+                    >
+                      {user.is_active ? "VERIFIED" : "RESTRICTED"}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]">
+                    <div>
+                      <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-0.5">
+                        METRIC/AGE
+                      </p>
+                      <p className="text-xs font-mono text-[var(--text-secondary)]">
+                        {user.age || "N/A"}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-0.5">
+                        ENROLLED
+                      </p>
+                      <p className="text-xs font-mono text-[var(--text-secondary)]">
+                        {user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString()
+                          : "N/A"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Buttons */}
@@ -185,8 +220,13 @@ export const AccessControl = () => {
           ))
         ) : (
           <div className="col-span-full py-24 text-center rounded-3xl bg-[var(--surface-secondary)] border border-dashed border-[var(--border)]">
-             <FiShield size={48} className="mx-auto text-[var(--text-muted)] mb-4" />
-             <p className="text-[var(--text-secondary)] font-medium">No subjects detected in current cache scope.</p>
+            <FiShield
+              size={48}
+              className="mx-auto text-[var(--text-muted)] mb-4"
+            />
+            <p className="text-[var(--text-secondary)] font-medium">
+              No subjects detected in current cache scope.
+            </p>
           </div>
         )}
       </div>
@@ -200,12 +240,13 @@ export const AccessControl = () => {
                 key={i}
                 onClick={() => setCurrentPage(i + 1)}
                 className={`min-w-[40px] h-10 px-3 rounded-xl text-xs font-bold transition-all duration-300
-                  ${currentPage === i + 1
-                    ? "bg-cyan-500 text-[var(--text)] shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]"
+                  ${
+                    currentPage === i + 1
+                      ? "bg-cyan-500 text-[var(--text)] shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]"
                   }`}
               >
-                {String(i + 1).padStart(2, '0')}
+                {String(i + 1).padStart(2, "0")}
               </button>
             ))}
           </div>
@@ -214,4 +255,3 @@ export const AccessControl = () => {
     </div>
   );
 };
-

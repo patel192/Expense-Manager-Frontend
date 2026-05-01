@@ -50,14 +50,18 @@ export const StatsRow = () => {
           >
             {/* Minimal line decoration */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-transparent via-cyan-500/5 to-transparent rotate-45 transform translate-x-12 -translate-y-12" />
-            
-            <div className={`mb-4 flex items-center gap-2 ${stat.color} font-mono text-[10px] font-bold uppercase tracking-widest`}>
+
+            <div
+              className={`mb-4 flex items-center gap-2 ${stat.color} font-mono text-[10px] font-bold uppercase tracking-widest`}
+            >
               <FiTerminal size={12} />
-              METRIC_{i+1}
+              METRIC_{i + 1}
             </div>
 
             <div className="space-y-1">
-              <p className={`text-2xl font-bold text-[var(--text-primary)] tracking-tight`}>
+              <p
+                className={`text-2xl font-bold text-[var(--text-primary)] tracking-tight`}
+              >
                 {stat.value}
               </p>
               <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
@@ -67,16 +71,16 @@ export const StatsRow = () => {
 
             {/* Micro progress bar */}
             <div className="mt-4 h-1 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden">
-               <motion.div 
-                 initial={{ width: 0 }}
-                 whileInView={{ width: "100%" }}
-                 transition={{ duration: 1, delay: 0.5 }}
-                 className={`h-full ${stat.color.replace('text-', 'bg-')}`}
-               />
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: "100%" }}
+                transition={{ duration: 1, delay: 0.5 }}
+                className={`h-full ${stat.color.replace("text-", "bg-")}`}
+              />
             </div>
           </motion.div>
         ))}
       </div>
     </section>
   );
-};
+};

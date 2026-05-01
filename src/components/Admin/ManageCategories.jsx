@@ -1,20 +1,24 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { useSelector,useDispatch } from "react-redux";
-import { fetchCategories, addCategory, updateCategory, deleteCategory } from "../../redux/category/categorySlice";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchCategories,
+  addCategory,
+  updateCategory,
+} from "../../redux/category/categorySlice";
 import { FiGrid, FiActivity, FiFileText, FiSearch, FiX } from "react-icons/fi";
 
 export const ManageCategories = () => {
-  const {categories, loading} = useSelector((state) => state.category )
+  const { categories, loading } = useSelector((state) => state.category);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [editingId, setEditingId] = useState(null);
@@ -53,7 +57,7 @@ const dispatch = useDispatch();
 
   const saveEdit = async (id) => {
     try {
-      await dispatch(updateCategory({id,data:editedCategory}))
+      await dispatch(updateCategory({ id, data: editedCategory }));
       toast.success("Category updated");
       setEditingId(null);
       dispatch(fetchCategories());
@@ -63,7 +67,9 @@ const dispatch = useDispatch();
   };
 
   const filteredCategories = categories.filter((cat) => {
-    const matchesSearch = cat.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = cat.name
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesType = filterType ? cat.type === filterType : true;
     return matchesSearch && matchesType;
   });
@@ -88,22 +94,41 @@ const dispatch = useDispatch();
               Category <span className="text-cyan-400">Architecture</span>
             </h1>
             <p className="text-[var(--muted)] text-sm max-w-md">
-              Define the structural taxonomy for global financial tracking. Manage labels and classifications for all accounts.
+              Define the structural taxonomy for global financial tracking.
+              Manage labels and classifications for all accounts.
             </p>
           </div>
           <div className="flex items-center gap-3">
-             <div className="px-4 py-2 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-bold text-[var(--muted)]">
-                {totalCount} DEFINED SCHEMAS
-             </div>
+            <div className="px-4 py-2 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-bold text-[var(--muted)]">
+              {totalCount} DEFINED SCHEMAS
+            </div>
           </div>
         </div>
 
         {/* SUMMARY CARDS (KPI Style) */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
-            { label: "Total Managed", value: totalCount, icon: <FiGrid size={20} />, color: "from-blue-600/20 to-indigo-500/10", accent: "text-blue-400" },
-            { label: "Income Nodes", value: incomeCount, icon: <FiActivity size={20} />, color: "from-emerald-600/20 to-teal-500/10", accent: "text-emerald-400" },
-            { label: "Expense Nodes", value: expenseCount, icon: <FiFileText size={20} />, color: "from-rose-600/20 to-orange-500/10", accent: "text-rose-400" },
+            {
+              label: "Total Managed",
+              value: totalCount,
+              icon: <FiGrid size={20} />,
+              color: "from-blue-600/20 to-indigo-500/10",
+              accent: "text-blue-400",
+            },
+            {
+              label: "Income Nodes",
+              value: incomeCount,
+              icon: <FiActivity size={20} />,
+              color: "from-emerald-600/20 to-teal-500/10",
+              accent: "text-emerald-400",
+            },
+            {
+              label: "Expense Nodes",
+              value: expenseCount,
+              icon: <FiFileText size={20} />,
+              color: "from-rose-600/20 to-orange-500/10",
+              accent: "text-rose-400",
+            },
           ].map((card, idx) => (
             <motion.div
               key={idx}
@@ -111,10 +136,16 @@ const dispatch = useDispatch();
               className={`p-6 rounded-3xl bg-gradient-to-br ${card.color} border border-[var(--border)] flex items-center justify-between group shadow-xl`}
             >
               <div>
-                <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">{card.label}</p>
-                <h3 className="text-3xl font-bold text-[var(--text)]">{card.value}</h3>
+                <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">
+                  {card.label}
+                </p>
+                <h3 className="text-3xl font-bold text-[var(--text)]">
+                  {card.value}
+                </h3>
               </div>
-              <div className={`p-3 rounded-2xl bg-black/20 ${card.accent} shadow-inner`}>
+              <div
+                className={`p-3 rounded-2xl bg-black/20 ${card.accent} shadow-inner`}
+              >
                 {card.icon}
               </div>
             </motion.div>
@@ -128,19 +159,27 @@ const dispatch = useDispatch();
             onSubmit={handleSubmit(submitHandler)}
             className="xl:col-span-1 p-6 rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md space-y-5 shadow-2xl"
           >
-            <h3 className="text-sm font-bold text-[var(--text-secondary)] uppercase tracking-widest border-b border-[var(--border)] pb-3">New Category Protocol</h3>
-            
+            <h3 className="text-sm font-bold text-[var(--text-secondary)] uppercase tracking-widest border-b border-[var(--border)] pb-3">
+              New Category Protocol
+            </h3>
+
             <div className="space-y-4">
               <div>
                 <label className="block mb-2 text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">
                   System Label
                 </label>
                 <input
-                  {...register("name", { required: "Category name is required" })}
+                  {...register("name", {
+                    required: "Category name is required",
+                  })}
                   className="w-full px-4 py-3 rounded-xl bg-[var(--surface-tertiary)]/20 text-[var(--text-primary)] border border-[var(--border)] focus:ring-2 focus:ring-cyan-500/20 outline-none placeholder-[var(--text-muted)] transition-all font-medium text-sm"
                   placeholder="e.g. Infrastructure"
                 />
-                {errors.name && <p className="text-rose-400 text-[10px] mt-2 font-bold uppercase tracking-tighter">{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="text-rose-400 text-[10px] mt-2 font-bold uppercase tracking-tighter">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -151,9 +190,21 @@ const dispatch = useDispatch();
                   {...register("type", { required: "Please select a type" })}
                   className="w-full px-4 py-3 rounded-xl bg-[var(--surface-tertiary)]/20 text-[var(--text-primary)] border border-[var(--border)] focus:ring-2 focus:ring-cyan-500/20 outline-none cursor-pointer font-medium text-sm appearance-none"
                 >
-                  <option value="" className="bg-[var(--surface-primary)]">Select Protocol</option>
-                  <option value="income" className="bg-[var(--surface-primary)]">Income Flow</option>
-                  <option value="expense" className="bg-[var(--surface-primary)]">Expense Flow</option>
+                  <option value="" className="bg-[var(--surface-primary)]">
+                    Select Protocol
+                  </option>
+                  <option
+                    value="income"
+                    className="bg-[var(--surface-primary)]"
+                  >
+                    Income Flow
+                  </option>
+                  <option
+                    value="expense"
+                    className="bg-[var(--surface-primary)]"
+                  >
+                    Expense Flow
+                  </option>
                 </select>
               </div>
             </div>
@@ -186,9 +237,15 @@ const dispatch = useDispatch();
                 onChange={(e) => setFilterType(e.target.value)}
                 className="px-6 py-3 rounded-2xl bg-[var(--surface-tertiary)]/20 border border-[var(--border)] text-sm text-[var(--text-muted)] outline-none cursor-pointer font-medium hover:text-[var(--text-primary)] transition"
               >
-                <option value="" className="bg-[var(--surface-primary)]">Full Taxonomy</option>
-                <option value="income" className="bg-[var(--surface-primary)]">Income Only</option>
-                <option value="expense" className="bg-[var(--surface-primary)]">Expense Only</option>
+                <option value="" className="bg-[var(--surface-primary)]">
+                  Full Taxonomy
+                </option>
+                <option value="income" className="bg-[var(--surface-primary)]">
+                  Income Only
+                </option>
+                <option value="expense" className="bg-[var(--surface-primary)]">
+                  Expense Only
+                </option>
               </select>
             </div>
 
@@ -197,7 +254,9 @@ const dispatch = useDispatch();
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                   <div className="w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
-                  <p className="text-xs font-bold text-[var(--text-muted)] tracking-widest uppercase">Fetching Taxonomy...</p>
+                  <p className="text-xs font-bold text-[var(--text-muted)] tracking-widest uppercase">
+                    Fetching Taxonomy...
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -222,15 +281,22 @@ const dispatch = useDispatch();
                             {editingId === cat._id ? (
                               <input
                                 value={editedCategory.name}
-                                onChange={(e) => setEditedCategory({ ...editedCategory, name: e.target.value })}
+                                onChange={(e) =>
+                                  setEditedCategory({
+                                    ...editedCategory,
+                                    name: e.target.value,
+                                  })
+                                }
                                 className="w-full p-2.5 rounded-xl bg-[var(--surface-tertiary)]/20 border border-cyan-500/30 text-[var(--text-primary)] outline-none ring-2 ring-cyan-500/10"
                               />
                             ) : (
                               <div className="flex items-center gap-3">
-                                 <div className="w-8 h-8 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center text-xs font-bold text-[var(--text-muted)]">
-                                    {cat.name.charAt(0)}
-                                 </div>
-                                 <span className="font-semibold text-[var(--text-secondary)] group-hover:text-cyan-400 transition">{cat.name}</span>
+                                <div className="w-8 h-8 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center text-xs font-bold text-[var(--text-muted)]">
+                                  {cat.name.charAt(0)}
+                                </div>
+                                <span className="font-semibold text-[var(--text-secondary)] group-hover:text-cyan-400 transition">
+                                  {cat.name}
+                                </span>
                               </div>
                             )}
                           </td>
@@ -238,16 +304,35 @@ const dispatch = useDispatch();
                             {editingId === cat._id ? (
                               <select
                                 value={editedCategory.type}
-                                onChange={(e) => setEditedCategory({ ...editedCategory, type: e.target.value })}
+                                onChange={(e) =>
+                                  setEditedCategory({
+                                    ...editedCategory,
+                                    type: e.target.value,
+                                  })
+                                }
                                 className="w-full p-2.5 rounded-xl bg-[var(--surface-tertiary)]/20 border border-cyan-500/30 text-[var(--text-primary)] outline-none"
                               >
-                                <option value="income" className="bg-[var(--surface-primary)]">Income</option>
-                                <option value="expense" className="bg-[var(--surface-primary)]">Expense</option>
+                                <option
+                                  value="income"
+                                  className="bg-[var(--surface-primary)]"
+                                >
+                                  Income
+                                </option>
+                                <option
+                                  value="expense"
+                                  className="bg-[var(--surface-primary)]"
+                                >
+                                  Expense
+                                </option>
                               </select>
                             ) : (
-                              <span className={`px-3 py-1 transparent rounded-lg text-[10px] font-bold border ${
-                                cat.type === "income" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "border-rose-500/30 bg-rose-500/10 text-rose-400"
-                              }`}>
+                              <span
+                                className={`px-3 py-1 transparent rounded-lg text-[10px] font-bold border ${
+                                  cat.type === "income"
+                                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                                    : "border-rose-500/30 bg-rose-500/10 text-rose-400"
+                                }`}
+                              >
                                 {cat.type?.toUpperCase()}
                               </span>
                             )}
@@ -256,19 +341,31 @@ const dispatch = useDispatch();
                             <div className="flex justify-center gap-2">
                               {editingId === cat._id ? (
                                 <>
-                                  <button onClick={() => saveEdit(cat._id)} className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-[var(--text-primary)] transition">
+                                  <button
+                                    onClick={() => saveEdit(cat._id)}
+                                    className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-[var(--text-primary)] transition"
+                                  >
                                     <FiActivity size={14} />
                                   </button>
-                                  <button onClick={() => setEditingId(null)} className="p-2 rounded-xl bg-[var(--surface-secondary)] text-[var(--text-muted)] hover:bg-[var(--surface-tertiary)] transition">
+                                  <button
+                                    onClick={() => setEditingId(null)}
+                                    className="p-2 rounded-xl bg-[var(--surface-secondary)] text-[var(--text-muted)] hover:bg-[var(--surface-tertiary)] transition"
+                                  >
                                     <FiX size={14} />
                                   </button>
                                 </>
                               ) : (
                                 <>
-                                  <button onClick={() => startEditing(cat)} className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-cyan-400 hover:bg-cyan-500 hover:text-[var(--text-primary)] transition shadow-lg">
+                                  <button
+                                    onClick={() => startEditing(cat)}
+                                    className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-cyan-400 hover:bg-cyan-500 hover:text-[var(--text-primary)] transition shadow-lg"
+                                  >
                                     <FiFileText size={16} />
                                   </button>
-                                  <button onClick={() => deleteCategory(cat._id)} className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-rose-400 hover:bg-rose-500 hover:text-[var(--text-primary)] transition shadow-lg">
+                                  <button
+                                    onClick={() => deleteCategory(cat._id)}
+                                    className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-rose-400 hover:bg-rose-500 hover:text-[var(--text-primary)] transition shadow-lg"
+                                  >
                                     <FiX size={16} />
                                   </button>
                                 </>
@@ -288,4 +385,3 @@ const dispatch = useDispatch();
     </div>
   );
 };
-

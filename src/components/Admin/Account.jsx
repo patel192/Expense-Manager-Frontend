@@ -25,7 +25,7 @@ export const Account = () => {
     email: "",
     bio: "",
     profilePic: "",
-    role: "User"
+    role: "User",
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -52,7 +52,8 @@ export const Account = () => {
     if (userId) fetchUser();
   }, [userId]);
 
-  const handleChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setUser({ ...user, [e.target.name]: e.target.value });
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -79,7 +80,7 @@ export const Account = () => {
 
         const uploadRes = await axiosInstance.post(
           `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-          formData
+          formData,
         );
         uploadedImageUrl = uploadRes.data.secure_url;
       }
@@ -104,7 +105,8 @@ export const Account = () => {
     }
   };
 
-  const inputCls = "w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm";
+  const inputCls =
+    "w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm";
 
   return (
     <motion.div
@@ -147,9 +149,17 @@ export const Account = () => {
               <div className="relative group mb-8">
                 <div className="w-40 h-40 rounded-[3rem] p-1.5 bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-700 shadow-2xl relative z-10">
                   {preview ? (
-                    <img src={preview} className="w-full h-full rounded-[2.8rem] object-cover border-4 border-[var(--surface-primary)]" alt="Preview" />
+                    <img
+                      src={preview}
+                      className="w-full h-full rounded-[2.8rem] object-cover border-4 border-[var(--surface-primary)]"
+                      alt="Preview"
+                    />
                   ) : user.profilePic ? (
-                    <img src={user.profilePic} className="w-full h-full rounded-[2.8rem] object-cover border-4 border-[var(--surface-primary)]" alt="Profile" />
+                    <img
+                      src={user.profilePic}
+                      className="w-full h-full rounded-[2.8rem] object-cover border-4 border-[var(--surface-primary)]"
+                      alt="Profile"
+                    />
                   ) : (
                     <div className="w-full h-full rounded-[2.8rem] bg-[var(--surface-secondary)] border-4 border-[var(--surface-primary)] flex items-center justify-center">
                       <FiUser size={56} className="text-[var(--text-muted)]" />
@@ -166,17 +176,24 @@ export const Account = () => {
                       className="absolute -bottom-3 -right-3 w-12 h-12 bg-[var(--surface-primary)] border border-[var(--border)] text-cyan-500 rounded-2xl shadow-2xl flex items-center justify-center cursor-pointer hover:bg-cyan-500 hover:text-white transition-all z-20 hover:scale-110"
                     >
                       <FiCamera size={20} />
-                      <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
                     </motion.label>
                   )}
                 </AnimatePresence>
-                
+
                 {/* Decorative Elements */}
                 <div className="absolute -inset-4 border border-dashed border-cyan-500/20 rounded-[3.5rem] pointer-events-none group-hover:rotate-45 transition-transform duration-1000" />
               </div>
 
               <div className="space-y-2 mb-8">
-                <h2 className="text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">{user.name || "UNIDENTIFIED"}</h2>
+                <h2 className="text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">
+                  {user.name || "UNIDENTIFIED"}
+                </h2>
                 <div className="flex items-center gap-2 justify-center text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest">
                   <FiMail size={12} className="text-cyan-500" />
                   {user.email}
@@ -185,7 +202,9 @@ export const Account = () => {
 
               <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] mb-10 shadow-inner">
                 <FiShield size={12} className="text-cyan-500" />
-                <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">{user.role || "User"} NODE</span>
+                <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em]">
+                  {user.role || "User"} NODE
+                </span>
               </div>
 
               {!isEditing ? (
@@ -193,7 +212,10 @@ export const Account = () => {
                   onClick={() => setIsEditing(true)}
                   className="w-full py-4 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-black uppercase tracking-widest hover:bg-[var(--surface-tertiary)] hover:border-cyan-500/30 transition-all flex items-center justify-center gap-3 group active:scale-[0.98]"
                 >
-                  <FiEdit2 size={16} className="text-cyan-500 group-hover:rotate-12 transition-transform" />
+                  <FiEdit2
+                    size={16}
+                    className="text-cyan-500 group-hover:rotate-12 transition-transform"
+                  />
                   Modify Credentials
                 </button>
               ) : (
@@ -203,11 +225,18 @@ export const Account = () => {
                     disabled={loading}
                     className="py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-black uppercase tracking-widest shadow-xl shadow-cyan-500/20 hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
-                    {loading ? <FiRefreshCw className="animate-spin" size={16} /> : <FiCheck size={16} />}
+                    {loading ? (
+                      <FiRefreshCw className="animate-spin" size={16} />
+                    ) : (
+                      <FiCheck size={16} />
+                    )}
                     DEPLOY
                   </button>
                   <button
-                    onClick={() => { setIsEditing(false); setPreview(null); }}
+                    onClick={() => {
+                      setIsEditing(false);
+                      setPreview(null);
+                    }}
                     className="py-4 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-muted)] text-xs font-black uppercase tracking-widest hover:bg-[var(--surface-tertiary)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <FiX size={16} />
@@ -227,8 +256,13 @@ export const Account = () => {
                 <FiInfo size={20} />
               </div>
               <div>
-                <h4 className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest mb-1.5">Encryption Protocol</h4>
-                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-loose">Credential matrix is secured via AES-256 protocols. Rotate access markers every 90 cycles for maximum system integrity.</p>
+                <h4 className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest mb-1.5">
+                  Encryption Protocol
+                </h4>
+                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest leading-loose">
+                  Credential matrix is secured via AES-256 protocols. Rotate
+                  access markers every 90 cycles for maximum system integrity.
+                </p>
               </div>
             </div>
           </div>
@@ -249,15 +283,21 @@ export const Account = () => {
               <FiSettings size={20} className="text-cyan-500" />
             </div>
             <div>
-              <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-widest">Global Configurations</h3>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mt-1">Core Data Matrix</p>
+              <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-widest">
+                Global Configurations
+              </h3>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mt-1">
+                Core Data Matrix
+              </p>
             </div>
           </div>
 
           <div className="space-y-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">Legal Designation</label>
+                <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">
+                  Legal Designation
+                </label>
                 <div className="relative group">
                   <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-500 transition-colors z-10 pointer-events-none" />
                   <input
@@ -273,7 +313,9 @@ export const Account = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">Primary Comm Link</label>
+                <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">
+                  Primary Comm Link
+                </label>
                 <div className="relative group">
                   <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-500 transition-colors z-10 pointer-events-none" />
                   <input
@@ -290,7 +332,9 @@ export const Account = () => {
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">Personal Narrative Matrix</label>
+              <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">
+                Personal Narrative Matrix
+              </label>
               <div className="relative group">
                 <textarea
                   name="bio"
@@ -317,7 +361,9 @@ export const Account = () => {
                   <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-500">
                     <FiRefreshCw className="animate-spin-slow" />
                   </div>
-                  <p className="text-[10px] font-black text-cyan-500 uppercase tracking-widest italic animate-pulse">Pending sync sequence detected</p>
+                  <p className="text-[10px] font-black text-cyan-500 uppercase tracking-widest italic animate-pulse">
+                    Pending sync sequence detected
+                  </p>
                 </div>
                 <button
                   onClick={handleSave}
@@ -338,10 +384,16 @@ export const Account = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   className={`p-6 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-4 border
-                             ${message.type === 'error' ? 'bg-rose-500/10 text-rose-500 border-rose-500/20 shadow-xl shadow-rose-500/5' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-xl shadow-emerald-500/5'}`}
+                             ${message.type === "error" ? "bg-rose-500/10 text-rose-500 border-rose-500/20 shadow-xl shadow-rose-500/5" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-xl shadow-emerald-500/5"}`}
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${message.type === 'error' ? 'bg-rose-500/20 border-rose-500/30' : 'bg-emerald-500/20 border-emerald-500/30'}`}>
-                    {message.type === 'error' ? <FiX size={14} /> : <FiCheck size={14} />}
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center border ${message.type === "error" ? "bg-rose-500/20 border-rose-500/30" : "bg-emerald-500/20 border-emerald-500/30"}`}
+                  >
+                    {message.type === "error" ? (
+                      <FiX size={14} />
+                    ) : (
+                      <FiCheck size={14} />
+                    )}
                   </div>
                   {message.text}
                 </motion.div>
@@ -353,5 +405,3 @@ export const Account = () => {
     </motion.div>
   );
 };
-
-

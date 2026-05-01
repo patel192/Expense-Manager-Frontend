@@ -1,4 +1,4 @@
-import {  screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { PrivateRoutes } from "../components/Hooks/PrivateRoutes";
 import { expect } from "vitest";

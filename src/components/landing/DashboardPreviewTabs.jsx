@@ -55,7 +55,8 @@ export const DashboardPreviewTabs = () => {
           Engineered for <span className="text-cyan-500">Clarity</span>
         </h2>
         <p className="text-[var(--text-secondary)] max-w-2xl mx-auto text-base">
-          Experience a high-performance financial interface designed for rapid data entry and deep analytical insights.
+          Experience a high-performance financial interface designed for rapid
+          data entry and deep analytical insights.
         </p>
       </div>
 
@@ -76,10 +77,14 @@ export const DashboardPreviewTabs = () => {
                 }
               `}
             >
-              <span className={`${active === tab.id ? tab.color : "text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]"}`}>
+              <span
+                className={`${active === tab.id ? tab.color : "text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]"}`}
+              >
                 {tab.icon}
               </span>
-              <span className="text-sm font-semibold tracking-wide">{tab.label}</span>
+              <span className="text-sm font-semibold tracking-wide">
+                {tab.label}
+              </span>
               {active === tab.id && (
                 <motion.div
                   layoutId="activeTab"
@@ -94,7 +99,7 @@ export const DashboardPreviewTabs = () => {
         <div className="relative group">
           {/* Decorative Elements */}
           <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/10 via-blue-500/5 to-transparent rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          
+
           <div className="relative bg-[var(--card)] border border-[var(--border)] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] overflow-hidden">
             {/* Browser-like Toolbar */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
@@ -108,8 +113,13 @@ export const DashboardPreviewTabs = () => {
                 <span>/api/v1/finance/{active}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <FiActivity size={12} className="text-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">Live Sync</span>
+                <FiActivity
+                  size={12}
+                  className="text-emerald-500 animate-pulse"
+                />
+                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">
+                  Live Sync
+                </span>
               </div>
             </div>
 
@@ -126,7 +136,9 @@ export const DashboardPreviewTabs = () => {
                 >
                   <div className="space-y-6">
                     <div>
-                      <h4 className="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-2">Detailed Metric</h4>
+                      <h4 className="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-2">
+                        Detailed Metric
+                      </h4>
                       <p className="text-4xl font-bold text-[var(--text-primary)] tracking-tight">
                         {active === "income" && "₹72,450.00"}
                         {active === "expenses" && "₹49,820.50"}
@@ -140,14 +152,17 @@ export const DashboardPreviewTabs = () => {
                         {active === "reports" && "2 new alerts detected"}
                       </p>
                     </div>
-                    
+
                     <div className="space-y-3">
                       {[1, 2].map((i) => (
-                        <div key={i} className="h-2 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden">
-                          <motion.div 
+                        <div
+                          key={i}
+                          className="h-2 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden"
+                        >
+                          <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${Math.random() * 60 + 20}%` }}
-                            className={`h-full rounded-full ${tabs.find(t => t.id === active).bg.replace('/10', '')}`}
+                            className={`h-full rounded-full ${tabs.find((t) => t.id === active).bg.replace("/10", "")}`}
                           />
                         </div>
                       ))}
@@ -157,12 +172,18 @@ export const DashboardPreviewTabs = () => {
                   <div className="hidden md:block">
                     <div className="aspect-square rounded-2xl bg-gradient-to-br from-[var(--surface-secondary)] to-[var(--card)] border border-[var(--border)] p-6 flex flex-col justify-between">
                       <div className="flex justify-between items-start">
-                        <div className={`p-3 rounded-xl ${tabs.find(t => t.id === active).bg} ${tabs.find(t => t.id === active).color}`}>
-                          {tabs.find(t => t.id === active).icon}
+                        <div
+                          className={`p-3 rounded-xl ${tabs.find((t) => t.id === active).bg} ${tabs.find((t) => t.id === active).color}`}
+                        >
+                          {tabs.find((t) => t.id === active).icon}
                         </div>
                         <div className="text-right">
-                          <p className="text-[10px] text-[var(--text-muted)] font-mono uppercase">Node_Status</p>
-                          <p className="text-xs font-bold text-emerald-500">OPTIMAL</p>
+                          <p className="text-[10px] text-[var(--text-muted)] font-mono uppercase">
+                            Node_Status
+                          </p>
+                          <p className="text-xs font-bold text-emerald-500">
+                            OPTIMAL
+                          </p>
                         </div>
                       </div>
                       <div className="space-y-2">
@@ -179,4 +200,4 @@ export const DashboardPreviewTabs = () => {
       </div>
     </section>
   );
-};
+};

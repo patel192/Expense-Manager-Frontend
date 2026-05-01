@@ -25,10 +25,10 @@ This UI connects to a backend API for storing and retrieving expense data.
 
 ## 🛠️ Tech Stack
 
-- **React** — UI library  
-- **Vite** — Dev server & build tool  
-- **JavaScript (ES6+)**  
-- **CSS** — Component styling  
+- **React** — UI library
+- **Vite** — Dev server & build tool
+- **JavaScript (ES6+)**
+- **CSS** — Component styling
 
 The project was set up using a Vite template for React.
 
@@ -44,14 +44,19 @@ These instructions will help you run the project locally:
 git clone https://github.com/patel192/Expense-Manager-Frontend.git
 cd Expense-Manager-Frontend
 ```
+
 ### 2. Install dependencies
+
 ```bash
 npm install
 ```
+
 ### 3. Start development server
+
 ```bash
 npm run dev
 ```
+
 This will launch the app locally with hot reloading.
 
 📦 Build for Production
@@ -60,10 +65,12 @@ To create an optimized production build:
 ```bash
 npm run build
 ```
+
 The static files will be generated under the dist/ folder and ready to deploy.
 
 📁 Folder Structure
 plaintext
+
 ```bash
 public/           — Static assets (favicon, index.html, etc.)
 src/              — Source code for the application
@@ -73,7 +80,6 @@ src/              — Source code for the application
 package.json      — Project config + scripts
 vite.config.js    — Vite config
 ```
-
 
 🔗 Backend Integration
 This frontend expects a backend API to:
@@ -85,7 +91,6 @@ Create new expense entries
 ----------------> Optionally support update and delete.
 
 ----------------> Make sure your backend endpoints match the fetch/axios patterns used in this app.
-
 
 💡 Possible Enhancements
 ----------------> Future improvements may include:
@@ -111,18 +116,21 @@ npm test
 ```
 
 To run tests with coverage:
+
 ```bash
 npm run test:coverage
 ```
 
 Tests are automatically executed in GitHub Actions on every push and pull request.
+
 ```yaml
 This shows:
 
-✔ Automated test validation  
-✔ CI integration  
-✔ Engineering discipline  
+✔ Automated test validation
+✔ CI integration
+✔ Engineering discipline
 ```
+
 ---
 
 # ✅ STEP 3 — Add CI/CD Section
@@ -135,6 +143,7 @@ Add this near the bottom before Contact:
 This project uses **GitHub Actions** for Continuous Integration.
 
 On every push or pull request:
+
 - Dependencies are installed
 - Project is built
 - All tests are executed

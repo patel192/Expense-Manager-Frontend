@@ -6,11 +6,7 @@ import { store } from "../redux/store";
 /* Custom render */
 
 const renderWithProviders = (ui) => {
-  return render(
-    <Provider store={store}>
-      {ui}
-    </Provider>
-  );
+  return render(<Provider store={store}>{ui}</Provider>);
 };
 
 export * from "@testing-library/react";
