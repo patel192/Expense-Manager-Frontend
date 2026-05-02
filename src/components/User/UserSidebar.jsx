@@ -18,6 +18,11 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 
+/**
+ * --- USER SIDEBAR ---
+ * The main navigation hub for the user dashboard.
+ * Includes search, expandable menus, and support shortcuts.
+ */
 export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const { user } = useAuth();
   const location = useLocation();
@@ -25,6 +30,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedItems, setExpandedItems] = useState({});
 
+  // --- DATA: MENU STRUCTURE ---
   const menuItems = [
     {
       label: "Dashboard",
@@ -67,6 +73,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
     { label: "Reports", path: "/private/reports", icon: <FaFileAlt /> },
   ];
 
+  // --- LOGIC ---
   const toggleExpand = (label) =>
     setExpandedItems((prev) => ({ ...prev, [label]: !prev[label] }));
 
@@ -85,7 +92,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <>
-      {/* Overlay for mobile */}
+      {/* ── MOBILE OVERLAY ── */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -98,14 +105,14 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
+      {/* ── SIDEBAR CONTAINER ── */}
       <motion.aside
         initial={{ x: -280 }}
         animate={{ x: isOpen ? 0 : -280 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="fixed top-0 left-0 h-full z-50 w-[280px] bg-[var(--surface-primary)] border-r border-[var(--border)] shadow-2xl flex flex-col"
       >
-        {/* Header */}
+        {/* Header Section */}
         <div className="flex items-center justify-between p-6 border-b border-[var(--border)]">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
@@ -123,7 +130,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
           </button>
         </div>
 
-        {/* Search */}
+        {/* Global Search Feature */}
         <div className="px-6 py-4">
           <div className="relative group">
             <FaSearch
@@ -140,7 +147,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
           </div>
         </div>
 
-        {/* Menu */}
+        {/* Dynamic Navigation Menu */}
         <div className="flex-1 overflow-y-auto px-4 py-2 custom-scrollbar">
           <nav className="space-y-1.5">
             {menuItems.filter(matchesSearch).map((item, index) => {
@@ -239,7 +246,7 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
           </nav>
         </div>
 
-        {/* Footer Support Section */}
+        {/* ── FOOTER: SUPPORT HUB ── */}
         <div className="p-6 border-t border-[var(--border)] bg-[var(--surface-secondary)]/30 backdrop-blur-sm">
           <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">
             Support Hub
@@ -277,3 +284,4 @@ export const UserSidebar = ({ isOpen, toggleSidebar }) => {
     </>
   );
 };
+

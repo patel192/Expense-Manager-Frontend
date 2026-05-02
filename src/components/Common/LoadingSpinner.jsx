@@ -2,6 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FiRefreshCw } from "react-icons/fi";
 
+/**
+ * --- REUSABLE LOADING SPINNER ---
+ * A lightweight spinner for localized loading states (e.g., inside a button or small card).
+ */
 const LoadingSpinner = ({
   size = 24,
   label = "Loading...",
@@ -13,7 +17,7 @@ const LoadingSpinner = ({
       className={`flex flex-col items-center justify-center gap-3 ${className}`}
     >
       <motion.div
-        animate={{ rotate: 360 }}
+        animate={{ rotate: 360 }} // Infinite rotation
         transition={{
           duration: 1.5,
           repeat: Infinity,
@@ -35,3 +39,4 @@ const LoadingSpinner = ({
 };
 
 export default LoadingSpinner;
+

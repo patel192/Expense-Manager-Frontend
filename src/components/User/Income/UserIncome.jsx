@@ -39,7 +39,14 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 
-/* ─── Shimmer skeleton ─── */
+/**
+ * --- INCOME CENTER ---
+ * Central hub for tracking incoming liquidity, analyzing revenue trends, 
+ * and managing automated recurring payments.
+ */
+
+// --- ATOMIC UI & SHARED COMPONENTS ---
+
 const Shimmer = ({ className = "" }) => (
   <div
     className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}
@@ -51,7 +58,6 @@ const Shimmer = ({ className = "" }) => (
   </div>
 );
 
-/* ─── Custom chart tooltip ─── */
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
@@ -68,7 +74,6 @@ const ChartTooltip = ({ active, payload, label }) => {
   );
 };
 
-/* ─── Source icon map ─── */
 const sourceConfig = {
   Salary: {
     color: "text-emerald-500",
@@ -92,7 +97,6 @@ const sourceConfig = {
   },
 };
 
-/* ─── Field wrapper ─── */
 const Field = ({ label, error, children, icon }) => (
   <div className="space-y-1.5">
     <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider ml-1">
@@ -115,6 +119,13 @@ const Field = ({ label, error, children, icon }) => (
   </div>
 );
 
+// --- CONFIG & UTILS ---
+const inputCls =
+  "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 shadow-sm";
+const selectCls =
+  "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 appearance-none shadow-sm cursor-pointer";
+
+// --- MAIN COMPONENT ---
 export const UserIncome = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -122,6 +133,7 @@ export const UserIncome = () => {
     (state) => state.income,
   );
 
+  // --- UI STATE ---
   const [activeTab, setActiveTab] = useState("summary");
   const [stats, setStats] = useState({
     totalIncome: 0,
@@ -135,6 +147,7 @@ export const UserIncome = () => {
   const [avgIncome, setAvgIncome] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const {
     register,
     handleSubmit,
@@ -142,6 +155,7 @@ export const UserIncome = () => {
     reset,
     formState: { errors },
   } = useForm();
+  
   const userId = useMemo(() => user?._id, [user]);
 
   const [recurringForm, setRecurringForm] = useState({
@@ -152,6 +166,10 @@ export const UserIncome = () => {
     category: "",
   });
   const [recurringLoading, setRecurringLoading] = useState(false);
+
+  // --- ANALYTICS DERIVATION ---
+  
+  // Processes raw transaction data into human-readable analytics and chart data
   const computeAnalytics = (incomesData, expensesData) => {
     const totalIncome = incomesData.reduce((sum, i) => sum + i.amount, 0);
     const totalExpense = expensesData.reduce((sum, e) => sum + e.amount, 0);
@@ -192,6 +210,7 @@ export const UserIncome = () => {
     );
     setAvgIncome(months.reduce((a, b) => a + b.income, 0) / 12);
 
+    // Generate AI-driven financial coaching tips based on savings rate
     let suggestedTips = [];
     if (savingsRate < 20) {
       suggestedTips = [
@@ -215,18 +234,9 @@ export const UserIncome = () => {
     setTips(suggestedTips);
   };
 
-  useEffect(() => {
-    if (!userId) return;
-    setValue("userID", userId);
-    dispatch(fetchIncomeData(userId));
-    dispatch(fetchRecurring(userId));
-  }, [dispatch, userId, setValue]);
+  // --- ACTIONS & HANDLERS ---
 
-  useEffect(() => {
-    if (!incomes.length && !expenses.length) return;
-    computeAnalytics(incomes, expenses);
-  }, [incomes, expenses]);
-
+  // Handle addition of a new income stream
   const onSubmitIncome = async (data) => {
     try {
       setIsSubmitting(true);
@@ -240,24 +250,26 @@ export const UserIncome = () => {
         dispatch(fetchIncomeData(userId));
       }
     } catch (error) {
-      console.error("Error adding income:", error);
+      console.error("Failed to record income:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Delete an income record from history
   const handleDelete = async (id) => {
     try {
       await axiosInstance.delete(`/incomes/${id}`);
       dispatch(fetchIncomeData(userId));
     } catch (error) {
-      console.error("Error deleting income:", error);
+      console.error("Failed to remove record:", error);
     }
   };
 
   const handleRecurringChange = (e) =>
     setRecurringForm({ ...recurringForm, [e.target.name]: e.target.value });
 
+  // Provision a new automated recurring payment
   const handleRecurringSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -272,20 +284,34 @@ export const UserIncome = () => {
       });
       dispatch(fetchRecurring(userId));
     } catch (error) {
-      console.error("Failed to add recurring payment", error);
+      console.error("Automation setup failed:", error);
     } finally {
       setRecurringLoading(false);
     }
   };
 
+  // Deactivate a recurring wealth stream
   const handleRecurringDelete = async (id) => {
     try {
       await axiosInstance.delete(`/recurring/${id}`);
       dispatch(fetchRecurring(userId));
     } catch (error) {
-      console.error("Failed to delete recurring payment", error);
+      console.error("Deactivation failed:", error);
     }
   };
+
+  // --- LIFECYCLE ---
+  useEffect(() => {
+    if (!userId) return;
+    setValue("userID", userId);
+    dispatch(fetchIncomeData(userId));
+    dispatch(fetchRecurring(userId));
+  }, [dispatch, userId, setValue]);
+
+  useEffect(() => {
+    if (!incomes.length && !expenses.length) return;
+    computeAnalytics(incomes, expenses);
+  }, [incomes, expenses]);
 
   const tabs = [
     { id: "summary", label: "Summary", icon: <FiAlignLeft size={14} /> },
@@ -294,14 +320,9 @@ export const UserIncome = () => {
     { id: "recurring", label: "Recurring", icon: <FiRepeat size={14} /> },
   ];
 
-  const inputCls =
-    "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 shadow-sm";
-  const selectCls =
-    "w-full px-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 appearance-none shadow-sm cursor-pointer";
-
   return (
     <div className="space-y-6 text-[var(--text-primary)]">
-      {/* ══ HEADER ══ */}
+      {/* ── HEADER ── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -326,7 +347,7 @@ export const UserIncome = () => {
         </button>
       </motion.div>
 
-      {/* ══ PILL TABS ══ */}
+      {/* ── PILL TABS ── */}
       <div className="flex items-center gap-1 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap shadow-sm">
         {tabs.map((tab) => (
           <button
@@ -345,7 +366,7 @@ export const UserIncome = () => {
         ))}
       </div>
 
-      {/* ══ LOADING ══ */}
+      {/* ── LOADING ── */}
       {loading && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -357,7 +378,7 @@ export const UserIncome = () => {
         </div>
       )}
 
-      {/* ══ TAB CONTENT ══ */}
+      {/* ── TAB CONTENT ── */}
       {!loading && (
         <AnimatePresence mode="wait">
           {activeTab === "summary" && (
@@ -951,7 +972,7 @@ export const UserIncome = () => {
         </AnimatePresence>
       )}
 
-      {/* ══ ADD INCOME MODAL ══ */}
+      {/* ── ADD INCOME MODAL ── */}
       <Transition appear show={isModalOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -1086,3 +1107,4 @@ export const UserIncome = () => {
     </div>
   );
 };
+

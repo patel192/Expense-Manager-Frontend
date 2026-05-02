@@ -37,8 +37,14 @@ import {
   FiShoppingBag,
 } from "react-icons/fi";
 
+/**
+ * --- EXPENSE CENTER ---
+ * The primary dashboard for tracking outgoing capital and analyzing spending habits.
+ * Features: Recent Activity, Deep Analytics, and a Filterable Ledger.
+ */
 
-/* ─── Custom tooltip ─── */
+// --- ATOMIC UI & SHARED COMPONENTS ---
+
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
@@ -55,7 +61,6 @@ const ChartTooltip = ({ active, payload, label }) => {
   );
 };
 
-/* ─── Field wrapper ─── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
     <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider ml-1">
@@ -78,20 +83,21 @@ const Field = ({ label, icon, error, children }) => (
   </div>
 );
 
+// --- CONFIG & UTILS ---
 const inputCls =
   "w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-rose-500/60 focus:ring-4 focus:ring-rose-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 shadow-sm";
 const selectCls =
   "w-full pl-10 pr-10 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-rose-500/60 focus:ring-4 focus:ring-rose-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 appearance-none shadow-sm cursor-pointer";
 
-/* ══════════════════════════════════════
-   MAIN COMPONENT
-   ══════════════════════════════════════ */
+// --- MAIN COMPONENT ---
 export const UserExpenses = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const { categories, recentExpenses, expenses } = useSelector(
     (state) => state.expense,
   );
+
+  // --- UI STATE ---
   const [activeTab, setActiveTab] = useState("overview");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -123,15 +129,9 @@ export const UserExpenses = () => {
     setValue,
   } = useForm();
 
-  useEffect(() => {
-    if (userId) {
-      setValue("userID", userId);
-      dispatch(fetchCategories());
-      dispatch(fetchRecentExpenses(userId));
-      dispatch(fetchAllExpenses({ userId, filters }));
-    }
-  }, [dispatch, userId, setValue, filters]);
+  // --- ACTIONS & HANDLERS ---
 
+  // Handle dynamic filtering for the expense ledger
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     let newFilters = { ...filters, [name]: value };
@@ -172,6 +172,7 @@ export const UserExpenses = () => {
     });
   };
 
+  // Logic for generating chart data from the expense registry
   const { chartData, categoryBreakdown } = useMemo(() => {
     const monthly = Array.from({ length: 12 }, () => 0);
     const categoryMap = {};
@@ -197,6 +198,7 @@ export const UserExpenses = () => {
     return { chartData: formattedTrend, categoryBreakdown: formattedBreakdown };
   }, [expenses]);
 
+  // Handle new expense submission
   const SubmitHandler = async (data) => {
     try {
       setIsSubmitting(true);
@@ -212,12 +214,13 @@ export const UserExpenses = () => {
       dispatch(fetchRecentExpenses(userId));
       dispatch(fetchAllExpenses({ userId, filters }));
     } catch (error) {
-      console.error(error);
+      console.error("Submission failed:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Remove an expense record from the history
   const deleteExpense = async (id) => {
     if (!window.confirm("Delete this expense permanently?")) return;
     try {
@@ -225,10 +228,11 @@ export const UserExpenses = () => {
       dispatch(fetchAllExpenses({ userId, filters }));
       dispatch(fetchRecentExpenses(userId));
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Deletion failed:", error);
     }
   };
 
+  // --- ANALYTICS DERIVATION ---
   const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
   const avgExpense = expenses.length > 0 ? totalExpenses / expenses.length : 0;
   const topCategory = categoryBreakdown[0]?.name || "—";
@@ -242,6 +246,16 @@ export const UserExpenses = () => {
     })
     .reduce((s, e) => s + e.amount, 0);
 
+  // --- LIFECYCLE ---
+  useEffect(() => {
+    if (userId) {
+      setValue("userID", userId);
+      dispatch(fetchCategories());
+      dispatch(fetchRecentExpenses(userId));
+      dispatch(fetchAllExpenses({ userId, filters }));
+    }
+  }, [dispatch, userId, setValue, filters]);
+
   const tabs = [
     { id: "overview", label: "Overview", icon: <FiAlignLeft size={14} /> },
     { id: "analytics", label: "Analytics", icon: <FiBarChart2 size={14} /> },
@@ -250,7 +264,7 @@ export const UserExpenses = () => {
 
   return (
     <div className="space-y-6 text-[var(--text-primary)]">
-      {/* ══ HEADER ══ */}
+      {/* ── HEADER ── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -275,7 +289,7 @@ export const UserExpenses = () => {
         </button>
       </motion.div>
 
-      {/* ══ QUICK STAT CARDS ══ */}
+      {/* ── QUICK STAT CARDS ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
@@ -345,7 +359,7 @@ export const UserExpenses = () => {
         ))}
       </div>
 
-      {/* ══ PILL TABS ══ */}
+      {/* ── PILL TABS ── */}
       <div className="flex items-center gap-1 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap shadow-sm">
         {tabs.map((tab) => (
           <button
@@ -364,9 +378,9 @@ export const UserExpenses = () => {
         ))}
       </div>
 
-      {/* ══ TAB PANELS ══ */}
+      {/* ── TAB PANELS ── */}
       <AnimatePresence mode="wait">
-        {/* ─── OVERVIEW ─── */}
+        {/* --- OVERVIEW --- */}
         {activeTab === "overview" && (
           <motion.div
             key="overview"
@@ -456,7 +470,7 @@ export const UserExpenses = () => {
           </motion.div>
         )}
 
-        {/* ─── ANALYTICS ─── */}
+        {/* --- ANALYTICS --- */}
         {activeTab === "analytics" && (
           <motion.div
             key="analytics"
@@ -466,7 +480,6 @@ export const UserExpenses = () => {
             transition={{ duration: 0.25 }}
             className="grid grid-cols-1 xl:grid-cols-2 gap-6"
           >
-            {/* Monthly trend */}
             <div className="rounded-2xl bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-sm p-6 shadow-xl">
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shadow-inner">
@@ -515,7 +528,6 @@ export const UserExpenses = () => {
               </ResponsiveContainer>
             </div>
 
-            {/* Category breakdown */}
             <div className="rounded-2xl bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-sm p-6 shadow-xl">
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shadow-inner">
@@ -586,7 +598,7 @@ export const UserExpenses = () => {
           </motion.div>
         )}
 
-        {/* ─── RECORDS ─── */}
+        {/* --- RECORDS --- */}
         {activeTab === "records" && (
           <motion.div
             key="records"
@@ -739,7 +751,6 @@ export const UserExpenses = () => {
                       className="flex sm:grid sm:grid-cols-[1.5fr_1fr_1fr_1fr_auto] items-center gap-4
                                  px-6 py-4 hover:bg-[var(--surface-secondary)] transition-all group"
                     >
-                      {/* Description */}
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="w-9 h-9 rounded-xl bg-[var(--surface-tertiary)] border border-[var(--border)] flex items-center justify-center flex-shrink-0 group-hover:bg-rose-500/10 group-hover:border-rose-500/20 transition-all shadow-sm">
                           <FiShoppingBag
@@ -752,21 +763,18 @@ export const UserExpenses = () => {
                         </p>
                       </div>
 
-                      {/* Category pill */}
                       <div className="hidden sm:block">
                         <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-[var(--surface-tertiary)] border border-[var(--border)] text-[var(--text-secondary)] uppercase tracking-wider">
                           {expense.categoryID?.name || "Other"}
                         </span>
                       </div>
 
-                      {/* Amount */}
                       <div className="text-right sm:text-left">
                         <span className="text-sm font-extrabold text-rose-500">
                           ₹{expense.amount.toLocaleString("en-IN")}
                         </span>
                       </div>
 
-                      {/* Date */}
                       <span className="hidden sm:block text-[11px] font-semibold text-[var(--text-muted)]">
                         {new Date(expense.date).toLocaleDateString("en-IN", {
                           day: "2-digit",
@@ -775,7 +783,6 @@ export const UserExpenses = () => {
                         })}
                       </span>
 
-                      {/* Delete */}
                       <button
                         onClick={() => deleteExpense(expense._id)}
                         className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
@@ -793,7 +800,7 @@ export const UserExpenses = () => {
         )}
       </AnimatePresence>
 
-      {/* ══ ADD EXPENSE MODAL ══ */}
+      {/* ── ADD EXPENSE MODAL ── */}
       <Transition appear show={isModalOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -823,7 +830,6 @@ export const UserExpenses = () => {
               leaveTo="opacity-0 scale-95 translate-y-8"
             >
               <Dialog.Panel className="w-full max-w-md rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden p-0">
-                {/* Header */}
                 <div className="flex items-center justify-between px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shadow-inner">
@@ -846,7 +852,6 @@ export const UserExpenses = () => {
                   </button>
                 </div>
 
-                {/* Body */}
                 <div className="px-8 py-8">
                   <form
                     onSubmit={handleSubmit(SubmitHandler)}

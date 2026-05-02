@@ -1,44 +1,51 @@
-// =============== Core Imports ===============
+// =============== CORE IMPORTS ===============
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-// =============== State Management ===============
+// =============== STATE MANAGEMENT ===============
+// Redux setup for global state handling
 import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
 
-// Inject Redux store into axios instance for global dispatch access
+// We inject the store into axios so we can handle 401s and loading 
+// states globally without being inside a React component.
 import { injectStore } from "./components/Utils/axiosInstance.js";
 
-// =============== Context Providers ===============
+// =============== CONTEXT PROVIDERS ===============
+// Legacy context or simple state that doesn't need Redux
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
-// =============== UI Components ===============
+// =============== UI COMPONENTS ===============
 import App from "./App.jsx";
-import { Toaster } from "sonner";
+import { Toaster } from "sonner"; // For those nice pop-up notifications
 
-// =============== Global Styles  ===============
+// =============== GLOBAL STYLES ===============
 import "./index.css";
 
-// Intialize shared services before rendering the app
+// --- PRE-RENDER SETUP ---
 injectStore(store);
 
-// =============== Application Bootstrap ===============
+/**
+ * --- APPLICATION BOOTSTRAP ---
+ * Wrapping the app in all necessary providers.
+ */
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    {/* Redux Store available to entire app */}
+    {/* Provides global state (Auth, UI, etc.) */}
     <Provider store={store}>
-      {/* Authentication state and session management */}
+      {/* Handles user session and login state */}
       <AuthProvider>
-        {/* Global theme configuration dark/light mode, etc. */}
+        {/* Manages Dark/Light mode preferences */}
         <ThemeProvider>
-          {/* Main application routes */}
+          {/* The actual application content and routes */}
           <App />
         </ThemeProvider>
       </AuthProvider>
     </Provider>
 
-    {/* Global toast notifications */}
+    {/* Toast notification container (renders at the top level) */}
     <Toaster richColors position="top-right" />
   </BrowserRouter>,
 );
+

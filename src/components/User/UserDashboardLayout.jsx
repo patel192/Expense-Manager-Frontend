@@ -19,6 +19,10 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 
+/**
+ * --- NAVIGATION CONFIGURATION ---
+ * Shared labels and paths for the desktop and mobile navigation.
+ */
 const navTabs = [
   {
     label: "Matrix",
@@ -69,16 +73,25 @@ const bottomTabs = [
   { label: "More", path: null, icon: <FiMenu size={18} />, isMore: true },
 ];
 
+/**
+ * --- USER DASHBOARD LAYOUT ---
+ * The primary shell for all logged-in user activities.
+ * Handles the responsive top nav, mobile dock, and page transitions.
+ */
 export const UserDashboardLayout = () => {
   const { logout, user } = useAuth();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--surface-secondary)]/50 text-[var(--text-primary)] font-sans antialiased">
-      {/* ══ PARAMETRIC TOP NAV ══ */}
+      
+      {/* ── PARAMETRIC TOP NAV ── */}
       <header className="sticky top-0 z-[60] bg-[var(--surface-primary)]/80 backdrop-blur-2xl border-b border-[var(--border)] shadow-xl transition-all duration-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between gap-6">
+          
+          {/* Brand Logo */}
           <Link
             to="/private/userdashboard"
             className="flex items-center gap-3.5 group flex-shrink-0"
@@ -122,6 +135,7 @@ export const UserDashboardLayout = () => {
 
           {/* COMMAND CENTER */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
               className="w-10 h-10 rounded-xl border border-[var(--border)] bg-[var(--surface-primary)] text-[var(--text-primary)] hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all flex items-center justify-center shadow-sm group"
@@ -139,6 +153,7 @@ export const UserDashboardLayout = () => {
               )}
             </button>
 
+            {/* Profile Link */}
             <Link
               to={`/private/account/${user?._id || user?.id || ""}`}
               className="flex items-center gap-3 pl-1 pr-1 py-1 rounded-2xl hover:bg-cyan-500/5 transition-all group border border-transparent hover:border-cyan-500/20 shadow-none hover:shadow-lg hover:shadow-cyan-500/5"
@@ -151,6 +166,7 @@ export const UserDashboardLayout = () => {
               </span>
             </Link>
 
+            {/* Logout Button */}
             <button
               onClick={logout}
               className="w-10 h-10 rounded-xl text-[var(--text-muted)] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/30 border border-transparent transition-all flex items-center justify-center"
@@ -158,6 +174,7 @@ export const UserDashboardLayout = () => {
               <FiLogOut size={18} />
             </button>
 
+            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center transition-all shadow-lg shadow-cyan-500/10"
@@ -209,7 +226,7 @@ export const UserDashboardLayout = () => {
         </AnimatePresence>
       </header>
 
-      {/* ══ APPLICATION CORE ══ */}
+      {/* ── APPLICATION CORE ── */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 pb-32 lg:pb-12">
         <AnimatePresence mode="wait">
           <motion.div
@@ -224,7 +241,7 @@ export const UserDashboardLayout = () => {
         </AnimatePresence>
       </main>
 
-      {/* ══ DOCK NAVIGATION (MOBILE) ══ */}
+      {/* ── DOCK NAVIGATION (MOBILE) ── */}
       <nav className="lg:hidden fixed bottom-6 left-6 right-6 z-[60]">
         <div className="bg-[var(--surface-primary)]/80 backdrop-blur-2xl border border-[var(--border)] rounded-[2.5rem] shadow-2xl px-6 py-3 flex items-center justify-around">
           {bottomTabs.map((tab, i) => {
@@ -247,7 +264,7 @@ export const UserDashboardLayout = () => {
                       {tab.icon}
                     </div>
                     <span className="text-[8px] font-black uppercase tracking-widest mt-1">
-                      Protocal
+                      Protocol
                     </span>
                   </>
                 ) : (
@@ -275,3 +292,4 @@ export const UserDashboardLayout = () => {
 };
 
 export default UserDashboardLayout;
+

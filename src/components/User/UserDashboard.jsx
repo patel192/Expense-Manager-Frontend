@@ -1,6 +1,14 @@
 import { useEffect, useState, useRef, useMemo, memo } from "react";
 import ReactMarkdown from "react-markdown";
 import axiosInstance from "../Utils/axiosInstance";
+
+/**
+ * --- INTELLIGENCE HUB (USER DASHBOARD) ---
+ * The central nervous system of the application. 
+ * Combines traditional financial metrics with AI-driven insights, 
+ * real-time forecasting, and a cognitive chat assistant.
+ */
+
 import {
   BarChart,
   Bar,
@@ -51,6 +59,9 @@ const COLORS = [
   "#8b5cf6",
   "#ec4899",
 ];
+
+// --- SUB-COMPONENTS (ATOMIC UI) ---
+
 
 /* ─── Shimmer skeleton ─── */
 const Shimmer = ({ className = "" }) => (
@@ -209,6 +220,9 @@ const DashboardSkeleton = () => (
   </div>
 );
 
+// --- MAIN DASHBOARD COMPONENT ---
+
+
 export const UserDashboard = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -244,7 +258,11 @@ export const UserDashboard = () => {
   const [loadingCharts, setloadingCharts] = useState(true);
   const [loadingSecondary, setloadingSecondary] = useState(true);
 
+  // --- AI MODULES: DATA FETCHING ---
+
+  // Cognitive Chat: Send a manual query to the AI
   const sendMessage = async () => {
+
     if (!input.trim()) return;
     const userMessage = { role: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -351,7 +369,10 @@ export const UserDashboard = () => {
     }
   };
 
+  // --- LIFECYCLE & INITIALIZATION ---
+
   useEffect(() => {
+
     if (!userId) return;
     dispatch(fetchBudgetData(userId));
     dispatch(fetchIncomeData(userId));
@@ -388,7 +409,10 @@ export const UserDashboard = () => {
   const savingsRate =
     totalIncome > 0 ? Math.round((netSavings / totalIncome) * 100) : 0;
 
+  // --- ANALYTICS DATA PROCESSING ---
+
   // Calculate 30-day trend
+
   const trendData = useMemo(() => {
     const last30Days = [];
     for (let i = 29; i >= 0; i--) {

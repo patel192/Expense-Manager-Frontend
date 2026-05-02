@@ -4,6 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX, FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 
+/**
+ * --- MAIN NAVIGATION BAR ---
+ * Handles site-wide navigation, section scrolling, and theme switching.
+ */
+
+
 export const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
@@ -11,14 +17,16 @@ export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef(null);
 
-  // Shrink navbar slightly on scroll for a polished feel
+  // --- UI EFFECTS ---
+
+  // Scroll listener: Shrink navbar slightly on scroll for a polished feel
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on outside click
+  // Accessibility: Close mobile menu if user clicks anywhere outside of it
   useEffect(() => {
     const handleOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -29,10 +37,13 @@ export const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleOutside);
   }, [open]);
 
-  // Close menu on route change
+  // Clean up: Auto-close menu whenever the user navigates to a new page
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
+
+  // --- NAVIGATION HELPERS ---
+
 
   const links = [
     { label: "Home", to: "/" },
@@ -126,21 +137,14 @@ export const Navbar = () => {
 
           {/* Divider */}
           <div className="w-px h-5 bg-[var(--border)] mx-2" />
+          {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="
-    px-3 py-2
-    rounded-lg
-    border
-    border-[var(--border)]
-    bg-[var(--card)]
-    text-[var(--text)]
-    hover:bg-[var(--muted)]
-    transition
-  "
+            className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--text)] hover:bg-[var(--muted)] transition"
           >
             {theme === "dark" ? <FiSun size={17} /> : <FiMoon size={17} />}
           </button>
+
           <Link
             to="/login"
             className="px-4 py-2 rounded-lg text-[var(--text-secondary)] bg-[var(--surface-secondary)] hover:bg-[var(--surface-tertiary)] border border-[var(--border)] hover:border-[var(--border)] transition-all duration-200"

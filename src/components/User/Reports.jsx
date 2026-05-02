@@ -17,13 +17,23 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 
+/**
+ * --- INTELLIGENCE REPORTS ---
+ * Handles the generation and download of financial documentation.
+ * Converts historical telemetry into a structured, human-readable PDF.
+ */
+
 export const Reports = () => {
   const user = useSelector((state) => state.auth.user);
   const userId = user?._id;
+  
+  // --- STATE ---
   const [loading, setLoading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
-  /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
+  // --- ACTIONS & LOGIC ---
+
+  // Compile and fetch the report blob from the backend
   const downloadReport = async () => {
     try {
       setLoading(true);
@@ -36,6 +46,8 @@ export const Reports = () => {
       link.setAttribute("download", "financial-report.pdf");
       document.body.appendChild(link);
       link.click();
+      
+      // Visual feedback trigger
       setDownloaded(true);
       setTimeout(() => setDownloaded(false), 3000);
     } catch (error) {
@@ -45,6 +57,7 @@ export const Reports = () => {
     }
   };
 
+  // --- CONFIG: DATA MATRIX MODULES ---
   const reportSections = [
     {
       icon: <FiTrendingUp size={16} />,
@@ -96,7 +109,7 @@ export const Reports = () => {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8 text-[var(--text-primary)] pb-10"
     >
-      {/* ══ HEADER ══ */}
+      {/* ── HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent uppercase">
@@ -112,20 +125,20 @@ export const Reports = () => {
         </div>
       </div>
 
-      {/* ══ CENTRAL ACTION HUB ══ */}
+      {/* ── CENTRAL ACTION HUB (Download Section) ── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
         className="relative overflow-hidden rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl p-8 sm:p-12 group"
       >
-        {/* Parametric Background Vibe */}
+        {/* Ambient Glow Elements */}
         <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-violet-500/10 blur-[100px] pointer-events-none group-hover:scale-110 transition-transform duration-700" />
         <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-blue-500/10 blur-[100px] pointer-events-none group-hover:scale-110 transition-transform duration-700" />
 
         <div className="relative flex flex-col lg:flex-row items-center justify-between gap-10">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 text-center sm:text-left">
-            {/* Visual Anchor */}
+            {/* Visual Anchor Icon */}
             <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-tr from-violet-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-2xl shadow-violet-500/30 transform group-hover:rotate-6 transition-transform duration-500">
               <FiFileText size={32} className="text-white" />
             </div>
@@ -138,6 +151,8 @@ export const Reports = () => {
                 cryptographic, human-readable PDF document spanning all vectors:
                 Inflow, Outflow, Strategic Budgets, and Automated Protocols.
               </p>
+              
+              {/* Feature Badges */}
               <div className="flex flex-wrap justify-center sm:justify-start gap-3 pt-3">
                 {[
                   { icon: <FiCalendar size={12} />, text: "REAL-TIME SYNC" },
@@ -160,7 +175,7 @@ export const Reports = () => {
             </div>
           </div>
 
-          {/* TRIGGER MODULE */}
+          {/* TRIGGER MODULE (The Download Button) */}
           <motion.button
             onClick={downloadReport}
             disabled={loading}
@@ -193,7 +208,7 @@ export const Reports = () => {
         </div>
       </motion.div>
 
-      {/* ══ TELEMETRY BREAKDOWN ══ */}
+      {/* ── TELEMETRY BREAKDOWN (Feature Grid) ── */}
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shadow-inner">
@@ -236,7 +251,7 @@ export const Reports = () => {
         </div>
       </div>
 
-      {/* ══ OPERATIONAL FLOW ══ */}
+      {/* ── OPERATIONAL FLOW (Instructional Grid) ── */}
       <div className="rounded-[2.5rem] bg-[var(--surface-secondary)]/30 border border-[var(--border)] p-8 sm:p-10 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 blur-[80px] pointer-events-none" />
         <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-[0.2em] mb-8 px-2">
@@ -290,3 +305,4 @@ export const Reports = () => {
     </motion.div>
   );
 };
+

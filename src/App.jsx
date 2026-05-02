@@ -1,22 +1,26 @@
-// =============== Core Imports ===============
+// =============== CORE IMPORTS ===============
+// Standard React and Router hooks
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
-// =============== Global Styles  ===============
+// =============== GLOBAL STYLES ===============
+// Our main CSS files that handle the theme and general layout
 import "./App.css";
 import "./index.css";
 
-// =============== Common Components  ===============
+// =============== COMMON COMPONENTS ===============
+// Shared UI elements like the loader and layouts
 import GlobalLoader from "./components/Common/GlobalLoader";
 import { Content } from "./components/Common/Content";
 import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
 
-// =============== Auth Pages  ===============
+// =============== AUTH PAGES ===============
 import { Login } from "./Login";
 import { Signup } from "./Signup";
 
-// =============== User Cmponments ===============
+// =============== USER COMPONENTS ===============
+// Everything a regular user needs to see and manage
 import { UserDashboardLayout } from "./components/User/UserDashboardLayout";
 import { UserDashboard } from "./components/User/UserDashboard";
 import { UserExpenses } from "./components/User/Expense/UserExpenses";
@@ -26,7 +30,8 @@ import { RecurringTransactions } from "./components/User/RecurringTransactions";
 import { Reports } from "./components/User/Reports";
 import { Transaction } from "./components/User/Transaction";
 
-// =============== Admin Components  ===============
+// =============== ADMIN COMPONENTS ===============
+// Management tools reserved for administrative accounts
 import { AdminDashboardLayout } from "./components/Admin/AdminDashboardLayout";
 import { AdminDashboard } from "./components/Admin/AdminDashboard";
 import { AccessControl } from "./components/Admin/AccessControl";
@@ -37,39 +42,47 @@ import { Systemlog } from "./components/Admin/Systemlog";
 import { UserDetails } from "./components/Admin/UserDetails";
 import { Account } from "./components/Admin/Account";
 
-// =============== App Component  ===============
-
+/**
+ * --- MAIN APPLICATION COMPONENT ---
+ * This is where we define the global structure and routing of the app.
+ */
 function App() {
   const location = useLocation();
 
-  // Update body layout class based on current route
+  // SIDE EFFECT: Dynamically update the body class based on where the user is.
+  // This helps us apply specific background styles for different app sections.
   useEffect(() => {
-    if (location.pathname === "/login" || location.pathname === "/signup") {
+    const path = location.pathname;
+
+    if (path === "/login" || path === "/signup") {
       document.body.className = "auth-page";
-    } else if (location.pathname.startsWith("/admin")) {
+    } else if (path.startsWith("/admin")) {
       document.body.className = "admin-layout";
-    } else if (location.pathname.startsWith("/user")) {
+    } else if (path.startsWith("/user")) {
       document.body.className = "user-layout";
     } else {
       document.body.className = "public-layout";
     }
   }, [location.pathname]);
 
-  // =============== Routes  ===============
-
   return (
     <>
-      {/* Global Loading Indicator */}
+      {/* 
+          This loader is controlled via Redux and shows up 
+          automatically during any global API requests. 
+      */}
       <GlobalLoader />
+
       <Routes>
-        {/* Public Routes */}
+        {/* --- PUBLIC AREA --- */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Content />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Route>
 
-        {/* Protected User Routes */}
+        {/* --- PRIVATE USER AREA --- */}
+        {/* Only logged-in users can reach these sub-routes */}
         <Route element={<PrivateRoutes />}>
           <Route path="/private" element={<UserDashboardLayout />}>
             <Route path="expenses" element={<UserExpenses />} />
@@ -83,7 +96,8 @@ function App() {
           </Route>
         </Route>
 
-        {/* Protected Admin Routes */}
+        {/* --- ADMIN PANEL --- */}
+        {/* Restricted to users with administrative privileges */}
         <Route element={<PrivateRoutes />}>
           <Route path="/admin" element={<AdminDashboardLayout />}>
             <Route path="admindashboard" element={<AdminDashboard />} />
@@ -102,3 +116,4 @@ function App() {
 }
 
 export default App;
+

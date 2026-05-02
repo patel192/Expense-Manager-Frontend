@@ -7,9 +7,14 @@ import {
   FiArrowUpRight,
 } from "react-icons/fi";
 
+/**
+ * --- SITE FOOTER ---
+ * Provides site-wide links, social media connections, and system status information.
+ */
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
+  // --- DATA: FOOTER LINKS ---
   const footerLinks = {
     product: [
       { label: "Features", href: "#features" },
@@ -39,12 +44,13 @@ export const Footer = () => {
 
   return (
     <footer className="relative mt-20 pt-20 pb-10 border-t border-[var(--border)] overflow-hidden">
-      {/* Background Glow */}
+      {/* ── BACKGROUND VISUALS ── */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
-          {/* Brand Section */}
+          
+          {/* ── BRAND SECTION ── */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-2.5">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
@@ -71,6 +77,8 @@ export const Footer = () => {
               finances. Track, analyze, and optimize your wealth with technical
               precision.
             </p>
+            
+            {/* Social Icons */}
             <div className="flex items-center gap-4">
               {socialLinks.map((social, i) => (
                 <motion.a
@@ -86,7 +94,7 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links Sections */}
+          {/* ── LINK COLUMNS ── */}
           <div className="space-y-6">
             <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)]">
               Product
@@ -154,11 +162,13 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* ── BOTTOM BAR ── */}
         <div className="pt-10 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-sm text-[var(--text-muted)] font-mono">
             &copy; {currentYear} FinTrack Labs Inc. All rights reserved.
           </p>
+          
+          {/* Status Indicators */}
           <div className="flex items-center gap-8 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -171,3 +181,4 @@ export const Footer = () => {
     </footer>
   );
 };
+

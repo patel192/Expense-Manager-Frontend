@@ -13,6 +13,11 @@ import {
 } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 
+/**
+ * --- USER NAVIGATION BAR ---
+ * Specialized navbar for the logged-in dashboard area.
+ * Includes sidebar toggling and social shortcuts.
+ */
 export const UserNavbar = ({ toggleSidebar }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const dispatch = useDispatch();
@@ -26,7 +31,8 @@ export const UserNavbar = ({ toggleSidebar }) => {
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[var(--surface-primary)]/80 border-b border-[var(--border)] shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 h-16">
-        {/* Left: Sidebar toggle + Logo */}
+        
+        {/* ── LEFT: SIDEBAR TOGGLE & BRAND ── */}
         <div className="flex items-center gap-4">
           <button
             onClick={toggleSidebar}
@@ -46,8 +52,9 @@ export const UserNavbar = ({ toggleSidebar }) => {
           </Link>
         </div>
 
-        {/* Right: Desktop menu */}
+        {/* ── RIGHT: DESKTOP ACTIONS ── */}
         <div className="hidden md:flex items-center gap-8">
+          {/* Social Links Shortcut */}
           <div className="flex gap-5 text-[var(--text-muted)]">
             {[
               { icon: <FaTwitter />, color: "hover:text-cyan-400" },
@@ -67,6 +74,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
 
           <div className="h-6 w-px bg-[var(--border)]" />
 
+          {/* Quick Logout */}
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface-tertiary)] border border-[var(--border)] text-sm font-semibold text-[var(--text-primary)] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/30 transition-all active:scale-95 shadow-sm"
@@ -76,7 +84,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
           </button>
         </div>
 
-        {/* Mobile menu toggle */}
+        {/* ── MOBILE MENU TOGGLE ── */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-tertiary)] transition-all active:scale-95"
@@ -89,7 +97,7 @@ export const UserNavbar = ({ toggleSidebar }) => {
         </button>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* ── MOBILE DROPDOWN ── */}
       {menuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-[var(--surface-primary)] border-b border-[var(--border)] shadow-xl animate-in slide-in-from-top-4 duration-200">
           <div className="flex flex-col items-center px-6 py-6 gap-6">
@@ -127,3 +135,4 @@ export const UserNavbar = ({ toggleSidebar }) => {
     </header>
   );
 };
+

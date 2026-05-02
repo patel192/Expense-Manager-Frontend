@@ -3,6 +3,11 @@ import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiRefreshCw } from "react-icons/fi";
 
+/**
+ * --- GLOBAL APPLICATION LOADER ---
+ * This overlay appears whenever a global API request is in progress.
+ * It uses Redux to know when to show itself and what text to display.
+ */
 const GlobalLoader = () => {
   const { isLoading, loadingText } = useSelector((state) => state.ui);
 
@@ -16,7 +21,7 @@ const GlobalLoader = () => {
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-md"
         >
           <div className="relative">
-            {/* Outer Glow */}
+            {/* ── AMBIENT GLOW ── */}
             <motion.div
               animate={{
                 scale: [1, 1.2, 1],
@@ -30,8 +35,9 @@ const GlobalLoader = () => {
               className="absolute inset-0 bg-cyan-500 blur-2xl rounded-full"
             />
 
-            {/* Spinner Container */}
+            {/* ── SPINNER BOX ── */}
             <div className="relative bg-slate-800 p-8 rounded-3xl border border-white/10 shadow-2xl flex flex-col items-center gap-4">
+              {/* Rotating Icon */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{
@@ -44,6 +50,7 @@ const GlobalLoader = () => {
                 <FiRefreshCw size={48} />
               </motion.div>
 
+              {/* Dynamic Status Text */}
               <div className="flex flex-col items-center gap-1">
                 <motion.h3
                   initial={{ opacity: 0, y: 10 }}
@@ -55,7 +62,7 @@ const GlobalLoader = () => {
                 <p className="text-slate-400 text-sm">Please wait a moment</p>
               </div>
 
-              {/* Progress bar animation */}
+              {/* Progress Bar Animation */}
               <div className="w-32 h-1 bg-slate-700 rounded-full overflow-hidden mt-2">
                 <motion.div
                   animate={{
@@ -78,3 +85,4 @@ const GlobalLoader = () => {
 };
 
 export default GlobalLoader;
+

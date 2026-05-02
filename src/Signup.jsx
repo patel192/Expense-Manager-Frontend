@@ -21,6 +21,12 @@ import {
   FiRefreshCw,
 } from "react-icons/fi";
 
+/**
+ * --- SIGNUP COMPONENT ---
+ * Allows new users to create an account. Defaults all new registrations to 'User' role.
+ */
+
+
 /* ── REUSABLE INPUT WRAPPER ── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
@@ -56,24 +62,30 @@ export const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  /* ── ALL ORIGINAL LOGIC UNTOUCHED ── */
+  // --- ACCOUNT CREATION LOGIC ---
   const submitHandler = async (data) => {
     try {
+      // We hardcode the role to "User" so new signups don't accidentally get admin rights
       const res = await axiosInstance.post("/user", { ...data, role: "User" });
+
       if (res.status === 201) {
-        toast.success("User created successfully!", {
+        toast.success("Account created! Redirecting to login...", {
           position: "top-center",
           autoClose: 2000,
         });
+
+        // Give the user a moment to read the success message before switching pages
         setTimeout(() => navigate("/login"), 2000);
       }
     } catch (error) {
+      // Show whatever error the server returned (e.g. "Email already exists")
       toast.error(
-        error.response?.data?.message || "Signup failed. Try again.",
+        error.response?.data?.message || "Signup failed. Please try again.",
         { position: "top-center", autoClose: 3000 },
       );
     }
   };
+
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8 bg-[var(--bg)] text-[var(--text-primary)] relative overflow-hidden transition-colors duration-300">

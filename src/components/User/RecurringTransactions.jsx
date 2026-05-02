@@ -19,7 +19,13 @@ import {
   FiActivity,
 } from "react-icons/fi";
 
-/* ─── Shimmer skeleton ─── */
+/**
+ * --- AUTOMATED FLOWS (RECURRING TRANSACTIONS) ---
+ * Manages capital events that repeat on a fixed temporal cycle.
+ * Includes status toggling (Pause/Play), frequency badges, and velocity tracking.
+ */
+
+// --- ATOMIC UI & STYLING ---
 const Shimmer = ({ className = "" }) => (
   <div
     className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}
@@ -31,7 +37,6 @@ const Shimmer = ({ className = "" }) => (
   </div>
 );
 
-/* ─── Field wrapper ─── */
 const Field = ({ label, icon, children }) => (
   <div className="space-y-2">
     <label className="block text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] ml-1">
@@ -53,7 +58,6 @@ const inputCls =
 const selectCls =
   "w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/5 transition-all duration-300 appearance-none cursor-pointer";
 
-/* ─── Frequency badge configs ─── */
 const freqConfig = {
   daily: { color: "text-rose-500", bg: "bg-rose-500/10 border-rose-500/20" },
   weekly: {
@@ -67,6 +71,7 @@ const freqConfig = {
   },
 };
 
+// --- MAIN COMPONENT ---
 export const RecurringTransactions = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -74,9 +79,10 @@ export const RecurringTransactions = () => {
   const { recurringPayments: recurringList, loading } = useSelector(
     (state) => state.income,
   );
+  
+  // --- STATE ---
   const [submitting, setSubmitting] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
@@ -85,7 +91,8 @@ export const RecurringTransactions = () => {
     nextDate: "",
   });
 
-  /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
+  // --- ACTIONS & LOGIC ---
+
   const fetchRecurringList = () => {
     if (userId) dispatch(fetchRecurring(userId));
   };
@@ -122,14 +129,7 @@ export const RecurringTransactions = () => {
         await axiosInstance.post("/recurring", payload);
       }
       await fetchRecurringList();
-      setFormData({
-        title: "",
-        amount: "",
-        category: "",
-        frequency: "monthly",
-        nextDate: "",
-      });
-      setEditingId(null);
+      handleCancelEdit();
     } catch (error) {
       console.error("Error saving recurring transaction:", error);
     } finally {
@@ -160,13 +160,16 @@ export const RecurringTransactions = () => {
     setEditingId(null);
   };
 
+  // --- LIFECYCLE ---
   useEffect(() => {
     fetchRecurringList();
   }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* ── Derived analytics ── */
+  // --- ANALYTICS DERIVATION ---
   const activeCount = recurringList.filter((r) => r.isActive !== false).length;
   const pausedCount = recurringList.filter((r) => r.isActive === false).length;
+  
+  // Calculate average monthly "Burn Velocity" from all active flows
   const monthlyTotal = recurringList
     .filter((r) => r.isActive !== false)
     .reduce((sum, r) => {
@@ -176,6 +179,7 @@ export const RecurringTransactions = () => {
       if (r.frequency === "daily") return sum + r.amount * 30;
       return sum;
     }, 0);
+
   const nextDue = recurringList
     .filter((r) => r.isActive !== false && r.nextDate)
     .sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate))[0];
@@ -186,7 +190,7 @@ export const RecurringTransactions = () => {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8 text-[var(--text-primary)] pb-10"
     >
-      {/* ══ HEADER ══ */}
+      {/* ── HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent uppercase">
@@ -208,13 +212,13 @@ export const RecurringTransactions = () => {
         </div>
       </div>
 
-      {/* ══ ANALYTICS GRID ══ */}
+      {/* ── ANALYTICS GRID ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {[
           {
             label: "Total Vectors",
             value: recurringList.length,
-            suffix: "PROTOCALS",
+            suffix: "PROTOCOLS",
             color: "text-cyan-500",
             bg: "bg-cyan-500/10",
             border: "border-cyan-500/20",
@@ -290,7 +294,8 @@ export const RecurringTransactions = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* ── CONSTRUCT MODULE (FORM) ── */}
+        
+        {/* Construct Module (Form) */}
         <div className="lg:col-span-5">
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
@@ -404,7 +409,7 @@ export const RecurringTransactions = () => {
           </motion.div>
         </div>
 
-        {/* ── OPERATION LEDGER (LIST) ── */}
+        {/* Operation Ledger (List) */}
         <div className="lg:col-span-7 space-y-6">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-3">
@@ -500,7 +505,7 @@ export const RecurringTransactions = () => {
 
                         {/* Value + Actions */}
                         <div className="flex flex-col sm:items-end gap-4 w-full sm:w-auto">
-                          <p className="text-2xl font-black tracking-tighter text-emerald-500 group-hover:scale-105 transition-transform origin-right">
+                           <p className="text-2xl font-black tracking-tighter text-emerald-500 group-hover:scale-105 transition-transform origin-right">
                             ₹{Number(item.amount).toLocaleString("en-IN")}
                           </p>
                           <div className="flex items-center gap-1.5 bg-[var(--surface-tertiary)]/50 p-1.5 rounded-2xl border border-[var(--border)] self-start sm:self-auto">
@@ -545,3 +550,4 @@ export const RecurringTransactions = () => {
     </motion.div>
   );
 };
+

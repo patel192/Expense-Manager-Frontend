@@ -17,7 +17,13 @@ import {
   FiInbox,
 } from "react-icons/fi";
 
-/* ─── Shimmer skeleton ─── */
+/**
+ * --- TRANSACTION LEDGER ---
+ * The historical record of all financial movements (Inflow vs Outflow).
+ * Features advanced filtering, grouping by date, and efficiency scoring.
+ */
+
+// --- ATOMIC UI: LOADING STATES ---
 const Shimmer = ({ className = "" }) => (
   <div
     className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}
@@ -29,7 +35,6 @@ const Shimmer = ({ className = "" }) => (
   </div>
 );
 
-/* ─── Loading skeleton ─── */
 const TransactionSkeleton = () => (
   <div className="space-y-4 p-6">
     {[1, 2, 3, 4, 5].map((i) => (
@@ -45,22 +50,28 @@ const TransactionSkeleton = () => (
   </div>
 );
 
+// --- MAIN COMPONENT ---
 export const Transaction = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const { transactions, summary, loading } = useSelector(
     (state) => state.transaction,
   );
+  
+  // --- STATE & CONFIG ---
   const [activeTab, setActiveTab] = useState("All");
-
   const tabTypes = { All: null, Expenses: "Expense", Incomes: "Income" };
   const userId = useMemo(() => user?._id, [user]);
 
+  // --- LIFECYCLE ---
   useEffect(() => {
     if (!userId) return;
     dispatch(fetchTransactions(userId));
   }, [dispatch, userId]);
 
+  // --- DATA PROCESSING ---
+
+  // Filter based on selected tab and sort by date descending
   const filteredSorted = useMemo(() => {
     const filtered = tabTypes[activeTab]
       ? transactions.filter((t) => t.type === tabTypes[activeTab])
@@ -68,6 +79,7 @@ export const Transaction = () => {
     return [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [activeTab, transactions]);
 
+  // Group entries into date-based sections for better readability
   const groupedByDate = useMemo(() => {
     return filteredSorted.reduce((acc, t) => {
       const date = new Date(t.date).toLocaleDateString("en-IN", {
@@ -82,6 +94,7 @@ export const Transaction = () => {
     }, {});
   }, [filteredSorted]);
 
+  // Handle CTA for unplanned expenses
   const handlePlanBudget = (expense) => {
     alert(
       `Initiating budget planning for ${expense.categoryID?.name || "Uncategorized"}...`,
@@ -116,7 +129,7 @@ export const Transaction = () => {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8 text-[var(--text-primary)] pb-10"
     >
-      {/* ══ HEADER ══ */}
+      {/* ── HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent uppercase">
@@ -136,7 +149,7 @@ export const Transaction = () => {
         </div>
       </div>
 
-      {/* ══ STAT CARDS ══ */}
+      {/* ── STAT CARDS ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {[
           {
@@ -208,11 +221,12 @@ export const Transaction = () => {
         ))}
       </div>
 
-      {/* ══ MAIN INTERFACE ══ */}
+      {/* ── MAIN INTERFACE ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* ── CENTRAL FEED ── */}
+        
+        {/* Central Feed */}
         <div className="lg:col-span-2 space-y-6">
-          {/* CONTROL STRIP */}
+          {/* Tab Selection */}
           <div className="flex items-center gap-1.5 bg-[var(--surface-primary)] border border-[var(--border)] rounded-[1.5rem] p-2 w-fit shadow-lg backdrop-blur-md">
             {tabs.map((tab) => (
               <button
@@ -236,7 +250,7 @@ export const Transaction = () => {
             ))}
           </div>
 
-          {/* ACTIVITY CONTAINER */}
+          {/* Activity List */}
           <div className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden backdrop-blur-md">
             {loading ? (
               <TransactionSkeleton />
@@ -268,7 +282,7 @@ export const Transaction = () => {
                 >
                   {Object.keys(groupedByDate).map((date) => (
                     <div key={date}>
-                      {/* TEMPORAL MARKER */}
+                      {/* TEMPORAL MARKER (Section Header) */}
                       <div
                         className={`flex items-center gap-4 px-8 py-5 bg-[var(--surface-secondary)]/30`}
                       >
@@ -282,7 +296,7 @@ export const Transaction = () => {
                         </span>
                       </div>
 
-                      {/* OPERATION ENTRIES */}
+                      {/* INDIVIDUAL ENTRIES */}
                       <div className="divide-y divide-[var(--border)]/50">
                         {groupedByDate[date].map((t, i) => (
                           <motion.div
@@ -292,7 +306,7 @@ export const Transaction = () => {
                             transition={{ duration: 0.3, delay: i * 0.05 }}
                             className="flex items-center gap-5 px-8 py-6 hover:bg-[var(--surface-secondary)]/50 transition-all group"
                           >
-                            {/* VECTOR ICON */}
+                            {/* Direction Icon */}
                             <div
                               className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border shadow-inner transition-transform group-hover:scale-110
                               ${t.type === "Income" ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20"}`}
@@ -310,7 +324,7 @@ export const Transaction = () => {
                               )}
                             </div>
 
-                            {/* CORE TELEMETRY */}
+                            {/* Core Telemetry (Description/Category) */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3">
                                 <h5 className="text-sm font-black text-[var(--text-primary)] truncate uppercase tracking-tight">
@@ -333,7 +347,7 @@ export const Transaction = () => {
                               </div>
                             </div>
 
-                            {/* QUANTUM DATA */}
+                            {/* Monetary Data */}
                             <div className="flex flex-col items-end gap-3 flex-shrink-0">
                               <p
                                 className={`text-lg font-black tracking-tighter ${t.type === "Income" ? "text-emerald-500" : "text-rose-500"}`}
@@ -366,7 +380,7 @@ export const Transaction = () => {
 
         {/* ── SIDEBAR ANALYTICS ── */}
         <div className="space-y-6">
-          {/* PARAMETRIC FILTERS */}
+          {/* Quick Filters */}
           <div className="rounded-[2rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-xl overflow-hidden backdrop-blur-md">
             <div className="px-6 py-5 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50 flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
@@ -405,7 +419,7 @@ export const Transaction = () => {
             </div>
           </div>
 
-          {/* TOTALITY SUMMARY */}
+          {/* Totality Ledger */}
           <div className="rounded-[2rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-xl overflow-hidden backdrop-blur-md">
             <div className="px-6 py-5 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50 flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
@@ -450,7 +464,7 @@ export const Transaction = () => {
                 </div>
               ))}
 
-              {/* SAVINGS PROGRESS VIZ */}
+              {/* Progress Indicator */}
               <div className="pt-2">
                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest mb-3">
                   <span className="text-[var(--text-muted)]">
@@ -487,43 +501,9 @@ export const Transaction = () => {
               </div>
             </div>
           </div>
-
-          {/* STRATEGIC PROTOCOLS */}
-          <div className="rounded-[2rem] bg-gradient-to-br from-[var(--surface-primary)] to-[var(--surface-secondary)] border border-amber-500/20 shadow-xl overflow-hidden">
-            <div className="px-6 py-5 border-b border-amber-500/10 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
-                <FiZap size={14} className="text-amber-500" />
-              </div>
-              <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">
-                Operational Protocols
-              </h4>
-            </div>
-            <div className="p-6 space-y-4">
-              {[
-                {
-                  icon: <FiTarget className="text-amber-500" />,
-                  text: 'Convert "Ad-Hoc" entries to "Strategic" assets.',
-                },
-                {
-                  icon: <FiFilter className="text-amber-500" />,
-                  text: "Isolate vectors via parametric matrix.",
-                },
-                {
-                  icon: <FiRefreshCw className="text-amber-500" />,
-                  text: "Audit temporal trends monthly.",
-                },
-              ].map((tip, i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <span className="flex-shrink-0 mt-0.5">{tip.icon}</span>
-                  <p className="text-[11px] font-bold text-[var(--text-secondary)] leading-relaxed tracking-tight">
-                    {tip.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </motion.div>
   );
 };
+

@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../components/Utils/axiosInstance";
 
+/**
+ * --- ASYNC ACTIONS (THUNKS) ---
+ * These handle fetching data from the backend.
+ */
+
+// Grab all available expense categories
 export const fetchCategories = createAsyncThunk(
   "expense/fetchCategories",
   async () => {
@@ -9,6 +15,7 @@ export const fetchCategories = createAsyncThunk(
   },
 );
 
+// Get a few of the most recent expenses for the dashboard
 export const fetchRecentExpenses = createAsyncThunk(
   "expense/fetchRecentExpenses",
   async (userId) => {
@@ -18,6 +25,7 @@ export const fetchRecentExpenses = createAsyncThunk(
   },
 );
 
+// Fetch the full history of expenses with optional filters (dates, etc.)
 export const fetchAllExpenses = createAsyncThunk(
   "expense/fetchAllExpenses",
   async ({ userId, filters = {} }) => {
@@ -29,28 +37,36 @@ export const fetchAllExpenses = createAsyncThunk(
     return res.data.data || res.data || [];
   },
 );
+
 const initialState = {
   categories: [],
   recentExpenses: [],
   expenses: [],
   loading: false,
 };
+
+/**
+ * --- EXPENSE SLICE ---
+ */
 const expenseSlice = createSlice({
   name: "expense",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Categories
       .addCase(fetchCategories.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        ((state.loading = false), (state.categories = action.payload));
+        state.loading = false;
+        state.categories = action.payload;
       })
       .addCase(fetchCategories.rejected, (state) => {
         state.loading = false;
       })
 
+      // Recent Expenses
       .addCase(fetchRecentExpenses.pending, (state) => {
         state.loading = true;
       })
@@ -62,6 +78,7 @@ const expenseSlice = createSlice({
         state.loading = false;
       })
 
+      // Full Expense History
       .addCase(fetchAllExpenses.pending, (state) => {
         state.loading = true;
       })
@@ -74,4 +91,6 @@ const expenseSlice = createSlice({
       });
   },
 });
+
 export default expenseSlice.reducer;
+

@@ -40,7 +40,14 @@ import {
   FiAlignLeft,
 } from "react-icons/fi";
 
-/* ─── Shimmer ─── */
+/**
+ * --- BUDGET CENTER ---
+ * The central command for financial planning and allocation.
+ * Features: Overview, AI-driven Planning, Analytics, and Budget Management.
+ */
+
+// --- ATOMIC UI & SHARED COMPONENTS ---
+
 const Shimmer = ({ className = "" }) => (
   <div
     className={`relative overflow-hidden bg-[var(--surface-tertiary)] rounded-xl ${className}`}
@@ -52,7 +59,6 @@ const Shimmer = ({ className = "" }) => (
   </div>
 );
 
-/* ─── Custom chart tooltip ─── */
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
@@ -69,7 +75,6 @@ const ChartTooltip = ({ active, payload, label }) => {
   );
 };
 
-/* ─── Budget progress bar ─── */
 const BudgetProgress = ({ pct }) => {
   const color =
     pct >= 90
@@ -89,7 +94,6 @@ const BudgetProgress = ({ pct }) => {
   );
 };
 
-/* ─── Field wrapper ─── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
     <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider ml-1">
@@ -112,6 +116,7 @@ const Field = ({ label, icon, error, children }) => (
   </div>
 );
 
+// --- CONFIG & UTILS ---
 const inputCls =
   "w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-4 focus:ring-emerald-500/10 hover:bg-[var(--surface-tertiary)] transition-all duration-200 shadow-sm";
 const selectCls =
@@ -127,15 +132,16 @@ const COLORS = [
   "#8b5cf6",
 ];
 
+// --- MAIN COMPONENT ---
 export const UserBudget = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const { budgets, summary, categories, budgetPlan } = useSelector(
     (state) => state.budget,
   );
-
   const userId = user?._id ?? null;
 
+  // --- UI STATE ---
   const [activeTab, setActiveTab] = useState("overview");
   const [loadingPlan, setLoadingPlan] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -149,12 +155,9 @@ export const UserBudget = () => {
     description: "",
   });
 
-  useEffect(() => {
-    if (!userId) return;
-    dispatch(fetchCategories());
-    dispatch(fetchBudgetData(userId));
-  }, [dispatch, userId]);
+  // --- ACTIONS & HANDLERS ---
 
+  // Generate an AI-optimized budget plan based on historical data
   const handleGeneratePlan = async () => {
     try {
       setLoadingPlan(true);
@@ -164,6 +167,7 @@ export const UserBudget = () => {
     }
   };
 
+  // Persist a new budget limit to the database
   const handleAddBudget = async (e) => {
     e.preventDefault();
     if (!userId) return;
@@ -184,6 +188,7 @@ export const UserBudget = () => {
     }
   };
 
+  // Remove a budget limit from the registry
   const handleDeleteBudget = async () => {
     if (!selectedBudget) return;
     try {
@@ -199,6 +204,14 @@ export const UserBudget = () => {
     }
   };
 
+  // --- LIFECYCLE ---
+  useEffect(() => {
+    if (!userId) return;
+    dispatch(fetchCategories());
+    dispatch(fetchBudgetData(userId));
+  }, [dispatch, userId]);
+
+  // --- ANALYTICS DERIVATION ---
   const totalAllocated = summary.reduce((s, i) => s + i.allocated, 0);
   const totalSpent = summary.reduce((s, i) => s + i.spent, 0);
   const totalRemaining = summary.reduce((s, i) => s + i.remaining, 0);
@@ -211,6 +224,7 @@ export const UserBudget = () => {
     { id: "manage", label: "Manage", icon: <FiSettings size={14} /> },
   ];
 
+  // --- INITIAL LOADING STATE ---
   if (!userId) {
     return (
       <div className="space-y-6">
@@ -234,7 +248,7 @@ export const UserBudget = () => {
 
   return (
     <div className="space-y-6 text-[var(--text-primary)]">
-      {/* ══ HEADER ══ */}
+      {/* ── HEADER ── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -259,7 +273,7 @@ export const UserBudget = () => {
         </button>
       </motion.div>
 
-      {/* ══ STAT CARDS ══ */}
+      {/* ── STAT CARDS ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
@@ -335,7 +349,7 @@ export const UserBudget = () => {
         ))}
       </div>
 
-      {/* ══ PILL TABS ══ */}
+      {/* ── PILL TABS ── */}
       <div className="flex items-center gap-1 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap shadow-sm">
         {tabs.map((tab) => (
           <button
@@ -354,9 +368,9 @@ export const UserBudget = () => {
         ))}
       </div>
 
-      {/* ══ TAB CONTENT ══ */}
+      {/* ── TAB CONTENT ── */}
       <AnimatePresence mode="wait">
-        {/* ─── OVERVIEW ─── */}
+        {/* --- OVERVIEW --- */}
         {activeTab === "overview" && (
           <motion.div
             key="overview"
@@ -454,7 +468,7 @@ export const UserBudget = () => {
           </motion.div>
         )}
 
-        {/* ─── ANALYTICS ─── */}
+        {/* --- ANALYTICS --- */}
         {activeTab === "analytics" && (
           <motion.div
             key="analytics"
@@ -599,7 +613,7 @@ export const UserBudget = () => {
           </motion.div>
         )}
 
-        {/* ─── AI PLANNER ─── */}
+        {/* --- AI PLANNER --- */}
         {activeTab === "ai planner" && (
           <motion.div
             key="ai planner"
@@ -795,7 +809,7 @@ export const UserBudget = () => {
           </motion.div>
         )}
 
-        {/* ─── MANAGE ─── */}
+        {/* --- MANAGE --- */}
         {activeTab === "manage" && (
           <motion.div
             key="manage"
@@ -878,7 +892,7 @@ export const UserBudget = () => {
         )}
       </AnimatePresence>
 
-      {/* ══ ADD BUDGET MODAL ══ */}
+      {/* ── ADD BUDGET MODAL ── */}
       <Transition appear show={isModalOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -1012,7 +1026,7 @@ export const UserBudget = () => {
         </Dialog>
       </Transition>
 
-      {/* ══ DELETE CONFIRM MODAL ══ */}
+      {/* ── DELETE CONFIRM MODAL ── */}
       <Transition appear show={confirmDeleteOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -1090,3 +1104,4 @@ export const UserBudget = () => {
     </div>
   );
 };
+

@@ -21,6 +21,12 @@ import {
   FiRefreshCw,
 } from "react-icons/fi";
 
+/**
+ * --- LOGIN COMPONENT ---
+ * This handles authenticating users and redirecting them to the correct dashboard.
+ */
+
+
 /* ── REUSABLE FIELD WRAPPER ── */
 const Field = ({ label, icon, error, children }) => (
   <div className="space-y-1.5">
@@ -57,10 +63,12 @@ export const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  /* ── ALL ORIGINAL LOGIC — UNTOUCHED ── */
+  // --- FORM SUBMISSION LOGIC ---
   const submitHandler = async (data) => {
     let wakingUpToast = null;
 
+    // If the backend (e.g. Render/Railway) is sleeping, let the user know 
+    // so they don't think the app is broken.
     const wakingUpTimer = setTimeout(() => {
       wakingUpToast = toast.info(
         "Backend is waking up... this might take a minute.",
@@ -72,11 +80,15 @@ export const Login = () => {
     }, 10000);
 
     try {
+      // Send credentials to the server
       const res = await axiosInstance.post("/user/login", data);
+      
+      // Cleanup the "waking up" notice if it triggered
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
 
       if (res.status === 200) {
+        // Extract user data regardless of API response nesting
         const user =
           res.data.data && res.data.data._id
             ? res.data.data
@@ -86,25 +98,25 @@ export const Login = () => {
 
         const loginData = { user, role, token };
 
+        // Safety check to ensure we actually got a user object back
         if (!loginData.user || !loginData.user._id) {
-          console.error(
-            "User details missing or invalid in API response:",
-            res.data,
-          );
-          toast.error("Login failed: User details not found in response.", {
+          console.error("Incomplete user data from API:", res.data);
+          toast.error("Login failed: Missing user details.", {
             position: "top-center",
             autoClose: 3000,
           });
           return;
         }
 
-        toast.success("Login successful!", {
+        toast.success("Login successful! Welcome back.", {
           position: "top-center",
           autoClose: 2000,
         });
 
+        // Store the user info in our global Redux state
         dispatch(loginSuccess(loginData));
 
+        // Send Admins and Users to their respective homes
         if (role === "Admin") {
           navigate("/admin/admindashboard");
         } else {
@@ -115,6 +127,7 @@ export const Login = () => {
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
 
+      // Handle common errors like wrong password or server timeout
       const errorMessage =
         error.response?.data?.message ||
         (error.code === "ECONNABORTED"
@@ -127,6 +140,7 @@ export const Login = () => {
       });
     }
   };
+
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8 bg-[var(--bg)] text-[var(--text-primary)] relative overflow-hidden transition-colors duration-300">
