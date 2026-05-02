@@ -1,21 +1,33 @@
+// =============== Core Imports ===============
 import { Route, Routes, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
+// =============== Global Styles  ===============
 import "./App.css";
 import "./index.css";
 
-import { Login } from "./Login";
-import { Signup } from "./Signup";
+// =============== Common Components  ===============
+import GlobalLoader from "./components/Common/GlobalLoader";
 import { Content } from "./components/Common/Content";
 import { PublicLayout } from "./components/Layouts/PublicLayout";
 import { PrivateRoutes } from "./components/Hooks/PrivateRoutes";
+
+// =============== Auth Pages  ===============
+import { Login } from "./Login";
+import { Signup } from "./Signup";
+
+// =============== User Cmponments ===============
+import { UserDashboardLayout } from "./components/User/UserDashboardLayout";
+import { UserDashboard } from "./components/User/UserDashboard";
+import { UserExpenses } from "./components/User/Expense/UserExpenses";
 import { UserBudget } from "./components/User/Budget/UserBudget";
 import { UserIncome } from "./components/User/Income/UserIncome";
-import GlobalLoader from "./components/Common/GlobalLoader";
-
-import { UserExpenses } from "./components/User/Expense/UserExpenses";
+import { RecurringTransactions } from "./components/User/RecurringTransactions";
 import { Reports } from "./components/User/Reports";
 import { Transaction } from "./components/User/Transaction";
-import { UserDashboard } from "./components/User/UserDashboard";
 
+// =============== Admin Components  ===============
+import { AdminDashboardLayout } from "./components/Admin/AdminDashboardLayout";
 import { AdminDashboard } from "./components/Admin/AdminDashboard";
 import { AccessControl } from "./components/Admin/AccessControl";
 import { ManageCategories } from "./components/Admin/ManageCategories";
@@ -25,14 +37,12 @@ import { Systemlog } from "./components/Admin/Systemlog";
 import { UserDetails } from "./components/Admin/UserDetails";
 import { Account } from "./components/Admin/Account";
 
-import { useEffect } from "react";
-import { UserDashboardLayout } from "./components/User/UserDashboardLayout";
-import { AdminDashboardLayout } from "./components/Admin/AdminDashboardLayout";
-import { RecurringTransactions } from "./components/User/RecurringTransactions";
+// =============== App Component  ===============
 
 function App() {
   const location = useLocation();
 
+  // Update body layout class based on current route
   useEffect(() => {
     if (location.pathname === "/login" || location.pathname === "/signup") {
       document.body.className = "auth-page";
@@ -45,8 +55,11 @@ function App() {
     }
   }, [location.pathname]);
 
+  // =============== Routes  ===============
+
   return (
     <>
+      {/* Global Loading Indicator */}
       <GlobalLoader />
       <Routes>
         {/* Public Routes */}

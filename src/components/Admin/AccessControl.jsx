@@ -1,17 +1,28 @@
+// ================ Imports ================
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { motion } from "framer-motion";
+
 import { FaSearch } from "react-icons/fa";
 import { FiChevronLeft, FiShield } from "react-icons/fi";
-import { motion } from "framer-motion";
-import { useSelector, useDispatch } from "react-redux";
+
 import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
+
+// ================ Components ================
 export const AccessControl = () => {
   const dispatch = useDispatch();
+
+  // ================= Redux State ======================
   const { users, loading } = useSelector((state) => state.user);
+
+  // ===================Local State ========================
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 6;
 
+  // ========================= Effects =========================
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -22,6 +33,9 @@ export const AccessControl = () => {
     Manager: "from-emerald-400 to-teal-500 text-[var(--text-primary)]",
   };
 
+  // ========================= Derived Data =========================
+
+  // Apply Search and Role Filters
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -31,6 +45,16 @@ export const AccessControl = () => {
     return matchesSearch && matchesRole;
   });
 
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
+  );
+
+  // ========================= Handlers =========================
+
+  // Remove user from system
   const handleDelete = async (userId) => {
     if (!window.confirm("Delete this user?")) return;
     try {
@@ -40,15 +64,14 @@ export const AccessControl = () => {
     }
   };
 
-  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
-  const paginatedUsers = filteredUsers.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
+  // ========================= Loading State =========================
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        {/* Spinner */}
         <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
+
+        {/* Status text */}
         <p className="text-xs font-bold text-cyan-500/60 uppercase tracking-widest animate-pulse">
           Syncing Permissions...
         </p>
@@ -56,6 +79,7 @@ export const AccessControl = () => {
     );
   }
 
+  // ========================= Render =========================
   return (
     <div className="pb-10">
       {/* ======= Header ======= */}
@@ -69,6 +93,8 @@ export const AccessControl = () => {
             clearance levels and active status.
           </p>
         </div>
+
+        {/* System status indicator */}
         <div className="flex items-center gap-3 bg-[var(--surface-secondary)] border border-[var(--border)] px-4 py-2 rounded-xl">
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
           <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
@@ -83,6 +109,7 @@ export const AccessControl = () => {
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 mb-8 bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md rounded-3xl shadow-2xl"
       >
+        {/* Search input */}
         <div className="md:col-span-2 relative group">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-400 transition-colors" />
           <input
@@ -97,6 +124,7 @@ export const AccessControl = () => {
           />
         </div>
 
+        {/* Role filter */}
         <div className="relative">
           <select
             value={filterRole}

@@ -1,8 +1,11 @@
-import React from "react";
-import { Navbar } from "../Common/Navbar";
+// =============== Imports ===============
 import { Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Navbar } from "../Common/Navbar";
 
+// =============== Animation Config ===============
+
+// Reusable page transition animation
 export const PublicLayout = () => {
   return (
     <div
@@ -14,6 +17,8 @@ export const PublicLayout = () => {
   overflow-hidden
 "
     >
+      {/* Decorative background glow */}
+
       <div
         className="
   absolute
@@ -27,8 +32,9 @@ export const PublicLayout = () => {
   pointer-events-none
 "
       />
+      {/* Public navigation bar */}
       <Navbar />
-      {/* Page wrapper */}
+      {/* Page content container */}
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}

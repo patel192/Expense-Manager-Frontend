@@ -1,6 +1,9 @@
-// src/axiosConfig.js
+// =============== Imports  ===============
 import axios from "axios";
 
+// =============== API Configuration  ===============
+
+// Base API URL from environment variable
 const instance = axios.create({
   baseURL: "https://learn-25-node.onrender.com/api",
 });
