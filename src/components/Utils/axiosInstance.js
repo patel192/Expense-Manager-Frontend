@@ -16,7 +16,7 @@ export const injectStore = (_store) => {
 };
 
 const axiosInstance = axios.create({
-  baseURL: "https://learn-25-node.onrender.com/api",
+  baseURL: "https://learn-25-node-1.onrender.com/api",
   timeout: 120000,
   withCredentials: true, // Crucial for sending/receiving HttpOnly cookies
   headers: {
@@ -70,7 +70,7 @@ axiosInstance.interceptors.response.use(
       config._retry = true;
       try {
         const refreshRes = await axios.post(
-          "https://learn-25-node.onrender.com/api/user/refresh-token",
+          "https://learn-25-node-1.onrender.com/api/user/refresh-token",
           {},
           { withCredentials: true },
         );
