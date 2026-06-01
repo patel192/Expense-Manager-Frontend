@@ -65,7 +65,6 @@ export const Login = () => {
 
   // --- FORM SUBMISSION LOGIC ---
   const submitHandler = async (data) => {
-    console.log("Submit Hit")
     let wakingUpToast = null;
 
     // If the backend (e.g. Render/Railway) is sleeping, let the user know 
@@ -84,7 +83,7 @@ export const Login = () => {
       // Send credentials to the server
     alert("Submit Handler Working")
       const res = await axiosInstance.post("/user/login", data);
-      console.log("Login response:",res)
+      alert("Login response:" + JSON.stringify(res.data));
       // Cleanup the "waking up" notice if it triggered
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
@@ -126,6 +125,7 @@ export const Login = () => {
         }
       }
     } catch (error) {
+      alert("Login error:" + JSON.stringify(error));
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
 
