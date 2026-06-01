@@ -82,7 +82,7 @@ export const Login = () => {
 
     try {
       // Send credentials to the server
-      console.log("Sending login request with data:",data)
+    alert("Submit Handler Working")
       const res = await axiosInstance.post("/user/login", data);
       console.log("Login response:",res)
       // Cleanup the "waking up" notice if it triggered
