@@ -5,7 +5,7 @@ import axios from "axios";
 
 // Base API URL from environment variable
 const instance = axios.create({
-  baseURL: "https://learn-25-node.onrender.com/api",
+  baseURL: "https://learn-25-node-1.onrender.com/api",
 });
 
 // Attach token automatically
