@@ -65,6 +65,7 @@ export const Login = () => {
 
   // --- FORM SUBMISSION LOGIC ---
   const submitHandler = async (data) => {
+    console.log("Submit Hit")
     let wakingUpToast = null;
 
     // If the backend (e.g. Render/Railway) is sleeping, let the user know 
@@ -81,8 +82,9 @@ export const Login = () => {
 
     try {
       // Send credentials to the server
+      console.log("Sending login request with data:",data)
       const res = await axiosInstance.post("/user/login", data);
-      
+      console.log("Login response:",res)
       // Cleanup the "waking up" notice if it triggered
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
