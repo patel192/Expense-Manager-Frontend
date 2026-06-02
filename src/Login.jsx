@@ -81,9 +81,7 @@ export const Login = () => {
 
     try {
       // Send credentials to the server
-    alert("Submit Handler Working")
       const res = await axiosInstance.post("/user/login", data);
-      alert("Login response:" + JSON.stringify(res.data));
       // Cleanup the "waking up" notice if it triggered
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
@@ -125,7 +123,6 @@ export const Login = () => {
         }
       }
     } catch (error) {
-      alert("Login error:" + JSON.stringify(error));
       clearTimeout(wakingUpTimer);
       if (wakingUpToast) toast.dismiss(wakingUpToast);
 

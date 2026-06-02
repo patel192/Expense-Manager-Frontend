@@ -64,9 +64,16 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const { config, response } = error;
 
+    // Check if the request is an authentication-related or public request
+    const isAuthRequest = config.url?.includes("/login") ||
+                          config.url?.includes("/forgotpassword") ||
+                          config.url?.includes("/resetpassword") ||
+                          config.url?.includes("/logout") ||
+                          (config.url?.endsWith("/user") && config.method?.toLowerCase() === "post");
+
     // --- CASE 1: TOKEN EXPIRED (401) ---
     // If we get a 401, we try to refresh the token once before giving up
-    if (response?.status === 401 && !config._retry) {
+    if (response?.status === 401 && !config._retry && !isAuthRequest) {
       config._retry = true;
       try {
         const refreshRes = await axios.post(
