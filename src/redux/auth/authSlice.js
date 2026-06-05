@@ -63,6 +63,12 @@ const authSlice = createSlice({
       localStorage.setItem("token", action.payload);
     },
 
+    // Merge updated user fields (e.g. profilePic) into auth state
+    updateUser: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+      localStorage.setItem("user", JSON.stringify(state.user));
+    },
+
     // Wipe everything (Local state + Storage)
     logout: (state) => {
       state.user = null;
@@ -91,6 +97,6 @@ const authSlice = createSlice({
     });
   },
 });
-export const { loginSuccess, logout, setLoading, updateToken } =
+export const { loginSuccess, logout, setLoading, updateToken, updateUser } =
   authSlice.actions;
 export default authSlice.reducer;

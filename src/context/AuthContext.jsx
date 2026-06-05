@@ -48,6 +48,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = (updatedData) => {
+    const merged = { ...user, ...updatedData };
+    setUser(merged);
+    localStorage.setItem("user", JSON.stringify(merged));
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -59,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

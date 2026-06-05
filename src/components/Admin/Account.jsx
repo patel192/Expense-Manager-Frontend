@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateUser as updateAuthUser } from "../../redux/auth/authSlice";
+import { useAuth } from "../../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiCamera,
@@ -34,8 +37,8 @@ export const Account = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
 
-  const CLOUD_NAME = "dfaou6haj";
-  const UPLOAD_PRESET = "My_Images";
+  const dispatch = useDispatch();
+  const { updateUser: updateContextUser } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -71,28 +74,36 @@ export const Account = () => {
   const handleSave = async () => {
     try {
       setLoading(true);
-      let uploadedImageUrl = user.profilePic;
 
+      // Upload profile picture to S3 via backend if a new file was selected
       if (selectedFile) {
         const formData = new FormData();
-        formData.append("file", selectedFile);
-        formData.append("upload_preset", UPLOAD_PRESET);
+        formData.append("profilePic", selectedFile);
 
         const uploadRes = await axiosInstance.post(
-          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          `/user/upload-profile/${userId}`,
           formData,
+          { headers: { "Content-Type": "multipart/form-data" } },
         );
-        uploadedImageUrl = uploadRes.data.secure_url;
+        // Update local state with the new S3 URL returned by backend
+        user.profilePic = uploadRes.data.data.profilePic;
       }
 
+      // Save profile text fields (name, email, bio) along with the updated pic URL
       const res = await axiosInstance.put(`/user/${userId}`, {
         name: user.name,
         email: user.email,
         bio: user.bio,
-        profilePic: uploadedImageUrl,
+        profilePic: user.profilePic,
       });
 
-      setUser(res.data.data);
+      const updatedUser = res.data.data;
+      setUser(updatedUser);
+
+      // Sync updated user data across AuthContext and Redux
+      updateContextUser(updatedUser);
+      dispatch(updateAuthUser(updatedUser));
+
       setPreview(null);
       setSelectedFile(null);
       setIsEditing(false);
