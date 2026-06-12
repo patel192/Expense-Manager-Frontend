@@ -4,9 +4,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "./components/Utils/axiosInstance";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { motion } from "framer-motion";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 
 export const ResetPassword = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { token } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -39,40 +52,142 @@ export const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-200 px-4">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        bgcolor: "background.default",
+        color: "text.primary",
+        px: 2,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       <ToastContainer transition={Bounce} />
-      <div className="bg-white shadow-xl rounded-lg w-full max-w-md p-8">
-        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          Reset Password
-        </h2>
-        <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
-          <div>
-            <label className="block text-gray-600 mb-1">New Password</label>
-            <input
-              type="password"
-              placeholder="Enter new password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: { value: 8, message: "Minimum 8 characters" },
-              })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-              required
-            />
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 text-[var(--text)] rounded-lg font-semibold shadow-md transition-all ${
-              loading
-                ? "bg-purple-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700"
-            }`}
-          >
-            {loading ? "Updating..." : "Reset Password"}
-          </button>
-        </form>
-      </div>
-    </div>
+      {/* Decorative ambient lights */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: -160,
+          right: -160,
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          bgcolor: "cyan.main",
+          opacity: 0.1,
+          filter: "blur(120px)",
+          pointerEvents: "none",
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: -160,
+          left: -160,
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          bgcolor: "primary.main",
+          opacity: 0.1,
+          filter: "blur(120px)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <Container maxWidth="xs" sx={{ position: "relative", zIndex: 1 }}>
+        <Paper
+          component={motion.div}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          elevation={4}
+          sx={{
+            p: 4,
+            borderRadius: 6,
+            border: 1,
+            borderColor: "divider",
+            bgcolor: "background.paper",
+          }}
+        >
+          <Stack spacing={3}>
+            <Box textAlign="center">
+              <Typography
+                variant="h5"
+                component="h1"
+                sx={{ fontWeight: "bold", tracking: "-0.01em" }}
+              >
+                Reset Password
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Enter your new password below.
+              </Typography>
+            </Box>
+
+            <Box component="form" onSubmit={handleSubmit(submitHandler)} noValidate>
+              <Stack spacing={3}>
+                <TextField
+                  fullWidth
+                  label="New Password"
+                  type="password"
+                  placeholder="Enter new password"
+                  variant="outlined"
+                  required
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: { value: 8, message: "Minimum 8 characters" },
+                  })}
+                  slotProps={{
+                    inputLabel: { shrink: true }
+                  }}
+                />
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={loading}
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 3,
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    background: "linear-gradient(to right, var(--mui-palette-cyan-main, #00acc1), var(--mui-palette-primary-main, #1976d2))",
+                    color: "white",
+                    "&:hover": {
+                      opacity: 0.9,
+                    },
+                  }}
+                >
+                  {loading ? (
+                    <CircularProgress size={24} sx={{ color: "white" }} />
+                  ) : (
+                    "Reset Password"
+                  )}
+                </Button>
+
+                <Box sx={{ textAlign: "center" }}>
+                  <Link
+                    component={RouterLink}
+                    to="/login"
+                    variant="body2"
+                    color="cyan.main"
+                    underline="hover"
+                    sx={{ fontWeight: "bold" }}
+                  >
+                    Back to Sign In
+                  </Link>
+                </Box>
+              </Stack>
+            </Box>
+          </Stack>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
+

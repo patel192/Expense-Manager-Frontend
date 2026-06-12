@@ -1,4 +1,3 @@
-// AdminDashboard.jsx
 import { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers } from "../../redux/user/userSlice";
@@ -16,6 +15,26 @@ import {
   CartesianGrid,
 } from "recharts";
 import { motion } from "framer-motion";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Avatar from "@mui/material/Avatar";
+import Skeleton from "@mui/material/Skeleton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+
+// ================ Icons ================
 import {
   FiUsers,
   FiActivity,
@@ -28,6 +47,8 @@ import {
   FiBarChart2,
   FiDatabase,
 } from "react-icons/fi";
+
+const COLORS = ["#22d3ee", "#6366f1", "#10b981", "#f59e0b", "#f43f5e"];
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -68,18 +89,8 @@ export const AdminDashboard = () => {
   const financialTrend = useMemo(() => {
     const trend = {};
     const monthsOrder = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ];
 
     transactions.forEach((t) => {
@@ -112,443 +123,439 @@ export const AdminDashboard = () => {
     });
   }, [transactions, txSearch, filterType]);
 
-  const COLORS = ["#22d3ee", "#6366f1", "#10b981", "#f59e0b", "#f43f5e"];
-
   if (loadingDashboard) return <DashboardSkeleton />;
 
   return (
-    <div className="space-y-10 pb-20">
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 5, pb: 10 }}>
+      
       {/* ---------- HEADER ---------- */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-2">
-            System <span className="text-cyan-400">Intelligence</span>
-          </h1>
-          <p className="text-[var(--text-secondary)] text-sm max-w-md leading-relaxed">
-            Real-time infrastructure overview, system-wide financial flow, and
-            operational audit trail.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400 tracking-widest flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            LIVE SYSTEM FEED
-          </div>
-        </div>
-      </div>
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        justifyContent="between"
+        alignItems={{ xs: "flex-start", md: "flex-end" }}
+        spacing={3}
+      >
+        <Box>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: "bold", tracking: "-0.02em" }}>
+            System{" "}
+            <Box component="span" sx={{ color: "cyan.main" }}>
+              Intelligence
+            </Box>
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ maxW: 440, mt: 1, lineHeight: 1.6 }}>
+            Real-time infrastructure overview, system-wide financial flow, and operational audit trail.
+          </Typography>
+        </Box>
+        <Box>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{
+              px: 2,
+              py: 1,
+              borderRadius: 3,
+              bgcolor: "cyan.main",
+              opacity: 0.1,
+              border: 1,
+              borderColor: "cyan.main",
+            }}
+          >
+            <Box
+              component="span"
+              className="animate-pulse"
+              sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "cyan.main" }}
+            />
+            <Typography variant="caption" sx={{ fontWeight: "bold", letterSpacing: "0.15em", color: "cyan.main" }}>
+              LIVE SYSTEM FEED
+            </Typography>
+          </Stack>
+        </Box>
+      </Stack>
 
       {/* ---------- CORE SYSTEM PILLARS (KPIs) ---------- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <Grid container spacing={3}>
         {[
-          {
-            label: "Total Registrations",
-            value: users.length,
-            icon: <FiUsers />,
-            color: "from-cyan-500/10 to-blue-600/5",
-            accent: "text-cyan-400",
-          },
-          {
-            label: "Active Transactions",
-            value: transactions.length,
-            icon: <FiActivity />,
-            color: "from-indigo-500/10 to-purple-600/5",
-            accent: "text-indigo-400",
-          },
-          {
-            label: "System Health",
-            value: "99.9%",
-            icon: <FiLayout />,
-            color: "from-emerald-500/10 to-teal-600/5",
-            accent: "text-emerald-400",
-          },
-          {
-            label: "Database Latency",
-            value: "24ms",
-            icon: <FiDatabase />,
-            color: "from-rose-500/10 to-orange-600/5",
-            accent: "text-rose-400",
-          },
+          { label: "Total Registrations", value: users.length, icon: <FiUsers />, color: "cyan.main" },
+          { label: "Active Transactions", value: transactions.length, icon: <FiActivity />, color: "primary.main" },
+          { label: "System Health", value: "99.9%", icon: <FiLayout />, color: "success.main" },
+          { label: "Database Latency", value: "24ms", icon: <FiDatabase />, color: "error.main" },
         ].map((kpi, i) => (
-          <motion.div
-            key={i}
-            whileHover={{ y: -5 }}
-            className={`p-6 rounded-[2rem] bg-gradient-to-br ${kpi.color} border border-[var(--border)] relative group overflow-hidden shadow-xl`}
-          >
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-[var(--surface-tertiary)]/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
-            <div
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-[var(--surface-secondary)] border border-[var(--border)] ${kpi.accent}`}
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={i}>
+            <Box
+              component={motion.div}
+              whileHover={{ y: -5 }}
+              sx={{
+                p: 3,
+                borderRadius: 8,
+                bgcolor: "background.paper",
+                border: 1,
+                borderColor: "divider",
+                boxShadow: 2,
+                position: "relative",
+                overflow: "hidden",
+              }}
             >
-              {kpi.icon}
-            </div>
-            <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">
-              {kpi.label}
-            </p>
-            <h3 className="text-3xl font-bold text-[var(--text-primary)]">
-              {kpi.value}
-            </h3>
-          </motion.div>
+              <Avatar
+                sx={{
+                  bgcolor: "action.hover",
+                  border: 1,
+                  borderColor: "divider",
+                  color: kpi.color,
+                  borderRadius: 4,
+                  mb: 2,
+                  width: 48,
+                  height: 48,
+                }}
+              >
+                {kpi.icon}
+              </Avatar>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                {kpi.label}
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: "bold", mt: 0.5 }}>
+                {kpi.value}
+              </Typography>
+            </Box>
+          </Grid>
         ))}
-      </div>
+      </Grid>
 
       {/* ---------- FINANCIAL SYSTEM ANALYSIS ---------- */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <Grid container spacing={3}>
+        
         {/* Financial Flow Summary Cards */}
-        <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              label: "System Inflow",
-              value: summary.totalIncome,
-              icon: <FiTrendingUp />,
-              color: "text-emerald-400",
-              bg: "bg-emerald-500/10",
-            },
-            {
-              label: "System Outflow",
-              value: summary.totalExpense,
-              icon: <FiTrendingDown />,
-              color: "text-rose-400",
-              bg: "bg-rose-500/10",
-            },
-            {
-              label: "Net Infrastructure Flow",
-              value: summary.balance,
-              icon: <FiActivity />,
-              color: "text-cyan-400",
-              bg: "bg-cyan-500/10",
-            },
-          ].map((card, i) => (
-            <div
-              key={i}
-              className="p-6 rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md flex items-center gap-6 shadow-xl"
-            >
-              <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl ${card.bg} ${card.color} border border-[var(--border)] shadow-xl`}
-              >
-                {card.icon}
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">
-                  {card.label}
-                </p>
-                <h4 className="text-2xl font-bold text-[var(--text-primary)]">
-                  ₹{card.value.toLocaleString()}
-                </h4>
-              </div>
-            </div>
-          ))}
-        </div>
+        <Grid size={12}>
+          <Grid container spacing={3}>
+            {[
+              { label: "System Inflow", value: summary.totalIncome, icon: <FiTrendingUp />, color: "success.main" },
+              { label: "System Outflow", value: summary.totalExpense, icon: <FiTrendingDown />, color: "error.main" },
+              { label: "Net Infrastructure Flow", value: summary.balance, icon: <FiActivity />, color: "cyan.main" },
+            ].map((card, i) => (
+              <Grid size={{ xs: 12, md: 4 }} key={i}>
+                <Stack
+                  direction="row"
+                  spacing={3}
+                  alignItems="center"
+                  sx={{ p: 3, borderRadius: 6, bgcolor: "background.paper", border: 1, borderColor: "divider", boxShadow: 2 }}
+                >
+                  <Avatar
+                    sx={{
+                      bgcolor: "action.hover",
+                      color: card.color,
+                      border: 1,
+                      borderColor: "divider",
+                      borderRadius: 4,
+                      width: 56,
+                      height: 56,
+                    }}
+                  >
+                    {card.icon}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                      {card.label}
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                      ₹{card.value.toLocaleString()}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
 
         {/* Global Finance Trend Chart */}
-        <div className="lg:col-span-8 p-8 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-sm relative overflow-hidden shadow-2xl">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <h3 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-                <FiBarChart2 className="text-cyan-400" />
-                System-wide Fiscal Trend
-              </h3>
-              <p className="text-xs text-[var(--text-muted)] mt-1">
-                Cross-platform revenue vs expenditure metrics
-              </p>
-            </div>
-          </div>
-          <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={financialTrend}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="var(--border)"
-                  opacity={0.3}
-                />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "var(--text-muted)", fontSize: 11 }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "var(--text-muted)", fontSize: 11 }}
-                  tickFormatter={(v) => `₹${v / 1000}k`}
-                />
-                <Tooltip
-                  cursor={{ fill: "var(--surface-tertiary)", opacity: 0.2 }}
-                  contentStyle={{
-                    background: "var(--surface-primary)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "12px",
-                    color: "var(--text-primary)",
-                  }}
-                />
-                <Bar
-                  dataKey="income"
-                  fill="#10b981"
-                  radius={[4, 4, 0, 0]}
-                  barSize={20}
-                />
-                <Bar
-                  dataKey="expense"
-                  fill="#f43f5e"
-                  radius={[4, 4, 0, 0]}
-                  barSize={20}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <Grid size={{ xs: 12, lg: 8 }}>
+          <Box sx={{ p: 4, borderRadius: 8, bgcolor: "background.paper", border: 1, borderColor: "divider", boxShadow: 3 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 4 }}>
+              <Box>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <FiBarChart2 style={{ color: "var(--mui-palette-cyan-main)" }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                    System-wide Fiscal Trend
+                  </Typography>
+                </Stack>
+                <Typography variant="caption" color="text.secondary">
+                  Cross-platform revenue vs expenditure metrics
+                </Typography>
+              </Box>
+            </Stack>
+            <Box sx={{ h: 350, w: "100%" }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={financialTrend}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--mui-palette-divider)" opacity={0.3} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "var(--mui-palette-text-secondary)", fontSize: 11 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--mui-palette-text-secondary)", fontSize: 11 }} tickFormatter={(v) => `₹${v / 1000}k`} />
+                  <Tooltip
+                    cursor={{ fill: "var(--mui-palette-action-hover)", opacity: 0.5 }}
+                    contentStyle={{
+                      background: "var(--mui-palette-background-paper)",
+                      border: "1px solid var(--mui-palette-divider)",
+                      borderRadius: "12px",
+                      color: "var(--mui-palette-text-primary)",
+                    }}
+                  />
+                  <Bar dataKey="income" fill="var(--mui-palette-success-main)" radius={[4, 4, 0, 0]} barSize={20} />
+                  <Bar dataKey="expense" fill="var(--mui-palette-error-main)" radius={[4, 4, 0, 0]} barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+          </Box>
+        </Grid>
 
         {/* Category Saturation Chart */}
-        <div className="lg:col-span-4 p-8 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-sm flex flex-col shadow-2xl">
-          <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2 flex items-center gap-2">
-            <FiPieChart className="text-indigo-400" />
-            Category Saturation
-          </h3>
-          <p className="text-xs text-[var(--text-muted)] mb-8">
-            Heavyweight sectors by investment volume
-          </p>
+        <Grid size={{ xs: 12, lg: 4 }}>
+          <Box sx={{ p: 4, borderRadius: 8, bgcolor: "background.paper", border: 1, borderColor: "divider", boxShadow: 3, h: "100%", display: "flex", flexDirection: "column" }}>
+            <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
+              <FiPieChart style={{ color: "var(--mui-palette-primary-main)" }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                Category Saturation
+              </Typography>
+            </Stack>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 4 }}>
+              Heavyweight sectors by investment volume
+            </Typography>
 
-          <div className="flex-1 min-h-[250px] relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={categoryData}
-                  innerRadius={70}
-                  outerRadius={90}
-                  paddingAngle={8}
-                  dataKey="value"
-                >
-                  {categoryData.map((_, i) => (
-                    <Cell
-                      key={i}
-                      fill={COLORS[i % COLORS.length]}
-                      stroke="none"
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--surface-primary)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "12px",
-                    color: "var(--text-primary)",
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-2xl font-bold text-[var(--text-primary)] leading-none">
-                {categoryData.length}
-              </span>
-              <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold tracking-tighter">
-                Sectors
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-3 mt-6">
-            {categoryData.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between p-3 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-2 h-2 rounded-full"
-                    style={{ background: COLORS[idx % COLORS.length] }}
+            <Box sx={{ flex: 1, minHeight: 250, position: "relative" }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={categoryData} innerRadius={70} outerRadius={90} paddingAngle={8} dataKey="value">
+                    {categoryData.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="none" />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: "var(--mui-palette-background-paper)",
+                      border: "1px solid var(--mui-palette-divider)",
+                      borderRadius: "12px",
+                      color: "var(--mui-palette-text-primary)",
+                    }}
                   />
-                  <span className="text-[11px] font-medium text-[var(--text-secondary)] truncate w-24">
-                    {item.name}
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-[var(--text-primary)]">
-                  ₹{item.value.toLocaleString()}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+                </PieChart>
+              </ResponsiveContainer>
+              <Stack alignItems="center" justifyContent="center" sx={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+                <Typography variant="h5" sx={{ fontWeight: "bold", lineHeight: 1 }}>
+                  {categoryData.length}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold", tracking: "-0.02em", textTransform: "uppercase" }}>
+                  Sectors
+                </Typography>
+              </Stack>
+            </Box>
+
+            <Stack spacing={1.5} sx={{ mt: 3 }}>
+              {categoryData.map((item, idx) => (
+                <Stack
+                  key={idx}
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{ p: 1.5, borderRadius: 4, bgcolor: "action.hover", border: 1, borderColor: "divider" }}
+                >
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: COLORS[idx % COLORS.length] }} />
+                    <Typography variant="caption" sx={{ fontWeight: 500 }} noWrap>
+                      {item.name}
+                    </Typography>
+                  </Stack>
+                  <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                    ₹{item.value.toLocaleString()}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
+          </Box>
+        </Grid>
+      </Grid>
 
       {/* ---------- UNIFIED GLOBAL LEDGER ---------- */}
-      <div className="p-8 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+      <Box sx={{ p: 4, borderRadius: 8, bgcolor: "background.paper", border: 1, borderColor: "divider", boxShadow: 3, position: "relative", overflow: "hidden" }}>
+        
+        <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", md: "center" }} spacing={3} sx={{ mb: 4 }}>
+          <Box>
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <FiGrid style={{ color: "var(--mui-palette-primary-main)" }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                Global Unified Ledger
+              </Typography>
+            </Stack>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+              Holistic record of all financial operations across the system infra.
+            </Typography>
+          </Box>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div>
-            <h3 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-3">
-              <FiGrid className="text-indigo-400" />
-              Global Unified Ledger
-            </h3>
-            <p className="text-xs text-[var(--text-muted)] mt-1">
-              Holistic record of all financial operations across the system
-              infra.
-            </p>
-          </div>
+          <Stack direction="row" flexWrap="wrap" alignItems="center" spacing={2}>
+            <TextField
+              size="small"
+              value={txSearch}
+              onChange={(e) => setTxSearch(e.target.value)}
+              placeholder="Search ledger..."
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FiSearch />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              sx={{ minWidth: 260 }}
+            />
 
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Search Bar */}
-            <div className="relative group min-w-[300px]">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-indigo-400 transition-colors" />
-              <input
-                type="text"
-                value={txSearch}
-                onChange={(e) => setTxSearch(e.target.value)}
-                placeholder="Search ledger by principal, category or hash..."
-                className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
-              />
-            </div>
-
-            {/* Type Filter */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)]">
+            <ButtonGroup size="small" color="primary">
               {["All", "Income", "Expense"].map((t) => (
-                <button
+                <Button
                   key={t}
+                  variant={filterType === t ? "contained" : "outlined"}
                   onClick={() => setFilterType(t)}
-                  className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all
-                       ${filterType === t ? "bg-indigo-500 text-[var(--text)] shadow-lg shadow-indigo-500/20" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"}`}
+                  sx={{ fontWeight: "bold", fontSize: "11px" }}
                 >
                   {t}
-                </button>
+                </Button>
               ))}
-            </div>
-          </div>
-        </div>
+            </ButtonGroup>
+          </Stack>
+        </Stack>
 
-        <div className="overflow-x-auto min-h-[400px]">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest border-b border-[var(--border)]">
-                <th className="pb-6 px-4">Principal Identity</th>
-                <th className="pb-6 px-4">Taxonomy</th>
-                <th className="pb-6 px-4">Classification</th>
-                <th className="pb-6 px-4">Transaction Quantum</th>
-                <th className="pb-6 px-4 text-right">
-                  Synchronization Timestamp
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)]/30">
+        <TableContainer sx={{ minHeight: 400 }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ "& th": { fontWeight: "bold", color: "text.secondary", fontSize: "11px", textTransform: "uppercase", tracking: "0.05em" } }}>
+                <TableCell>Principal Identity</TableCell>
+                <TableCell>Taxonomy</TableCell>
+                <TableCell>Classification</TableCell>
+                <TableCell>Transaction Quantum</TableCell>
+                <TableCell align="right">Synchronization Timestamp</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {filteredTransactions.slice(0, itemsPerPage).map((tx, idx) => (
-                <motion.tr
+                <TableRow
                   key={tx._id || idx}
+                  component={motion.tr}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="group hover:bg-[var(--surface-tertiary)]/10 transition-colors"
+                  sx={{ "&:hover": { bgcolor: "action.hover" } }}
                 >
-                  <td className="py-5 px-4 font-mono">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 border border-[var(--border)] flex items-center justify-center text-[var(--text)] font-bold text-xs shadow-lg">
+                  <TableCell>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Avatar sx={{ width: 36, height: 36, bgcolor: "grey.800", color: "common.white", fontSize: "14px", fontWeight: "bold" }}>
                         {tx.userID?.name?.charAt(0) || "U"}
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-[var(--text-primary)] group-hover:text-indigo-400 transition-colors uppercase tracking-tighter">
+                      </Avatar>
+                      <Box>
+                        <Typography variant="caption" sx={{ fontWeight: "bold", display: "block" }}>
                           {tx.userID?.name || "System Anonymous"}
-                        </p>
-                        <p className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
                           {tx.userID?.email || "N/A"}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-5 px-4">
-                    <div className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500/40" />
-                      <span className="text-xs font-semibold text-[var(--text-secondary)]">
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: "primary.light" }} />
+                      <Typography variant="caption" sx={{ fontWeight: 600 }}>
                         {tx.categoryID?.name || "General"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-5 px-4 uppercase tracking-[0.2em] text-[10px] font-black">
-                    <span
-                      className={
-                        tx.type === "Income"
-                          ? "text-emerald-500/80"
-                          : "text-rose-500/80"
-                      }
+                      </Typography>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: "bold",
+                        letterSpacing: "0.1em",
+                        color: tx.type === "Income" ? "success.main" : "error.main",
+                      }}
                     >
                       {tx.type || "Expense"}
-                    </span>
-                  </td>
-                  <td className="py-5 px-4 font-mono font-bold text-[var(--text-primary)] text-base">
-                    ₹{tx.amount?.toLocaleString()}
-                  </td>
-                  <td className="py-5 px-4 text-right text-[10px] font-medium text-[var(--text-muted)]">
-                    {new Date(tx.createdAt).toLocaleDateString()} @{" "}
-                    {new Date(tx.createdAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                </motion.tr>
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "bold", fontFamily: "monospace" }}>
+                      ₹{tx.amount?.toLocaleString()}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="caption" color="text.secondary">
+                      {new Date(tx.createdAt).toLocaleDateString()} @{" "}
+                      {new Date(tx.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
 
           {filteredTransactions.length === 0 && (
-            <div className="py-20 flex flex-col items-center justify-center grayscale opacity-30">
-              <FiDatabase size={48} className="text-[var(--text-muted)] mb-4" />
-              <p className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-widest">
+            <Stack alignItems="center" justifyContent="center" sx={{ py: 10, opacity: 0.4 }}>
+              <FiDatabase size={40} />
+              <Typography variant="caption" sx={{ fontWeight: "bold", mt: 2, textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 No matching records found in system cache
-              </p>
-            </div>
+              </Typography>
+            </Stack>
           )}
-        </div>
+        </TableContainer>
 
-        {/* Scalability: Items Per Page Toggle */}
-        <div className="mt-10 border-t border-[var(--border)] pt-6 flex items-center justify-between">
-          <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
-            Showing {Math.min(filteredTransactions.length, itemsPerPage)} of{" "}
-            {filteredTransactions.length} system entries
-          </p>
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+        {/* Scalability Pagination */}
+        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 4, pt: 3, borderTop: 1, borderColor: "divider" }}>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold" }}>
+            Showing {Math.min(filteredTransactions.length, itemsPerPage)} of {filteredTransactions.length} entries
+          </Typography>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold" }}>
               Page Size:
-            </span>
-            <div className="flex items-center gap-1.5">
+            </Typography>
+            <ButtonGroup size="small">
               {[10, 20, 50].map((sz) => (
-                <button
+                <Button
                   key={sz}
+                  variant={itemsPerPage === sz ? "contained" : "outlined"}
                   onClick={() => setItemsPerPage(sz)}
-                  className={`w-8 h-8 rounded-lg text-[10px] font-bold border transition-all
-                       ${itemsPerPage === sz ? "bg-[var(--surface-tertiary)] border-indigo-500/50 text-[var(--text)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)]"}`}
+                  sx={{ fontSize: "11px", fontWeight: "bold" }}
                 >
                   {sz}
-                </button>
+                </Button>
               ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </ButtonGroup>
+          </Stack>
+        </Stack>
+      </Box>
+    </Box>
   );
 };
 
 /* ---------- LOADING SKELETON ---------- */
 const DashboardSkeleton = () => (
-  <div className="space-y-8 animate-pulse p-4">
-    <div className="flex justify-between items-end">
-      <div className="space-y-3">
-        <div className="h-10 w-64 bg-[var(--surface-primary)] rounded-2xl" />
-        <div className="h-4 w-96 bg-[var(--surface-primary)] rounded-xl" />
-      </div>
-      <div className="h-10 w-40 bg-[var(--surface-primary)] rounded-2xl" />
-    </div>
-    <div className="grid grid-cols-4 gap-6">
+  <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 4 }}>
+    <Stack direction="row" justifyContent="space-between" alignItems="end">
+      <Box sx={{ width: "40%" }}>
+        <Skeleton variant="text" height={40} width="60%" sx={{ mb: 1 }} />
+        <Skeleton variant="text" height={20} width="100%" />
+      </Box>
+      <Skeleton variant="rectangular" width={140} height={36} sx={{ borderRadius: 2 }} />
+    </Stack>
+    <Grid container spacing={3}>
       {[1, 2, 3, 4].map((i) => (
-        <div
-          key={i}
-          className="h-32 rounded-[2rem] bg-[var(--surface-primary)]"
-        />
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={i}>
+          <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 6 }} />
+        </Grid>
       ))}
-    </div>
-    <div className="grid grid-cols-3 gap-6">
-      <div className="col-span-2 h-[450px] rounded-[2.5rem] bg-[var(--surface-primary)]" />
-      <div className="h-[450px] rounded-[2.5rem] bg-[var(--surface-primary)]" />
-    </div>
-    <div className="h-[600px] rounded-[2.5rem] bg-[var(--surface-primary)]" />
-  </div>
+    </Grid>
+    <Grid container spacing={3}>
+      <Grid size={{ xs: 12, lg: 8 }}>
+        <Skeleton variant="rectangular" height={400} sx={{ borderRadius: 6 }} />
+      </Grid>
+      <Grid size={{ xs: 12, lg: 4 }}>
+        <Skeleton variant="rectangular" height={400} sx={{ borderRadius: 6 }} />
+      </Grid>
+    </Grid>
+    <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 6 }} />
+  </Box>
 );
 
 export default AdminDashboard;

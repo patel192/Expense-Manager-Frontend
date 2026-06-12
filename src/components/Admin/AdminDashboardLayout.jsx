@@ -1,6 +1,22 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import Badge from "@mui/material/Badge";
+
+// ================ Icons ================
 import { FiBell, FiSearch, FiMenu, FiLogOut, FiSettings } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 import { AdminSidebar } from "./AdminSidebar";
@@ -8,124 +24,247 @@ import { AdminSidebar } from "./AdminSidebar";
 export const AdminDashboardLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)] font-sans selection:bg-cyan-500/30">
+    <Box 
+      sx={{ 
+        minHeight: "100vh", 
+        bgcolor: "background.default", 
+        color: "text.primary",
+        fontFamily: "sans-serif",
+        "& ::selection": { bgcolor: "rgba(34, 211, 238, 0.3)" }
+      }}
+    >
       {/* Sidebar Component */}
       <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main Wrapper */}
-      <div
-        className={`transition-all duration-300 min-h-screen flex flex-col
-                   ${isSidebarOpen ? "lg:pl-[260px]" : "lg:pl-[80px]"}`}
+      <Box
+        sx={{
+          transition: "all 0.3s ease-in-out",
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          pl: {
+            xs: 0,
+            lg: isSidebarOpen ? "260px" : "80px",
+          },
+        }}
       >
         {/* ========== MODERN TOP NAVBAR ========== */}
-        <header className="sticky top-0 z-[55] h-20 bg-[var(--surface-primary)]/60 backdrop-blur-xl border-b border-[var(--border)] flex items-center px-4 sm:px-8">
-          <div className="flex-1 flex items-center justify-between gap-4">
+        <AppBar
+          position="sticky"
+          elevation={0}
+          sx={{
+            top: 0,
+            zIndex: 55,
+            height: 80,
+            justifyContent: "center",
+            bgcolor: "rgba(var(--mui-palette-background-paperChannel), 0.6)",
+            backdropFilter: "blur(24px)",
+            borderBottom: 1,
+            borderColor: "divider",
+            px: { xs: 2, sm: 4 },
+          }}
+        >
+          <Toolbar disableGutters sx={{ width: "100%", justifyContent: "space-between", gap: 2 }}>
+            
             {/* Left: Mobile Toggle & Breadcrumbs */}
-            <div className="flex items-center gap-4">
-              <button
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <IconButton
                 onClick={toggleSidebar}
-                className="p-2 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] hover:bg-[var(--surface-tertiary)] transition lg:hidden"
+                sx={{
+                  display: { lg: "none" },
+                  p: 1,
+                  borderRadius: 3,
+                  bgcolor: "action.hover",
+                  border: 1,
+                  borderColor: "divider",
+                  "&:hover": { bgcolor: "action.selected" },
+                }}
               >
-                <FiMenu size={20} className="text-[var(--text-secondary)]" />
-              </button>
+                <FiMenu size={20} style={{ color: "var(--mui-palette-text-secondary)" }} />
+              </IconButton>
 
-              <div className="hidden sm:block">
-                <h2 className="text-sm font-medium text-[var(--muted)] capitalize">
-                  Admin <span className="mx-2 text-[var(--text-muted)]">/</span>
-                  <span className="text-[var(--text-primary)]">Workspace</span>
-                </h2>
-              </div>
-            </div>
+              <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                <Typography 
+                  variant="body2" 
+                  sx={{ fontWeight: 500, color: "text.secondary", textTransform: "capitalize" }}
+                >
+                  Admin{" "}
+                  <Box component="span" sx={{ mx: 1, color: "text.disabled" }}>
+                    /
+                  </Box>{" "}
+                  <Box component="span" sx={{ color: "text.primary" }}>
+                    Workspace
+                  </Box>
+                </Typography>
+              </Box>
+            </Stack>
 
             {/* Middle: Search (Desktop) */}
-            <div className="hidden md:flex flex-1 max-w-md mx-8 relative group">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-cyan-400 transition-colors" />
-              <input
-                type="text"
+            <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, maxW: 440, mx: 4 }}>
+              <TextField
+                fullWidth
+                size="small"
                 placeholder="Search global records..."
-                className="w-full bg-[var(--surface-secondary)] border border-[var(--border)] rounded-2xl py-2.5 pl-11 pr-4 
-                           text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none 
-                           focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/30 transition-all font-medium"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FiSearch />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 4,
+                    bgcolor: "action.hover",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }
+                }}
               />
-            </div>
+            </Box>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            <Stack direction="row" alignItems="center" spacing={{ xs: 1, sm: 2 }}>
               {/* Notifications */}
-              <button className="relative p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] hover:bg-[var(--surface-tertiary)] transition group shadow-sm">
-                <FiBell
-                  size={20}
-                  className="text-[var(--muted)] group-hover:text-[var(--text-primary)] transition"
-                />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.5)] border-2 border-[var(--surface-primary)]" />
-              </button>
+              <IconButton
+                sx={{
+                  p: 1.25,
+                  borderRadius: 3,
+                  bgcolor: "action.hover",
+                  border: 1,
+                  borderColor: "divider",
+                  "&:hover": { bgcolor: "action.selected" },
+                }}
+              >
+                <Badge
+                  variant="dot"
+                  color="cyan"
+                  overlap="circular"
+                  sx={{
+                    "& .MuiBadge-badge": {
+                      boxShadow: "0 0 8px rgba(34,211,238,0.5)",
+                      border: "2px solid var(--mui-palette-background-paper)",
+                    }
+                  }}
+                >
+                  <FiBell size={20} style={{ color: "var(--mui-palette-text-secondary)" }} />
+                </Badge>
+              </IconButton>
 
               {/* Settings */}
-              <button
+              <IconButton
                 onClick={() => navigate(`/admin/account/${user?._id}`)}
-                className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] hover:bg-[var(--surface-tertiary)] transition group shadow-sm"
+                sx={{
+                  p: 1.25,
+                  borderRadius: 3,
+                  bgcolor: "action.hover",
+                  border: 1,
+                  borderColor: "divider",
+                  "&:hover": { bgcolor: "action.selected" },
+                }}
               >
-                <FiSettings
-                  size={20}
-                  className="text-[var(--muted)] group-hover:text-[var(--text-primary)] transition"
-                />
-              </button>
+                <FiSettings size={20} style={{ color: "var(--mui-palette-text-secondary)" }} />
+              </IconButton>
 
               {/* Divider */}
-              <div className="h-6 w-px bg-[var(--border)] mx-1 sm:mx-2" />
+              <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: { xs: 0.5, sm: 1 }, height: 24, alignSelf: "center" }} />
 
               {/* Logout */}
-              <button
+              <Button
+                variant="outlined"
+                color="error"
                 onClick={logout}
-                className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl 
-                           bg-rose-500/10 border border-rose-500/20 text-rose-400 
-                           hover:bg-rose-500 hover:text-[var(--text-primary)] transition-all duration-300 font-semibold text-xs sm:text-sm shadow-sm"
+                startIcon={<FiLogOut size={16} />}
+                sx={{
+                  px: { xs: 1.5, sm: 2.5 },
+                  py: 1,
+                  borderRadius: 3,
+                  fontWeight: "bold",
+                  fontSize: { xs: "12px", sm: "14px" },
+                  textTransform: "none",
+                  bgcolor: "rgba(244, 63, 94, 0.1)",
+                  borderColor: "rgba(244, 63, 94, 0.2)",
+                  color: "error.main",
+                  "&:hover": {
+                    bgcolor: "error.main",
+                    color: "common.white",
+                    borderColor: "error.main",
+                  }
+                }}
               >
-                <FiLogOut size={16} />
-                <span className="hidden sm:inline">Sign Out</span>
-              </button>
-            </div>
-          </div>
-        </header>
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                  Sign Out
+                </Box>
+              </Button>
+            </Stack>
+          </Toolbar>
+        </AppBar>
 
         {/* ========== DYNAMIC MAIN CONTENT ========== */}
-        <main className="flex-1 p-4 sm:p-8 lg:p-10">
-          <div className="max-w-[1600px] mx-auto">
+        <Box component="main" sx={{ flex: 1, p: { xs: 2, sm: 4, lg: 5 } }}>
+          <Box sx={{ maxWidth: 1600, mx: "auto" }}>
             <AnimatePresence mode="wait">
-              <motion.div
-                key={window.location.pathname}
+              <Box
+                component={motion.div}
+                key={location.pathname}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
               >
                 <Outlet />
-              </motion.div>
+              </Box>
             </AnimatePresence>
-          </div>
-        </main>
+          </Box>
+        </Box>
 
         {/* Footer */}
-        <footer className="py-6 px-10 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)] font-medium tracking-wide">
-          <p>© 2026 FINTRACK ANALYTICS ENGINE. ALL RIGHTS RESERVED.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-cyan-400 transition">
-              SUPPORT
-            </a>
-            <a href="#" className="hover:text-cyan-400 transition">
-              API DOCS
-            </a>
-            <a href="#" className="hover:text-cyan-400 transition">
-              PRIVACY
-            </a>
-          </div>
-        </footer>
-      </div>
-    </div>
+        <Box
+          component="footer"
+          sx={{
+            py: 3,
+            px: { xs: 3, sm: 5 },
+            borderTop: 1,
+            borderColor: "divider",
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
+          }}
+        >
+          <Typography variant="caption" sx={{ fontWeight: "medium", letterSpacing: "0.05em", color: "text.secondary" }}>
+            © 2026 FINTRACK ANALYTICS ENGINE. ALL RIGHTS RESERVED.
+          </Typography>
+          <Stack direction="row" spacing={3}>
+            {["SUPPORT", "API DOCS", "PRIVACY"].map((linkText) => (
+              <Link
+                key={linkText}
+                href="#"
+                underline="none"
+                sx={{
+                  fontSize: "11px",
+                  fontWeight: "medium",
+                  color: "text.secondary",
+                  transition: "color 0.2s",
+                  "&:hover": { color: "cyan.main" },
+                }}
+              >
+                {linkText}
+              </Link>
+            ))}
+          </Stack>
+        </Box>
+      </Box>
+    </Box>
   );
 };

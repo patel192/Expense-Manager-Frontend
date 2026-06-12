@@ -25,26 +25,15 @@ import "./index.css";
 
 // --- PRE-RENDER SETUP ---
 injectStore(store);
-
-/**
- * --- APPLICATION BOOTSTRAP ---
- * Wrapping the app in all necessary providers.
- */
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    {/* Provides global state (Auth, UI, etc.) */}
     <Provider store={store}>
-      {/* Handles user session and login state */}
       <AuthProvider>
-        {/* Manages Dark/Light mode preferences */}
         <ThemeProvider>
-          {/* The actual application content and routes */}
           <App />
         </ThemeProvider>
       </AuthProvider>
     </Provider>
-
-    {/* Toast notification container (renders at the top level) */}
     <Toaster richColors position="top-right" />
   </BrowserRouter>,
 );

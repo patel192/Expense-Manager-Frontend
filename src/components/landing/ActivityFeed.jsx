@@ -1,5 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Chip from "@mui/material/Chip";
+
+// ================ Icons ================
 import {
   FiTrendingUp,
   FiTrendingDown,
@@ -8,120 +17,199 @@ import {
   FiTerminal,
 } from "react-icons/fi";
 
+// --- NORMALIZED DATA ENGINE WITH MUI STYLE PALETTE MAPPINGS ---
 const activities = [
   {
     icon: <FiTrendingUp size={14} />,
     text: "Revenue_Inflow",
     amount: "+ ₹45,000",
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/5",
+    color: "success.main",
+    bg: "rgba(46, 125, 50, 0.08)", // Equivalent to success alpha tint context
   },
   {
     icon: <FiTrendingDown size={14} />,
     text: "Expense_Outflow",
     amount: "- ₹1,250",
-    color: "text-rose-500",
-    bg: "bg-rose-500/5",
+    color: "error.main",
+    bg: "rgba(211, 47, 47, 0.08)", // Equivalent to error alpha tint context
   },
   {
     icon: <FiAlertCircle size={14} />,
     text: "Budget_Violation",
     amount: "Warn: Food",
-    color: "text-amber-500",
-    bg: "bg-amber-500/5",
+    color: "warning.main",
+    bg: "rgba(237, 108, 2, 0.08)", // Equivalent to warning alpha tint context
   },
   {
     icon: <FiRepeat size={14} />,
     text: "Cron_Recurrence",
     amount: "Netflix_Sync",
-    color: "text-cyan-500",
-    bg: "bg-cyan-500/5",
+    color: "info.main",
+    bg: "rgba(2, 136, 209, 0.08)", // Equivalent to info alpha tint context
   },
 ];
 
 export const ActivityFeed = () => {
   return (
-    <section className="py-12 space-y-10">
-      {/* Header */}
-      <div className="space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-widest">
-          <FiTerminal size={12} className="text-cyan-500" />
-          Event stream_v4
-        </div>
-        <h2 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
-          Real-time <span className="text-cyan-500">ledger logs</span>
-        </h2>
-      </div>
+    <Box component="section" sx={{ py: 6, display: "flex", flexDirection: "column", gap: 5 }}>
+      
+      {/* ── HEADER BLOCK ── */}
+      <Stack spacing={2}>
+        <Box sx={{ display: "flex" }}>
+          <Chip
+            icon={<FiTerminal size={12} style={{ color: "var(--mui-palette-cyan-main)" }} />}
+            label="Event stream_v4"
+            variant="outlined"
+            sx={{
+              height: 24,
+              px: 0.5,
+              borderRadius: "16px",
+              bgcolor: "action.hover",
+              borderColor: "divider",
+              color: "text.secondary",
+              fontFamily: "monospace",
+              fontSize: "10px",
+              fontWeight: "bold",
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              "& .MuiChip-icon": { ml: 1, mr: -0.5 },
+            }}
+          />
+        </Box>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            fontWeight: "bold",
+            color: "text.primary",
+            letterSpacing: "-0.02em",
+          }}
+        >
+          Real-time{" "}
+          <Box component="span" sx={{ color: "cyan.main" }}>
+            ledger logs
+          </Box>
+        </Typography>
+      </Stack>
 
-      {/* Activity list */}
-      <div className="space-y-2">
+      {/* ── ACTIVITY STREAM LIST ── */}
+      <Stack spacing={1}>
         {activities.map((item, i) => (
-          <motion.div
+          <Paper
             key={i}
+            elevation={0}
+            component={motion.div}
             initial={{ opacity: 0, x: -10 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.3, delay: i * 0.05 }}
-            className="
-              group
-              flex
-              items-center
-              justify-between
-              px-5
-              py-4
-              rounded-xl
-              bg-[var(--card)]
-              border
-              border-[var(--border)]
-              hover:border-cyan-500/30
-              hover:shadow-sm
-              transition-all
-              duration-300
-            "
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              px: 2.5,
+              py: 2,
+              borderRadius: 3,
+              bgcolor: "background.paper",
+              border: 1,
+              borderColor: "divider",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                borderColor: "rgba(6, 182, 212, 0.3)", // Target cyan glow context outline explicitly
+                boxShadow: (theme) => theme.shadows[1],
+                "& .icon-wrapper": {
+                  borderColor: "inherit",
+                },
+              },
+            }}
           >
-            <div className="flex items-center gap-4">
-              <div
-                className={`
-                  w-10
-                  h-10
-                  rounded-xl
-                  flex
-                  items-center
-                  justify-center
-                  ${item.bg}
-                  ${item.color}
-                  border border-transparent
-                  group-hover:border-[currentColor]/20
-                  transition-all
-                `}
+            {/* Left Content Column Frame */}
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                className="icon-wrapper"
+                sx={{
+                  w: 40,
+                  h: 40,
+                  borderRadius: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  bgcolor: item.bg,
+                  color: item.color,
+                  border: "1px solid transparent",
+                  transition: "all 0.2s ease",
+                }}
               >
                 {item.icon}
-              </div>
+              </Box>
 
-              <div>
-                <p className="text-sm font-mono font-bold text-[var(--text-primary)]">
+              <Stack spacing={0.25}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontFamily: "monospace",
+                    fontWeight: "bold",
+                    color: "text.primary",
+                  }}
+                >
                   {item.text}
-                </p>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40" />
-                  <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-tighter">
+                </Typography>
+                
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Box
+                    sx={{
+                      w: 6,
+                      h: 6,
+                      borderRadius: "50%",
+                      bgcolor: "success.main",
+                      opacity: 0.4,
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontSize: "10px",
+                      fontWeight: "bold",
+                      color: "text.disabled",
+                      textTransform: "uppercase",
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
                     Verified_Block
-                  </p>
-                </div>
-              </div>
-            </div>
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Stack>
 
-            <div className="text-right">
-              <p className={`text-sm font-bold ${item.color} font-mono`}>
+            {/* Right Diagnostic Latency Matrix Metrics */}
+            <Box sx={{ textAlign: "right" }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: "bold",
+                  color: item.color,
+                  fontFamily: "monospace",
+                }}
+              >
                 {item.amount}
-              </p>
-              <p className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5">
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: "10px",
+                  color: "text.disabled",
+                  fontFamily: "monospace",
+                  display: "block",
+                  mt: 0.25,
+                }}
+              >
                 {2 + i}ms latency
-              </p>
-            </div>
-          </motion.div>
+              </Typography>
+            </Box>
+
+          </Paper>
         ))}
-      </div>
-    </section>
+      </Stack>
+    </Box>
   );
 };

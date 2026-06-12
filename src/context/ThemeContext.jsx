@@ -1,5 +1,9 @@
-import { createContext, useContext, useEffect, useState } from "react";
-
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import {
+  ThemeProvider as MuiThemeProvider,
+  createTheme,
+} from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
@@ -18,6 +22,15 @@ export const ThemeProvider = ({ children }) => {
 
   const [theme, setTheme] = useState(getInitialTheme);
 
+  const muiTheme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: theme,
+        },
+      }),
+    [theme],
+  );
   useEffect(() => {
     const root = document.documentElement;
 
@@ -42,7 +55,10 @@ export const ThemeProvider = ({ children }) => {
         toggleTheme,
       }}
     >
-      {children}
+      <MuiThemeProvider theme={muiTheme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
     </ThemeContext.Provider>
   );
 };

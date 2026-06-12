@@ -1,5 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid2"; // Native Grid2 component
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+
+// ================ Icons ================
 import {
   FiTwitter,
   FiGithub,
@@ -43,142 +54,213 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="relative mt-20 pt-20 pb-10 border-t border-[var(--border)] overflow-hidden">
-      {/* ── BACKGROUND VISUALS ── */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
+    <Box
+      component="footer"
+      sx={{
+        position: "relative",
+        mt: 10,
+        pt: 10,
+        pb: 5,
+        borderTop: 1,
+        borderColor: "divider",
+        overflow: "hidden",
+      }}
+    >
+      {/* ── BACKGROUND VISUAL GLOWS ── */}
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 800,
+          height: 300,
+          bgcolor: "rgba(6, 182, 212, 0.05)",
+          filter: "blur(120px)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 10 }}>
+        <Grid container spacing={{ xs: 6, lg: 4 }} sx={{ mb: 8 }}>
           
           {/* ── BRAND SECTION ── */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                <svg
+          <Grid size={{ xs: 12, md: 6, lg: 4 }} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            <Stack direction="row" alignItems="center" spacing={1.5}>
+              <Box
+                sx={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 3,
+                  background: "linear-gradient(135deg, #06b6d4, #2563eb)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 14px rgba(6, 182, 212, 0.2)",
+                }}
+              >
+                <Box
+                  component="svg"
                   viewBox="0 0 24 24"
                   fill="none"
-                  className="w-5 h-5 text-[var(--text)]"
                   stroke="currentColor"
                   strokeWidth={2.2}
+                  sx={{ width: 20, height: 20, color: "common.white" }}
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v1m0 9v1M5.05 5.05A9 9 0 1118.95 18.95"
                   />
-                </svg>
-              </div>
-              <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                </Box>
+              </Box>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: "bold",
+                  letterSpacing: "-0.02em",
+                  background: "linear-gradient(to right, #22d3ee, #3b82f6)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
                 FinTrack
-              </span>
-            </div>
-            <p className="text-[var(--text-secondary)] text-base leading-relaxed max-w-sm">
-              The high-performance dashboard for engineers of their own
-              finances. Track, analyze, and optimize your wealth with technical
-              precision.
-            </p>
+              </Typography>
+            </Stack>
+
+            <Typography variant="body1" sx={{ color: "text.secondary", maxWidth: 320, lineHeight: 1.6 }}>
+              The high-performance dashboard for engineers of their own finances. Track, analyze, and optimize your wealth with technical precision.
+            </Typography>
             
-            {/* Social Icons */}
-            <div className="flex items-center gap-4">
+            {/* Social Icons Stack */}
+            <Stack direction="row" spacing={2}>
               {socialLinks.map((social, i) => (
-                <motion.a
+                <IconButton
                   key={i}
+                  component={motion.a}
                   href={social.href}
                   whileHover={{ y: -3, scale: 1.1 }}
-                  className="w-10 h-10 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-cyan-500 hover:border-cyan-500/50 transition-colors"
                   aria-label={social.label}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    bgcolor: "action.hover",
+                    border: 1,
+                    borderColor: "divider",
+                    color: "text.secondary",
+                    transition: "all 0.2s",
+                    "&:hover": {
+                      color: "cyan.main",
+                      borderColor: "rgba(6, 182, 212, 0.5)",
+                      bgcolor: "action.selected",
+                    },
+                  }}
                 >
                   {social.icon}
-                </motion.a>
+                </IconButton>
               ))}
-            </div>
-          </div>
+            </Stack>
+          </Grid>
 
           {/* ── LINK COLUMNS ── */}
-          <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)]">
-              Product
-            </h4>
-            <ul className="space-y-4">
-              {footerLinks.product.map((link, i) => (
-                <li key={i}>
-                  <a
-                    href={link.href}
-                    className="text-[var(--text-secondary)] hover:text-cyan-500 transition-colors flex items-center gap-1 group"
-                  >
-                    {link.label}
-                    <FiArrowUpRight
-                      className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all"
-                      size={14}
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {Object.entries(footerLinks).map(([category, links]) => (
+            <Grid size={{ xs: 12, sm: 4, lg: 2.6 }} key={category} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: "bold",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.2em",
+                  color: "text.primary",
+                }}
+              >
+                {category}
+              </Typography>
+              <Box component="ul" sx={{ p: 0, m: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 2 }}>
+                {links.map((link, i) => (
+                  <Box component="li" key={i}>
+                    <Link
+                      href={link.href}
+                      underline="none"
+                      sx={{
+                        color: "text.secondary",
+                        transition: "color 0.2s",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        fontSize: "14px",
+                        "&:hover": { color: "cyan.main" },
+                        "&:hover .arrow-icon": { opacity: 1, transform: "translate(0, 0)" },
+                      }}
+                    >
+                      {link.label}
+                      <Box
+                        className="arrow-icon"
+                        sx={{
+                          display: "inline-flex",
+                          opacity: 0,
+                          transform: "translate(-4px, 4px)",
+                          transition: "all 0.2s ease-in-out",
+                        }}
+                      >
+                        <FiArrowUpRight size={14} />
+                      </Box>
+                    </Link>
+                  </Box>
+                ))}
+              </Box>
+            </Grid>
+          ))}
 
-          <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)]">
-              Resources
-            </h4>
-            <ul className="space-y-4">
-              {footerLinks.resources.map((link, i) => (
-                <li key={i}>
-                  <a
-                    href={link.href}
-                    className="text-[var(--text-secondary)] hover:text-cyan-500 transition-colors flex items-center gap-1 group"
-                  >
-                    {link.label}
-                    <FiArrowUpRight
-                      className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all"
-                      size={14}
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        </Grid>
 
-          <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--text-primary)]">
-              Company
-            </h4>
-            <ul className="space-y-4">
-              {footerLinks.company.map((link, i) => (
-                <li key={i}>
-                  <a
-                    href={link.href}
-                    className="text-[var(--text-secondary)] hover:text-cyan-500 transition-colors flex items-center gap-1 group"
-                  >
-                    {link.label}
-                    <FiArrowUpRight
-                      className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all"
-                      size={14}
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* ── BOTTOM BAR ── */}
-        <div className="pt-10 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-[var(--text-muted)] font-mono">
+        {/* ── BOTTOM CORNER STRIP BAR ── */}
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={3}
+          sx={{ pt: 4, borderTop: 1, borderColor: "divider" }}
+        >
+          <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.disabled" }}>
             &copy; {currentYear} FinTrack Labs Inc. All rights reserved.
-          </p>
+          </Typography>
           
-          {/* Status Indicators */}
-          <div className="flex items-center gap-8 text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest">
-            <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              All Systems Operational
-            </span>
-            <span className="hidden sm:block">v2.4.0-stable</span>
-          </div>
-        </div>
-      </div>
-    </footer>
+          {/* Status Runtime Diagnostics Metrics Indicators */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={4}
+            sx={{
+              fontFamily: "monospace",
+              color: "text.disabled",
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              fontSize: "12px",
+            }}
+          >
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Box
+                sx={{
+                  w: 8,
+                  h: 8,
+                  borderRadius: "50%",
+                  bgcolor: "emerald.main",
+                  animation: "pulse 2s infinite",
+                }}
+              />
+              <Typography variant="caption" sx={{ fontFamily: "inherit" }}>
+                All Systems Operational
+              </Typography>
+            </Stack>
+            <Box component="span" sx={{ display: { xs: "none", sm: "block" } }}>
+              v2.4.0-stable
+            </Box>
+          </Stack>
+        </Stack>
+      </Container>
+    </Box>
   );
 };
-

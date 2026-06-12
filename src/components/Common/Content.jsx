@@ -1,6 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid2"; // Native Grid2 component
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import LinearProgress from "@mui/material/LinearProgress";
+import Avatar from "@mui/material/Avatar";
+import Chip from "@mui/material/Chip";
+
+// ================ Icons ================
 import {
   FiTrendingUp,
   FiTrendingDown,
@@ -16,6 +30,7 @@ import {
   FiGlobe,
   FiArrowUpRight,
 } from "react-icons/fi";
+
 import { DashboardPreviewTabs } from "../landing/DashboardPreviewTabs";
 import { StatsRow } from "../landing/StatsRow";
 import { ActivityFeed } from "../landing/ActivityFeed";
@@ -59,7 +74,7 @@ const AppWindow = () => {
       ([entry]) => {
         if (entry.isIntersecting) setVisible(true);
       },
-      { threshold: 0.3 },
+      { threshold: 0.3 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -72,371 +87,532 @@ const AppWindow = () => {
   const fmt = (n) => "₹" + n.toLocaleString("en-IN");
 
   return (
-    <div
+    <Card
       ref={ref}
-      className="relative w-full max-w-lg rounded-2xl bg-[var(--card)] border border-[var(--border)]
-                 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]
-                 overflow-hidden group"
+      sx={{
+        position: "relative",
+        w: "100%",
+        maxW: 512,
+        borderRadius: 4,
+        bgcolor: "background.paper",
+        border: 1,
+        borderColor: "divider",
+        boxShadow: (theme) =>
+          theme.palette.mode === "dark"
+            ? "0 20px 50px rgba(0,0,0,0.5)"
+            : "0 20px 50px rgba(0,0,0,0.05)",
+        overflow: "hidden",
+        "&:hover .ambient-glow": { opacity: 1 },
+      }}
     >
-      {/* Decorative pulse */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      {/* Decorative pulse background */}
+      <Box
+        className="ambient-glow"
+        sx={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(to top right, rgba(6, 182, 212, 0.05), transparent, rgba(37, 99, 235, 0.05))",
+          opacity: 0,
+          transition: "opacity 0.7s duration",
+          pointerEvents: "none",
+        }}
+      />
 
-      {/* Window chrome */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--border)] bg-[var(--surface-secondary)]/80 backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-rose-500/30 border border-rose-500/50" />
-          <span className="w-3 h-3 rounded-full bg-amber-500/30 border border-amber-500/50" />
-          <span className="w-3 h-3 rounded-full bg-emerald-500/30 border border-emerald-500/50" />
-        </div>
-        <p className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-2">
-          <FiGlobe size={10} className="text-cyan-500" />
+      {/* Window Title Bar Chrome */}
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{
+          px: 2.5,
+          py: 1.75,
+          borderBottom: 1,
+          borderColor: "divider",
+          bgcolor: "action.hover",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        <Stack direction="row" spacing={1}>
+          <Box sx={{ w: 12, h: 12, borderRadius: "50%", bgcolor: "rgba(244, 63, 94, 0.3)", border: "1px solid rgba(244, 63, 94, 0.5)" }} />
+          <Box sx={{ w: 12, h: 12, borderRadius: "50%", bgcolor: "rgba(245, 158, 11, 0.3)", border: "1px solid rgba(245, 158, 11, 0.5)" }} />
+          <Box sx={{ w: 12, h: 12, borderRadius: "50%", bgcolor: "rgba(16, 185, 129, 0.3)", border: "1px solid rgba(16, 185, 129, 0.5)" }} />
+        </Stack>
+        
+        <Typography
+          variant="caption"
+          sx={{ fontFamily: "monospace", textTransform: "uppercase", letterSpacing: 1.5, color: "text.disabled", display: "flex", alignItems: "center", gap: 1 }}
+        >
+          <FiGlobe size={10} style={{ color: "var(--mui-palette-cyan-main)" }} />
           fintrack.io/live-dash
-        </p>
-        <div className="flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">
+        </Typography>
+
+        <Stack direction="row" alignItems="center" spacing={0.75}>
+          <Box sx={{ w: 6, h: 6, borderRadius: "50%", bgcolor: "emerald.main", animation: "pulse 2s infinite" }} />
+          <Typography variant="caption" sx={{ fontSize: "10px", fontWeight: "bold", color: "emerald.main", textTransform: "uppercase" }}>
             Sync
-          </span>
-        </div>
-      </div>
+          </Typography>
+        </Stack>
+      </Stack>
 
-      {/* Body */}
-      <div className="p-6 space-y-5 relative">
-        {/* Header row */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-muted)] font-bold">
+      {/* Body Area Layout */}
+      <Stack spacing={2.5} sx={{ p: 3, position: "relative" }}>
+        
+        {/* Header analytics summary line row */}
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Typography variant="caption" sx={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: "text.disabled", fontWeight: "bold" }}>
               Runtime Analytics
-            </p>
-            <p className="text-lg font-bold text-[var(--text-primary)] mt-1">
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: "bold", color: "text.primary", mt: 0.5 }}>
               Financial Status
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest">
+            </Typography>
+          </Box>
+          <Box sx={{ textAlign: "right" }}>
+            <Typography variant="caption" sx={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: 1.5, color: "text.disabled" }}>
               Net Delta
-            </p>
-            <p className="text-base font-bold text-cyan-500">{fmt(savings)}</p>
-          </div>
-        </div>
+            </Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "cyan.main" }}>
+              {fmt(savings)}
+            </Typography>
+          </Box>
+        </Stack>
 
-        {/* Metric cards */}
-        <div className="grid grid-cols-3 gap-3">
+        {/* Dynamic Metric Mini Card Loops */}
+        <Grid container spacing={1.5}>
           {[
-            {
-              label: "Inflow",
-              value: fmt(income),
-              color: "text-emerald-500",
-              bg: "bg-emerald-500/5 border-emerald-500/10",
-              icon: <FiTrendingUp size={12} />,
-            },
-            {
-              label: "Outflow",
-              value: fmt(expenses),
-              color: "text-rose-500",
-              bg: "bg-rose-500/5 border-rose-500/10",
-              icon: <FiTrendingDown size={12} />,
-            },
-            {
-              label: "Liquidity",
-              value: fmt(savings),
-              color: "text-cyan-500",
-              bg: "bg-cyan-500/5 border-cyan-500/10",
-              icon: <FiPieChart size={12} />,
-            },
+            { label: "Inflow", value: fmt(income), color: "emerald.main", borderColor: "rgba(16, 185, 129, 0.15)", bg: "rgba(16, 185, 129, 0.04)", icon: <FiTrendingUp size={12} /> },
+            { label: "Outflow", value: fmt(expenses), color: "rose.main", borderColor: "rgba(244, 63, 94, 0.15)", bg: "rgba(244, 63, 94, 0.04)", icon: <FiTrendingDown size={12} /> },
+            { label: "Liquidity", value: fmt(savings), color: "cyan.main", borderColor: "rgba(6, 182, 212, 0.15)", bg: "rgba(6, 182, 212, 0.04)", icon: <FiPieChart size={12} /> },
           ].map((m, i) => (
-            <div key={i} className={`rounded-xl border p-3 ${m.bg}`}>
-              <div className={`flex items-center gap-1.5 ${m.color} mb-1.5`}>
-                {m.icon}
-                <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">
-                  {m.label}
-                </p>
-              </div>
-              <p className={`text-xs font-bold ${m.color}`}>{m.value}</p>
-            </div>
+            <Grid size={4} key={i}>
+              <Box sx={{ borderRadius: 3, border: 1, p: 1.5, bgcolor: m.bg, borderColor: m.borderColor }}>
+                <Stack direction="row" alignItems="center" spacing={0.75} sx={{ color: m.color, mb: 0.75 }}>
+                  {m.icon}
+                  <Typography variant="caption" sx={{ fontSize: "10px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: 0.5, opacity: 0.7 }}>
+                    {m.label}
+                  </Typography>
+                </Stack>
+                <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: m.color }}>
+                  {m.value}
+                </Typography>
+              </Box>
+            </Grid>
           ))}
-        </div>
+        </Grid>
 
-        {/* System Load / Budget */}
-        <div className="rounded-xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] p-4 space-y-3">
-          <div className="flex items-center justify-between text-[10px] font-mono">
-            <span className="text-[var(--text-muted)] uppercase">
+        {/* Utilization Gauge Progression Strip */}
+        <Stack spacing={1.5} sx={{ p: 2, borderRadius: 3, bgcolor: "action.hover", border: 1, borderColor: "divider" }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ fontFamily: "monospace", fontSize: "10px" }}>
+            <Typography variant="caption" sx={{ color: "text.disabled", textTransform: "uppercase" }}>
               Budget Utilization
-            </span>
-            <span className="text-amber-500 font-bold">72.4%</span>
-          </div>
-          <div className="h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
-            <motion.div
+            </Typography>
+            <Typography variant="caption" sx={{ color: "warning.main", fontWeight: "bold" }}>
+              72.4%
+            </Typography>
+          </Stack>
+          
+          <Box sx={{ h: 6, borderRadius: 10, bgcolor: "divider", overflow: "hidden", position: "relative" }}>
+            <Box
+              component={motion.div}
               initial={{ width: 0 }}
               animate={visible ? { width: "72.4%" } : { width: 0 }}
               transition={{ duration: 1.5, ease: "circOut" }}
-              className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500"
+              sx={{
+                height: "100%",
+                borderRadius: 10,
+                background: "linear-gradient(to right, #06b6d4, #3b82f6, #6366f1)",
+              }}
             />
-          </div>
-          <div className="flex justify-between items-center text-[9px] text-[var(--text-muted)] font-mono uppercase tracking-tighter">
+          </Box>
+
+          <Stack direction="row" justifyContent="space-between" sx={{ fontFamily: "monospace", fontSize: "9px", color: "text.disabled", textTransform: "uppercase" }}>
             <span>Critical: 85%</span>
             <span>Warn: 60%</span>
             <span>Safe: 40%</span>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
 
-        {/* Activity log */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 mb-3">
-            <FiActivity size={12} className="text-cyan-500" />
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-muted)] font-bold">
+        {/* Log Operations Diagnostics */}
+        <Stack spacing={1}>
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <FiActivity size={12} style={{ color: "var(--mui-palette-cyan-main)" }} />
+            <Typography variant="caption" sx={{ textTransform: "uppercase", letterSpacing: "0.2em", color: "text.disabled", fontWeight: "bold" }}>
               Event Log
-            </p>
-          </div>
+            </Typography>
+          </Stack>
+
           {[
             { label: "Stripe Webhook", status: "Success", time: "2m ago" },
             { label: "AWS Lambda / Calc", status: "Active", time: "Now" },
             { label: "DB Migration", status: "Stable", time: "1h ago" },
           ].map((row, i) => (
-            <div
+            <Stack
               key={i}
-              className="flex items-center justify-between text-[11px] font-mono py-1 border-b border-[var(--border)]/50 last:border-0"
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{
+                fontSize: "11px",
+                fontFamily: "monospace",
+                py: 0.5,
+                borderBottom: 1,
+                borderColor: "divider",
+                "&:last-child": { borderBottom: "none" },
+              }}
             >
-              <span className="text-[var(--text-secondary)]">{row.label}</span>
-              <div className="flex items-center gap-3">
-                <span className="text-cyan-500 opacity-60">{row.time}</span>
-                <span className="text-emerald-500 font-bold tracking-tighter">
-                  {row.status}
-                </span>
-              </div>
-            </div>
+              <Typography variant="caption" sx={{ color: "text.secondary", fontFamily: "inherit" }}>{row.label}</Typography>
+              <Stack direction="row" spacing={3} alignItems="center">
+                <Typography variant="caption" sx={{ color: "text.disabled", opacity: 0.6, fontFamily: "inherit" }}>{row.time}</Typography>
+                <Typography variant="caption" sx={{ color: "emerald.main", fontWeight: "bold", fontFamily: "inherit" }}>{row.status}</Typography>
+              </Stack>
+            </Stack>
           ))}
-        </div>
-      </div>
-    </div>
+        </Stack>
+
+      </Stack>
+    </Card>
   );
 };
 
-/* ── feature cards data ── */
+/* ── feature cards data object descriptors ── */
 const features = [
-  {
-    icon: <FiCpu size={20} />,
-    title: "High Precision",
-    desc: "Every transaction is tracked with 100% accuracy and millisecond latency.",
-    color: "text-cyan-500",
-    glow: "group-hover:shadow-cyan-500/10",
-  },
-  {
-    icon: <FiBarChart2 size={20} />,
-    title: "Deep Insights",
-    desc: "AI-driven patterns to help you optimize your spending architecture.",
-    color: "text-blue-500",
-    glow: "group-hover:shadow-blue-500/10",
-  },
-  {
-    icon: <FiTarget size={20} />,
-    title: "Threshold Alerts",
-    desc: "Set real-time alerts for when budgets exceed defined parameters.",
-    color: "text-indigo-500",
-    glow: "group-hover:shadow-indigo-500/10",
-  },
-  {
-    icon: <FiShield size={20} />,
-    title: "End-to-End Secure",
-    desc: "Encryption-at-rest and in-transit for all your financial sensitive data.",
-    color: "text-violet-500",
-    glow: "group-hover:shadow-violet-500/10",
-  },
+  { icon: <FiCpu size={20} />, title: "High Precision", desc: "Every transaction is tracked with 100% accuracy and millisecond latency.", color: "cyan.main" },
+  { icon: <FiBarChart2 size={20} />, title: "Deep Insights", desc: "AI-driven patterns to help you optimize your spending architecture.", color: "blue.main" },
+  { icon: <FiTarget size={20} />, title: "Threshold Alerts", desc: "Set real-time alerts for when budgets exceed defined parameters.", color: "indigo.main" },
+  { icon: <FiShield size={20} />, title: "End-to-End Secure", desc: "Encryption-at-rest and in-transit for all your financial sensitive data.", color: "violet.main" },
 ];
 
-/* ── MAIN COMPONENT ── */
+/* ── MAIN LANDING VIEWPORT ARCHITECTURE COMPONENT ── */
 export const Content = () => {
   return (
     <DevBackground>
-      <div className="max-w-7xl mx-auto pb-24 space-y-32">
-        {/* ═══════════ HERO ═══════════ */}
-        <section
+      <Container maxWidth="lg" sx={{ pb: 12, display: "flex", flexDirection: "column", gap: 16 }}>
+        
+        {/* ═══════════ HERO ENTRY WRAPPER ═══════════ */}
+        <Box
           id="home"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center pt-24 md:pt-32"
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" },
+            gap: { xs: 8, lg: 12 },
+            alignItems: "center",
+            pt: { xs: 12, md: 16 },
+          }}
         >
-          {/* Left: text */}
-          <motion.div
+          {/* Left Text Block */}
+          <Stack
+            component={motion.div}
             initial="hidden"
             animate="visible"
             variants={fadeUp}
             transition={{ duration: 0.6 }}
-            className="space-y-8 text-center lg:text-left"
+            spacing={4}
+            sx={{ textAlign: { xs: "center", lg: "left" } }}
           >
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/5 border border-cyan-500/10 text-cyan-500 text-[10px] font-bold uppercase tracking-widest">
-              <FiZap size={11} className="animate-pulse" />
-              v2.0 Finance Engine
-            </div>
+            {/* Engine Generation Version Tag Chip Badge */}
+            <Box>
+              <Chip
+                icon={<FiZap size={11} className="animate-pulse" style={{ color: "inherit" }} />}
+                label="v2.0 Finance Engine"
+                sx={{
+                  px: 0.5,
+                  borderRadius: 4,
+                  bgcolor: "rgba(6, 182, 212, 0.05)",
+                  border: 1,
+                  borderColor: "rgba(6, 182, 212, 0.15)",
+                  color: "cyan.main",
+                  fontSize: "10px",
+                  fontWeight: "bold",
+                  textTransform: "uppercase",
+                  letterSpacing: 1.5,
+                }}
+              />
+            </Box>
 
-            <h1 className="text-5xl md:text-8xl font-bold tracking-tight leading-[0.95] text-[var(--text-primary)]">
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: { xs: "3rem", md: "5rem" },
+                fontWeight: "bold",
+                letterSpacing: "-0.03em",
+                lineHeight: 0.95,
+                color: "text.primary",
+              }}
+            >
               Manage money <br />
-              <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 bg-clip-text text-transparent">
+              <Box
+                component="span"
+                sx={{
+                  background: "linear-gradient(to right, #06b6d4, #3b82f6, #4f46e5)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
                 like a pro.
-              </span>
-            </h1>
+              </Box>
+            </Typography>
 
-            <p className="text-[var(--text-secondary)] text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">
-              FinTrack is the high-performance dashboard for engineers of their
-              own finances. Track, analyze, and optimize your wealth with
-              technical precision.
-            </p>
+            <Typography variant="body1" sx={{ color: "text.secondary", fontSize: { xs: "1.125rem", md: "1.25rem" }, lineHeight: 1.6, maxWidth: 576, mx: { xs: "auto", lg: 0 } }}>
+              FinTrack is the high-performance dashboard for engineers of their own finances. Track, analyze, and optimize your wealth with technical precision.
+            </Typography>
 
-            {/* CTA buttons */}
-            <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 pt-2">
-              <Link
+            {/* CTA Option Grid Action Row */}
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ pt: 1, justifyContent: { xs: "center", lg: "flex-start" } }}>
+              <Button
+                component={RouterLink}
                 to="/signup"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[var(--text-primary)] text-[var(--card)] font-bold
-                           hover:opacity-90 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2"
+                variant="contained"
+                endIcon={<FiArrowRight size={18} />}
+                sx={{
+                  px: 4,
+                  py: 2,
+                  borderRadius: 3,
+                  bgcolor: "text.primary",
+                  color: "background.paper",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  fontSize: "16px",
+                  transition: "all 0.3s",
+                  "&:hover": { opacity: 0.9, transform: "translateY(-2px)" },
+                }}
               >
                 Initialize Account
-                <FiArrowRight size={18} />
-              </Link>
-              <a
+              </Button>
+              <Button
+                component="a"
                 href="#features"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl border border-[var(--border)] bg-[var(--surface-secondary)]/50
-                           text-[var(--text-primary)] font-bold hover:bg-[var(--surface-secondary)] transition-all duration-300
-                           flex items-center justify-center gap-2"
+                variant="outlined"
+                sx={{
+                  px: 4,
+                  py: 2,
+                  borderRadius: 3,
+                  border: 1,
+                  borderColor: "divider",
+                  bgcolor: "rgba(var(--mui-palette-action-hoverChannel), 0.5)",
+                  color: "text.primary",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  fontSize: "16px",
+                  "&:hover": { bgcolor: "action.hover", borderColor: "action.active" },
+                }}
               >
                 System Specs
-              </a>
-            </div>
+              </Button>
+            </Stack>
 
-            {/* Tech Stack Icons / Proof */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-6 pt-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-              <div className="flex items-center gap-2 text-xs font-mono font-bold">
-                <FiCheckCircle className="text-cyan-500" /> AES-256
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono font-bold">
-                <FiCheckCircle className="text-cyan-500" /> SOC2
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono font-bold">
-                <FiCheckCircle className="text-cyan-500" /> PCI-DSS
-              </div>
-            </div>
-          </motion.div>
+            {/* Multi Encrypted Encryption Proofing Node Row */}
+            <Stack direction="row" flexWrap="wrap" justifyContent={{ xs: "center", lg: "flex-start" }} gap={3} sx={{ pt: 2, opacity: 0.5, filter: "grayscale(100%)", "&:hover": { filter: "none", opacity: 1 }, transition: "all 0.5s" }}>
+              {["AES-256", "SOC2", "PCI-DSS"].map((spec) => (
+                <Stack key={spec} direction="row" alignItems="center" spacing={1} sx={{ fontFamily: "monospace", fontSize: "12px", fontWeight: "bold" }}>
+                  <FiCheckCircle style={{ color: "var(--mui-palette-cyan-main)" }} />
+                  <span>{spec}</span>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
 
-          {/* Right: App window */}
-          <motion.div
+          {/* Right Interface Mockup App Frame Element */}
+          <Box
+            component={motion.div}
             initial={{ opacity: 0, scale: 0.95, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "circOut" }}
-            className="flex justify-center lg:justify-end perspective-1000"
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "center", lg: "flex-end" },
+              perspective: "1000px",
+            }}
           >
-            <div className="transform-gpu rotate-y-[-5deg] rotate-x-[5deg] hover:rotate-0 transition-transform duration-700">
+            <Box
+              sx={{
+                transform: "rotateY(-5deg) rotateX(5deg)",
+                "&:hover": { transform: "none" },
+                transition: "transform 0.7s ease",
+              }}
+            >
               <AppWindow />
-            </div>
-          </motion.div>
-        </section>
+            </Box>
+          </Box>
+        </Box>
 
-        {/* ═══════════ FEATURES ═══════════ */}
-        <section id="features" className="space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight">
-              Powerful <span className="text-cyan-500">Infrastructure</span>
-            </h2>
-            <p className="text-[var(--text-secondary)] max-w-2xl mx-auto text-base">
+        {/* ═══════════ CORE VALUE UTILITIES FEATURE SECTION ═══════════ */}
+        <Stack id="features" spacing={8}>
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h3" sx={{ fontWeight: "bold", color: "text.primary", letterSpacing: "-0.02em", mb: 1 }}>
+              Powerful{" "}
+              <Box component="span" sx={{ color: "cyan.main" }}>
+                Infrastructure
+              </Box>
+            </Typography>
+            <Typography variant="body1" sx={{ color: "text.secondary", maxWidth: 640, mx: "auto" }}>
               Built with a focus on speed, privacy, and actionable intelligence.
-            </p>
-          </div>
+            </Typography>
+          </Box>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <Grid container spacing={4}>
             {features.map((f, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="group relative bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8 hover:border-cyan-500/50 transition-all duration-500"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-                <div
-                  className={`w-12 h-12 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center mb-6 ${f.color} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm`}
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={i}>
+                <Card
+                  component={motion.div}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={fadeUp}
+                  transition={{ duration: 0.4, delay: i * 0.1 }}
+                  sx={{
+                    position: "relative",
+                    p: 4,
+                    borderRadius: 4,
+                    bgcolor: "background.paper",
+                    border: 1,
+                    borderColor: "divider",
+                    transition: "all 0.5s ease",
+                    "&:hover": { borderColor: "rgba(6, 182, 212, 0.5)" },
+                    "&:hover .hover-gradient": { opacity: 1 },
+                    "&:hover .icon-box": { transform: "scale(1.1) rotate(3deg)" },
+                    "&:hover .doc-link": { opacity: 1 },
+                  }}
                 >
-                  {f.icon}
-                </div>
-                <h3 className="font-bold text-lg mb-3 text-[var(--text-primary)]">
-                  {f.title}
-                </h3>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                  {f.desc}
-                </p>
-                <div className="mt-6 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Read Documentation <FiArrowUpRight size={14} />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
+                  <Box className="hover-gradient" sx={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom right, rgba(6, 182, 212, 0.03), transparent)", opacity: 0, transition: "opacity 0.3s", borderRadius: 4 }} />
+                  
+                  <Avatar
+                    className="icon-box"
+                    variant="rounded"
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 3,
+                      bgcolor: "action.hover",
+                      border: 1,
+                      borderColor: "divider",
+                      color: f.color,
+                      mb: 3,
+                      boxShadow: 1,
+                      transition: "transform 0.3s ease",
+                    }}
+                  >
+                    {f.icon}
+                  </Avatar>
 
-        {/* Preview Tabs */}
+                  <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1.5, color: "text.primary" }}>
+                    {f.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
+                    {f.desc}
+                  </Typography>
+
+                  <Stack className="doc-link" direction="row" alignItems="center" spacing={0.75} sx={{ mt: 3, fontSize: "10px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: 1.5, color: "cyan.main", opacity: 0, transition: "opacity 0.3s" }}>
+                    <span>Read Documentation</span>
+                    <FiArrowUpRight size={14} />
+                  </Stack>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Stack>
+
+        {/* Modular Layout Core Attachments Section Sheets */}
         <DashboardPreviewTabs />
 
-        {/* Activity & Stats */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-          <div className="lg:col-span-1">
+        <Grid container spacing={6} alignItems="start">
+          <Grid size={{ xs: 12, lg: 4 }}>
             <ActivityFeed />
-          </div>
-          <div className="lg:col-span-2">
+          </Grid>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <StatsRow />
-          </div>
-        </div>
+          </Grid>
+        </Grid>
 
-        {/* Testimonials & Pricing */}
         <Testimonials />
         <PricingPlans />
 
-        {/* ═══════════ CTA ═══════════ */}
-        <motion.section
+        {/* ═══════════ TARGET CALL TO ACTION SECTION ═══════════ */}
+        <Card
+          component={motion.section}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeUp}
-          className="relative overflow-hidden rounded-[2.5rem] bg-[var(--text-primary)] p-12 md:p-20 text-center"
+          sx={{
+            position: "relative",
+            overflow: "hidden",
+            borderRadius: 10,
+            bgcolor: "text.primary",
+            p: { xs: 6, md: 10 },
+            textAlign: "center",
+          }}
         >
-          {/* Background Mesh */}
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, var(--border) 1px, transparent 0)`,
+          {/* Custom dot pattern architecture background layer mesh */}
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              opacity: 0.15,
+              backgroundImage: "radial-gradient(circle at 2px 2px, var(--mui-palette-divider) 1px, transparent 0)",
               backgroundSize: "32px 32px",
             }}
           />
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-cyan-500/10 to-blue-600/10" />
+          <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent, rgba(6, 182, 212, 0.1), rgba(37, 99, 235, 0.1))" }} />
 
-          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
-            <h2 className="text-4xl md:text-6xl font-bold text-[var(--card)] tracking-tight">
+          <Stack spacing={4} sx={{ position: "relative", zIndex: 10, maxWidth: 768, mx: "auto" }}>
+            <Typography variant="h2" sx={{ fontSize: { xs: "2.25rem", md: "3.75rem" }, fontWeight: "bold", color: "background.paper", letterSpacing: "-0.02em" }}>
               Ready to upgrade your <br />
-              <span className="text-cyan-400">financial stack?</span>
-            </h2>
-            <p className="text-[var(--card)]/70 text-lg md:text-xl leading-relaxed">
-              Deploy your personal finance instance in under 60 seconds.
-              Open-source spirit, enterprise-grade performance.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link
+              <Box component="span" sx={{ color: "cyan.main" }}>financial stack?</Box>
+            </Typography>
+
+            <Typography variant="body1" sx={{ color: "rgba(255, 255, 255, 0.7)", fontSize: { xs: "1.125rem", md: "1.25rem" }, lineHeight: 1.6 }}>
+              Deploy your personal finance instance in under 60 seconds. Open-source spirit, enterprise-grade performance.
+            </Typography>
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="center" sx={{ pt: 2 }}>
+              <Button
+                component={RouterLink}
                 to="/signup"
-                className="w-full sm:w-auto px-10 py-5 rounded-2xl bg-cyan-500 text-[var(--text-primary)] font-black text-lg
-                            hover:scale-105 active:scale-95 transition-all shadow-[0_20px_40px_rgba(6,182,212,0.3)]"
+                variant="contained"
+                sx={{
+                  px: 5,
+                  py: 2.5,
+                  borderRadius: 4,
+                  bgcolor: "cyan.main",
+                  color: "text.primary",
+                  fontWeight: 900,
+                  fontSize: "1.125rem",
+                  textTransform: "none",
+                  boxShadow: "0 20px 40px rgba(6, 182, 212, 0.3)",
+                  "&:hover": { transform: "scale(1.05)", bgcolor: "cyan.dark" },
+                  transition: "all 0.2s",
+                }}
               >
                 Create Main Instance
-              </Link>
-              <Link
+              </Button>
+              <Button
+                component={RouterLink}
                 to="/login"
-                className="w-full sm:w-auto px-10 py-5 rounded-2xl border-2 border-[var(--card)]/20 text-[var(--card)] font-bold
-                            hover:bg-[var(--card)]/10 transition-all"
+                variant="outlined"
+                sx={{
+                  px: 5,
+                  py: 2.5,
+                  borderRadius: 4,
+                  border: 2,
+                  borderColor: "rgba(255, 255, 255, 0.2)",
+                  color: "background.paper",
+                  fontWeight: "bold",
+                  fontSize: "1.125rem",
+                  textTransform: "none",
+                  "&:hover": { border: 2, borderColor: "background.paper", bgcolor: "rgba(255,255,255,0.1)" },
+                  transition: "all 0.2s",
+                }}
               >
                 Access Console
-              </Link>
-            </div>
-          </div>
-        </motion.section>
+              </Button>
+            </Stack>
+          </Stack>
+        </Card>
 
         <FAQSection />
         <IntegrationsGrid />
         <Footer />
-      </div>
+      </Container>
     </DevBackground>
   );
 };

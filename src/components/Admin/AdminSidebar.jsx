@@ -1,5 +1,21 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Avatar from "@mui/material/Avatar";
+import Backdrop from "@mui/material/Backdrop";
+
+// ================ Icons ================
 import {
   FiLayout,
   FiUsers,
@@ -23,186 +39,304 @@ export const AdminSidebar = ({ isOpen, toggleSidebar }) => {
     { label: "Dashboard", path: "/admin/admindashboard", icon: <FiLayout /> },
     { label: "Manage Users", path: "/admin/manageusers", icon: <FiUsers /> },
     { label: "Categories", path: "/admin/managecategories", icon: <FiGrid /> },
-    {
-      label: "Access Control",
-      path: "/admin/accesscontrol",
-      icon: <FiShield />,
-    },
+    { label: "Access Control", path: "/admin/accesscontrol", icon: <FiShield /> },
     { label: "Reports", path: "/admin/reportadmins", icon: <FiFileText /> },
     { label: "System Logs", path: "/admin/systemlogs", icon: <FiActivity /> },
     { label: "My Account", path: `/admin/account/${userId}`, icon: <FiUser /> },
   ];
 
+  const drawerWidth = isOpen ? 260 : 80;
+
   return (
     <>
-      {/* Mobile Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={toggleSidebar}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
-          />
-        )}
-      </AnimatePresence>
+      {/* Mobile Overlay Backdrop */}
+      <Backdrop
+        open={isOpen}
+        onClick={toggleSidebar}
+        sx={{
+          zIndex: 60,
+          bgcolor: "rgba(0, 0, 0, 0.6)",
+          backdropFilter: "blur(4px)",
+          display: { lg: "none" },
+        }}
+      />
 
       {/* Sidebar Container */}
-      <motion.aside
-        initial={false}
-        animate={{
-          width: isOpen ? 260 : 80,
-          x: 0,
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          zIndex: 70,
+          display: {
+            xs: isOpen ? "block" : "none",
+            lg: "block",
+          },
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+            height: "100vh",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            bgcolor: "rgba(var(--mui-palette-background-defaultChannel), 0.8)",
+            backdropFilter: "blur(24px)",
+            borderRight: 1,
+            borderColor: "divider",
+            display: "flex",
+            flexDirection: "column",
+            transition: (theme) => theme.transitions.create(["width", "box-shadow"], {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+            boxShadow: isOpen ? "0px 25px 50px -12px rgba(34, 211, 238, 0.05)" : "none",
+            overflowX: "hidden",
+          },
         }}
-        className={`fixed top-0 left-0 h-screen z-[70] 
-                   bg-[var(--bg)]/80 backdrop-blur-2xl border-r border-[var(--border)]
-                   flex flex-col transition-shadow duration-300
-                   ${isOpen ? "shadow-2xl shadow-cyan-500/5" : ""}
-                   lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Header / Logo */}
-        <div className="h-20 flex items-center justify-between px-6 border-b border-[var(--border)]">
+        <Box
+          sx={{
+            height: 80,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            px: 3,
+            borderBottom: 1,
+            borderColor: "divider",
+          }}
+        >
           <AnimatePresence mode="wait">
             {isOpen ? (
-              <motion.div
+              <Stack
+                component={motion.div}
                 key="logo-full"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                className="flex items-center gap-3"
+                direction="row"
+                alignItems="center"
+                spacing={1.5}
               >
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <FiShield size={18} className="text-[var(--text)]" />
-                </div>
-                <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-muted)] bg-clip-text text-transparent">
-                  FinTrack <span className="text-cyan-400">Admin</span>
-                </span>
-              </motion.div>
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 3,
+                    background: "linear-gradient(135deg, #22d3ee, #2563eb)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 4px 12px rgba(34, 211, 238, 0.2)",
+                  }}
+                >
+                  <FiShield size={18} style={{ color: "#fff" }} />
+                </Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "1.125rem",
+                    letterSpacing: "-0.025em",
+                    background: "linear-gradient(to right, var(--mui-palette-text-primary), var(--mui-palette-text-disabled))",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  FinTrack{" "}
+                  <Box component="span" sx={{ color: "cyan.main" }}>
+                    Admin
+                  </Box>
+                </Typography>
+              </Stack>
             ) : (
-              <motion.div
+              <Box
+                component={motion.div}
                 key="logo-icon"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="mx-auto"
+                sx={{ mx: "auto" }}
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <FiShield size={20} className="text-[var(--text)]" />
-                </div>
-              </motion.div>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 3,
+                    background: "linear-gradient(135deg, #22d3ee, #2563eb)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 4px 12px rgba(34, 211, 238, 0.2)",
+                  }}
+                >
+                  <FiShield size={20} style={{ color: "#fff" }} />
+                </Box>
+              </Box>
             )}
           </AnimatePresence>
 
           {/* Mobile Close Button */}
-          <button
+          <IconButton
             onClick={toggleSidebar}
-            className="lg:hidden text-[var(--muted)] hover:text-[var(--text)] transition"
+            sx={{ display: { lg: "none" }, color: "text.secondary", "&:hover": { color: "text.primary" } }}
           >
             <FiX size={20} />
-          </button>
-        </div>
+          </IconButton>
+        </Box>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-2 custom-scrollbar">
+        {/* Navigation List */}
+        <List
+          sx={{
+            flex: 1,
+            overflowY: "auto",
+            py: 3,
+            px: 1.5,
+            spaceY: 1,
+            scrollbarWidth: "thin",
+            "&::-webkit-scrollbar": { width: 4 },
+            "&::-webkit-scrollbar-track": { bgcolor: "transparent" },
+            "&::-webkit-scrollbar-thumb": { bgcolor: "action.hover", borderRadius: 10 },
+          }}
+        >
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
-              <Link key={item.path} to={item.path}>
-                <motion.div
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200
-                             ${
-                               isActive
-                                 ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-[var(--text)]"
-                                 : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--text)]"
-                             }`}
+              <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
+                <ListItemButton
+                  component={RouterLink}
+                  to={item.path}
+                  onClick={{ xs: toggleSidebar, lg: undefined }}
+                  sx={{
+                    px: 2,
+                    py: 1.5,
+                    borderRadius: 3,
+                    transition: "all 0.2s",
+                    background: isActive
+                      ? "linear-gradient(to right, rgba(34, 211, 238, 0.15), rgba(37, 99, 235, 0.05))"
+                      : "transparent",
+                    border: isActive ? "1px solid rgba(34, 211, 238, 0.25)" : "1px solid transparent",
+                    color: isActive ? "text.primary" : "text.secondary",
+                    "&:hover": {
+                      bgcolor: isActive ? "none" : "action.hover",
+                      color: "text.primary",
+                      transform: "translateX(4px)",
+                    },
+                  }}
                 >
-                  <span
-                    className={`text-xl transition-colors duration-200 ${isActive ? "text-cyan-400" : "group-hover:text-cyan-300"}`}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: isOpen ? 2 : "auto",
+                      justifyContent: "center",
+                      fontSize: "1.25rem",
+                      color: isActive ? "cyan.main" : "text.secondary",
+                    }}
                   >
                     {item.icon}
-                  </span>
+                  </ListItemIcon>
 
                   {isOpen && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-sm font-medium whitespace-nowrap"
-                    >
-                      {item.label}
-                    </motion.span>
+                    <ListItemText
+                      primary={item.label}
+                      primaryTypographyProps={{
+                        fontSize: "14px",
+                        fontWeight: isActive ? 600 : 500,
+                      }}
+                    />
                   )}
 
                   {isActive && isOpen && (
-                    <motion.div
+                    <Box
+                      component={motion.div}
                       layoutId="active-pill"
-                      className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        bgcolor: "cyan.main",
+                        boxShadow: "0 0 8px rgba(34, 211, 238, 0.6)",
+                      }}
                     />
                   )}
-                </motion.div>
-              </Link>
+                </ListItemButton>
+              </ListItem>
             );
           })}
-        </nav>
+        </List>
 
-        {/* Footer / User Hub */}
-        <div className="p-4 border-t border-[var(--border)]">
-          <div
-            className={`flex items-center gap-3 p-2 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]
-                         ${!isOpen && "justify-center"}`}
+        {/* Footer / User Hub Profile Info */}
+        <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={2}
+            sx={{
+              p: 1,
+              borderRadius: 4,
+              bgcolor: "action.hover",
+              border: 1,
+              borderColor: "divider",
+              justifyContent: isOpen ? "flex-start" : "center",
+            }}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-purple-700 flex items-center justify-center text-[var(--text)] font-bold text-sm shadow-inner">
+            <Avatar
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 3,
+                background: "linear-gradient(135deg, #0891b2, #7e22ce)",
+                fontSize: "14px",
+                fontWeight: "bold",
+                boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)",
+              }}
+            >
               {user?.name?.charAt(0).toUpperCase() || "A"}
-            </div>
+            </Avatar>
+            
             {isOpen && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: "text.primary", noWrap: true }}>
                   {user?.name || "Admin"}
-                </p>
-                <p className="text-[10px] text-cyan-400/80 font-medium uppercase tracking-wider">
-                  System Administrator
-                </p>
-              </div>
+                </Typography>
+                <Typography variant="caption" sx={{ fontSize: "10px", color: "cyan.main", fontWeight: "medium", tracking: "wider" }}>
+                  SYSTEM ADMINISTRATOR
+                </Typography>
+              </Box>
             )}
-          </div>
+          </Stack>
 
           {isOpen && (
-            <div className="mt-4 px-2">
-              <p className="text-[10px] text-[var(--text-muted)] text-center">
+            <Box sx={{ mt: 2, px: 1 }}>
+              <Typography variant="caption" display="block" align="center" sx={{ fontSize: "10px", color: "text.disabled" }}>
                 © 2026 FinTrack • v2.4.0
-              </p>
-            </div>
+              </Typography>
+            </Box>
           )}
-        </div>
+        </Box>
 
-        {/* Desktop Toggle Button */}
-        <button
+        {/* Desktop Toggle Slider Trigger Button */}
+        <IconButton
           onClick={toggleSidebar}
-          className="hidden lg:flex absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-cyan-500 
-                     border border-[var(--border)] shadow-lg shadow-cyan-500/30 items-center justify-center
-                     text-[var(--text)] hover:bg-cyan-400 transition-colors z-[80]"
+          sx={{
+            display: { xs: "none", lg: "flex" },
+            position: "absolute",
+            top: "50%",
+            right: -12,
+            transform: "translateY(-50%)",
+            width: 24,
+            height: 24,
+            bgcolor: "cyan.main",
+            border: 1,
+            borderColor: "divider",
+            boxShadow: "0px 4px 10px rgba(34, 211, 238, 0.3)",
+            zIndex: 80,
+            "&:hover": { bgcolor: "cyan.dark" },
+          }}
         >
-          {isOpen ? <FiChevronLeft size={14} /> : <FiChevronRight size={14} />}
-        </button>
-      </motion.aside>
-
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: var(--surface-tertiary);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: var(--border);
-        }
-      `}</style>
+          {isOpen ? <FiChevronLeft size={14} style={{ color: "#fff" }} /> : <FiChevronRight size={14} style={{ color: "#fff" }} />}
+        </IconButton>
+      </Drawer>
     </>
   );
 };

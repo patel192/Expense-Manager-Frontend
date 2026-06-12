@@ -9,195 +9,300 @@ import {
   FiLayout,
 } from "react-icons/fi";
 
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid2";
+import LinearProgress from "@mui/material/LinearProgress";
+
 const tabs = [
   {
     id: "income",
     label: "Income Stream",
     icon: <FiTrendingUp size={14} />,
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
+    color: "success.main",
+    bg: "rgba(16, 185, 129, 0.1)",
   },
   {
     id: "expenses",
     label: "Outflow Tracking",
     icon: <FiTrendingDown size={14} />,
-    color: "text-rose-500",
-    bg: "bg-rose-500/10",
+    color: "error.main",
+    bg: "rgba(244, 63, 94, 0.1)",
   },
   {
     id: "budget",
     label: "Thresholds",
     icon: <FiTarget size={14} />,
-    color: "text-amber-500",
-    bg: "bg-amber-500/10",
+    color: "warning.main",
+    bg: "rgba(245, 158, 11, 0.1)",
   },
   {
     id: "reports",
     label: "Analytics",
     icon: <FiPieChart size={14} />,
-    color: "text-cyan-500",
-    bg: "bg-cyan-500/10",
+    color: "cyan.main",
+    bg: "rgba(6, 182, 212, 0.1)",
   },
 ];
 
 export const DashboardPreviewTabs = () => {
   const [active, setActive] = useState("income");
 
-  return (
-    <section className="py-24 space-y-12">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 text-[10px] font-bold uppercase tracking-widest">
-          <FiLayout size={12} />
-          Architecture Preview
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] tracking-tight">
-          Engineered for <span className="text-cyan-500">Clarity</span>
-        </h2>
-        <p className="text-[var(--text-secondary)] max-w-2xl mx-auto text-base">
-          Experience a high-performance financial interface designed for rapid
-          data entry and deep analytical insights.
-        </p>
-      </div>
+  const currentTab = tabs.find((t) => t.id === active);
 
-      <div className="max-w-5xl mx-auto">
+  return (
+    <Container component="section" sx={{ py: 10 }}>
+      {/* Header */}
+      <Stack spacing={2} alignItems="center" textAlign="center" sx={{ mb: 6 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1}
+          sx={{
+            px: 2,
+            py: 0.5,
+            borderRadius: 10,
+            bgcolor: "cyan.main",
+            opacity: 0.8,
+            color: "cyan.contrastText",
+          }}
+        >
+          <FiLayout size={12} />
+          <Typography variant="caption" sx={{ fontWeight: "bold", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+            Architecture Preview
+          </Typography>
+        </Stack>
+        <Typography variant="h4" component="h2" sx={{ fontWeight: "bold", tracking: "-0.02em" }}>
+          Engineered for{" "}
+          <Box component="span" sx={{ color: "cyan.main" }}>
+            Clarity
+          </Box>
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ maxW: 600, mx: "auto" }}>
+          Experience a high-performance financial interface designed for rapid data entry and deep analytical insights.
+        </Typography>
+      </Stack>
+
+      <Box sx={{ maxW: 1000, mx: "auto" }}>
         {/* Navigation */}
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
+        <Stack
+          direction="row"
+          justifyContent="center"
+          flexWrap="wrap"
+          spacing={2}
+          sx={{ mb: 4 }}
+        >
           {tabs.map((tab) => (
-            <button
+            <Button
               key={tab.id}
               onClick={() => setActive(tab.id)}
-              className={`
-                group relative flex items-center gap-2.5
-                px-5 py-2.5 rounded-xl border transition-all duration-200
-                ${
-                  active === tab.id
-                    ? "bg-[var(--card)] border-[var(--border)] shadow-sm text-[var(--text-primary)]"
-                    : "bg-transparent border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)]"
-                }
-              `}
+              variant={active === tab.id ? "contained" : "outlined"}
+              color={active === tab.id ? "primary" : "inherit"}
+              startIcon={tab.icon}
+              sx={{
+                borderRadius: 3,
+                textTransform: "none",
+                fontWeight: "bold",
+                px: 3,
+                py: 1,
+                borderColor: active === tab.id ? "primary.main" : "divider",
+                bgcolor: active === tab.id ? "primary.main" : "transparent",
+                color: active === tab.id ? "primary.contrastText" : "text.secondary",
+                "&:hover": {
+                  bgcolor: active === tab.id ? "primary.main" : "action.hover",
+                },
+              }}
             >
-              <span
-                className={`${active === tab.id ? tab.color : "text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]"}`}
-              >
-                {tab.icon}
-              </span>
-              <span className="text-sm font-semibold tracking-wide">
-                {tab.label}
-              </span>
-              {active === tab.id && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute -bottom-[1px] left-4 right-4 h-0.5 bg-cyan-500 rounded-full"
-                />
-              )}
-            </button>
+              {tab.label}
+            </Button>
           ))}
-        </div>
+        </Stack>
 
         {/* Content Area */}
-        <div className="relative group">
-          {/* Decorative Elements */}
-          <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/10 via-blue-500/5 to-transparent rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <Box sx={{ position: "relative" }}>
+          {/* Ambient Glow */}
+          <Box
+            sx={{
+              position: "absolute",
+              inset: -16,
+              background: "linear-gradient(to right, rgba(6, 182, 212, 0.05), rgba(59, 130, 246, 0.05))",
+              filter: "blur(24px)",
+              borderRadius: 8,
+              opacity: 1,
+              pointerEvents: "none",
+            }}
+          />
 
-          <div className="relative bg-[var(--card)] border border-[var(--border)] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] overflow-hidden">
-            {/* Browser-like Toolbar */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-rose-500/20 border border-rose-500/40" />
-                <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/40" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/40" />
-              </div>
-              <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-[var(--card)] border border-[var(--border)] text-[10px] text-[var(--text-muted)] font-mono">
-                <span className="text-cyan-500 opacity-50">GET</span>
-                <span>/api/v1/finance/{active}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <FiActivity
-                  size={12}
-                  className="text-emerald-500 animate-pulse"
+          <Card
+            sx={{
+              position: "relative",
+              border: 1,
+              borderColor: "divider",
+              borderRadius: 6,
+              boxShadow: 3,
+              overflow: "hidden",
+              bgcolor: "background.paper",
+            }}
+          >
+            {/* Toolbar */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{
+                px: 3,
+                py: 2,
+                borderBottom: 1,
+                borderColor: "divider",
+                bgcolor: "action.hover",
+              }}
+            >
+              <Stack direction="row" spacing={1}>
+                <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: "rgba(244, 63, 94, 0.4)" }} />
+                <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: "rgba(245, 158, 11, 0.4)" }} />
+                <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: "rgba(16, 185, 129, 0.4)" }} />
+              </Stack>
+              <Box
+                sx={{
+                  px: 2,
+                  py: 0.5,
+                  borderRadius: 1,
+                  bgcolor: "background.paper",
+                  border: 1,
+                  borderColor: "divider",
+                  fontFamily: "monospace",
+                  fontSize: 10,
+                  color: "text.secondary",
+                }}
+              >
+                <Box component="span" sx={{ color: "cyan.main", mr: 1, fontWeight: "bold" }}>
+                  GET
+                </Box>
+                /api/v1/finance/{active}
+              </Box>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Box
+                  component="span"
+                  className="animate-pulse"
+                  sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "success.main" }}
                 />
-                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">
+                <Typography variant="caption" sx={{ fontWeight: "bold", color: "success.main", tracking: "-0.01em" }}>
                   Live Sync
-                </span>
-              </div>
-            </div>
+                </Typography>
+              </Stack>
+            </Stack>
 
             {/* Inner Content */}
-            <div className="p-8 min-h-[300px] flex items-center justify-center">
+            <CardContent sx={{ p: 4, minHeight: 300, display: "flex", alignItems: "center" }}>
               <AnimatePresence mode="wait">
-                <motion.div
+                <Grid
+                  container
+                  spacing={4}
+                  size={12}
+                  component={motion.div}
                   key={active}
                   initial={{ opacity: 0, scale: 0.98, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 1.02, y: -10 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+                  alignItems="center"
                 >
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="text-xs font-bold text-cyan-500 uppercase tracking-widest mb-2">
-                        Detailed Metric
-                      </h4>
-                      <p className="text-4xl font-bold text-[var(--text-primary)] tracking-tight">
-                        {active === "income" && "₹72,450.00"}
-                        {active === "expenses" && "₹49,820.50"}
-                        {active === "budget" && "72.4%"}
-                        {active === "reports" && "14 Active"}
-                      </p>
-                      <p className="text-sm text-[var(--text-secondary)] mt-2">
-                        {active === "income" && "+12.5% from last month"}
-                        {active === "expenses" && "-4.2% from last month"}
-                        {active === "budget" && "Remaining: ₹22,629.50"}
-                        {active === "reports" && "2 new alerts detected"}
-                      </p>
-                    </div>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Stack spacing={3}>
+                      <Box>
+                        <Typography variant="caption" sx={{ fontWeight: "bold", color: "cyan.main", tracking: "0.1em", textTransform: "uppercase" }}>
+                          Detailed Metric
+                        </Typography>
+                        <Typography variant="h3" sx={{ fontWeight: "bold", mt: 1, tracking: "-0.03em" }}>
+                          {active === "income" && "₹72,450.00"}
+                          {active === "expenses" && "₹49,820.50"}
+                          {active === "budget" && "72.4%"}
+                          {active === "reports" && "14 Active"}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                          {active === "income" && "+12.5% from last month"}
+                          {active === "expenses" && "-4.2% from last month"}
+                          {active === "budget" && "Remaining: ₹22,629.50"}
+                          {active === "reports" && "2 new alerts detected"}
+                        </Typography>
+                      </Box>
 
-                    <div className="space-y-3">
-                      {[1, 2].map((i) => (
-                        <div
-                          key={i}
-                          className="h-2 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden"
-                        >
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${Math.random() * 60 + 20}%` }}
-                            className={`h-full rounded-full ${tabs.find((t) => t.id === active).bg.replace("/10", "")}`}
+                      <Stack spacing={2}>
+                        {[75, 45].map((val, idx) => (
+                          <LinearProgress
+                            key={idx}
+                            variant="determinate"
+                            value={val}
+                            sx={{
+                              height: 8,
+                              borderRadius: 4,
+                              bgcolor: "action.hover",
+                              "& .MuiLinearProgress-bar": {
+                                bgcolor: currentTab.color,
+                              },
+                            }}
                           />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                        ))}
+                      </Stack>
+                    </Stack>
+                  </Grid>
 
-                  <div className="hidden md:block">
-                    <div className="aspect-square rounded-2xl bg-gradient-to-br from-[var(--surface-secondary)] to-[var(--card)] border border-[var(--border)] p-6 flex flex-col justify-between">
-                      <div className="flex justify-between items-start">
-                        <div
-                          className={`p-3 rounded-xl ${tabs.find((t) => t.id === active).bg} ${tabs.find((t) => t.id === active).color}`}
+                  <Grid size={{ xs: 0, md: 6 }} sx={{ display: { xs: "none", md: "block" } }}>
+                    <Box
+                      sx={{
+                        borderRadius: 4,
+                        border: 1,
+                        borderColor: "divider",
+                        p: 4,
+                        bgcolor: "action.hover",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                      }}
+                    >
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Avatar
+                          sx={{
+                            bgcolor: currentTab.bg,
+                            color: currentTab.color,
+                            borderRadius: 3,
+                            width: 44,
+                            height: 44,
+                            border: 1,
+                            borderColor: "divider",
+                          }}
                         >
-                          {tabs.find((t) => t.id === active).icon}
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] text-[var(--text-muted)] font-mono uppercase">
-                            Node_Status
-                          </p>
-                          <p className="text-xs font-bold text-emerald-500">
+                          {currentTab.icon}
+                        </Avatar>
+                        <Box textAlign="right">
+                          <Typography variant="caption" color="text.secondary" sx={{ fontFamily: "monospace", display: "block" }}>
+                            NODE_STATUS
+                          </Typography>
+                          <Typography variant="caption" sx={{ fontWeight: "bold", color: "success.main" }}>
                             OPTIMAL
-                          </p>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="h-12 w-full bg-[var(--surface-tertiary)] rounded-lg animate-pulse" />
-                        <div className="h-8 w-2/3 bg-[var(--surface-tertiary)] rounded-lg animate-pulse" />
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack spacing={1.5}>
+                        <Box sx={{ width: "100%", height: 32, borderRadius: 2, bgcolor: "background.paper", border: 1, borderColor: "divider", opacity: 0.8 }} />
+                        <Box sx={{ width: "66%", height: 24, borderRadius: 2, bgcolor: "background.paper", border: 1, borderColor: "divider", opacity: 0.8 }} />
+                      </Stack>
+                    </Box>
+                  </Grid>
+                </Grid>
               </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+            </CardContent>
+          </Card>
+        </Box>
+      </Box>
+    </Container>
   );
 };
+

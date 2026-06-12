@@ -11,6 +11,16 @@ import {
   FiLock,
 } from "react-icons/fi";
 
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+
 const integrations = [
   { name: "CSV Export", icon: <FiFileText size={18} /> },
   { name: "Excel", icon: <FiGrid size={18} /> },
@@ -24,73 +34,76 @@ const integrations = [
 
 export const IntegrationsGrid = () => {
   return (
-    <section className="py-20 space-y-10">
+    <Container component="section" sx={{ py: 10 }}>
       {/* Header */}
-      <div className="text-center space-y-2">
-        <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
+      <Stack spacing={1.5} alignItems="center" textAlign="center" sx={{ mb: 6 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: "bold",
+            color: "cyan.main",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+          }}
+        >
           Integrations
-        </p>
+        </Typography>
 
-        <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)]">
+        <Typography variant="h4" component="h2" sx={{ fontWeight: "bold" }}>
           Works with your workflow
-        </h2>
+        </Typography>
 
-        <p className="text-[var(--muted)] max-w-xl mx-auto text-sm">
-          Export data, generate reports, and keep everything secure with
-          built-in integrations.
-        </p>
-      </div>
+        <Typography variant="body2" color="text.secondary" sx={{ maxW: 500 }}>
+          Export data, generate reports, and keep everything secure with built-in integrations.
+        </Typography>
+      </Stack>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+      <Grid container spacing={3}>
         {integrations.map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: i * 0.05 }}
-            className="
-              flex
-              flex-col
-              items-center
-              justify-center
-              gap-2
-              px-4
-              py-6
-              rounded-2xl
-              bg-[var(--surface-primary)]
-              border
-              border-[var(--border)]
-              shadow-sm
-              hover:shadow-md
-              hover:-translate-y-1
-              transition
-            "
-          >
-            <div
-              className="
-                w-10
-                h-10
-                rounded-xl
-                flex
-                items-center
-                justify-center
-                bg-[var(--surface-secondary)]
-                border
-                border-[var(--border)]
-                text-cyan-400
-              "
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} key={i}>
+            <Card
+              component={motion.div}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
+              whileHover={{ y: -5 }}
+              sx={{
+                bgcolor: "background.paper",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 4,
+                boxShadow: 1,
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                  boxShadow: 3,
+                },
+              }}
             >
-              {item.icon}
-            </div>
+              <CardContent sx={{ p: 4, display: "flex", flexDirection: "column", alignItems: "center", gap: 1.5 }}>
+                <Avatar
+                  sx={{
+                    bgcolor: "action.hover",
+                    color: "cyan.main",
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: 3,
+                    width: 44,
+                    height: 44,
+                  }}
+                >
+                  {item.icon}
+                </Avatar>
 
-            <p className="text-xs font-medium text-[var(--text-secondary)]">
-              {item.name}
-            </p>
-          </motion.div>
+                <Typography variant="caption" sx={{ fontWeight: "bold", color: "text.secondary" }}>
+                  {item.name}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </section>
+      </Grid>
+    </Container>
   );
 };

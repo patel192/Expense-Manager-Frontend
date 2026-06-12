@@ -1,5 +1,17 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link as RouterLink } from "react-router-dom";
 import { logout } from "../Utils/Logout";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Container from "@mui/material/Container";
+import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+
+// ================ Icons ================
 import {
   FaTwitter,
   FaFacebookF,
@@ -10,68 +22,128 @@ import {
 
 export const AdminNavbar = () => {
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default", color: "text.primary" }}>
+      
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-[var(--surface-primary)]/80 border-b border-[var(--border)] shadow-md">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-3 sm:py-4 gap-3 sm:gap-0">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="text-lg sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform text-center sm:text-left"
+      <AppBar
+        position="sticky"
+        elevation={2}
+        sx={{
+          top: 0,
+          zIndex: (theme) => theme.zIndex.appBar,
+          bgcolor: "rgba(var(--mui-palette-background-paperChannel), 0.8)",
+          backdropFilter: "blur(8px)",
+          borderBottom: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Container maxWidth="lg">
+          <Toolbar
+            disableGutters
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              justifyContent: "space-between",
+              alignItems: "center",
+              py: { xs: 1.5, sm: 2 },
+              gap: { xs: 2, sm: 0 },
+            }}
           >
-            Trackit | Expense App
-          </Link>
-
-          {/* Right Side */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 md:gap-6 w-full sm:w-auto">
-            <button
-              onClick={logout}
-              className="w-full sm:w-auto px-4 py-2 md:px-5 md:py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 text-[var(--text)] font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
+            {/* Logo */}
+            <Link
+              component={RouterLink}
+              to="/"
+              underline="none"
+              sx={{
+                fontSize: { xs: "1.125rem", sm: "1.5rem", md: "1.875rem" },
+                fontWeight: "bold",
+                background: "linear-gradient(to right, #60a5fa, #a855f7)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                transition: "transform 0.2s",
+                textAlign: { xs: "center", sm: "left" },
+                "&:hover": { transform: "scale(1.05)" },
+              }}
             >
-              Logout
-            </button>
+              Trackit | Expense App
+            </Link>
 
-            {/* Socials */}
-            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 text-lg sm:text-xl md:text-2xl">
-              <a
-                href="#"
-                className="hover:text-blue-400 hover:scale-110 transition-transform"
+            {/* Right Side Actions */}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              alignItems="center"
+              spacing={{ xs: 1.5, sm: 2, md: 3 }}
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
+              {/* Logout Button */}
+              <Button
+                fullWidth={{ xs: true, sm: false }}
+                onClick={logout}
+                variant="contained"
+                sx={{
+                  px: { xs: 2, md: 3 },
+                  py: { xs: 1, md: 1.25 },
+                  borderRadius: 2,
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  background: "linear-gradient(to right, #ef4444, #ec4899)",
+                  boxShadow: "0 4px 14px 0 rgba(239, 68, 68, 0.4)",
+                  transition: "all 0.2s ease-in-out",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 6px 20px 0 rgba(239, 68, 68, 0.6)",
+                    background: "linear-gradient(to right, #ef4444, #ec4899)",
+                  },
+                }}
               >
-                <FaTwitter />
-              </a>
-              <a
-                href="#"
-                className="hover:text-blue-600 hover:scale-110 transition-transform"
-              >
-                <FaFacebookF />
-              </a>
-              <a
-                href="#"
-                className="hover:text-yellow-400 hover:scale-110 transition-transform"
-              >
-                <FaSnapchatGhost />
-              </a>
-              <a
-                href="#"
-                className="hover:text-pink-500 hover:scale-110 transition-transform"
-              >
-                <FaInstagram />
-              </a>
-              <a
-                href="#"
-                className="hover:text-green-400 hover:scale-110 transition-transform"
-              >
-                <FaMediumM />
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
+                Logout
+              </Button>
 
-      {/* Content */}
-      <main className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
+              {/* Social Media Connections */}
+              <Stack
+                direction="row"
+                flexWrap="wrap"
+                justifyContent={{ xs: "center", sm: "flex-start" }}
+                spacing={{ xs: 1, sm: 1.5 }}
+              >
+                {[
+                  { icon: <FaTwitter />, color: "#60a5fa" },
+                  { icon: <FaFacebookF />, color: "#2563eb" },
+                  { icon: <FaSnapchatGhost />, color: "#facc15" },
+                  { icon: <FaInstagram />, color: "#ec4899" },
+                  { icon: <FaMediumM />, color: "#4ade80" },
+                ].map((social, idx) => (
+                  <IconButton
+                    key={idx}
+                    href="#"
+                    sx={{
+                      fontSize: { xs: "1.125rem", sm: "1.25rem", md: "1.5rem" },
+                      color: "text.secondary",
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        color: social.color,
+                        transform: "scale(1.1)",
+                        bgcolor: "action.hover",
+                      },
+                    }}
+                  >
+                    {social.icon}
+                  </IconButton>
+                ))}
+              </Stack>
+            </Stack>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* Main Content Area */}
+      <Container
+        component="main"
+        maxWidth="lg"
+        sx={{ py: { xs: 2, sm: 3, md: 4 } }}
+      >
         <Outlet />
-      </main>
-    </div>
+      </Container>
+    </Box>
   );
 };

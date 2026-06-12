@@ -2,13 +2,34 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchLogs } from "../../redux/log/logSlice";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Card from "@mui/material/Card";
+import CircularProgress from "@mui/material/CircularProgress";
+import Avatar from "@mui/material/Avatar";
+
+// ================ Material UI Table Module ================
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+
+// ================ Icons ================
 import {
   FiSearch,
   FiClipboard,
   FiClock,
   FiActivity,
   FiShield,
-  FiUser
+  FiUser,
 } from "react-icons/fi";
 
 export const Systemlog = () => {
@@ -24,205 +45,382 @@ export const Systemlog = () => {
     (log) =>
       log.user?.toLowerCase().includes(search.toLowerCase()) ||
       log.action?.toLowerCase().includes(search.toLowerCase()) ||
-      log.description?.toLowerCase().includes(search.toLowerCase()),
+      log.description?.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Badge Color Protocol
-  const getBadgeColor = (action) => {
-    if (!action) return "bg-gray-500/10 border-gray-500/20 text-gray-500";
+  // Badge Color Protocol mapped directly to inline stylings
+  const getBadgeStyle = (action) => {
+    const base = { fontSize: "9px", fontWeight: 900, letterSpacing: 1, textTransform: "uppercase", px: 1.5, py: 0.5, borderRadius: 3, border: 1 };
+    if (!action) return { ...base, bgcolor: "rgba(107, 114, 128, 0.1)", borderColor: "rgba(107, 114, 128, 0.2)", color: "#6b7280" };
+    
     const act = action.toLowerCase();
     if (act.includes("delete"))
-      return "bg-rose-500/10 border-rose-500/20 text-rose-500";
+      return { ...base, bgcolor: "rgba(244, 63, 94, 0.1)", borderColor: "rgba(244, 63, 94, 0.2)", color: "#f43f5e" };
     if (act.includes("update"))
-      return "bg-cyan-500/10 border-cyan-500/20 text-cyan-500";
+      return { ...base, bgcolor: "rgba(6, 182, 212, 0.1)", borderColor: "rgba(6, 182, 212, 0.2)", color: "#06b6d4" };
     if (act.includes("create"))
-      return "bg-emerald-500/10 border-emerald-500/20 text-emerald-500";
-    return "bg-violet-500/10 border-violet-500/20 text-violet-500";
+      return { ...base, bgcolor: "rgba(16, 185, 129, 0.1)", borderColor: "rgba(16, 185, 129, 0.2)", color: "#10b981" };
+      
+    return { ...base, bgcolor: "rgba(139, 92, 246, 0.1)", borderColor: "rgba(139, 92, 246, 0.2)", color: "#8b5cf6" };
   };
 
   return (
-    <motion.div
+    <Box
+      component={motion.div}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="pb-10 space-y-8 text-[var(--text-primary)]"
+      sx={{ pb: 5, color: "text.primary", "& > :not(style)": { mb: 4 } }}
     >
       {/* ══ AUDIT HEADER ══ */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent uppercase tracking-tighter">
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", md: "end" }}
+        spacing={3}
+      >
+        <Box>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 900,
+              letterSpacing: -1,
+              textTransform: "uppercase",
+              background: "linear-gradient(to right, var(--text-primary), var(--text-secondary))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
             Operational Ledger
-          </h1>
-          <p className="text-sm font-bold text-[var(--text-muted)] mt-1 uppercase tracking-[0.2em]">
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              fontWeight: "bold",
+              color: "text.disabled",
+              mt: 0.5,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+            }}
+          >
             Immutable Transactional Integrity Audit
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
-        <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-2xl border bg-violet-500/10 border-violet-500/20 text-violet-500 text-[10px] font-black uppercase tracking-widest shadow-sm flex items-center gap-3">
-            <FiShield size={12} className="animate-pulse" />
-            {logs.length} AUDIT NODES
-          </div>
-        </div>
-      </div>
+        <Chip
+          icon={<FiShield size={12} style={{ animation: "pulse 2s infinite" }} />}
+          label={`${logs.length} AUDIT NODES`}
+          sx={{
+            px: 1.5,
+            py: 2,
+            borderRadius: 4,
+            bgcolor: "rgba(139, 92, 246, 0.1)",
+            border: "1px solid rgba(139, 92, 246, 0.2)",
+            color: "#8b5cf6",
+            fontSize: "10px",
+            fontWeight: 900,
+            letterSpacing: 1,
+            textTransform: "uppercase",
+            "& .MuiChip-icon": { color: "inherit", marginLeft: 0 },
+          }}
+        />
+      </Stack>
 
-      {/* ── COMMAND OVERRIDE (SEARCH) ── */}
-      <div className="relative overflow-hidden p-8 sm:p-10 rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />
+      {/* ── COMMAND OVERRIDE (SEARCH INPUT CARD) ── */}
+      <Card
+        sx={{
+          p: { xs: 4, sm: 5 },
+          borderRadius: 10,
+          bgcolor: "background.paper",
+          border: 1,
+          borderColor: "divider",
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Synthetic background ambient blurs */}
+        <Box sx={{ position: "absolute", top: 0, right: 0, w: 256, h: 256, bgcolor: "rgba(139, 92, 246, 0.05)", filter: "blur(100px)", pointerEvents: "none" }} />
+        <Box sx={{ position: "absolute", bottom: 0, left: 0, w: 256, h: 256, bgcolor: "rgba(6, 182, 212, 0.05)", filter: "blur(100px)", pointerEvents: "none" }} />
 
-        <div className="relative flex flex-col lg:flex-row items-center gap-6">
-          <div className="flex-1 relative group w-full">
-            <FiSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-violet-500 transition-colors z-10" />
-            <input
-              type="text"
-              placeholder="Search taxonomy cache by user, action or payload signature..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-14 pr-4 py-4 rounded-2xl bg-[var(--surface-secondary)]/50 border border-[var(--border)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-violet-500/50 focus:ring-4 focus:ring-violet-500/5 transition-all duration-300 font-bold tracking-tight"
-            />
-          </div>
-          <div className="px-6 py-4 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-[10px] font-black text-violet-500 uppercase tracking-[0.2em] whitespace-nowrap shadow-inner flex items-center gap-3">
-            <FiActivity size={14} />
-            REAL-TIME MONITORING ACTIVE
-          </div>
-        </div>
-      </div>
+        <Stack
+          direction={{ xs: "column", lg: "row" }}
+          alignItems="center"
+          spacing={3}
+          sx={{ position: "relative", zIndex: 1 }}
+        >
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Search taxonomy cache by user, action or payload signature..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start" sx={{ pl: 1, color: "text.disabled" }}>
+                  <FiSearch size={18} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                bgcolor: "action.hover",
+                borderRadius: 4,
+                color: "text.primary",
+                fontWeight: "bold",
+                letterSpacing: "-0.01em",
+                "& fieldset": { borderColor: "divider" },
+                "&:hover fieldset": { borderColor: "action.active" },
+                "&.Mui-focused fieldset": { borderColor: "rgba(139, 92, 246, 0.5)", borderWidth: "1px" },
+                "&.Mui-focused": { boxShadow: "0 0 0 4px rgba(139, 92, 246, 0.05)" },
+              },
+              "& .MuiOutlinedInput-input": { py: 2, px: 1, fontSize: "14px" },
+            }}
+          />
 
-      {/* ── CENTRAL LEDGER ── */}
-      <motion.div
+          <Chip
+            icon={<FiActivity size={14} />}
+            label="Real-time Monitoring Active"
+            sx={{
+              px: 2,
+              py: 2.5,
+              borderRadius: 4,
+              bgcolor: "rgba(139, 92, 246, 0.1)",
+              border: 1,
+              borderColor: "rgba(139, 92, 246, 0.2)",
+              color: "#8b5cf6",
+              fontSize: "10px",
+              fontWeight: 900,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+              boxShadow: "inset 0px 1px 3px rgba(0,0,0,0.2)",
+              alignSelf: { xs: "stretch", lg: "auto" },
+              justifyContent: "center",
+              "& .MuiChip-icon": { color: "inherit", marginLeft: 0 },
+            }}
+          />
+        </Stack>
+      </Card>
+
+      {/* ── CENTRAL DATA LEDGER LAYER ── */}
+      <Card
+        component={motion.div}
         initial={{ opacity: 0, scale: 0.99 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden backdrop-blur-md"
+        sx={{
+          borderRadius: 10,
+          bgcolor: "background.paper",
+          border: 1,
+          borderColor: "divider",
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+          overflow: "hidden",
+        }}
       >
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-6">
-            <div className="w-12 h-12 rounded-2xl border-4 border-violet-500/10 border-t-violet-500 animate-spin" />
-            <div className="space-y-1 text-center">
-              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest animate-pulse">
+          /* SYNC STATE LOAD ENGINE */
+          <Stack alignItems="center" justifyContent="center" sx={{ py: 16 }} spacing={3}>
+            <CircularProgress thickness={4} sx={{ color: "#8b5cf6", width: "48px !important", height: "48px !important" }} />
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="caption" sx={{ display: "block", fontWeight: 900, color: "text.primary", letterSpacing: "0.15em", textTransform: "uppercase", animation: "pulse 2s infinite", mb: 0.5 }}>
                 Synchronizing Ledger...
-              </p>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: "10px", fontWeight: "bold", color: "text.disabled", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                 Compiling Historical Telemetry
-              </p>
-            </div>
-          </div>
+              </Typography>
+            </Box>
+          </Stack>
         ) : filteredLogs.length === 0 ? (
-          <div className="py-32 text-center space-y-4">
-            <div className="w-20 h-20 rounded-[2.5rem] bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center mx-auto shadow-inner">
-              <FiClipboard
-                size={40}
-                className="text-[var(--text-muted)] opacity-20"
-              />
-            </div>
-            <div className="space-y-1">
-              <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-widest">
+          /* REGISTRY NULL EXCEPTION */
+          <Stack alignItems="center" justifyContent="center" sx={{ py: 16 }} spacing={2}>
+            <Avatar
+              variant="rounded"
+              sx={{
+                width: 80,
+                height: 80,
+                borderRadius: 10,
+                bgcolor: "action.hover",
+                border: 1,
+                borderColor: "divider",
+                boxShadow: "inset 0px 1px 3px rgba(0,0,0,0.2)",
+              }}
+            >
+              <FiClipboard size={40} style={{ opacity: 0.2 }} />
+            </Avatar>
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="caption" sx={{ display: "block", fontWeight: 900, color: "text.primary", letterSpacing: "0.15em", textTransform: "uppercase", mb: 0.5 }}>
                 No match in registry
-              </p>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: "10px", fontWeight: "bold", color: "text.disabled", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                 Modify taxonomy filters to access data nodes.
-              </p>
-            </div>
-          </div>
+              </Typography>
+            </Box>
+          </Stack>
         ) : (
           <>
-            <div className="hidden lg:block overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-[var(--surface-secondary)]/50 text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] border-b border-[var(--border)]">
-                    <th className="px-8 py-6">Timestamp Sequence</th>
-                    <th className="px-8 py-6">Operational Actor</th>
-                    <th className="px-8 py-6">Interaction Vector</th>
-                    <th className="px-8 py-6">Transaction Signature</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--border)]">
+            {/* DESKTOP MATRIX RESOLUTION (LARGE DEVICE VIEW) */}
+            <TableContainer sx={{ display: { xs: "none", lg: "block" }, overflowX: "auto" }}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ bgcolor: "action.hover", borderBottom: 1, borderColor: "divider" }}>
+                    {["Timestamp Sequence", "Operational Actor", "Interaction Vector", "Transaction Signature"].map((head) => (
+                      <TableCell
+                        key={head}
+                        sx={{
+                          px: 4,
+                          py: 3,
+                          fontSize: "10px",
+                          fontWeight: 900,
+                          color: "text.disabled",
+                          letterSpacing: "0.2em",
+                          textTransform: "uppercase",
+                          borderBottom: "none",
+                        }}
+                      >
+                        {head}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   <AnimatePresence>
                     {filteredLogs.map((log, index) => (
-                      <motion.tr
+                      <TableRow
                         key={log._id || index}
+                        component={motion.tr}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.01 }}
-                        className="group hover:bg-violet-500/5 transition-all duration-300"
+                        sx={{
+                          transition: "all 0.3s",
+                          borderBottom: 1,
+                          borderColor: "divider",
+                          "&:last-child": { borderBottom: "none" },
+                          "&:hover": { bgcolor: "rgba(139, 92, 246, 0.05)" },
+                          "&:hover .timestamp-cell": { color: "#8b5cf6" },
+                          "&:hover .actor-avatar": { borderColor: "rgba(139, 92, 246, 0.5)" },
+                        }}
                       >
-                        <td className="px-8 py-6 font-mono text-[11px] font-bold text-[var(--text-muted)] group-hover:text-violet-500 transition-colors">
-                          <div className="flex items-center gap-3">
-                            <FiClock size={12} className="opacity-50" />
-                            {new Date(
-                              log.timestamp || log.createdAt,
-                            ).toLocaleString()}
-                          </div>
-                        </td>
-                        <td className="px-8 py-6">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center font-black text-[10px] text-violet-500 shadow-inner group-hover:border-violet-500/50 transition-colors">
+                        {/* TIMESTAMP */}
+                        <TableCell className="timestamp-cell" sx={{ px: 4, py: 3, fontFamily: "monospace", fontSize: "11px", fontWeight: "bold", color: "text.disabled", transition: "color 0.3s", borderBottom: "none" }}>
+                          <Stack direction="row" alignItems="center" spacing={1.5}>
+                            <FiClock size={12} style={{ opacity: 0.5 }} />
+                            <span>{new Date(log.timestamp || log.createdAt).toLocaleString()}</span>
+                          </Stack>
+                        </TableCell>
+
+                        {/* ACTOR SIGNATURE */}
+                        <TableCell sx={{ px: 4, py: 3, borderBottom: "none" }}>
+                          <Stack direction="row" alignItems="center" spacing={1.5}>
+                            <Avatar
+                              className="actor-avatar"
+                              variant="rounded"
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: 2,
+                                bgcolor: "action.hover",
+                                border: 1,
+                                borderColor: "divider",
+                                fontSize: "10px",
+                                fontWeight: 900,
+                                color: "#8b5cf6",
+                                transition: "border-color 0.3s",
+                                boxShadow: "inset 0px 1px 2px rgba(0,0,0,0.2)",
+                              }}
+                            >
                               {log.user?.charAt(0).toUpperCase()}
-                            </div>
-                            <span className="text-xs font-black text-[var(--text-primary)] uppercase tracking-tighter">
+                            </Avatar>
+                            <Typography variant="body2" sx={{ fontSize: "12px", fontWeight: 900, textTransform: "uppercase", letterSpacing: -0.5 }}>
                               {log.user}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-8 py-6">
-                          <span
-                            className={`px-4 py-1.5 rounded-xl text-[9px] font-black border uppercase tracking-widest shadow-sm ${getBadgeColor(log.action)}`}
-                          >
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+
+                        {/* VECTOR BADGE */}
+                        <TableCell sx={{ px: 4, py: 3, borderBottom: "none" }}>
+                          <Box component="span" sx={getBadgeStyle(log.action)}>
                             {log.action}
-                          </span>
-                        </td>
-                        <td
-                          className="px-8 py-6 text-xs font-bold text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors max-w-sm truncate"
+                          </Box>
+                        </TableCell>
+
+                        {/* PAYLOAD CONFIG */}
+                        <TableCell
                           title={log.description}
+                          sx={{
+                            px: 4,
+                            py: 3,
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            color: "text.disabled",
+                            maxWidth: 320,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            borderBottom: "none",
+                            ".MuiTableRow-root:hover &": { color: "text.secondary" },
+                          }}
                         >
                           {log.description}
-                        </td>
-                      </motion.tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
                   </AnimatePresence>
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-            {/* RESPONSIVE VECTOR STACK (MOBILE) */}
-            <div className="lg:hidden p-6 space-y-6">
+            {/* RESPONSIVE VECTOR STACK (MOBILE ONLY VIEWPORTS) */}
+            <Box sx={{ display: { xs: "block", lg: "none" }, p: 3, "& > :not(style)": { mb: 3 }, "& > :last-child": { mb: 0 } }}>
               {filteredLogs.map((log, index) => (
-                <motion.div
+                <Card
                   key={log._id || index}
+                  component={motion.div}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-8 rounded-[2rem] bg-[var(--surface-secondary)]/30 border border-[var(--border)] shadow-xl relative overflow-hidden active:scale-[0.98] transition-all"
+                  sx={{
+                    p: 4,
+                    borderRadius: 8,
+                    bgcolor: "rgba(255,255,255,0.01)",
+                    border: 1,
+                    borderColor: "divider",
+                    boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
+                    position: "relative",
+                    overflow: "hidden",
+                    "&:active": { transform: "scale(0.98)" },
+                    transition: "transform 0.2s",
+                  }}
                 >
-                  <div className="absolute top-0 right-0 p-4 opacity-5">
+                  <Box sx={{ position: "absolute", top: 0, right: 0, p: 2, opacity: 0.05, pointerEvents: "none" }}>
                     <FiShield size={48} />
-                  </div>
-                  <div className="flex items-center justify-between gap-4 mb-6">
-                    <p className="text-[10px] font-black font-mono text-violet-500 uppercase tracking-widest">
-                      {new Date(
-                        log.timestamp || log.createdAt,
-                      ).toLocaleString()}
-                    </p>
-                    <span
-                      className={`px-3 py-1 rounded-lg text-[9px] font-black border uppercase tracking-widest ${getBadgeColor(log.action)}`}
-                    >
+                  </Box>
+
+                  <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontFamily: "monospace", fontSize: "10px", fontWeight: 900, color: "#8b5cf6", letterSpacing: 0.5 }}>
+                      {new Date(log.timestamp || log.createdAt).toLocaleString()}
+                    </Typography>
+                    <Box component="span" sx={getBadgeStyle(log.action)}>
                       {log.action}
-                    </span>
-                  </div>
-                  <h4 className="font-black text-[var(--text-primary)] text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-violet-500/20 flex items-center justify-center">
-                      <FiUser size={12} className="text-violet-500" />
-                    </div>
+                    </Box>
+                  </Stack>
+
+                  <Typography variant="subtitle2" sx={{ fontWeight: 900, textTransform: "uppercase", letterSpacing: 0.5, mb: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
+                    <Avatar variant="rounded" sx={{ width: 24, height: 24, borderRadius: 1.5, bgcolor: "rgba(139, 92, 246, 0.2)", color: "#8b5cf6", "& .MuiSvgIcon-root": { fontSize: 12 } }}>
+                      <FiUser size={12} />
+                    </Avatar>
                     {log.user}
-                  </h4>
-                  <p className="text-[var(--text-muted)] text-[11px] font-bold leading-relaxed uppercase tracking-widest">
+                  </Typography>
+
+                  <Typography variant="body2" sx={{ fontSize: "11px", fontWeight: "bold", color: "text.disabled", leadingRelaxed: true, textTransform: "uppercase", letterSpacing: 0.5 }}>
                     {log.description}
-                  </p>
-                </motion.div>
+                  </Typography>
+                </Card>
               ))}
-            </div>
+            </Box>
           </>
         )}
-      </motion.div>
-    </motion.div>
+      </Card>
+    </Box>
   );
 };

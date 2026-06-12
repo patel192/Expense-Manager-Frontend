@@ -1,22 +1,38 @@
 // ================ Imports ================
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
 import { motion } from "framer-motion";
 
-import { FaSearch } from "react-icons/fa";
-import { FiChevronLeft, FiShield } from "react-icons/fi";
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Grid from "@mui/material/Grid2"; // Using MUI's optimized Grid v2
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Avatar from "@mui/material/Avatar";
+import Chip from "@mui/material/Chip";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import InputAdornment from "@mui/material/InputAdornment";
+import Pagination from "@mui/material/Pagination";
 
+// ================ Icons ================
+import { FaSearch } from "react-icons/fa";
+import { FiShield } from "react-icons/fi";
+
+// ================ Redux Actions ================
 import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
 
-// ================ Components ================
 export const AccessControl = () => {
   const dispatch = useDispatch();
 
   // ================= Redux State ======================
   const { users, loading } = useSelector((state) => state.user);
 
-  // ===================Local State ========================
+  // =================== Local State ========================
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,15 +43,7 @@ export const AccessControl = () => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const roleColors = {
-    Admin: "from-cyan-400 to-blue-500 text-[var(--text-primary)]",
-    User: "from-indigo-400 to-purple-500 text-[var(--text-primary)]",
-    Manager: "from-emerald-400 to-teal-500 text-[var(--text-primary)]",
-  };
-
   // ========================= Derived Data =========================
-
-  // Apply Search and Role Filters
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -45,7 +53,6 @@ export const AccessControl = () => {
     return matchesSearch && matchesRole;
   });
 
-  // Pagination calculation
   const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * rowsPerPage,
@@ -53,8 +60,6 @@ export const AccessControl = () => {
   );
 
   // ========================= Handlers =========================
-
-  // Remove user from system
   const handleDelete = async (userId) => {
     if (!window.confirm("Delete this user?")) return;
     try {
@@ -67,219 +72,245 @@ export const AccessControl = () => {
   // ========================= Loading State =========================
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        {/* Spinner */}
-        <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
-
-        {/* Status text */}
-        <p className="text-xs font-bold text-cyan-500/60 uppercase tracking-widest animate-pulse">
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          minHeight: 400, 
+          gap: 2 
+        }}
+      >
+        <CircularProgress color="cyan" size={48} />
+        <Typography 
+          variant="caption" 
+          sx={{ 
+            fontWeight: 'bold', 
+            color: 'cyan.main', 
+            letterSpacing: '.2em', 
+            textTransform: 'uppercase',
+            animation: 'pulse 1.5s infinite ease-in-out'
+          }}
+        >
           Syncing Permissions...
-        </p>
-      </div>
+        </Typography>
+      </Box>
     );
   }
 
   // ========================= Render =========================
   return (
-    <div className="pb-10">
+    <Box sx={{ pb: 5 }}>
       {/* ======= Header ======= */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-2">
-            Access <span className="text-cyan-400">Governance</span>
-          </h1>
-          <p className="text-[var(--text-secondary)] text-sm max-w-md">
-            Manage system-wide permissions and security roles. Audit user
-            clearance levels and active status.
-          </p>
-        </div>
+      <Stack 
+        direction={{ xs: 'column', md: 'row' }} 
+        justifyContent="between" 
+        alignItems={{ xs: 'flex-start', md: 'flex-end' }} 
+        spacing={3} 
+        sx={{ mb: 4 }}
+      >
+        <Box>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', trackingTight: -1, mb: 1 }}>
+            Access <Box component="span" sx={{ color: 'cyan.main' }}>Governance</Box>
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 450 }}>
+            Manage system-wide permissions and security roles. Audit user clearance levels and active status.
+          </Typography>
+        </Box>
 
         {/* System status indicator */}
-        <div className="flex items-center gap-3 bg-[var(--surface-secondary)] border border-[var(--border)] px-4 py-2 rounded-xl">
-          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
-            Security Override Active
-          </span>
-        </div>
-      </div>
+        <Stack 
+          direction="row" 
+          alignItems="center" 
+          spacing={1.5} 
+          sx={{ 
+            bgcolor: 'background.paper', 
+            border: 1, 
+            borderColor: 'divider', 
+            px: 2, 
+            py: 1, 
+            borderRadius: 3 
+          }}
+        >
+          <Box 
+            component="span" 
+            className="animate-pulse"
+            sx={{ w: 10, h: 10, borderRadius: '50%', bgcolor: 'cyan.main' }} 
+          />
+          <Typography variant="caption" sx={{ fontWeight: 'bold', letterSpacing: '.1em', color: 'text.secondary' }}>
+            SECURITY OVERRIDE ACTIVE
+          </Typography>
+        </Stack>
+      </Stack>
 
       {/* ======= Filters Panel ======= */}
-      <motion.div
+      <Box
+        component={motion.div}
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 mb-8 bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md rounded-3xl shadow-2xl"
+        sx={{
+          p: 2,
+          mb: 4,
+          bgcolor: 'background.paper',
+          border: 1,
+          borderColor: 'divider',
+          borderRadius: 4,
+          boxShadow: 3
+        }}
       >
-        {/* Search input */}
-        <div className="md:col-span-2 relative group">
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-400 transition-colors" />
-          <input
-            type="text"
-            placeholder="Search by identity or email..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all font-medium shadow-inner"
-          />
-        </div>
+        <Grid container spacing={2} alignItems="center">
+          {/* Search input */}
+          <Grid size={{ xs: 12, md: 8 }}>
+            <TextField
+              fullWidth
+              placeholder="Search by identity or email..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FaSearch />
+                    </InputAdornment>
+                  ),
+                }
+              }}
+            />
+          </Grid>
 
-        {/* Role filter */}
-        <div className="relative">
-          <select
-            value={filterRole}
-            onChange={(e) => {
-              setFilterRole(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full py-3 px-4 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-secondary)] focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none cursor-pointer font-medium shadow-inner"
-          >
-            <option value="All" className="bg-[var(--surface-primary)]">
-              All Clearance Levels
-            </option>
-            <option value="Admin" className="bg-[var(--surface-primary)]">
-              Tier 1: Admin
-            </option>
-            <option value="Manager" className="bg-[var(--surface-primary)]">
-              Tier 2: Manager
-            </option>
-            <option value="User" className="bg-[var(--surface-primary)]">
-              Tier 3: Standard User
-            </option>
-          </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]">
-            <FiChevronLeft className="rotate-[-90deg]" size={14} />
-          </div>
-        </div>
-      </motion.div>
+          {/* Role filter dropdown */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <TextField
+              select
+              fullWidth
+              value={filterRole}
+              onChange={(e) => {
+                setFilterRole(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <MenuItem value="All">All Clearance Levels</MenuItem>
+              <MenuItem value="Admin">Tier 1: Admin</MenuItem>
+              <MenuItem value="Manager">Tier 2: Manager</MenuItem>
+              <MenuItem value="User">Tier 3: Standard User</MenuItem>
+            </TextField>
+          </Grid>
+        </Grid>
+      </Box>
 
       {/* ======= User Cards Layout ======= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <Grid container spacing={3}>
         {paginatedUsers.length > 0 ? (
           paginatedUsers.map((user, index) => (
-            <motion.div
-              key={user._id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              className="group p-6 rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md shadow-xl hover:bg-[var(--surface-secondary)] transition-all duration-300 border-t-2 border-t-[var(--border)] overflow-hidden relative"
-            >
-              {/* Accent Gradient */}
-              <div
-                className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${roleColors[user.roleId?.name]?.split(" ")[0] || "from-gray-500"} to-transparent opacity-[0.03] -mr-8 -mt-8 rounded-full blur-2xl group-hover:opacity-[0.08] transition-opacity`}
-              />
-
-              <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[var(--surface-tertiary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-primary)] font-bold text-lg shadow-inner">
-                    {user.name?.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-[var(--text-primary)] text-lg truncate group-hover:text-cyan-400 transition-colors">
-                      {user.name}
-                    </h3>
-                    <p className="text-[var(--text-muted)] text-xs truncate">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-4 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
-                        user.roleId?.name === "Admin"
-                          ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
-                          : user.roleId?.name === "Manager"
-                            ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400"
-                            : "bg-[var(--surface-tertiary)] border-[var(--border)] text-[var(--text-muted)]"
-                      }`}
+            <Grid size={{ xs: 12, md: 6, xl: 4 }} key={user._id}>
+              <Card
+                component={motion.div}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                elevation={1}
+                sx={{
+                  height: '100%',
+                  borderRadius: 4,
+                  border: 1,
+                  borderColor: 'divider',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&:hover': {
+                    bgcolor: 'action.hover',
+                    borderColor: 'text.secondary'
+                  },
+                  transition: 'all 0.3s'
+                }}
+              >
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', h: '100%', p: 3 }}>
+                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <Avatar 
+                      variant="rounded" 
+                      sx={{ bgcolor: 'background.default', border: 1, borderColor: 'divider', color: 'text.primary', fontWeight: 'bold' }}
                     >
-                      {user.roleId?.name || "UNASSIGNED"}
-                    </span>
+                      {user.name?.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', noWrap: true }}>
+                        {user.name}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ noWrap: true, display: 'block' }}>
+                        {user.email}
+                      </Typography>
+                    </Box>
+                  </Stack>
 
-                    <span
-                      className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
-                        user.is_active
-                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                          : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                      }`}
-                    >
-                      {user.is_active ? "VERIFIED" : "RESTRICTED"}
-                    </span>
-                  </div>
+                  <Stack spacing={2} sx={{ flexGrow: 1 }}>
+                    <Stack direction="row" spacing={1}>
+                      <Chip 
+                        size="small" 
+                        label={user.roleId?.name || "UNASSIGNED"} 
+                        color={user.roleId?.name === "Admin" ? "info" : user.roleId?.name === "Manager" ? "secondary" : "default"}
+                        variant="outlined"
+                      />
+                      <Chip 
+                        size="small" 
+                        label={user.is_active ? "VERIFIED" : "RESTRICTED"} 
+                        color={user.is_active ? "success" : "error"}
+                      />
+                    </Stack>
 
-                  <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]">
-                    <div>
-                      <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-0.5">
-                        METRIC/AGE
-                      </p>
-                      <p className="text-xs font-mono text-[var(--text-secondary)]">
-                        {user.age || "N/A"}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-0.5">
-                        ENROLLED
-                      </p>
-                      <p className="text-xs font-mono text-[var(--text-secondary)]">
-                        {user.createdAt
-                          ? new Date(user.createdAt).toLocaleDateString()
-                          : "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                    <Grid container spacing={2} sx={{ p: 1.5, bgcolor: 'background.default', borderRadius: 3, border: 1, borderColor: 'divider' }}>
+                      <Grid size={6}>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 'bold' }}>METRIC/AGE</Typography>
+                        <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>{user.age || "N/A"}</Typography>
+                      </Grid>
+                      <Grid size={6} sx={{ textAlign: 'right' }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 'bold' }}>ENROLLED</Typography>
+                        <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                          {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Stack>
 
-                {/* Buttons */}
-                <div className="flex gap-3 mt-6 pt-6 border-t border-[var(--border)] group-hover:border-[var(--text-muted)] transition-colors">
-                  <button className="flex-1 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] hover:bg-[var(--surface-tertiary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all text-xs font-bold uppercase tracking-widest shadow-sm">
-                    CONFIG
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user._id)}
-                    className="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-[var(--text)] transition-all text-xs font-bold uppercase tracking-widest shadow-sm"
-                  >
-                    TERMINATE
-                  </button>
-                </div>
-              </div>
-            </motion.div>
+                  {/* Buttons */}
+                  <Stack direction="row" spacing={2} sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+                    <Button fullWidth variant="outlined" size="small" color="inherit">
+                      CONFIG
+                    </Button>
+                    <Button fullWidth variant="contained" size="small" color="error" onClick={() => handleDelete(user._id)}>
+                      TERMINATE
+                    </Button>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
           ))
         ) : (
-          <div className="col-span-full py-24 text-center rounded-3xl bg-[var(--surface-secondary)] border border-dashed border-[var(--border)]">
-            <FiShield
-              size={48}
-              className="mx-auto text-[var(--text-muted)] mb-4"
-            />
-            <p className="text-[var(--text-secondary)] font-medium">
-              No subjects detected in current cache scope.
-            </p>
-          </div>
+          <Grid size={12}>
+            <Box sx={{ py: 12, textAlign: 'center', border: '1px dashed', borderColor: 'divider', borderRadius: 4 }}>
+              <FiShield size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
+              <Typography color="text.secondary">
+                No subjects detected in current cache scope.
+              </Typography>
+            </Box>
+          </Grid>
         )}
-      </div>
+      </Grid>
 
       {/* ======= Pagination ======= */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-12 overflow-x-auto pb-2">
-          <div className="flex items-center gap-1 p-1 bg-[var(--surface-secondary)] rounded-2xl border border-[var(--border)] shadow-lg">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`min-w-[40px] h-10 px-3 rounded-xl text-xs font-bold transition-all duration-300
-                  ${
-                    currentPage === i + 1
-                      ? "bg-cyan-500 text-[var(--text)] shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]"
-                  }`}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Stack direction="row" justifyContent="center" sx={{ mt: 5 }}>
+          <Pagination 
+            count={totalPages} 
+            page={currentPage} 
+            onChange={(_, value) => setCurrentPage(value)} 
+            color="primary"
+            shape="rounded"
+          />
+        </Stack>
       )}
-    </div>
+    </Box>
   );
 };

@@ -1,7 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiRefreshCw } from "react-icons/fi";
+
+// ================ Material UI Components ================
+import Backdrop from "@mui/material/Backdrop";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 
 /**
  * --- GLOBAL APPLICATION LOADER ---
@@ -14,15 +21,26 @@ const GlobalLoader = () => {
   return (
     <AnimatePresence>
       {isLoading && (
-        <motion.div
+        <Backdrop
+          open={isLoading}
+          component={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-md"
+          sx={{
+            zIndex: (theme) => theme.zIndex.modal + 2000, // Explicit layout priority (equivalent to z-[9999])
+            bgcolor: "rgba(15, 23, 42, 0.6)", // Equivalent to bg-slate-900/60
+            backdropFilter: "blur(12px)", // Equivalent to backdrop-blur-md
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <div className="relative">
+          <Box sx={{ position: "relative" }}>
             {/* ── AMBIENT GLOW ── */}
-            <motion.div
+            <Box
+              component={motion.div}
               animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.3, 0.6, 0.3],
@@ -32,57 +50,81 @@ const GlobalLoader = () => {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute inset-0 bg-cyan-500 blur-2xl rounded-full"
+              sx={{
+                position: "absolute",
+                inset: 0,
+                bgcolor: "cyan.main",
+                filter: "blur(24px)", // Equivalent to blur-2xl
+                borderRadius: "50%",
+              }}
             />
 
             {/* ── SPINNER BOX ── */}
-            <div className="relative bg-slate-800 p-8 rounded-3xl border border-white/10 shadow-2xl flex flex-col items-center gap-4">
-              {/* Rotating Icon */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                className="text-cyan-400"
-              >
-                <FiRefreshCw size={48} />
-              </motion.div>
+            <Paper
+              elevation={24}
+              sx={{
+                position: "relative",
+                p: 4, // Equivalent to p-8
+                borderRadius: 6, // Equivalent to rounded-3xl
+                bgcolor: "grey.900", // Dark slate background matching code intent
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              {/* Spinning Loader Element */}
+              <Box sx={{ color: "cyan.main", display: "flex", p: 1 }}>
+                <CircularProgress
+                  color="inherit"
+                  size={48}
+                  thickness={4}
+                  sx={{
+                    animationDuration: "1.5s", // Matches the customized spin timing
+                  }}
+                />
+              </Box>
 
-              {/* Dynamic Status Text */}
-              <div className="flex flex-col items-center gap-1">
-                <motion.h3
+              {/* Dynamic Status Text Typography */}
+              <Stack spacing={0.5} sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h6"
+                  component={motion.h3}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-white font-semibold text-lg"
+                  sx={{
+                    fontWeight: "semibold",
+                    color: "common.white",
+                  }}
                 >
                   {loadingText || "Processing..."}
-                </motion.h3>
-                <p className="text-slate-400 text-sm">Please wait a moment</p>
-              </div>
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  Please wait a moment
+                </Typography>
+              </Stack>
 
-              {/* Progress Bar Animation */}
-              <div className="w-32 h-1 bg-slate-700 rounded-full overflow-hidden mt-2">
-                <motion.div
-                  animate={{
-                    x: ["-100%", "100%"],
+              {/* Infinite Loading Progression Strip */}
+              <Box sx={{ width: 128, mt: 1 }}>
+                <LinearProgress
+                  variant="indeterminate"
+                  sx={{
+                    height: 4,
+                    borderRadius: 2,
+                    bgcolor: "grey.800",
+                    "& .MuiLinearProgress-bar": {
+                      background: "linear-gradient(to right, transparent, var(--mui-palette-cyan-main), transparent)",
+                    },
                   }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="w-full h-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent"
                 />
-              </div>
-            </div>
-          </div>
-        </motion.div>
+              </Box>
+            </Paper>
+          </Box>
+        </Backdrop>
       )}
     </AnimatePresence>
   );
 };
 
 export default GlobalLoader;
-

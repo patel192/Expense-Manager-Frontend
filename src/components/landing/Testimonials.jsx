@@ -2,6 +2,15 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FiStar } from "react-icons/fi";
 
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+
 const testimonials = [
   {
     name: "Rahul Patel",
@@ -22,66 +31,78 @@ const testimonials = [
 
 export const Testimonials = () => {
   return (
-    <section className="py-20 space-y-10">
+    <Container component="section" sx={{ py: 10 }}>
       {/* Header */}
-      <div className="text-center space-y-2">
-        <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
+      <Stack spacing={1.5} alignItems="center" textAlign="center" sx={{ mb: 8 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: "bold",
+            color: "cyan.main",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+          }}
+        >
           Testimonials
-        </p>
+        </Typography>
 
-        <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)]">
+        <Typography variant="h4" component="h2" sx={{ fontWeight: "bold" }}>
           Trusted by people managing their finances
-        </h2>
+        </Typography>
 
-        <p className="text-[var(--muted)] max-w-xl mx-auto text-sm">
-          Real users sharing how FinTrack helps them stay in control of their
-          money.
-        </p>
-      </div>
+        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 500 }}>
+          Real users sharing how FinTrack helps them stay in control of their money.
+        </Typography>
+      </Stack>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Grid container spacing={4}>
         {testimonials.map((t, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35, delay: i * 0.08 }}
-            className="
-              bg-[var(--surface-primary)]
-              border
-              border-[var(--border)]
-              rounded-2xl
-              p-6
-              shadow-sm
-              hover:shadow-md
-              transition
-              space-y-4
-            "
-          >
-            {/* Stars */}
-            <div className="flex gap-1 text-amber-400">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <FiStar key={star} size={14} />
-              ))}
-            </div>
+          <Grid size={{ xs: 12, md: 4 }} key={i}>
+            <Card
+              component={motion.div}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.08 }}
+              sx={{
+                bgcolor: "background.paper",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 4,
+                boxShadow: 1,
+                height: "100%",
+              }}
+            >
+              <CardContent sx={{ p: 4, display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", boxSizing: "border-box" }}>
+                <Stack spacing={3} sx={{ height: "100%" }}>
+                  {/* Stars */}
+                  <Stack direction="row" spacing={0.5} sx={{ color: "warning.main" }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <FiStar key={star} size={14} />
+                    ))}
+                  </Stack>
 
-            {/* Text */}
-            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-              "{t.text}"
-            </p>
+                  {/* Text */}
+                  <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic", flexGrow: 1, lineHeight: 1.6 }}>
+                    "{t.text}"
+                  </Typography>
 
-            {/* User */}
-            <div className="pt-2 border-t border-[var(--border)]">
-              <p className="text-sm font-semibold text-[var(--text)]">
-                {t.name}
-              </p>
-              <p className="text-xs text-[var(--muted)]">{t.role}</p>
-            </div>
-          </motion.div>
+                  {/* User */}
+                  <Box sx={{ pt: 2, borderTop: 1, borderColor: "divider" }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                      {t.name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {t.role}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </section>
+      </Grid>
+    </Container>
   );
 };

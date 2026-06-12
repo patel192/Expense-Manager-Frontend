@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronDown } from "react-icons/fi";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Stack from "@mui/material/Stack";
 
 const faqs = [
   {
@@ -26,92 +34,81 @@ const faqs = [
 ];
 
 export const FAQSection = () => {
-  const [active, setActive] = useState(null);
+  const [expanded, setExpanded] = useState(false);
 
-  const toggle = (index) => {
-    setActive(active === index ? null : index);
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
   };
 
   return (
-    <section className="py-20 space-y-10">
+    <Container component="section" sx={{ py: 10 }}>
       {/* Header */}
-      <div className="text-center space-y-2">
-        <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
+      <Stack spacing={1.5} alignItems="center" textAlign="center" sx={{ mb: 6 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: "bold",
+            color: "cyan.main",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+          }}
+        >
           FAQ
-        </p>
+        </Typography>
 
-        <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)]">
+        <Typography variant="h4" component="h2" sx={{ fontWeight: "bold" }}>
           Frequently asked questions
-        </h2>
+        </Typography>
 
-        <p className="text-[var(--muted)] max-w-xl mx-auto text-sm">
+        <Typography variant="body2" color="text.secondary" sx={{ maxW: 500 }}>
           Everything you need to know about using FinTrack.
-        </p>
-      </div>
+        </Typography>
+      </Stack>
 
       {/* FAQ List */}
-      <div className="max-w-2xl mx-auto space-y-3">
+      <Box sx={{ maxW: 700, mx: "auto" }}>
         {faqs.map((faq, index) => (
-          <div
+          <Accordion
             key={index}
-            className="
-              border
-              border-[var(--border)]
-              rounded-xl
-              bg-[var(--surface-primary)]
-              overflow-hidden
-            "
+            expanded={expanded === index}
+            onChange={handleChange(index)}
+            sx={{
+              bgcolor: "background.paper",
+              border: 1,
+              borderColor: "divider",
+              borderRadius: "12px !important",
+              mb: 1.5,
+              "&:before": {
+                display: "none",
+              },
+              boxShadow: 1,
+            }}
           >
-            {/* Question */}
-            <button
-              onClick={() => toggle(index)}
-              className="
-                w-full
-                flex
-                items-center
-                justify-between
-                px-5
-                py-4
-                text-left
-                font-medium
-                text-[var(--text)]
-                hover:bg-[var(--surface-secondary)]
-                transition
-              "
+            <AccordionSummary
+              expandIcon={<FiChevronDown />}
+              sx={{
+                fontWeight: "bold",
+                color: expanded === index ? "cyan.main" : "text.primary",
+                py: 1,
+                px: 3,
+                borderRadius: "12px",
+                "&.Mui-expanded": {
+                  minHeight: 48,
+                },
+              }}
             >
-              {faq.question}
-
-              <FiChevronDown
-                size={18}
-                className={`
-                  transition-transform
-                  ${active === index ? "rotate-180" : ""}
-                `}
-              />
-            </button>
-
-            {/* Answer */}
-            <AnimatePresence>
-              {active === index && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="
-                    px-5
-                    pb-4
-                    text-sm
-                    text-[var(--text-secondary)]
-                  "
-                >
-                  {faq.answer}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                {faq.question}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ px: 3, pb: 3 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                {faq.answer}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
         ))}
-      </div>
-    </section>
+      </Box>
+    </Container>
   );
 };

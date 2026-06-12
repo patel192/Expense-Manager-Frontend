@@ -8,79 +8,125 @@ import {
   FiTerminal,
 } from "react-icons/fi";
 
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid2";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+
 const stats = [
   {
     icon: <FiDollarSign size={16} />,
     value: "₹2.4M+",
     label: "Flow throughput",
-    color: "text-emerald-500",
+    color: "success.main",
   },
   {
     icon: <FiUsers size={16} />,
     value: "10K+",
     label: "Active nodes",
-    color: "text-cyan-500",
+    color: "cyan.main",
   },
   {
     icon: <FiShield size={16} />,
     value: "99.99%",
     label: "SLA Uptime",
-    color: "text-blue-500",
+    color: "primary.main",
   },
   {
     icon: <FiZap size={16} />,
     value: "< 50ms",
     label: "Sync latency",
-    color: "text-amber-500",
+    color: "warning.main",
   },
 ];
 
 export const StatsRow = () => {
   return (
-    <section className="py-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <Box component="section" sx={{ py: 6 }}>
+      <Grid container spacing={3}>
         {stats.map((stat, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: i * 0.1 }}
-            className="group relative bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 overflow-hidden"
-          >
-            {/* Minimal line decoration */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-transparent via-cyan-500/5 to-transparent rotate-45 transform translate-x-12 -translate-y-12" />
-
-            <div
-              className={`mb-4 flex items-center gap-2 ${stat.color} font-mono text-[10px] font-bold uppercase tracking-widest`}
+          <Grid size={{ xs: 6, md: 3 }} key={i}>
+            <Card
+              component={motion.div}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              sx={{
+                position: "relative",
+                bgcolor: "background.paper",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 4,
+                boxShadow: 1,
+                overflow: "hidden",
+              }}
             >
-              <FiTerminal size={12} />
-              METRIC_{i + 1}
-            </div>
-
-            <div className="space-y-1">
-              <p
-                className={`text-2xl font-bold text-[var(--text-primary)] tracking-tight`}
-              >
-                {stat.value}
-              </p>
-              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                {stat.label}
-              </p>
-            </div>
-
-            {/* Micro progress bar */}
-            <div className="mt-4 h-1 w-full bg-[var(--surface-secondary)] rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: "100%" }}
-                transition={{ duration: 1, delay: 0.5 }}
-                className={`h-full ${stat.color.replace("text-", "bg-")}`}
+              {/* Minimal line decoration */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  width: 96,
+                  height: 96,
+                  background: "linear-gradient(135deg, transparent, rgba(6, 182, 212, 0.05))",
+                  transform: "rotate(45deg) translate(48px, -48px)",
+                }}
               />
-            </div>
-          </motion.div>
+
+              <CardContent sx={{ p: 3 }}>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  sx={{
+                    mb: 2,
+                    color: stat.color,
+                    fontFamily: "monospace",
+                    fontSize: 10,
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                  }}
+                >
+                  <FiTerminal size={12} />
+                  METRIC_{i + 1}
+                </Stack>
+
+                <Stack spacing={0.5}>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", color: "text.primary" }}>
+                    {stat.value}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {stat.label}
+                  </Typography>
+                </Stack>
+
+                {/* Micro progress bar */}
+                <Box sx={{ mt: 3 }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={100}
+                    sx={{
+                      height: 4,
+                      borderRadius: 2,
+                      bgcolor: "action.hover",
+                      "& .MuiLinearProgress-bar": {
+                        bgcolor: stat.color,
+                      },
+                    }}
+                  />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </section>
+      </Grid>
+    </Box>
   );
 };

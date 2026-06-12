@@ -2,11 +2,29 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "./redux/auth/authSlice";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "./components/Utils/axiosInstance";
 import { motion } from "framer-motion";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid2";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Link from "@mui/material/Link";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
+import Stack from "@mui/material/Stack";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+
+// ================ Icons ================
 import {
   FiMail,
   FiLock,
@@ -25,32 +43,6 @@ import {
  * --- LOGIN COMPONENT ---
  * This handles authenticating users and redirecting them to the correct dashboard.
  */
-
-
-/* ── REUSABLE FIELD WRAPPER ── */
-const Field = ({ label, icon, error, children }) => (
-  <div className="space-y-1.5">
-    <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-      {label}
-    </label>
-    <div className="relative group">
-      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-500 transition-colors pointer-events-none">
-        {icon}
-      </span>
-      {children}
-    </div>
-    {error && (
-      <motion.p
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="flex items-center gap-1.5 text-rose-500 text-xs mt-1.5 font-medium"
-      >
-        <span className="w-1 h-1 rounded-full bg-rose-500 flex-shrink-0" />
-        {error}
-      </motion.p>
-    )}
-  </div>
-);
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -140,142 +132,259 @@ export const Login = () => {
     }
   };
 
-
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-8 bg-[var(--bg)] text-[var(--text-primary)] relative overflow-hidden transition-colors duration-300">
+    <Box
+      sx={{
+        minHeight: "calc(100vh - 80px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        py: 4,
+        bgcolor: "background.default",
+        color: "text.primary",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       <ToastContainer transition={Bounce} theme="dark" />
 
       {/* Dynamic ambient lights */}
-      <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+      <Box
+        sx={{
+          position: "absolute",
+          top: -160,
+          right: -160,
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          bgcolor: "cyan.main",
+          opacity: 0.05,
+          filter: "blur(120px)",
+          pointerEvents: "none",
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: -160,
+          left: -160,
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          bgcolor: "primary.main",
+          opacity: 0.05,
+          filter: "blur(120px)",
+          pointerEvents: "none",
+        }}
+      />
 
-      <motion.div
+      <Paper
+        component={motion.div}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-[2.5rem] overflow-hidden border border-[var(--border)] shadow-[0_32px_80px_rgba(0,0,0,0.15)] bg-[var(--surface-primary)]"
+        elevation={6}
+        sx={{
+          width: "100%",
+          maxWidth: 1000,
+          borderRadius: 8,
+          overflow: "hidden",
+          border: 1,
+          borderColor: "divider",
+          bgcolor: "background.paper",
+        }}
       >
-        {/* ══ LEFT PANEL ══ */}
-        <div className="hidden lg:flex flex-col justify-between bg-[var(--surface-secondary)] border-r border-[var(--border)] p-12 relative overflow-hidden">
-          {/* Subtle pattern or gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-600/5 pointer-events-none" />
+        <Grid container>
+          {/* ══ LEFT PANEL ══ */}
+          <Grid
+            size={{ xs: 0, lg: 6 }}
+            sx={{
+              display: { xs: "none", lg: "flex" },
+              flexDirection: "column",
+              justifyContent: "space-between",
+              bgcolor: "action.hover",
+              borderRight: 1,
+              borderColor: "divider",
+              p: 6,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Ambient light overlay */}
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(135deg, rgba(6, 182, 212, 0.03) 0%, rgba(59, 130, 246, 0.03) 100%)",
+                pointerEvents: "none",
+              }}
+            />
 
-          {/* Brand */}
-          <div className="flex items-center gap-3.5 relative z-10">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-cyan-500/20">
-              <FiTrendingUp size={18} className="text-white" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent tracking-tight">
-              FinTrack
-            </span>
-          </div>
+            {/* Brand */}
+            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ zIndex: 1 }}>
+              <Avatar
+                sx={{
+                  bgcolor: "cyan.main",
+                  width: 40,
+                  height: 40,
+                  borderRadius: 3,
+                  boxShadow: "0 8px 16px 0 rgba(6, 182, 212, 0.2)",
+                }}
+              >
+                <FiTrendingUp style={{ color: "white" }} />
+              </Avatar>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  background: "linear-gradient(to right, #06b6d4, #3b82f6)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                FinTrack
+              </Typography>
+            </Stack>
 
-          {/* Content */}
-          <div className="space-y-10 relative z-10">
-            <div className="space-y-4">
-              <h2 className="text-4xl font-extrabold text-[var(--text-primary)] leading-tight tracking-tight">
-                Master Your <br />
-                <span className="text-cyan-500">Financial Future.</span>
-              </h2>
-              <p className="text-lg text-[var(--text-secondary)] leading-relaxed max-w-sm">
-                Join thousands of users tracking their wealth with precision and
-                style.
-              </p>
-            </div>
+            {/* Content */}
+            <Stack spacing={4} sx={{ zIndex: 1, my: 4 }}>
+              <Box>
+                <Typography variant="h3" sx={{ fontWeight: "bold", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
+                  Master Your <br />
+                  <Box component="span" sx={{ color: "cyan.main" }}>
+                    Financial Future.
+                  </Box>
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ mt: 2, maxW: 360, lineHeight: 1.6 }}>
+                  Join thousands of users tracking their wealth with precision and style.
+                </Typography>
+              </Box>
 
-            <div className="space-y-5">
-              {[
-                {
-                  icon: <FiBarChart2 size={16} />,
-                  text: "Real-time spending analytics",
-                  color: "text-cyan-500",
-                  bg: "bg-cyan-500/10 border-cyan-500/20",
-                },
-                {
-                  icon: <FiPieChart size={16} />,
-                  text: "Smart budget management",
-                  color: "text-emerald-500",
-                  bg: "bg-emerald-500/10 border-emerald-500/20",
-                },
-                {
-                  icon: <FiShield size={16} />,
-                  text: "Bank-grade security standards",
-                  color: "text-blue-500",
-                  bg: "bg-blue-500/10 border-blue-500/20",
-                },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4 group">
-                  <div
-                    className={`w-10 h-10 rounded-xl border flex items-center justify-center flex-shrink-0 ${item.bg} ${item.color} shadow-sm group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    {item.icon}
-                  </div>
-                  <p className="text-sm font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">
-                    {item.text}
-                  </p>
-                </div>
-              ))}
-            </div>
+              <Stack spacing={2.5}>
+                {[
+                  {
+                    icon: <FiBarChart2 size={16} />,
+                    text: "Real-time spending analytics",
+                    color: "cyan.main",
+                    bg: "rgba(6, 182, 212, 0.1)",
+                    border: "rgba(6, 182, 212, 0.2)",
+                  },
+                  {
+                    icon: <FiPieChart size={16} />,
+                    text: "Smart budget management",
+                    color: "success.main",
+                    bg: "rgba(16, 185, 129, 0.1)",
+                    border: "rgba(16, 185, 129, 0.2)",
+                  },
+                  {
+                    icon: <FiShield size={16} />,
+                    text: "Bank-grade security standards",
+                    color: "primary.main",
+                    bg: "rgba(59, 130, 246, 0.1)",
+                    border: "rgba(59, 130, 246, 0.2)",
+                  },
+                ].map((item, i) => (
+                  <Stack key={i} direction="row" spacing={2} alignItems="center">
+                    <Avatar
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 3,
+                        bgcolor: item.bg,
+                        color: item.color,
+                        border: 1,
+                        borderColor: item.border,
+                      }}
+                    >
+                      {item.icon}
+                    </Avatar>
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: "text.secondary" }}>
+                      {item.text}
+                    </Typography>
+                  </Stack>
+                ))}
+              </Stack>
 
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                { value: "₹2.5L+", label: "Avg. Savings" },
-                { value: "99.9%", label: "Accuracy" },
-                { value: "Secure", label: "Encryption" },
-              ].map((s, i) => (
-                <div
-                  key={i}
-                  className="bg-[var(--surface-primary)] border border-[var(--border)] rounded-2xl p-4 text-center shadow-sm hover:shadow-md transition-all cursor-default"
-                >
-                  <p className="text-[var(--text-primary)] font-bold text-base tracking-tight">
-                    {s.value}
-                  </p>
-                  <p className="text-[var(--text-muted)] text-[10px] uppercase font-bold tracking-widest mt-1">
-                    {s.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+              <Grid container spacing={2}>
+                {[
+                  { value: "₹2.5L+", label: "Avg. Savings" },
+                  { value: "99.9%", label: "Accuracy" },
+                  { value: "Secure", label: "Encryption" },
+                ].map((s, i) => (
+                  <Grid size={4} key={i}>
+                    <Box
+                      sx={{
+                        bgcolor: "background.paper",
+                        border: 1,
+                        borderColor: "divider",
+                        borderRadius: 4,
+                        p: 2,
+                        textAlign: "center",
+                      }}
+                    >
+                      <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                        {s.value}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", textTransform: "uppercase", fontSize: "9px", fontWeight: "bold", mt: 0.5 }}>
+                        {s.label}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Stack>
 
-          <p className="text-xs font-medium text-[var(--text-muted)] relative z-10 flex items-center gap-2">
-            <FiCheckCircle className="text-emerald-500" />© 2025 FinTrack.
-            Trusted globally.
-          </p>
-        </div>
+            <Typography variant="caption" color="text.secondary" sx={{ zIndex: 1, display: "flex", alignItems: "center", gap: 1 }}>
+              <FiCheckCircle style={{ color: "var(--mui-palette-success-main)" }} /> © 2025 FinTrack. Trusted globally.
+            </Typography>
+          </Grid>
 
-        {/* ══ RIGHT: Form ══ */}
-        <div className="px-8 sm:px-12 py-14 flex flex-col justify-center bg-[var(--surface-primary)]">
-          {/* Mobile brand */}
-          <div className="flex lg:hidden items-center justify-center gap-2.5 mb-10">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
-              <FiTrendingUp size={18} className="text-white" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
-              FinTrack
-            </span>
-          </div>
-
-          {/* Header */}
-          <div className="mb-10 space-y-2">
-            <h2 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">
-              Welcome back
-            </h2>
-            <p className="text-[var(--text-secondary)] font-medium">
-              Enter your details to access your dashboard.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit(submitHandler)} className="space-y-6">
-            <Field
-              label="Email Address"
-              icon={<FiMail size={16} />}
-              error={errors.email?.message}
+          {/* ══ RIGHT: Form ══ */}
+          <Grid size={{ xs: 12, lg: 6 }} sx={{ p: { xs: 4, sm: 6 }, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            {/* Mobile brand */}
+            <Stack
+              direction="row"
+              spacing={1.5}
+              alignItems="center"
+              justifyContent="center"
+              sx={{ display: { xs: "flex", lg: "none" }, mb: 4 }}
             >
-              <input
+              <Avatar
+                sx={{
+                  bgcolor: "cyan.main",
+                  width: 40,
+                  height: 40,
+                  borderRadius: 3,
+                }}
+              >
+                <FiTrendingUp style={{ color: "white" }} />
+              </Avatar>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                FinTrack
+              </Typography>
+            </Stack>
+
+            {/* Header */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" sx={{ fontWeight: "bold", letterSpacing: "-0.02em" }}>
+                Welcome back
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Enter your details to access your dashboard.
+              </Typography>
+            </Box>
+
+            <Stack component="form" onSubmit={handleSubmit(submitHandler)} spacing={3} noValidate>
+              <TextField
+                fullWidth
+                label="Email Address"
                 type="email"
                 placeholder="name@example.com"
-                autoComplete="email"
+                variant="outlined"
+                required
+                error={!!errors.email}
+                helperText={errors.email?.message}
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -283,100 +392,123 @@ export const Login = () => {
                     message: "Invalid email address",
                   },
                 })}
-                className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]
-                           text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm
-                           focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10
-                           hover:border-[var(--text-secondary)] transition-all duration-200 shadow-inner"
+                slotProps={{
+                  inputLabel: { shrink: true },
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FiMail />
+                      </InputAdornment>
+                    ),
+                  }
+                }}
               />
-            </Field>
 
-            <Field
-              label="Password"
-              icon={<FiLock size={16} />}
-              error={errors.password?.message}
-            >
-              <input
+              <TextField
+                fullWidth
+                label="Password"
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                autoComplete="current-password"
+                variant="outlined"
+                required
+                error={!!errors.password}
+                helperText={errors.password?.message}
                 {...register("password", { required: "Password is required" })}
-                className="w-full pl-11 pr-12 py-3.5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)]
-                           text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm
-                           focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10
-                           hover:border-[var(--text-secondary)] transition-all duration-200 shadow-inner"
+                slotProps={{
+                  inputLabel: { shrink: true },
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FiLock />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <FiEyeOff /> : <FiEye />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }
+                }}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]
-                           hover:text-cyan-500 transition-colors p-1"
-              >
-                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-              </button>
-            </Field>
 
-            <div className="flex items-center justify-between py-1">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-[var(--border)] text-cyan-500 focus:ring-cyan-500 bg-[var(--surface-secondary)]"
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <FormControlLabel
+                  control={<Checkbox size="small" />}
+                  label={
+                    <Typography variant="caption" sx={{ fontWeight: "bold", color: "text.secondary" }}>
+                      Remember me
+                    </Typography>
+                  }
                 />
-                <span className="text-xs font-semibold text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors">
-                  Remember me
-                </span>
-              </label>
-              <Link
-                to="/forgot-password"
-                size={14}
-                className="text-xs font-semibold text-cyan-500 hover:text-cyan-600 transition-colors"
+                <Link
+                  component={RouterLink}
+                  to="/forgot-password"
+                  variant="caption"
+                  color="cyan.main"
+                  sx={{ fontWeight: "bold", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}
+                >
+                  Forgot password?
+                </Link>
+              </Stack>
+
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isLoading}
+                sx={{
+                  py: 1.75,
+                  borderRadius: 3,
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  fontSize: "0.95rem",
+                  background: "linear-gradient(to right, var(--mui-palette-cyan-main, #00acc1), var(--mui-palette-primary-main, #1976d2))",
+                  color: "white",
+                  display: "flex",
+                  gap: 1.5,
+                  boxShadow: "0 8px 24px rgba(6, 182, 212, 0.2)",
+                }}
               >
-                Forgot password?
+                {isLoading ? (
+                  <>
+                    <CircularProgress size={20} sx={{ color: "white" }} />
+                    Authenticating...
+                  </>
+                ) : (
+                  <>
+                    Sign In <FiArrowRight size={18} />
+                  </>
+                )}
+              </Button>
+            </Stack>
+
+            <Stack direction="row" alignItems="center" spacing={2} sx={{ my: 4 }}>
+              <Box sx={{ flex: 1, h: "1px", bgcolor: "divider" }} />
+              <Typography variant="caption" color="text.secondary" sx={{ textTransform: "uppercase", fontSize: "9px", fontWeight: "bold", letterSpacing: "0.15em" }}>
+                Secure Access
+              </Typography>
+              <Box sx={{ flex: 1, h: "1px", bgcolor: "divider" }} />
+            </Stack>
+
+            <Typography variant="body2" color="text.secondary" align="center">
+              New to FinTrack?{" "}
+              <Link
+                component={RouterLink}
+                to="/signup"
+                color="cyan.main"
+                sx={{ fontWeight: "bold", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}
+              >
+                Create your free account
               </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full py-4 rounded-2xl font-bold text-white text-sm mt-2
-                          flex items-center justify-center gap-3 transition-all duration-300 shadow-xl
-                          ${
-                            isLoading
-                              ? "bg-cyan-500/50 cursor-not-allowed"
-                              : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:scale-[1.02] hover:shadow-cyan-500/25 active:scale-[0.98]"
-                          }`}
-            >
-              {isLoading ? (
-                <>
-                  <FiRefreshCw className="animate-spin" size={18} />
-                  Authenticating...
-                </>
-              ) : (
-                <>
-                  Sign In <FiArrowRight size={18} />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="flex items-center gap-4 my-8">
-            <div className="flex-1 h-px bg-[var(--border)]" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-              Secure Access
-            </span>
-            <div className="flex-1 h-px bg-[var(--border)]" />
-          </div>
-
-          <p className="text-center text-sm font-medium text-[var(--text-muted)]">
-            New to FinTrack?{" "}
-            <Link
-              to="/signup"
-              className="text-cyan-500 hover:text-cyan-600 font-bold transition-colors ml-1"
-            >
-              Create Your free account
-            </Link>
-          </p>
-        </div>
-      </motion.div>
-    </div>
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Box>
   );
 };
+

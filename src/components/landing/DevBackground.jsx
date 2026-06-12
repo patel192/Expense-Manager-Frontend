@@ -1,22 +1,35 @@
 import React from "react";
 import { motion } from "framer-motion";
+import Box from "@mui/material/Box";
 
 export const DevBackground = ({ children }) => {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[var(--background)]">
+    <Box
+      sx={{
+        position: "relative",
+        minHeight: "100vh",
+        width: "100%",
+        overflow: "hidden",
+        bgcolor: "background.default",
+      }}
+    >
       {/* Fixed Grid Background */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]"
-        style={{
-          backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
+      <Box
+        sx={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          opacity: 0.03,
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px)`,
           backgroundSize: "40px 40px",
         }}
       />
 
       {/* Moving Lines / Data Pulses */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <Box sx={{ position: "fixed", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
         {[...Array(6)].map((_, i) => (
-          <motion.div
+          <Box
+            component={motion.div}
             key={`h-line-${i}`}
             initial={{ x: "-100%" }}
             animate={{ x: "100%" }}
@@ -26,12 +39,18 @@ export const DevBackground = ({ children }) => {
               ease: "linear",
               delay: i * 1.5,
             }}
-            className="absolute h-px w-full bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"
-            style={{ top: `${15 + i * 15}%` }}
+            sx={{
+              position: "absolute",
+              h: "1px",
+              w: "100%",
+              background: "linear-gradient(to right, transparent, rgba(6, 182, 212, 0.2), transparent)",
+              top: `${15 + i * 15}%`,
+            }}
           />
         ))}
         {[...Array(6)].map((_, i) => (
-          <motion.div
+          <Box
+            component={motion.div}
             key={`v-line-${i}`}
             initial={{ y: "-100%" }}
             animate={{ y: "100%" }}
@@ -41,20 +60,25 @@ export const DevBackground = ({ children }) => {
               ease: "linear",
               delay: i * 2,
             }}
-            className="absolute w-px h-full bg-gradient-to-b from-transparent via-blue-500/20 to-transparent"
-            style={{ left: `${10 + i * 18}%` }}
+            sx={{
+              position: "absolute",
+              w: "1px",
+              h: "100%",
+              background: "linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.2), transparent)",
+              left: `${10 + i * 18}%`,
+            }}
           />
         ))}
-      </div>
+      </Box>
 
       {/* Radial Gradient Glows */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-500/5 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-600/5 blur-[120px]" />
-      </div>
+      <Box sx={{ position: "fixed", inset: 0, pointerEvents: "none" }}>
+        <Box sx={{ position: "absolute", top: "-10%", left: "-10%", width: "40%", height: "40%", borderRadius: "50%", bgcolor: "cyan.main", opacity: 0.05, filter: "blur(120px)" }} />
+        <Box sx={{ position: "absolute", bottom: "-10%", right: "-10%", width: "40%", height: "40%", borderRadius: "50%", bgcolor: "primary.main", opacity: 0.05, filter: "blur(120px)" }} />
+      </Box>
 
       {/* Content */}
-      <div className="relative z-10">{children}</div>
-    </div>
+      <Box sx={{ position: "relative", zIndex: 10 }}>{children}</Box>
+    </Box>
   );
 };

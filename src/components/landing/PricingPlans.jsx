@@ -1,7 +1,18 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FiCheck } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Chip from "@mui/material/Chip";
 
 const plans = [
   {
@@ -44,100 +55,123 @@ const plans = [
 
 export const PricingPlans = () => {
   return (
-    <section className="py-20 space-y-10">
+    <Container component="section" sx={{ py: 10 }}>
       {/* Header */}
-      <div className="text-center space-y-2">
-        <p className="text-xs uppercase tracking-widest text-cyan-500 font-medium">
+      <Stack spacing={1.5} alignItems="center" textAlign="center" sx={{ mb: 8 }}>
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: "bold",
+            color: "cyan.main",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+          }}
+        >
           Pricing
-        </p>
+        </Typography>
 
-        <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text)]">
+        <Typography variant="h4" component="h2" sx={{ fontWeight: "bold" }}>
           Simple, transparent pricing
-        </h2>
+        </Typography>
 
-        <p className="text-[var(--muted)] max-w-xl mx-auto text-sm">
+        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 500 }}>
           Start for free and upgrade as your financial tracking needs grow.
-        </p>
-      </div>
+        </Typography>
+      </Stack>
 
       {/* Plans */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Grid container spacing={4} alignItems="center" justifyContent="center">
         {plans.map((plan, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35, delay: i * 0.08 }}
-            className={`
-              relative
-              rounded-2xl
-              border
-              p-6
-              space-y-5
-              transition
-              ${
-                plan.highlight
-                  ? "border-cyan-500 shadow-lg scale-105"
-                  : "border-[var(--border)] shadow-sm"
-              }
-              bg-[var(--surface-primary)]
-            `}
-          >
-            {/* Badge */}
-            {plan.highlight && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 text-xs font-medium bg-cyan-500 text-white rounded-full">
-                Most Popular
-              </div>
-            )}
-
-            {/* Name */}
-            <div className="text-center space-y-1">
-              <p className="text-lg font-semibold text-[var(--text)]">
-                {plan.name}
-              </p>
-
-              <p className="text-3xl font-bold text-cyan-400">{plan.price}</p>
-
-              <p className="text-xs text-[var(--muted)]">{plan.period}</p>
-            </div>
-
-            {/* Features */}
-            <div className="space-y-2">
-              {plan.features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 text-sm text-[var(--text-secondary)]"
-                >
-                  <FiCheck size={14} className="text-emerald-400" />
-                  {feature}
-                </div>
-              ))}
-            </div>
-
-            {/* Button */}
-            <Link
-              to="/signup"
-              className="
-                block
-                w-full
-                text-center
-                py-3
-                rounded-xl
-                bg-gradient-to-r
-                from-cyan-500
-                to-blue-600
-                text-white
-                font-medium
-                hover:opacity-90
-                transition
-              "
+          <Grid size={{ xs: 12, md: 4 }} key={i}>
+            <Card
+              component={motion.div}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.08 }}
+              sx={{
+                position: "relative",
+                borderRadius: 5,
+                border: 2,
+                borderColor: plan.highlight ? "cyan.main" : "divider",
+                boxShadow: plan.highlight ? 4 : 1,
+                bgcolor: "background.paper",
+                transform: plan.highlight ? { md: "scale(1.05)" } : "none",
+                zIndex: plan.highlight ? 2 : 1,
+              }}
             >
-              Get Started
-            </Link>
-          </motion.div>
+              {/* Badge */}
+              {plan.highlight && (
+                <Chip
+                  label="Most Popular"
+                  color="info"
+                  sx={{
+                    position: "absolute",
+                    top: -14,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    fontWeight: "bold",
+                    color: "white",
+                    background: "linear-gradient(to right, #00acc1, #1976d2)",
+                  }}
+                />
+              )}
+
+              <CardContent sx={{ p: 4 }}>
+                <Stack spacing={4}>
+                  {/* Name & Pricing */}
+                  <Box textAlign="center">
+                    <Typography variant="h6" sx={{ fontWeight: "bold", color: "text.primary" }}>
+                      {plan.name}
+                    </Typography>
+
+                    <Typography variant="h3" sx={{ fontWeight: "extrabold", color: "cyan.main", my: 1.5 }}>
+                      {plan.price}
+                    </Typography>
+
+                    <Typography variant="caption" color="text.secondary">
+                      {plan.period}
+                    </Typography>
+                  </Box>
+
+                  {/* Features */}
+                  <Stack spacing={1.5}>
+                    {plan.features.map((feature, index) => (
+                      <Stack key={index} direction="row" spacing={1.5} alignItems="center">
+                        <FiCheck style={{ color: "var(--mui-palette-success-main)" }} />
+                        <Typography variant="body2" color="text.secondary">
+                          {feature}
+                        </Typography>
+                      </Stack>
+                    ))}
+                  </Stack>
+
+                  {/* Button */}
+                  <Button
+                    component={RouterLink}
+                    to="/signup"
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      py: 1.5,
+                      borderRadius: 3,
+                      fontWeight: "bold",
+                      textTransform: "none",
+                      background: "linear-gradient(to right, #00acc1, #1976d2)",
+                      color: "white",
+                      "&:hover": {
+                        opacity: 0.9,
+                      },
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </section>
+      </Grid>
+    </Container>
   );
 };

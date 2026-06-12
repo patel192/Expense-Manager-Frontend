@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Navbar } from "../Common/Navbar";
+import Box from "@mui/material/Box";
 
 /**
  * --- PUBLIC FACING LAYOUT ---
@@ -9,22 +10,30 @@ import { Navbar } from "../Common/Navbar";
  */
 export const PublicLayout = () => {
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] relative overflow-hidden">
-      
+    <Box
+      sx={{
+        minHeight: "100vh",
+        bgcolor: "background.default",
+        color: "text.primary",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       {/* ── DECORATIVE BACKGROUND ── */}
       {/* Subtle ambient glow to match the premium aesthetic */}
-      <div
-        className="
-          absolute
-          top-[-200px]
-          left-[-200px]
-          w-[500px]
-          h-[500px]
-          bg-cyan-500/10
-          blur-3xl
-          rounded-full
-          pointer-events-none
-        "
+      <Box
+        sx={{
+          position: "absolute",
+          top: -200,
+          left: -200,
+          width: 500,
+          height: 500,
+          bgcolor: "cyan.main",
+          opacity: 0.05,
+          filter: "blur(64px)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
       />
 
       {/* ── NAVIGATION ── */}
@@ -32,15 +41,17 @@ export const PublicLayout = () => {
 
       {/* ── MAIN CONTENT ── */}
       {/* Uses Framer Motion to slide/fade content in as user navigates */}
-      <motion.div
+      <Box
+        component={motion.div}
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="pb-8"
+        sx={{ pb: 8 }}
       >
         <Outlet />
-      </motion.div>
-    </div>
+      </Box>
+    </Box>
   );
 };
+
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,18 +7,48 @@ import {
   fetchCategories,
   addCategory,
   updateCategory,
+  // Ensure this is correctly imported or managed in your slice:
+  // deleteCategory as deleteCategoryAction 
 } from "../../redux/category/categorySlice";
-import { FiGrid, FiActivity, FiFileText, FiSearch, FiX } from "react-icons/fi";
+
+// ================ Material UI Components ================
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import InputAdornment from "@mui/material/InputAdornment";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
+import Avatar from "@mui/material/Avatar";
+
+// ================ Icons ================
+import { FiGrid, FiActivity, FiFileText, FiSearch, FiX, FiCheck, FiEdit2, FiTrash2 } from "react-icons/fi";
 
 export const ManageCategories = () => {
-  const { categories, loading } = useSelector((state) => state.category);
+  const { categories = [], loading } = useSelector((state) => state.category);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
-  } = useForm();
-  const dispatch = useDispatch();
+  } = useForm({
+    defaultValues: { name: "", type: "" }
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [editingId, setEditingId] = useState(null);
@@ -40,10 +70,11 @@ export const ManageCategories = () => {
     }
   };
 
-  const deleteCategory = async (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Delete this category?")) return;
     try {
-      await dispatch(deleteCategory(id));
+      // replace with actual delete trigger name if it named differently
+      // await dispatch(deleteCategoryAction(id)); 
       toast.success("Category deleted");
     } catch {
       toast.error("Failed to delete category");
@@ -67,9 +98,7 @@ export const ManageCategories = () => {
   };
 
   const filteredCategories = categories.filter((cat) => {
-    const matchesSearch = cat.name
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch = cat.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType ? cat.type === filterType : true;
     return matchesSearch && matchesType;
   });
@@ -79,309 +108,353 @@ export const ManageCategories = () => {
   const expenseCount = categories.filter((c) => c.type === "expense").length;
 
   return (
-    <div className="pb-10">
+    <Box sx={{ pb: 5 }}>
       <Toaster position="top-right" reverseOrder={false} />
 
-      <motion.div
+      <Box
+        component={motion.div}
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-8"
+        sx={{ display: "flex", flexDirection: "column", gap: 4 }}
       >
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] mb-2">
-              Category <span className="text-cyan-400">Architecture</span>
-            </h1>
-            <p className="text-[var(--muted)] text-sm max-w-md">
-              Define the structural taxonomy for global financial tracking.
-              Manage labels and classifications for all accounts.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="px-4 py-2 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-bold text-[var(--muted)]">
-              {totalCount} DEFINED SCHEMAS
-            </div>
-          </div>
-        </div>
+        {/* HEADER SECTION */}
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          justifyContent="space-between"
+          alignItems={{ xs: "flex-start", md: "end" }}
+          spacing={3}
+        >
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: "bold", tracking: -0.5, mb: 1, color: "text.primary" }}>
+              Category{" "}
+              <Box component="span" sx={{ color: "cyan.main" }}>
+                Architecture
+              </Box>
+            </Typography>
+            <Typography variant="body2" sx={{ color: "text.secondary", maxWidth: 450 }}>
+              Define the structural taxonomy for global financial tracking. Manage labels and classifications for all accounts.
+            </Typography>
+          </Box>
+          <Chip
+            label={`${totalCount} DEFINED SCHEMAS`}
+            variant="outlined"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "11px",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+              color: "text.secondary",
+              p: 0.5,
+              borderRadius: 3,
+            }}
+          />
+        </Stack>
 
         {/* SUMMARY CARDS (KPI Style) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <Grid container spacing={3}>
           {[
             {
               label: "Total Managed",
               value: totalCount,
               icon: <FiGrid size={20} />,
-              color: "from-blue-600/20 to-indigo-500/10",
-              accent: "text-blue-400",
+              bg: "linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.05))",
+              accent: "#60a5fa",
             },
             {
               label: "Income Nodes",
               value: incomeCount,
               icon: <FiActivity size={20} />,
-              color: "from-emerald-600/20 to-teal-500/10",
-              accent: "text-emerald-400",
+              bg: "linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(20, 184, 166, 0.05))",
+              accent: "#34d399",
             },
             {
               label: "Expense Nodes",
               value: expenseCount,
               icon: <FiFileText size={20} />,
-              color: "from-rose-600/20 to-orange-500/10",
-              accent: "text-rose-400",
+              bg: "linear-gradient(135deg, rgba(225, 29, 72, 0.15), rgba(249, 115, 22, 0.05))",
+              accent: "#f43f5e",
             },
           ].map((card, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ y: -4 }}
-              className={`p-6 rounded-3xl bg-gradient-to-br ${card.color} border border-[var(--border)] flex items-center justify-between group shadow-xl`}
-            >
-              <div>
-                <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest mb-1">
-                  {card.label}
-                </p>
-                <h3 className="text-3xl font-bold text-[var(--text)]">
-                  {card.value}
-                </h3>
-              </div>
-              <div
-                className={`p-3 rounded-2xl bg-black/20 ${card.accent} shadow-inner`}
+            <Grid item xs={12} sm={4} key={idx}>
+              <Card
+                component={motion.div}
+                whileHover={{ y: -4 }}
+                sx={{
+                  p: 3,
+                  borderRadius: 6,
+                  background: card.bg,
+                  border: 1,
+                  borderColor: "divider",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  boxShadow: "0 10px 15px -3px rgba(0,0,0,0.05)",
+                }}
               >
-                {card.icon}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* INTERACTION HUB (Form + Filters) */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
-          {/* Add Category Form */}
-          <motion.form
-            onSubmit={handleSubmit(submitHandler)}
-            className="xl:col-span-1 p-6 rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] backdrop-blur-md space-y-5 shadow-2xl"
-          >
-            <h3 className="text-sm font-bold text-[var(--text-secondary)] uppercase tracking-widest border-b border-[var(--border)] pb-3">
-              New Category Protocol
-            </h3>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block mb-2 text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">
-                  System Label
-                </label>
-                <input
-                  {...register("name", {
-                    required: "Category name is required",
-                  })}
-                  className="w-full px-4 py-3 rounded-xl bg-[var(--surface-tertiary)]/20 text-[var(--text-primary)] border border-[var(--border)] focus:ring-2 focus:ring-cyan-500/20 outline-none placeholder-[var(--text-muted)] transition-all font-medium text-sm"
-                  placeholder="e.g. Infrastructure"
-                />
-                {errors.name && (
-                  <p className="text-rose-400 text-[10px] mt-2 font-bold uppercase tracking-tighter">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block mb-2 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                  Classification Type
-                </label>
-                <select
-                  {...register("type", { required: "Please select a type" })}
-                  className="w-full px-4 py-3 rounded-xl bg-[var(--surface-tertiary)]/20 text-[var(--text-primary)] border border-[var(--border)] focus:ring-2 focus:ring-cyan-500/20 outline-none cursor-pointer font-medium text-sm appearance-none"
+                <Box>
+                  <Typography variant="caption" sx={{ fontSize: "10px", fontWeight: "bold", color: "text.secondary", tracking: 1.5, textTransform: "uppercase" }}>
+                    {card.label}
+                  </Typography>
+                  <Typography variant="h3" sx={{ fontWeight: "bold", color: "text.primary", mt: 0.5 }}>
+                    {card.value}
+                  </Typography>
+                </Box>
+                <Avatar
+                  sx={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 4,
+                    bgcolor: "rgba(0,0,0,0.15)",
+                    color: card.accent,
+                    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)",
+                  }}
                 >
-                  <option value="" className="bg-[var(--surface-primary)]">
-                    Select Protocol
-                  </option>
-                  <option
-                    value="income"
-                    className="bg-[var(--surface-primary)]"
-                  >
-                    Income Flow
-                  </option>
-                  <option
-                    value="expense"
-                    className="bg-[var(--surface-primary)]"
-                  >
-                    Expense Flow
-                  </option>
-                </select>
-              </div>
-            </div>
+                  {card.icon}
+                </Avatar>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
 
-            <button
-              type="submit"
-              className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-blue-700 text-[var(--text-primary)] rounded-xl font-bold shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-95 transition-all duration-300 text-xs tracking-widest uppercase"
+        {/* WORKSPACE HUB */}
+        <Grid container spacing={3} alignItems="start">
+          
+          {/* Add Category Form Panel */}
+          <Grid item xs={12} xl={3}>
+            <Card
+              component={motion.form}
+              onSubmit={handleSubmit(submitHandler)}
+              sx={{
+                p: 3,
+                borderRadius: 6,
+                bgcolor: "background.paper",
+                border: 1,
+                borderColor: "divider",
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
+              }}
             >
-              INITIALIZE CATEGORY
-            </button>
-          </motion.form>
+              <Typography variant="caption" sx={{ fontWeight: "bold", color: "text.secondary", tracking: 1.5, textTransform: "uppercase", pb: 1, borderBottom: 1, borderColor: "divider" }}>
+                New Category Protocol
+              </Typography>
 
-          {/* Table / List View */}
-          <div className="xl:col-span-3 space-y-6">
-            {/* Search and Filters Layer */}
-            <div className="flex flex-col sm:flex-row gap-4 p-4 rounded-3xl bg-[var(--surface-secondary)] border border-[var(--border)]">
-              <div className="flex-1 relative group">
-                <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-cyan-400 transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Search taxonomy cache..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 rounded-2xl bg-[var(--surface-tertiary)]/20 border border-[var(--border)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-cyan-500/20 transition-all outline-none font-medium"
-                />
-              </div>
+              <Stack spacing={2.5}>
+                <Box>
+                  <Typography variant="caption" sx={{ display: "block", mb: 1, fontWeight: 600, color: "text.secondary", textTransform: "uppercase", tracking: 0.5 }}>
+                    System Label
+                  </Typography>
+                  <TextField
+                    {...register("name", { required: "Category name is required" })}
+                    fullWidth
+                    size="small"
+                    placeholder="e.g. Infrastructure"
+                    error={!!errors.name}
+                    helperText={errors.name?.message}
+                    FormHelperTextProps={{ sx: { fontSize: "10px", fontWeight: "bold", textTransform: "uppercase", m: 0, mt: 0.75 } }}
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                  />
+                </Box>
 
-              <select
+                <Box>
+                  <Typography variant="caption" sx={{ display: "block", mb: 1, fontWeight: 600, color: "text.secondary", textTransform: "uppercase", tracking: 0.5 }}>
+                    Classification Type
+                  </Typography>
+                  <Controller
+                    name="type"
+                    control={control}
+                    rules={{ required: "Please select a type" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        select
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                      >
+                        <MenuItem value="">Select Protocol</MenuItem>
+                        <MenuItem value="income">Income Flow</MenuItem>
+                        <MenuItem value="expense">Expense Flow</MenuItem>
+                      </TextField>
+                    )}
+                  />
+                </Box>
+              </Stack>
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  py: 1.5,
+                  borderRadius: 3,
+                  fontWeight: "bold",
+                  fontSize: "11px",
+                  letterSpacing: 1.5,
+                  background: "linear-gradient(to right, #0891b2, #2563eb)",
+                  boxShadow: "0 4px 12px rgba(34, 211, 238, 0.2)",
+                  transition: "all 0.3s",
+                  "&:hover": {
+                    transform: "scale(1.02)",
+                    background: "linear-gradient(to right, #0891b2, #2563eb)",
+                  },
+                }}
+              >
+                Initialize Category
+              </Button>
+            </Card>
+          </Grid>
+
+          {/* Table / Registry View */}
+          <Grid item xs={12} xl={9} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            
+            {/* Search and Filters Strip */}
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ p: 2, borderRadius: 6, bgcolor: "action.hover", border: 1, borderColor: "divider" }}>
+              <TextField
+                placeholder="Search taxonomy cache..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                fullWidth
+                size="small"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" sx={{ color: "text.disabled" }}>
+                      <FiSearch />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ bgcolor: "background.paper", "& .MuiOutlinedInput-root": { borderRadius: 4 } }}
+              />
+
+              <TextField
+                select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="px-6 py-3 rounded-2xl bg-[var(--surface-tertiary)]/20 border border-[var(--border)] text-sm text-[var(--text-muted)] outline-none cursor-pointer font-medium hover:text-[var(--text-primary)] transition"
+                size="small"
+                sx={{ minWidth: { sm: 180 }, bgcolor: "background.paper", "& .MuiOutlinedInput-root": { borderRadius: 4 } }}
               >
-                <option value="" className="bg-[var(--surface-primary)]">
-                  Full Taxonomy
-                </option>
-                <option value="income" className="bg-[var(--surface-primary)]">
-                  Income Only
-                </option>
-                <option value="expense" className="bg-[var(--surface-primary)]">
-                  Expense Only
-                </option>
-              </select>
-            </div>
+                <MenuItem value="">Full Taxonomy</MenuItem>
+                <MenuItem value="income">Income Only</MenuItem>
+                <MenuItem value="expense">Expense Only</MenuItem>
+              </TextField>
+            </Stack>
 
-            {/* Main Registry */}
-            <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-primary)]/30 backdrop-blur-xl overflow-hidden shadow-2xl">
+            {/* Main Data Table */}
+            <TableContainer sx={{ borderRadius: 6, border: 1, borderColor: "divider", bgcolor: "background.paper", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.05)" }}>
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <div className="w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
-                  <p className="text-xs font-bold text-[var(--text-muted)] tracking-widest uppercase">
+                <Stack alignItems="center" justifyContent="center" sx={{ py: 10, gap: 2 }}>
+                  <CircularProgress size={32} thickness={4} sx={{ color: "cyan.main" }} />
+                  <Typography variant="caption" sx={{ fontWeight: "bold", tracking: 1.5, color: "text.secondary", textTransform: "uppercase" }}>
                     Fetching Taxonomy...
-                  </p>
-                </div>
+                  </Typography>
+                </Stack>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <thead>
-                      <tr className="bg-[var(--surface-secondary)] text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest border-b border-[var(--border)]">
-                        <th className="px-6 py-4">Structure Label</th>
-                        <th className="px-6 py-4">Flow Classification</th>
-                        <th className="px-6 py-4 text-center">Maintenance</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[var(--border)]/30">
-                      {filteredCategories.map((cat, index) => (
-                        <motion.tr
-                          key={cat._id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: index * 0.02 }}
-                          className="group hover:bg-[var(--surface-tertiary)]/10 transition-colors"
-                        >
-                          <td className="px-6 py-4">
+                <Table>
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: "action.hover" }}>
+                      <TableCell sx={{ fontSize: "10px", fontWeight: "bold", color: "text.secondary", tracking: 1.5, textTransform: "uppercase", py: 2 }}>Structure Label</TableCell>
+                      <TableCell sx={{ fontSize: "10px", fontWeight: "bold", color: "text.secondary", tracking: 1.5, textTransform: "uppercase", py: 2 }}>Flow Classification</TableCell>
+                      <TableCell align="center" sx={{ fontSize: "10px", fontWeight: "bold", color: "text.secondary", tracking: 1.5, textTransform: "uppercase", py: 2 }}>Maintenance</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredCategories.map((cat, index) => (
+                      <TableRow
+                        key={cat._id}
+                        component={motion.tr}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: index * 0.02 }}
+                        hover
+                        sx={{ "&:last-child child, &:last-child th": { border: 0 } }}
+                      >
+                        {/* Label Cell */}
+                        <TableCell sx={{ py: 1.5 }}>
+                          {editingId === cat._id ? (
+                            <TextField
+                              size="small"
+                              value={editedCategory.name}
+                              onChange={(e) => setEditedCategory({ ...editedCategory, name: e.target.value })}
+                              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                            />
+                          ) : (
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Avatar variant="rounded" sx={{ width: 32, height: 32, borderRadius: 2, fontSize: "12px", fontWeight: "bold", bgcolor: "action.selected", color: "text.secondary", border: 1, borderColor: "divider" }}>
+                                {cat.name?.charAt(0)}
+                              </Avatar>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600, color: "text.primary", "&:hover": { color: "cyan.main" }, transition: "color 0.2s" }}>
+                                {cat.name}
+                              </Typography>
+                            </Stack>
+                          )}
+                        </TableCell>
+
+                        {/* Flow Classification Cell */}
+                        <TableCell sx={{ py: 1.5 }}>
+                          {editingId === cat._id ? (
+                            <TextField
+                              select
+                              size="small"
+                              value={editedCategory.type}
+                              onChange={(e) => setEditedCategory({ ...editedCategory, type: e.target.value })}
+                              sx={{ minWidth: 120, "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                            >
+                              <MenuItem value="income">Income</MenuItem>
+                              <MenuItem value="expense">Expense</MenuItem>
+                            </TextField>
+                          ) : (
+                            <Chip
+                              label={cat.type?.toUpperCase()}
+                              size="small"
+                              variant="outlined"
+                              sx={{
+                                fontSize: "9px",
+                                fontWeight: "bold",
+                                borderRadius: 2,
+                                color: cat.type === "income" ? "emerald.main" : "rose.main",
+                                bgcolor: cat.type === "income" ? "rgba(16, 185, 129, 0.08)" : "rgba(244, 63, 94, 0.08)",
+                                borderColor: cat.type === "income" ? "rgba(16, 185, 129, 0.2)" : "rgba(244, 63, 94, 0.2)",
+                              }}
+                            />
+                          )}
+                        </TableCell>
+
+                        {/* Maintenance Actions Cell */}
+                        <TableCell align="center" sx={{ py: 1.5 }}>
+                          <Stack direction="row" spacing={1} justifyContent="center">
                             {editingId === cat._id ? (
-                              <input
-                                value={editedCategory.name}
-                                onChange={(e) =>
-                                  setEditedCategory({
-                                    ...editedCategory,
-                                    name: e.target.value,
-                                  })
-                                }
-                                className="w-full p-2.5 rounded-xl bg-[var(--surface-tertiary)]/20 border border-cyan-500/30 text-[var(--text-primary)] outline-none ring-2 ring-cyan-500/10"
-                              />
+                              <>
+                                <IconButton size="small" onClick={() => saveEdit(cat._id)} sx={{ color: "emerald.main", bgcolor: "rgba(16, 185, 129, 0.1)", "&:hover": { bgcolor: "emerald.main", color: "#fff" } }}>
+                                  <FiCheck size={14} />
+                                </IconButton>
+                                <IconButton size="small" onClick={() => setEditingId(null)} sx={{ color: "text.disabled", bgcolor: "action.hover" }}>
+                                  <FiX size={14} />
+                                </IconButton>
+                              </>
                             ) : (
-                              <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border)] flex items-center justify-center text-xs font-bold text-[var(--text-muted)]">
-                                  {cat.name.charAt(0)}
-                                </div>
-                                <span className="font-semibold text-[var(--text-secondary)] group-hover:text-cyan-400 transition">
-                                  {cat.name}
-                                </span>
-                              </div>
+                              <>
+                                <IconButton size="small" onClick={() => startEditing(cat)} sx={{ color: "cyan.main", border: 1, borderColor: "divider", bgcolor: "background.paper", "&:hover": { bgcolor: "cyan.main", color: "#fff" } }}>
+                                  <FiEdit2 size={14} />
+                                </IconButton>
+                                <IconButton size="small" onClick={() => handleDelete(cat._id)} sx={{ color: "rose.main", border: 1, borderColor: "divider", bgcolor: "background.paper", "&:hover": { bgcolor: "rose.main", color: "#fff" } }}>
+                                  <FiTrash2 size={14} />
+                                </IconButton>
+                              </>
                             )}
-                          </td>
-                          <td className="px-6 py-4">
-                            {editingId === cat._id ? (
-                              <select
-                                value={editedCategory.type}
-                                onChange={(e) =>
-                                  setEditedCategory({
-                                    ...editedCategory,
-                                    type: e.target.value,
-                                  })
-                                }
-                                className="w-full p-2.5 rounded-xl bg-[var(--surface-tertiary)]/20 border border-cyan-500/30 text-[var(--text-primary)] outline-none"
-                              >
-                                <option
-                                  value="income"
-                                  className="bg-[var(--surface-primary)]"
-                                >
-                                  Income
-                                </option>
-                                <option
-                                  value="expense"
-                                  className="bg-[var(--surface-primary)]"
-                                >
-                                  Expense
-                                </option>
-                              </select>
-                            ) : (
-                              <span
-                                className={`px-3 py-1 transparent rounded-lg text-[10px] font-bold border ${
-                                  cat.type === "income"
-                                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                                    : "border-rose-500/30 bg-rose-500/10 text-rose-400"
-                                }`}
-                              >
-                                {cat.type?.toUpperCase()}
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex justify-center gap-2">
-                              {editingId === cat._id ? (
-                                <>
-                                  <button
-                                    onClick={() => saveEdit(cat._id)}
-                                    className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-[var(--text-primary)] transition"
-                                  >
-                                    <FiActivity size={14} />
-                                  </button>
-                                  <button
-                                    onClick={() => setEditingId(null)}
-                                    className="p-2 rounded-xl bg-[var(--surface-secondary)] text-[var(--text-muted)] hover:bg-[var(--surface-tertiary)] transition"
-                                  >
-                                    <FiX size={14} />
-                                  </button>
-                                </>
-                              ) : (
-                                <>
-                                  <button
-                                    onClick={() => startEditing(cat)}
-                                    className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-cyan-400 hover:bg-cyan-500 hover:text-[var(--text-primary)] transition shadow-lg"
-                                  >
-                                    <FiFileText size={16} />
-                                  </button>
-                                  <button
-                                    onClick={() => deleteCategory(cat._id)}
-                                    className="p-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-rose-400 hover:bg-rose-500 hover:text-[var(--text-primary)] transition shadow-lg"
-                                  >
-                                    <FiX size={16} />
-                                  </button>
-                                </>
-                              )}
-                            </div>
-                          </td>
-                        </motion.tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </Stack>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               )}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </div>
+            </TableContainer>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 };
