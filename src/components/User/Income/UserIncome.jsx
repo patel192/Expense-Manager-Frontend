@@ -1,5 +1,4 @@
-import { useState, useEffect, Fragment, useMemo } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import axiosInstance from "../../Utils/axiosInstance";
@@ -21,7 +20,6 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { XMarkIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { FaPauseCircle, FaTrashAlt } from "react-icons/fa";
 import {
   FiTrendingUp,
@@ -37,7 +35,15 @@ import {
   FiRefreshCw,
   FiPlus,
   FiChevronDown,
+  FiX,
+  FiTrash2,
 } from "react-icons/fi";
+
+// ================ Material UI Components ================
+import MuiDialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /**
  * --- INCOME CENTER ---
@@ -973,137 +979,122 @@ export const UserIncome = () => {
       )}
 
       {/* ── ADD INCOME MODAL ── */}
-      <Transition appear show={isModalOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => setIsModalOpen(false)}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/75 backdrop-blur-md" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95 translate-y-8"
-              enterTo="opacity-100 scale-100 translate-y-0"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100 translate-y-0"
-              leaveTo="opacity-0 scale-95 translate-y-8"
-            >
-              <Dialog.Panel className="w-full max-w-md rounded-[2.5rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden p-0">
-                <div className="flex items-center justify-between px-8 py-7 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
-                  <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 rounded-[1rem] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-inner">
-                      <FiTrendingUp size={20} className="text-emerald-500" />
-                    </div>
-                    <div>
-                      <Dialog.Title className="text-xl font-bold text-[var(--text-primary)]">
-                        Wealth Creation
-                      </Dialog.Title>
-                      <p className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-widest mt-0.5">
-                        Record new liquidity
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border border-[var(--border)] active:scale-95"
-                  >
-                    <XMarkIcon className="h-5 w-5" />
-                  </button>
-                </div>
-
-                <div className="px-8 py-8">
-                  <form
-                    onSubmit={handleSubmit(onSubmitIncome)}
-                    className="space-y-6"
-                  >
-                    <Field
-                      label="Amount (INR)"
-                      error={errors.amount?.message}
-                      icon={<FiDollarSign size={16} />}
-                    >
-                      <input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        {...register("amount", { required: "Required" })}
-                        className={inputCls + " pl-10"}
-                      />
-                    </Field>
-
-                    <Field
-                      label="Source Channel"
-                      error={errors.source?.message}
-                      icon={<FiList size={16} />}
-                    >
-                      <div className="relative group">
-                        <select
-                          {...register("source", { required: "Required" })}
-                          className={selectCls + " pl-10"}
-                        >
-                          <option value="">Select channel</option>
-                          <option value="Salary">Salary</option>
-                          <option value="Freelancing">Freelancing</option>
-                          <option value="Investments">Investments</option>
-                          <option value="Other">Other</option>
-                        </select>
-                        <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none transition-colors group-focus-within:text-cyan-500" />
-                      </div>
-                    </Field>
-
-                    <Field
-                      label="Value Date"
-                      error={errors.date?.message}
-                      icon={<FiCalendar size={16} />}
-                    >
-                      <input
-                        type="date"
-                        {...register("date", { required: "Required" })}
-                        className={inputCls + " pl-10"}
-                      />
-                    </Field>
-
-                    <input type="hidden" {...register("userID")} />
-
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-4.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600
-                                 font-extrabold text-sm text-white shadow-2xl shadow-cyan-500/40
-                                 hover:opacity-95 hover:-translate-y-1 transition-all duration-300
-                                 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
-                                 flex items-center justify-center gap-3 mt-4"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <FiRefreshCw size={18} className="animate-spin" />{" "}
-                          COMMITTING...
-                        </>
-                      ) : (
-                        <>
-                          <FiPlus size={20} /> AUTHORIZE ENTRY
-                        </>
-                      )}
-                    </button>
-                  </form>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
+      <MuiDialog
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            bgcolor: "background.paper",
+            backgroundImage: "none",
+            border: 1,
+            borderColor: "divider",
+            boxShadow: 24,
+            overflow: "hidden",
+          },
+        }}
+      >
+        <div className="flex items-center justify-between px-8 py-7 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-[1rem] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-inner">
+              <FiTrendingUp size={20} className="text-emerald-500" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-[var(--text-primary)]">
+                Wealth Creation
+              </h2>
+              <p className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-widest mt-0.5">
+                Record new liquidity
+              </p>
+            </div>
           </div>
-        </Dialog>
-      </Transition>
+          <IconButton
+            onClick={() => setIsModalOpen(false)}
+            size="small"
+            sx={{ color: "text.secondary", border: 1, borderColor: "divider", borderRadius: 2 }}
+          >
+            <FiX size={18} />
+          </IconButton>
+        </div>
+
+        <DialogContent sx={{ px: 4, py: 4 }}>
+          <form
+            onSubmit={handleSubmit(onSubmitIncome)}
+            className="space-y-6"
+          >
+            <Field
+              label="Amount (INR)"
+              error={errors.amount?.message}
+              icon={<FiDollarSign size={16} />}
+            >
+              <input
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                {...register("amount", { required: "Required" })}
+                className={inputCls + " pl-10"}
+              />
+            </Field>
+
+            <Field
+              label="Source Channel"
+              error={errors.source?.message}
+              icon={<FiList size={16} />}
+            >
+              <div className="relative group">
+                <select
+                  {...register("source", { required: "Required" })}
+                  className={selectCls + " pl-10"}
+                >
+                  <option value="">Select channel</option>
+                  <option value="Salary">Salary</option>
+                  <option value="Freelancing">Freelancing</option>
+                  <option value="Investments">Investments</option>
+                  <option value="Other">Other</option>
+                </select>
+                <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none transition-colors group-focus-within:text-cyan-500" />
+              </div>
+            </Field>
+
+            <Field
+              label="Value Date"
+              error={errors.date?.message}
+              icon={<FiCalendar size={16} />}
+            >
+              <input
+                type="date"
+                {...register("date", { required: "Required" })}
+                className={inputCls + " pl-10"}
+              />
+            </Field>
+
+            <input type="hidden" {...register("userID")} />
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600
+                         font-extrabold text-sm text-white shadow-2xl shadow-cyan-500/40
+                         hover:opacity-95 hover:-translate-y-1 transition-all duration-300
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
+                         flex items-center justify-center gap-3 mt-4"
+            >
+              {isSubmitting ? (
+                <>
+                  <CircularProgress size={16} sx={{ color: "white" }} />{" "}
+                  COMMITTING...
+                </>
+              ) : (
+                <>
+                  <FiPlus size={20} /> AUTHORIZE ENTRY
+                </>
+              )}
+            </button>
+          </form>
+        </DialogContent>
+      </MuiDialog>
     </div>
   );
 };

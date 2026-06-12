@@ -1,7 +1,6 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dialog, Transition } from "@headlessui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchBudgetPlan,
@@ -21,7 +20,6 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   FiTarget,
   FiTrendingDown,
@@ -38,7 +36,14 @@ import {
   FiRefreshCw,
   FiTag,
   FiAlignLeft,
+  FiX,
 } from "react-icons/fi";
+
+// ================ Material UI Components ================
+import MuiDialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /**
  * --- BUDGET CENTER ---
@@ -893,214 +898,186 @@ export const UserBudget = () => {
       </AnimatePresence>
 
       {/* ── ADD BUDGET MODAL ── */}
-      <Transition appear show={isModalOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => setIsModalOpen(false)}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/75 backdrop-blur-md" />
-          </Transition.Child>
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95 translate-y-8"
-              enterTo="opacity-100 scale-100 translate-y-0"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100 translate-y-0"
-              leaveTo="opacity-0 scale-95 translate-y-8"
-            >
-              <Dialog.Panel className="w-full max-w-md rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden p-0">
-                <div className="flex items-center justify-between px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-inner">
-                      <FiTarget size={18} className="text-emerald-500" />
-                    </div>
-                    <div>
-                      <Dialog.Title className="text-lg font-bold text-[var(--text-primary)]">
-                        New Budget
-                      </Dialog.Title>
-                      <p className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                        Set spending limits
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border border-[var(--border)] active:scale-95"
-                  >
-                    <XMarkIcon className="h-5 w-5" />
-                  </button>
-                </div>
-                <div className="px-8 py-8">
-                  <form onSubmit={handleAddBudget} className="space-y-5">
-                    <Field label="Category" icon={<FiTag size={16} />}>
-                      <select
-                        value={newBudget.categoryID}
-                        onChange={(e) =>
-                          setNewBudget({
-                            ...newBudget,
-                            categoryID: e.target.value,
-                          })
-                        }
-                        className={selectCls}
-                        required
-                      >
-                        <option value="">Select category</option>
-                        {categories.map((cat) => (
-                          <option key={cat._id} value={cat._id}>
-                            {cat.name}
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
-                    <Field
-                      label="Monthly Limit (INR)"
-                      icon={<FiDollarSign size={16} />}
-                    >
-                      <input
-                        type="number"
-                        placeholder="0.00"
-                        value={newBudget.amount}
-                        onChange={(e) =>
-                          setNewBudget({ ...newBudget, amount: e.target.value })
-                        }
-                        className={inputCls}
-                        required
-                        min="0.01"
-                        step="0.01"
-                      />
-                    </Field>
-                    <Field
-                      label="Short Note (Optional)"
-                      icon={<FiAlignLeft size={16} />}
-                    >
-                      <input
-                        type="text"
-                        placeholder="e.g. For household items"
-                        value={newBudget.description}
-                        onChange={(e) =>
-                          setNewBudget({
-                            ...newBudget,
-                            description: e.target.value,
-                          })
-                        }
-                        className={inputCls}
-                      />
-                    </Field>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-4 mt-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600
-                                 font-bold text-sm text-white shadow-xl shadow-emerald-500/30
-                                 hover:opacity-95 hover:-translate-y-1 transition-all duration-300
-                                 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
-                                 flex items-center justify-center gap-3"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <FiRefreshCw size={18} className="animate-spin" />{" "}
-                          ESTABLISHING...
-                        </>
-                      ) : (
-                        <>
-                          <FiPlus size={20} /> INITIALIZE BUDGET
-                        </>
-                      )}
-                    </button>
-                  </form>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
+      <MuiDialog
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            bgcolor: "background.paper",
+            backgroundImage: "none",
+            border: 1,
+            borderColor: "divider",
+            boxShadow: 24,
+            overflow: "hidden",
+          },
+        }}
+      >
+        <div className="flex items-center justify-between px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-inner">
+              <FiTarget size={18} className="text-emerald-500" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                New Budget
+              </h2>
+              <p className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                Set spending limits
+              </p>
+            </div>
           </div>
-        </Dialog>
-      </Transition>
+          <IconButton
+            onClick={() => setIsModalOpen(false)}
+            size="small"
+            sx={{ color: "text.secondary", border: 1, borderColor: "divider", borderRadius: 2 }}
+          >
+            <FiX size={18} />
+          </IconButton>
+        </div>
+        <DialogContent sx={{ px: 4, py: 4 }}>
+          <form onSubmit={handleAddBudget} className="space-y-5">
+            <Field label="Category" icon={<FiTag size={16} />}>
+              <select
+                value={newBudget.categoryID}
+                onChange={(e) =>
+                  setNewBudget({
+                    ...newBudget,
+                    categoryID: e.target.value,
+                  })
+                }
+                className={selectCls}
+                required
+              >
+                <option value="">Select category</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field
+              label="Monthly Limit (INR)"
+              icon={<FiDollarSign size={16} />}
+            >
+              <input
+                type="number"
+                placeholder="0.00"
+                value={newBudget.amount}
+                onChange={(e) =>
+                  setNewBudget({ ...newBudget, amount: e.target.value })
+                }
+                className={inputCls}
+                required
+                min="0.01"
+                step="0.01"
+              />
+            </Field>
+            <Field
+              label="Short Note (Optional)"
+              icon={<FiAlignLeft size={16} />}
+            >
+              <input
+                type="text"
+                placeholder="e.g. For household items"
+                value={newBudget.description}
+                onChange={(e) =>
+                  setNewBudget({
+                    ...newBudget,
+                    description: e.target.value,
+                  })
+                }
+                className={inputCls}
+              />
+            </Field>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-4 mt-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600
+                         font-bold text-sm text-white shadow-xl shadow-emerald-500/30
+                         hover:opacity-95 hover:-translate-y-1 transition-all duration-300
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
+                         flex items-center justify-center gap-3"
+            >
+              {isSubmitting ? (
+                <>
+                  <CircularProgress size={16} sx={{ color: "white" }} />{" "}
+                  ESTABLISHING...
+                </>
+              ) : (
+                <>
+                  <FiPlus size={20} /> INITIALIZE BUDGET
+                </>
+              )}
+            </button>
+          </form>
+        </DialogContent>
+      </MuiDialog>
 
       {/* ── DELETE CONFIRM MODAL ── */}
-      <Transition appear show={confirmDeleteOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => setConfirmDeleteOpen(false)}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/75 backdrop-blur-md" />
-          </Transition.Child>
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95 translate-y-4"
-              enterTo="opacity-100 scale-100 translate-y-0"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100 translate-y-0"
-              leaveTo="opacity-0 scale-95 translate-y-4"
-            >
-              <Dialog.Panel className="w-full max-w-sm rounded-[2rem] bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl p-8 text-center">
-                <div className="w-16 h-16 rounded-3xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto mb-6 shadow-inner">
-                  <FiTrash2 size={24} className="text-rose-500" />
-                </div>
-                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                  Delete Budget?
-                </h3>
-                <p className="text-sm font-medium text-[var(--text-muted)] mb-8 leading-relaxed">
-                  Permanently remove the budget for{" "}
-                  <span className="text-[var(--text-primary)] font-bold">
-                    {selectedBudget &&
-                      (typeof selectedBudget.categoryID === "object"
-                        ? selectedBudget.categoryID?.name
-                        : selectedBudget.description || "this category")}
-                  </span>
-                  ?
-                </p>
-                <div className="flex flex-col gap-3">
-                  <button
-                    onClick={handleDeleteBudget}
-                    disabled={isDeleting}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-sm font-bold text-white hover:opacity-95 transition-all shadow-lg shadow-rose-500/20 active:scale-95 flex items-center justify-center gap-2"
-                  >
-                    {isDeleting ? (
-                      <>
-                        <FiRefreshCw size={14} className="animate-spin" />{" "}
-                        DELETING...
-                      </>
-                    ) : (
-                      "YES, DELETE"
-                    )}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setConfirmDeleteOpen(false);
-                      setSelectedBudget(null);
-                    }}
-                    className="w-full py-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-secondary)] text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all active:scale-95"
-                  >
-                    CANCEL
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
+      <MuiDialog
+        open={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            bgcolor: "background.paper",
+            backgroundImage: "none",
+            border: 1,
+            borderColor: "divider",
+            boxShadow: 24,
+          },
+        }}
+      >
+        <DialogContent sx={{ p: 5, textAlign: "center" }}>
+          <div className="w-16 h-16 rounded-3xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <FiTrash2 size={24} className="text-rose-500" />
           </div>
-        </Dialog>
-      </Transition>
+          <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
+            Delete Budget?
+          </h3>
+          <p className="text-sm font-medium text-[var(--text-muted)] mb-8 leading-relaxed">
+            Permanently remove the budget for{" "}
+            <span className="text-[var(--text-primary)] font-bold">
+              {selectedBudget &&
+                (typeof selectedBudget.categoryID === "object"
+                  ? selectedBudget.categoryID?.name
+                  : selectedBudget.description || "this category")}
+            </span>
+            ?
+          </p>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleDeleteBudget}
+              disabled={isDeleting}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-sm font-bold text-white hover:opacity-95 transition-all shadow-lg shadow-rose-500/20 active:scale-95 flex items-center justify-center gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <CircularProgress size={14} sx={{ color: "white" }} />{" "}
+                  DELETING...
+                </>
+              ) : (
+                "YES, DELETE"
+              )}
+            </button>
+            <button
+              onClick={() => {
+                setConfirmDeleteOpen(false);
+                setSelectedBudget(null);
+              }}
+              className="w-full py-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-secondary)] text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all active:scale-95"
+            >
+              CANCEL
+            </button>
+          </div>
+        </DialogContent>
+      </MuiDialog>
     </div>
   );
 };
