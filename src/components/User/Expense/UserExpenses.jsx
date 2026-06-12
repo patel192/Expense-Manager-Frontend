@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axiosInstance from "../../Utils/axiosInstance";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,6 @@ import {
   fetchRecentExpenses,
   fetchCategories,
 } from "../../../redux/expense/expenseSlice";
-import { Dialog, Transition } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BarChart,
@@ -21,7 +20,6 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   FiTrendingDown,
   FiTag,
@@ -35,7 +33,14 @@ import {
   FiTrash2,
   FiRefreshCw,
   FiShoppingBag,
+  FiX,
 } from "react-icons/fi";
+
+// ================ Material UI Components ================
+import MuiDialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /**
  * --- EXPENSE CENTER ---
@@ -801,154 +806,139 @@ export const UserExpenses = () => {
       </AnimatePresence>
 
       {/* ── ADD EXPENSE MODAL ── */}
-      <Transition appear show={isModalOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => setIsModalOpen(false)}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/75 backdrop-blur-md" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95 translate-y-8"
-              enterTo="opacity-100 scale-100 translate-y-0"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100 translate-y-0"
-              leaveTo="opacity-0 scale-95 translate-y-8"
-            >
-              <Dialog.Panel className="w-full max-w-md rounded-3xl bg-[var(--surface-primary)] border border-[var(--border)] shadow-2xl overflow-hidden p-0">
-                <div className="flex items-center justify-between px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shadow-inner">
-                      <FiTrendingDown size={18} className="text-rose-500" />
-                    </div>
-                    <div>
-                      <Dialog.Title className="text-lg font-bold text-[var(--text-primary)]">
-                        New Expense
-                      </Dialog.Title>
-                      <p className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                        Record your spending
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)] transition-all border border-[var(--border)] active:scale-95"
-                  >
-                    <XMarkIcon className="h-5 w-5" />
-                  </button>
-                </div>
-
-                <div className="px-8 py-8">
-                  <form
-                    onSubmit={handleSubmit(SubmitHandler)}
-                    className="space-y-5"
-                  >
-                    <Field
-                      label="Category"
-                      icon={<FiTag size={16} />}
-                      error={errors.categoryID?.message}
-                    >
-                      <select
-                        {...register("categoryID", {
-                          required: "Please select a category",
-                        })}
-                        className={selectCls}
-                      >
-                        <option value="">Select category</option>
-                        {categories.map((cat) => (
-                          <option key={cat._id} value={cat._id}>
-                            {cat.name}
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
-
-                    <Field
-                      label="Amount (INR)"
-                      icon={<FiDollarSign size={16} />}
-                      error={errors.amount?.message}
-                    >
-                      <input
-                        type="number"
-                        step="0.01"
-                        {...register("amount", {
-                          required: "Amount is required",
-                        })}
-                        placeholder="0.00"
-                        className={inputCls}
-                      />
-                    </Field>
-
-                    <Field
-                      label="Transaction Date"
-                      icon={<FiCalendar size={16} />}
-                      error={errors.date?.message}
-                    >
-                      <input
-                        type="date"
-                        {...register("date", { required: "Date is required" })}
-                        className={inputCls}
-                      />
-                    </Field>
-
-                    <Field
-                      label="Description / Note"
-                      icon={<FiFileText size={16} />}
-                      error={errors.description?.message}
-                    >
-                      <input
-                        type="text"
-                        {...register("description", {
-                          required: "Description is required",
-                        })}
-                        placeholder="Coffee, Rent, Fuel..."
-                        className={inputCls}
-                      />
-                    </Field>
-
-                    <input type="hidden" {...register("userID")} />
-
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-4 mt-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600
-                                 font-bold text-sm text-white shadow-xl shadow-rose-500/30
-                                 hover:opacity-95 hover:-translate-y-1 transition-all duration-300
-                                 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
-                                 flex items-center justify-center gap-3"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <FiRefreshCw size={18} className="animate-spin" />{" "}
-                          REGISTERING...
-                        </>
-                      ) : (
-                        <>
-                          <FiPlus size={20} /> ADD EXPENSE
-                        </>
-                      )}
-                    </button>
-                  </form>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
+      <MuiDialog
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            bgcolor: "background.paper",
+            backgroundImage: "none",
+            border: 1,
+            borderColor: "divider",
+            boxShadow: 24,
+            overflow: "hidden",
+          },
+        }}
+      >
+        <div className="flex items-center justify-between px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-secondary)]/50">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shadow-inner">
+              <FiTrendingDown size={18} className="text-rose-500" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                New Expense
+              </h2>
+              <p className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                Record your spending
+              </p>
+            </div>
           </div>
-        </Dialog>
-      </Transition>
+          <IconButton
+            onClick={() => setIsModalOpen(false)}
+            size="small"
+            sx={{ color: "text.secondary", border: 1, borderColor: "divider", borderRadius: 2 }}
+          >
+            <FiX size={18} />
+          </IconButton>
+        </div>
+
+        <DialogContent sx={{ px: 4, py: 4 }}>
+          <form
+            onSubmit={handleSubmit(SubmitHandler)}
+            className="space-y-5"
+          >
+            <Field
+              label="Category"
+              icon={<FiTag size={16} />}
+              error={errors.categoryID?.message}
+            >
+              <select
+                {...register("categoryID", {
+                  required: "Please select a category",
+                })}
+                className={selectCls}
+              >
+                <option value="">Select category</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+
+            <Field
+              label="Amount (INR)"
+              icon={<FiDollarSign size={16} />}
+              error={errors.amount?.message}
+            >
+              <input
+                type="number"
+                step="0.01"
+                {...register("amount", {
+                  required: "Amount is required",
+                })}
+                placeholder="0.00"
+                className={inputCls}
+              />
+            </Field>
+
+            <Field
+              label="Transaction Date"
+              icon={<FiCalendar size={16} />}
+              error={errors.date?.message}
+            >
+              <input
+                type="date"
+                {...register("date", { required: "Date is required" })}
+                className={inputCls}
+              />
+            </Field>
+
+            <Field
+              label="Description / Note"
+              icon={<FiFileText size={16} />}
+              error={errors.description?.message}
+            >
+              <input
+                type="text"
+                {...register("description", {
+                  required: "Description is required",
+                })}
+                placeholder="Coffee, Rent, Fuel..."
+                className={inputCls}
+              />
+            </Field>
+
+            <input type="hidden" {...register("userID")} />
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-4 mt-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600
+                         font-bold text-sm text-white shadow-xl shadow-rose-500/30
+                         hover:opacity-95 hover:-translate-y-1 transition-all duration-300
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
+                         flex items-center justify-center gap-3"
+            >
+              {isSubmitting ? (
+                <>
+                  <CircularProgress size={16} sx={{ color: "white" }} />{" "}
+                  REGISTERING...
+                </>
+              ) : (
+                <>
+                  <FiPlus size={20} /> ADD EXPENSE
+                </>
+              )}
+            </button>
+          </form>
+        </DialogContent>
+      </MuiDialog>
     </div>
   );
 };
