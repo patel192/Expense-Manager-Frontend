@@ -448,7 +448,7 @@ export const Login = () => {
                   component={RouterLink}
                   to="/forgot-password"
                   variant="caption"
-                  color="cyan.main"
+                  color="primary"
                   sx={{ fontWeight: "bold", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}
                 >
                   Forgot password?
@@ -498,7 +498,7 @@ export const Login = () => {
               <Link
                 component={RouterLink}
                 to="/signup"
-                color="cyan.main"
+                color="primary"
                 sx={{ fontWeight: "bold", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}
               >
                 Create your free account
