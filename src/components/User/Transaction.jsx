@@ -9,11 +9,8 @@ import {
   FiCalendar,
   FiFilter,
   FiList,
-  FiTarget,
-  FiZap,
   FiArrowUpRight,
   FiArrowDownRight,
-  FiRefreshCw,
   FiInbox,
 } from "react-icons/fi";
 

@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 
 // ================ Material UI Components ================
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";

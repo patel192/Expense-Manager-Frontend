@@ -1,10 +1,8 @@
 import { useLocation, Outlet, Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import {
   FiLogOut,
   FiMenu,
-  FiX,
   FiTrendingUp,
   FiTrendingDown,
   FiPieChart,
@@ -341,8 +339,4 @@ export const UserDashboardLayout = () => {
   );
 };
 
-export default UserDashboardLayout;
-
-
-export default UserDashboardLayout;
 

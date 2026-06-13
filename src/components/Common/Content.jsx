@@ -5,12 +5,11 @@ import { Link as RouterLink } from "react-router-dom";
 // ================ Material UI Components ================
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid2"; // Native Grid2 component
+import Grid from "@mui/material/Grid"; 
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import LinearProgress from "@mui/material/LinearProgress";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 

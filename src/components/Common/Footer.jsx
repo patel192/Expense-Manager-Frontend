@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 // ================ Material UI Components ================
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid2"; // Native Grid2 component
+import Grid from "@mui/material/Grid"; // Native Grid component
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";

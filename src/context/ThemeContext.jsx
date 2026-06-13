@@ -27,6 +27,26 @@ export const ThemeProvider = ({ children }) => {
       createTheme({
         palette: {
           mode: theme,
+
+          cyan: {
+            main: "#06b6d4",
+          },
+
+          emerald: {
+            main: "#10b981",
+          },
+
+          rose: {
+            main: "#f43f5e",
+          },
+
+          indigo: {
+            main: "#6366f1",
+          },
+
+          violet: {
+            main: "#8b5cf6",
+          },
         },
       }),
     [theme],

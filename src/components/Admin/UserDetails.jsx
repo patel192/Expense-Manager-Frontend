@@ -22,7 +22,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
-import Grid from "@mui/material/Grid2"; // Using current Grid2 API for clean spacing layout
+import Grid from "@mui/material/Grid"; // Using current Grid API for clean spacing layout
 import CircularProgress from "@mui/material/CircularProgress";
 
 // ================ Icons ================

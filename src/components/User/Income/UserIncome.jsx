@@ -7,6 +7,7 @@ import {
   fetchRecurring,
 } from "../../../redux/income/incomeSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import {
   BarChart,
   Bar,
@@ -36,7 +37,6 @@ import {
   FiPlus,
   FiChevronDown,
   FiX,
-  FiTrash2,
 } from "react-icons/fi";
 
 // ================ Material UI Components ================

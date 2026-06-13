@@ -31,7 +31,6 @@ import {
   FiAlignLeft,
   FiPlus,
   FiTrash2,
-  FiRefreshCw,
   FiShoppingBag,
   FiX,
 } from "react-icons/fi";
