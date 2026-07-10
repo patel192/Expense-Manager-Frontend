@@ -1,6 +1,5 @@
 import axios from "axios";
 import { startLoading, stopLoading } from "../../redux/ui/uiSlice";
-import { logout, updateToken } from "../../redux/auth/authSlice";
 
 /**
  * --- AXIOS GLOBAL CONFIGURATION ---
@@ -84,6 +83,7 @@ axiosInstance.interceptors.response.use(
 
         const newToken = refreshRes.data.token;
         if (newToken && store) {
+          const { updateToken } = await import("../../redux/auth/authSlice");
           store.dispatch(updateToken(newToken));
         }
 
@@ -92,6 +92,7 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed (refresh token also expired), kick user to login
         if (store) {
+          const { logout } = await import("../../redux/auth/authSlice");
           store.dispatch(logout());
           window.location.href = "/login";
         }

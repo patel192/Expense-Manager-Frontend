@@ -83,7 +83,7 @@ export const ReportAdmins = () => {
     },
     {
       label: "Total Income",
-      value: `export const formatCurrency = (val) => ₹${stats.totalIncome?.toLocaleString()}`,
+      value: `₹${stats.totalIncome?.toLocaleString()}`,
       trend: "+8%",
       color: "linear-gradient(to bottom right, #60a5fa, #06b6d4)",
     },
@@ -176,7 +176,7 @@ export const ReportAdmins = () => {
       {/* ── KPIs GRID ── */}
       <Grid container spacing={2} sx={{ mb: 5 }}>
         {kpis.map((kpi, index) => (
-          <Grid item xs={12} sm={6} md={4} xl={2} key={index}>
+          <Grid item xs={12} sm={6} md={4} xl={2} key={`${kpi.label}`}>
             <Card
               component={motion.div}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -413,9 +413,9 @@ export const ReportAdmins = () => {
                       dataKey="value"
                       stroke="none"
                     >
-                      {pieData.map((_, idx) => (
+                      {pieData.map((item, idx) => (
                         <Cell
-                          key={idx}
+                          key={item.name}
                           fill={COLORS[idx % COLORS.length]}
                           fillOpacity={0.8}
                         />
@@ -434,7 +434,7 @@ export const ReportAdmins = () => {
 
                 <Grid container spacing={2} sx={{ mt: 2, w: "100%" }}>
                   {pieData.slice(0, 4).map((entry, i) => (
-                    <Grid item xs={6} key={i}>
+                    <Grid item xs={6} key={entry.name}>
                       <Stack direction="row" alignItems="center" spacing={1}>
                         <Box
                           sx={{

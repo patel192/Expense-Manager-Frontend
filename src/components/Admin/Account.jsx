@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import axiosInstance from "../Utils/axiosInstance";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUser as updateAuthUser } from "../../redux/auth/authSlice";
 import { useAuth } from "../../context/AuthContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m, AnimatePresence } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 
 // ================ Material UI Components ================
 import Box from "@mui/material/Box";
@@ -46,7 +47,7 @@ export const Account = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const selectedFileRef = useRef(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
@@ -75,7 +76,7 @@ export const Account = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file);
+      selectedFileRef.current = file;
       setPreview(URL.createObjectURL(file));
     }
   };
@@ -88,24 +89,25 @@ export const Account = () => {
   const handleSave = async () => {
     try {
       setLoading(true);
+      let currentProfilePic = user.profilePic;
 
-      if (selectedFile) {
+      if (selectedFileRef.current) {
         const formData = new FormData();
-        formData.append("profilePic", selectedFile);
+        formData.append("profilePic", selectedFileRef.current);
 
         const uploadRes = await axiosInstance.post(
           `/user/upload-profile/${userId}`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } },
         );
-        user.profilePic = uploadRes.data.data.profilePic;
+        currentProfilePic = uploadRes.data.data.profilePic;
       }
 
       const res = await axiosInstance.put(`/user/${userId}`, {
         name: user.name,
         email: user.email,
         bio: user.bio,
-        profilePic: user.profilePic,
+        profilePic: currentProfilePic,
       });
 
       const updatedUser = res.data.data;
@@ -115,7 +117,7 @@ export const Account = () => {
       dispatch(updateAuthUser(updatedUser));
 
       setPreview(null);
-      setSelectedFile(null);
+      selectedFileRef.current = null;
       setIsEditing(false);
       showMsg("Protocol update successful");
     } catch (err) {
@@ -127,12 +129,13 @@ export const Account = () => {
   };
 
   return (
-    <Box
-      component={motion.div}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      sx={{ display: 'flex', flexDirection: 'column', gap: 5, pb: 10 }}
-    >
+    <LazyMotion features={domAnimation}>
+      <Box
+        component={m.div}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        sx={{ display: 'flex', flexDirection: 'column', gap: 5, pb: 10 }}
+      >
       {/* ══ IDENTITY HEADER ══ */}
       <Stack
         direction={{ xs: "column", md: "row" }}
@@ -207,7 +210,7 @@ export const Account = () => {
         <Grid size={{ xs: 12, lg: 4 }}>
           <Stack spacing={3}>
             <Box
-              component={motion.div}
+              component={m.div}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
@@ -243,10 +246,11 @@ export const Account = () => {
                   <AnimatePresence>
                     {isEditing && (
                       <IconButton
-                        component={motion.label}
-                        initial={{ scale: 0, opacity: 0, rotate: -45 }}
+                        component={m.label}
+                        aria-label="Upload profile image"
+                        initial={{ scale: 0.95, opacity: 0, rotate: -45 }}
                         animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                        exit={{ scale: 0, opacity: 0, rotate: 45 }}
+                        exit={{ scale: 0.95, opacity: 0, rotate: 45 }}
                         sx={{
                           position: "absolute",
                           bottom: -12,
@@ -367,7 +371,7 @@ export const Account = () => {
         {/* ── ATTRIBUTE FORMS ── */}
         <Grid size={{ xs: 12, lg: 8 }}>
           <Box
-            component={motion.div}
+            component={m.div}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -483,7 +487,7 @@ export const Account = () => {
               {/* ALERT SYSTEM */}
               <AnimatePresence>
                 {message.text && (
-                  <Box component={motion.div} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                  <Box component={m.div} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                     <Alert severity={message.type === "error" ? "error" : "success"} variant="outlined" sx={{ borderRadius: 5 }}>
                       <AlertTitle sx={{ fontWeight: "bold", fontSize: "11px", letterSpacing: "0.1em" }}>
                         {message.type === "error" ? "VECTOR UPDATE FAILURE" : "PROTOCOL COMPLETED"}
@@ -496,7 +500,7 @@ export const Account = () => {
             </Stack>
           </Box>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </LazyMotion>
   );
 };

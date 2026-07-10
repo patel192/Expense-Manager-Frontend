@@ -69,7 +69,7 @@ export const FAQSection = () => {
       <Box sx={{ maxW: 700, mx: "auto" }}>
         {faqs.map((faq, index) => (
           <Accordion
-            key={index}
+            key={`${faq.question}`}
             expanded={expanded === index}
             onChange={handleChange(index)}
             sx={{

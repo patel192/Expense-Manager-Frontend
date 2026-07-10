@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "framer-motion";
 import { FiCheck } from "react-icons/fi";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -81,10 +81,11 @@ export const PricingPlans = () => {
 
       {/* Plans */}
       <Grid container spacing={4} alignItems="center" justifyContent="center">
+        <LazyMotion features={domAnimation}>
         {plans.map((plan, i) => (
-          <Grid size={{ xs: 12, md: 4 }} key={i}>
+          <Grid size={{ xs: 12, md: 4 }} key={`plan-${plan.name.toLowerCase()}`}>
             <Card
-              component={motion.div}
+              component={m.div}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -136,8 +137,8 @@ export const PricingPlans = () => {
 
                   {/* Features */}
                   <Stack spacing={1.5}>
-                    {plan.features.map((feature, index) => (
-                      <Stack key={index} direction="row" spacing={1.5} alignItems="center">
+                    {plan.features.map((feature) => (
+                      <Stack key={`${plan.name.toLowerCase()}-${feature.replace(/\s+/g, "-")}`} direction="row" spacing={1.5} alignItems="center">
                         <FiCheck style={{ color: "var(--mui-palette-success-main)" }} />
                         <Typography variant="body2" color="text.secondary">
                           {feature}
@@ -171,6 +172,7 @@ export const PricingPlans = () => {
             </Card>
           </Grid>
         ))}
+        </LazyMotion>
       </Grid>
     </Container>
   );

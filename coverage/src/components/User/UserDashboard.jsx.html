@@ -490,8 +490,7 @@ export const UserDashboard = () =&gt; {
         setIncome(incomeRes.data.data);
         setExpenses(expenseRes.data.data);
         setBills(billsRes.data.data);
-        setRecurring(recurringRes.data.data);
-        setTransactions(txnRes.data.data);
+recurringRef.current = recurringRes.data.data || [];        setTransactions(txnRes.data.data);
       } catch (err) {
 <span class="cstat-no" title="statement not covered" >        console.error("Error fetching dashboard data:", err);</span>
       }

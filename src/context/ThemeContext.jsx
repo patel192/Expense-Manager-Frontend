@@ -6,20 +6,15 @@ import {
 import CssBaseline from "@mui/material/CssBaseline";
 const ThemeContext = createContext();
 
+const getInitialTheme = () => {
+  const saved = localStorage.getItem("fintrack-theme");
+  if (saved) return saved;
+
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return prefersDark ? "dark" : "light";
+};
+
 export const ThemeProvider = ({ children }) => {
-  const getInitialTheme = () => {
-    const saved = localStorage.getItem("fintrack-theme");
-
-    if (saved) return saved;
-
-    // fallback to system preference
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-
-    return prefersDark ? "dark" : "light";
-  };
-
   const [theme, setTheme] = useState(getInitialTheme);
 
   const muiTheme = useMemo(
@@ -67,14 +62,17 @@ export const ThemeProvider = ({ children }) => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
+  const themeValue = useMemo(
+    () => ({
+      theme,
+      setTheme,
+      toggleTheme,
+    }),
+    [theme],
+  );
+
   return (
-    <ThemeContext.Provider
-      value={{
-        theme,
-        setTheme,
-        toggleTheme,
-      }}
-    >
+    <ThemeContext.Provider value={themeValue}>
       <MuiThemeProvider theme={muiTheme}>
         <CssBaseline />
         {children}

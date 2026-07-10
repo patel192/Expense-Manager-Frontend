@@ -20,32 +20,40 @@ import {
 // --- NORMALIZED DATA ENGINE WITH MUI STYLE PALETTE MAPPINGS ---
 const activities = [
   {
+    id: "act_1",
+    index: 0,
     icon: <FiTrendingUp size={14} />,
     text: "Revenue_Inflow",
     amount: "+ ₹45,000",
     color: "success.main",
-    bg: "rgba(46, 125, 50, 0.08)", // Equivalent to success alpha tint context
+    bg: "rgba(46, 125, 50, 0.08)",
   },
   {
+    id: "act_2",
+    index: 1,
     icon: <FiTrendingDown size={14} />,
     text: "Expense_Outflow",
     amount: "- ₹1,250",
     color: "error.main",
-    bg: "rgba(211, 47, 47, 0.08)", // Equivalent to error alpha tint context
+    bg: "rgba(211, 47, 47, 0.08)",
   },
   {
+    id: "act_3",
+    index: 2,
     icon: <FiAlertCircle size={14} />,
     text: "Budget_Violation",
     amount: "Warn: Food",
     color: "warning.main",
-    bg: "rgba(237, 108, 2, 0.08)", // Equivalent to warning alpha tint context
+    bg: "rgba(237, 108, 2, 0.08)",
   },
   {
+    id: "act_4",
+    index: 3,
     icon: <FiRepeat size={14} />,
     text: "Cron_Recurrence",
     amount: "Netflix_Sync",
     color: "info.main",
-    bg: "rgba(2, 136, 209, 0.08)", // Equivalent to info alpha tint context
+    bg: "rgba(2, 136, 209, 0.08)",
   },
 ];
 
@@ -94,15 +102,15 @@ export const ActivityFeed = () => {
 
       {/* ── ACTIVITY STREAM LIST ── */}
       <Stack spacing={1}>
-        {activities.map((item, i) => (
+        {activities.map((activity) => (
           <Paper
-            key={i}
+            key={activity.id}
             elevation={0}
             component={motion.div}
             initial={{ opacity: 0, x: -10 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: i * 0.05 }}
+            transition={{ duration: 0.3, delay: activity.index * 0.05 }}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -134,13 +142,13 @@ export const ActivityFeed = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  bgcolor: item.bg,
-                  color: item.color,
+                  bgcolor: activity.bg,
+                  color: activity.color,
                   border: "1px solid transparent",
                   transition: "all 0.2s ease",
                 }}
               >
-                {item.icon}
+                {activity.icon}
               </Box>
 
               <Stack spacing={0.25}>
@@ -152,7 +160,7 @@ export const ActivityFeed = () => {
                     color: "text.primary",
                   }}
                 >
-                  {item.text}
+                  {activity.text}
                 </Typography>
                 
                 <Stack direction="row" spacing={1} alignItems="center">
@@ -187,11 +195,11 @@ export const ActivityFeed = () => {
                 variant="body2"
                 sx={{
                   fontWeight: "bold",
-                  color: item.color,
+                  color: activity.color,
                   fontFamily: "monospace",
                 }}
               >
-                {item.amount}
+                {activity.amount}
               </Typography>
               <Typography
                 variant="caption"
@@ -203,7 +211,7 @@ export const ActivityFeed = () => {
                   mt: 0.25,
                 }}
               >
-                {2 + i}ms latency
+                {2 + activity.id}ms latency
               </Typography>
             </Box>
 

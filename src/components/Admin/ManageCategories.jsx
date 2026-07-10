@@ -175,7 +175,7 @@ export const ManageCategories = () => {
               accent: "#f43f5e",
             },
           ].map((card, idx) => (
-            <Grid item xs={12} sm={4} key={idx}>
+            <Grid item xs={12} sm={4} key={`${card.label}-${idx}`}>
               <Card
                 component={motion.div}
                 whileHover={{ y: -4 }}

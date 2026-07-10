@@ -16,7 +16,7 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
  */
 const getStoredUser = () => {
   try {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("user:v1");
     return user && user !== "undefined" ? JSON.parse(user) : null;
   } catch {
     return null;
@@ -24,8 +24,8 @@ const getStoredUser = () => {
 };
 
 const savedUser = getStoredUser();
-const savedRole = localStorage.getItem("role");
-const savedToken = localStorage.getItem("token");
+const savedRole = localStorage.getItem("role:v1");
+const savedToken = localStorage.getItem("token:v1");
 
 const initialState = {
   user: savedUser,
@@ -52,21 +52,21 @@ const authSlice = createSlice({
       state.loading = false;
 
       // Persist to local storage so session survives refresh
-      if (user) localStorage.setItem("user", JSON.stringify(user));
-      if (role) localStorage.setItem("role", role);
-      if (token) localStorage.setItem("token", token);
+      if (user) localStorage.setItem("user:v1", JSON.stringify(user));
+      if (role) localStorage.setItem("role:v1", role);
+      if (token) localStorage.setItem("token:v1", token);
     },
 
     // Used if we need to manually update the JWT
     updateToken: (state, action) => {
       state.token = action.payload;
-      localStorage.setItem("token", action.payload);
+      localStorage.setItem("token:v1", action.payload);
     },
 
     // Merge updated user fields (e.g. profilePic) into auth state
     updateUser: (state, action) => {
       state.user = { ...state.user, ...action.payload };
-      localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem("user:v1", JSON.stringify(state.user));
     },
 
     // Wipe everything (Local state + Storage)
@@ -76,9 +76,9 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
 
-      localStorage.removeItem("user");
-      localStorage.removeItem("role");
-      localStorage.removeItem("token");
+      localStorage.removeItem("user:v1");
+      localStorage.removeItem("role:v1");
+      localStorage.removeItem("token:v1");
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -91,9 +91,9 @@ const authSlice = createSlice({
       state.role = null;
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem("user");
-      localStorage.removeItem("role");
-      localStorage.removeItem("token");
+      localStorage.removeItem("user:v1");
+      localStorage.removeItem("role:v1");
+      localStorage.removeItem("token:v1");
     });
   },
 });

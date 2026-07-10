@@ -6,7 +6,8 @@ import {
   fetchIncomeData,
   fetchRecurring,
 } from "../../../redux/income/incomeSlice";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m, AnimatePresence } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import {
   BarChart,
@@ -45,13 +46,6 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 
-/**
- * --- INCOME CENTER ---
- * Central hub for tracking incoming liquidity, analyzing revenue trends, 
- * and managing automated recurring payments.
- */
-
-// --- ATOMIC UI & SHARED COMPONENTS ---
 
 const Shimmer = ({ className = "" }) => (
   <div
@@ -71,8 +65,8 @@ const ChartTooltip = ({ active, payload, label }) => {
       <p className="text-xs text-[var(--text-muted)] mb-2 font-medium">
         {label}
       </p>
-      {payload.map((p, i) => (
-        <p key={i} className="text-sm font-bold" style={{ color: p.color }}>
+      {payload.map((p) => (
+        <p key={p.name} className="text-sm font-bold" style={{ color: p.color }}>
           {p.name}: ₹{p.value?.toLocaleString("en-IN")}
         </p>
       ))}
@@ -162,7 +156,7 @@ export const UserIncome = () => {
     formState: { errors },
   } = useForm();
   
-  const userId = useMemo(() => user?._id, [user]);
+  const userId = user?._id;
 
   const [recurringForm, setRecurringForm] = useState({
     name: "",
@@ -327,13 +321,14 @@ export const UserIncome = () => {
   ];
 
   return (
-    <div className="space-y-6 text-[var(--text-primary)]">
-      {/* ── HEADER ── */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-      >
+    <LazyMotion features={domAnimation}>
+      <div className="space-y-6 text-[var(--text-primary)]">
+        {/* ── HEADER ── */}
+        <m.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent">
             Income Center
@@ -343,6 +338,7 @@ export const UserIncome = () => {
           </p>
         </div>
         <button
+        type="button"
           onClick={() => setIsModalOpen(true)}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
                      bg-gradient-to-r from-cyan-500 to-blue-600 text-sm font-bold text-white
@@ -351,12 +347,13 @@ export const UserIncome = () => {
         >
           <FiPlus size={18} /> Add Income
         </button>
-      </motion.div>
+      </m.div>
 
       {/* ── PILL TABS ── */}
       <div className="flex items-center gap-1 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap shadow-sm">
         {tabs.map((tab) => (
           <button
+          type="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all duration-200
@@ -388,7 +385,7 @@ export const UserIncome = () => {
       {!loading && (
         <AnimatePresence mode="wait">
           {activeTab === "summary" && (
-            <motion.div
+            <m.div
               key="summary"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -436,7 +433,7 @@ export const UserIncome = () => {
                   },
                 ].map((card, idx) => (
                   <motion.div
-                    key={idx}
+                    key={card.label}
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: idx * 0.05 }}
@@ -461,11 +458,11 @@ export const UserIncome = () => {
                         {card.value}
                       </p>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
 
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -486,9 +483,9 @@ export const UserIncome = () => {
                   </div>
                 </div>
                 <ul className="space-y-4 relative z-10">
-                  {tips.map((tip, idx) => (
+                  {tips.map((tip) => (
                     <li
-                      key={idx}
+                      key={tip}
                       className="flex items-start gap-4 text-xs font-medium text-[var(--text-secondary)] leading-relaxed"
                     >
                       <span className="w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0 mt-1 shadow-lg shadow-cyan-500/50" />
@@ -497,11 +494,11 @@ export const UserIncome = () => {
                   ))}
                 </ul>
               </motion.div>
-            </motion.div>
+            </m.div>
           )}
 
           {activeTab === "analytics" && (
-            <motion.div
+            <m.div
               key="analytics"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -644,11 +641,11 @@ export const UserIncome = () => {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </motion.div>
+            </m.div>
           )}
 
           {activeTab === "records" && (
-            <motion.div
+            <m.div
               key="records"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -666,6 +663,7 @@ export const UserIncome = () => {
                   </span>
                 </div>
                 <button
+                type="button"
                   onClick={() => setIsModalOpen(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface-secondary)]
                              border border-[var(--border)] text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]
@@ -709,6 +707,7 @@ export const UserIncome = () => {
                             {income.source}
                           </span>
                           <button
+                          type="button"
                             onClick={() => handleDelete(income._id)}
                             className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:bg-rose-500 hover:text-white hover:shadow-lg hover:shadow-rose-500/30 transition-all active:scale-90 border border-transparent hover:border-rose-600"
                           >
@@ -919,12 +918,14 @@ export const UserIncome = () => {
                               <td className="px-6 py-5">
                                 <div className="flex items-center gap-3">
                                   <button
+                                  type="button"
                                     onClick={() => alert("Logic coming soon")}
                                     className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:bg-amber-500/10 hover:text-amber-500 transition-all active:scale-90 border border-transparent hover:border-amber-500/20"
                                   >
                                     <FaPauseCircle size={15} />
                                   </button>
                                   <button
+                                  type="button"
                                     onClick={() =>
                                       handleRecurringDelete(pay._id)
                                     }
@@ -961,6 +962,7 @@ export const UserIncome = () => {
                           </div>
                           <div className="flex gap-2 relative z-10">
                             <button
+                            type="button"
                               onClick={() => handleRecurringDelete(pay._id)}
                               className="w-10 h-10 rounded-xl flex items-center justify-center text-rose-500 bg-rose-500/5 border border-rose-500/10 active:scale-95 shadow-sm"
                             >
@@ -1011,6 +1013,7 @@ export const UserIncome = () => {
             </div>
           </div>
           <IconButton
+          aria-label="Close income dialog"
             onClick={() => setIsModalOpen(false)}
             size="small"
             sx={{ color: "text.secondary", border: 1, borderColor: "divider", borderRadius: 2 }}

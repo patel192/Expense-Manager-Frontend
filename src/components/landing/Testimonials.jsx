@@ -57,14 +57,14 @@ export const Testimonials = () => {
 
       {/* Cards */}
       <Grid container spacing={4}>
-        {testimonials.map((t, i) => (
-          <Grid size={{ xs: 12, md: 4 }} key={i}>
+        {testimonials.map((t, idx) => (
+          <Grid size={{ xs: 12, md: 4 }} key={t.name || idx}>
             <Card
               component={motion.div}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: i * 0.08 }}
+              transition={{ duration: 0.35, delay: idx * 0.1 }}
               sx={{
                 bgcolor: "background.paper",
                 border: 1,

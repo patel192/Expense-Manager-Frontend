@@ -1,10 +1,10 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 // ================ Material UI Components ================
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid"; // Native Grid component
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
@@ -18,34 +18,36 @@ import {
   FiArrowUpRight,
 } from "react-icons/fi";
 
-/**
- * --- SITE FOOTER ---
- * Provides site-wide links, social media connections, and system status information.
- */
+// --- STATIC DATA EXTRACTED TO MODULE SCOPE ---
+const FOOTER_LINKS = {
+  product: [
+    { label: "Features", href: "#features" },
+    { label: "Pricing", href: "#pricing" },
+    { label: "Integrations", href: "#integrations" },
+    { label: "FAQ", href: "#faq" },
+  ],
+  resources: [
+    { label: "Documentation", href: "#" },
+    { label: "Security", href: "#" },
+    { label: "API Reference", href: "#" },
+    { label: "System Status", href: "#" },
+  ],
+  company: [
+    { label: "About Us", href: "#" },
+    { label: "Careers", href: "#" },
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms of Service", href: "#" },
+  ],
+};
+
+const SOCIAL_LINKS = [
+  { icon: <FiTwitter />, href: "#", label: "Twitter" },
+  { icon: <FiGithub />, href: "#", label: "GitHub" },
+  { icon: <FiLinkedin />, href: "#", label: "LinkedIn" },
+];
+
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
-
-  // --- DATA: FOOTER LINKS ---
-  const footerLinks = {
-    product: [
-      { label: "Features", href: "#features" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Integrations", href: "#integrations" },
-      { label: "FAQ", href: "#faq" },
-    ],
-    resources: [
-      { label: "Documentation", href: "#" },
-      { label: "Security", href: "#" },
-      { label: "API Reference", href: "#" },
-      { label: "System Status", href: "#" },
-    ],
-    company: [
-      { label: "About Us", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-    ],
-  };
 
   const socialLinks = [
     { icon: <FiTwitter />, href: "#", label: "Twitter" },
@@ -84,9 +86,11 @@ export const Footer = () => {
 
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 10 }}>
         <Grid container spacing={{ xs: 6, lg: 4 }} sx={{ mb: 8 }}>
-          
           {/* ── BRAND SECTION ── */}
-          <Grid size={{ xs: 12, md: 6, lg: 4 }} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <Grid
+            size={{ xs: 12, md: 6, lg: 4 }}
+            sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+          >
             <Stack direction="row" alignItems="center" spacing={1.5}>
               <Box
                 sx={{
@@ -129,16 +133,21 @@ export const Footer = () => {
               </Typography>
             </Stack>
 
-            <Typography variant="body1" sx={{ color: "text.secondary", maxWidth: 320, lineHeight: 1.6 }}>
-              The high-performance dashboard for engineers of their own finances. Track, analyze, and optimize your wealth with technical precision.
+            <Typography
+              variant="body1"
+              sx={{ color: "text.secondary", maxWidth: 320, lineHeight: 1.6 }}
+            >
+              The high-performance dashboard for engineers of their own
+              finances. Track, analyze, and optimize your wealth with technical
+              precision.
             </Typography>
-            
+
             {/* Social Icons Stack */}
             <Stack direction="row" spacing={2}>
-              {socialLinks.map((social, i) => (
+              {SOCIAL_LINKS.map((social) => (
                 <IconButton
-                  key={i}
-                  component={motion.a}
+                  key={`social-${social.label.toLowerCase()}`}
+                  component={m.a}
                   href={social.href}
                   whileHover={{ y: -3, scale: 1.1 }}
                   aria-label={social.label}
@@ -165,8 +174,12 @@ export const Footer = () => {
           </Grid>
 
           {/* ── LINK COLUMNS ── */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <Grid size={{ xs: 12, sm: 4, lg: 2.6 }} key={category} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {Object.entries(FOOTER_LINKS).map(([category, links]) => (
+            <Grid
+              size={{ xs: 12, sm: 4, lg: 2.6 }}
+              key={`footer-cat-${category}`}
+              sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+            >
               <Typography
                 variant="caption"
                 sx={{
@@ -178,9 +191,22 @@ export const Footer = () => {
               >
                 {category}
               </Typography>
-              <Box component="ul" sx={{ p: 0, m: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 2 }}>
-                {links.map((link, i) => (
-                  <Box component="li" key={i}>
+              <Box
+                component="ul"
+                sx={{
+                  p: 0,
+                  m: 0,
+                  listStyle: "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                {links.map((link) => (
+                  <Box
+                    component="li"
+                    key={`footer-link-${category}-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
                     <Link
                       href={link.href}
                       underline="none"
@@ -192,7 +218,10 @@ export const Footer = () => {
                         gap: 0.5,
                         fontSize: "14px",
                         "&:hover": { color: "cyan.main" },
-                        "&:hover .arrow-icon": { opacity: 1, transform: "translate(0, 0)" },
+                        "&:hover .arrow-icon": {
+                          opacity: 1,
+                          transform: "translate(0, 0)",
+                        },
                       }}
                     >
                       {link.label}
@@ -213,7 +242,6 @@ export const Footer = () => {
               </Box>
             </Grid>
           ))}
-
         </Grid>
 
         {/* ── BOTTOM CORNER STRIP BAR ── */}
@@ -224,10 +252,13 @@ export const Footer = () => {
           spacing={3}
           sx={{ pt: 4, borderTop: 1, borderColor: "divider" }}
         >
-          <Typography variant="body2" sx={{ fontFamily: "monospace", color: "text.disabled" }}>
+          <Typography
+            variant="body2"
+            sx={{ fontFamily: "monospace", color: "text.disabled" }}
+          >
             &copy; {currentYear} FinTrack Labs Inc. All rights reserved.
           </Typography>
-          
+
           {/* Status Runtime Diagnostics Metrics Indicators */}
           <Stack
             direction="row"
@@ -244,8 +275,8 @@ export const Footer = () => {
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box
                 sx={{
-                  w: 8,
-                  h: 8,
+                  width: 8,
+                  height: 8,
                   borderRadius: "50%",
                   bgcolor: "emerald.main",
                   animation: "pulse 2s infinite",

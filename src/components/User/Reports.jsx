@@ -17,11 +17,6 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 
-/**
- * --- INTELLIGENCE REPORTS ---
- * Handles the generation and download of financial documentation.
- * Converts historical telemetry into a structured, human-readable PDF.
- */
 
 export const Reports = () => {
   const user = useSelector((state) => state.auth.user);
@@ -161,9 +156,9 @@ export const Reports = () => {
                     icon: <FiCheckCircle size={12} />,
                     text: "INSTANT COMPILER",
                   },
-                ].map((badge, i) => (
+                ].map((badge) => (
                   <span
-                    key={i}
+                    key={badge.text}
                     className="inline-flex items-center gap-2 text-[9px] font-black
                                            text-[var(--text-muted)] bg-[var(--surface-secondary)]/50 border border-[var(--border)] px-3 py-1.5 rounded-full uppercase tracking-widest"
                   >
@@ -227,7 +222,7 @@ export const Reports = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {reportSections.map((section, i) => (
             <motion.div
-              key={i}
+              key={section.label}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 + i * 0.05 }}
@@ -280,9 +275,9 @@ export const Reports = () => {
               color: "text-emerald-500",
               bg: "bg-emerald-500/10 border-emerald-500/20",
             },
-          ].map((s, i) => (
+          ].map((s) => (
             <div
-              key={i}
+              key={s.title}
               className="flex flex-col gap-4 p-6 rounded-[2rem] bg-[var(--surface-primary)]/50 border border-[var(--border)] relative group"
             >
               <div

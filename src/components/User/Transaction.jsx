@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m, AnimatePresence, domAnimation } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTransactions } from "../../redux/transaction/transactionSlice";
 import {
@@ -13,12 +13,6 @@ import {
   FiArrowDownRight,
   FiInbox,
 } from "react-icons/fi";
-
-/**
- * --- TRANSACTION LEDGER ---
- * The historical record of all financial movements (Inflow vs Outflow).
- * Features advanced filtering, grouping by date, and efficiency scoring.
- */
 
 // --- ATOMIC UI: LOADING STATES ---
 const Shimmer = ({ className = "" }) => (
@@ -34,8 +28,8 @@ const Shimmer = ({ className = "" }) => (
 
 const TransactionSkeleton = () => (
   <div className="space-y-4 p-6">
-    {[1, 2, 3, 4, 5].map((i) => (
-      <div key={i} className="flex items-center gap-4">
+    {["a","b","c","d","e"].map((id) => (
+      <div key={id} className="flex items-center gap-4">
         <Shimmer className="w-12 h-12 rounded-2xl flex-shrink-0" />
         <div className="flex-1 space-y-2">
           <Shimmer className="h-4 w-1/3 rounded-lg" />
@@ -48,17 +42,34 @@ const TransactionSkeleton = () => (
 );
 
 // --- MAIN COMPONENT ---
+// --- STATIC PARAMETERS & HELPER MODULES ---
+const TAB_TYPES = { All: null, Expenses: "Expense", Incomes: "Income" };
+
+const handlePlanBudget = (expense) => {
+  alert(
+    `Initiating budget planning for ${expense.categoryID?.name || "Uncategorized"}...`,
+  );
+};
+
+// --- MAIN COMPONENT ---
 export const Transaction = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const { transactions, summary, loading } = useSelector(
     (state) => state.transaction,
   );
-  
+
   // --- STATE & CONFIG ---
   const [activeTab, setActiveTab] = useState("All");
-  const tabTypes = { All: null, Expenses: "Expense", Incomes: "Income" };
-  const userId = useMemo(() => user?._id, [user]);
+const mountedDate = useMemo(
+  () =>
+    new Date().toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }),
+  [],
+);  const userId = user?._id;
 
   // --- LIFECYCLE ---
   useEffect(() => {
@@ -70,10 +81,10 @@ export const Transaction = () => {
 
   // Filter based on selected tab and sort by date descending
   const filteredSorted = useMemo(() => {
-    const filtered = tabTypes[activeTab]
-      ? transactions.filter((t) => t.type === tabTypes[activeTab])
+    const filtered = TAB_TYPES[activeTab]
+      ? transactions.filter((t) => t.type === TAB_TYPES[activeTab])
       : transactions;
-    return [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+    return filtered.toSorted((a, b) => new Date(b.date) - new Date(a.date));
   }, [activeTab, transactions]);
 
   // Group entries into date-based sections for better readability
@@ -90,13 +101,6 @@ export const Transaction = () => {
       return acc;
     }, {});
   }, [filteredSorted]);
-
-  // Handle CTA for unplanned expenses
-  const handlePlanBudget = (expense) => {
-    alert(
-      `Initiating budget planning for ${expense.categoryID?.name || "Uncategorized"}...`,
-    );
-  };
 
   const savingsRate =
     summary.totalIncome > 0
@@ -121,11 +125,12 @@ export const Transaction = () => {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-8 text-[var(--text-primary)] pb-10"
-    >
+    <LazyMotion features={domAnimation}>
+      <m.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="space-y-8 text-[var(--text-primary)] pb-10"
+      >
       {/* ── HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
@@ -138,11 +143,7 @@ export const Transaction = () => {
         </div>
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border bg-[var(--surface-primary)] border-[var(--border)] text-[var(--text-muted)] text-[10px] font-black uppercase tracking-widest shadow-sm">
           <FiCalendar size={12} className="text-cyan-500" />
-          {new Date().toLocaleDateString("en-IN", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
+          {mountedDate || "LOADING METRICS..."}
         </div>
       </div>
 
@@ -180,8 +181,8 @@ export const Transaction = () => {
             icon: <FiDollarSign size={18} />,
           },
         ].map((card, idx) => (
-          <motion.div
-            key={idx}
+          <m.div
+            key={card.title}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: idx * 0.1 }}
@@ -214,19 +215,19 @@ export const Transaction = () => {
                 ₹{Math.abs(card.value).toLocaleString("en-IN")}
               </p>
             </div>
-          </motion.div>
+          </m.div>
         ))}
       </div>
 
       {/* ── MAIN INTERFACE ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
         {/* Central Feed */}
         <div className="lg:col-span-2 space-y-6">
           {/* Tab Selection */}
           <div className="flex items-center gap-1.5 bg-[var(--surface-primary)] border border-[var(--border)] rounded-[1.5rem] p-2 w-fit shadow-lg backdrop-blur-md">
             {tabs.map((tab) => (
               <button
+                type="button"
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 active:scale-95
@@ -270,7 +271,7 @@ export const Transaction = () => {
               </div>
             ) : (
               <AnimatePresence mode="wait">
-                <motion.div
+                <m.div
                   key={activeTab}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -296,7 +297,7 @@ export const Transaction = () => {
                       {/* INDIVIDUAL ENTRIES */}
                       <div className="divide-y divide-[var(--border)]/50">
                         {groupedByDate[date].map((t, i) => (
-                          <motion.div
+                          <m.div
                             key={t._id}
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -354,6 +355,7 @@ export const Transaction = () => {
                               </p>
                               {t.type === "Expense" && !t.hasBudget && (
                                 <button
+                                  type="button"
                                   onClick={() => handlePlanBudget(t)}
                                   className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl
                                              bg-cyan-500/10 border border-cyan-500/20 text-cyan-500
@@ -364,12 +366,12 @@ export const Transaction = () => {
                                 </button>
                               )}
                             </div>
-                          </motion.div>
+                          </m.div>
                         ))}
                       </div>
                     </div>
                   ))}
-                </motion.div>
+                </m.div>
               </AnimatePresence>
             )}
           </div>
@@ -390,6 +392,7 @@ export const Transaction = () => {
             <div className="p-3 space-y-1.5">
               {tabs.map((tab) => (
                 <button
+                  type="button"
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all
@@ -446,7 +449,7 @@ export const Transaction = () => {
                 },
               ].map((row, i) => (
                 <div
-                  key={i}
+                  key={row.label}
                   className={`flex items-center justify-between group ${i < 2 ? "pb-4 border-b border-[var(--border)]/50" : ""}`}
                 >
                   <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
@@ -480,7 +483,7 @@ export const Transaction = () => {
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-[var(--surface-tertiary)] overflow-hidden shadow-inner">
-                  <motion.div
+                  <m.div
                     initial={{ width: 0 }}
                     animate={{
                       width: `${Math.max(0, Math.min(savingsRate, 100))}%`,
@@ -500,7 +503,7 @@ export const Transaction = () => {
           </div>
         </div>
       </div>
-    </motion.div>
+      </m.div>
+    </LazyMotion>
   );
 };
-

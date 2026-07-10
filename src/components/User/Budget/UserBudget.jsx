@@ -71,8 +71,12 @@ const ChartTooltip = ({ active, payload, label }) => {
       <p className="text-xs text-[var(--text-muted)] mb-2 font-medium">
         {label}
       </p>
-      {payload.map((p, i) => (
-        <p key={i} className="text-sm font-bold" style={{ color: p.color }}>
+      {payload.map((p) => (
+        <p
+          key={p.name}
+          className="text-sm font-bold"
+          style={{ color: p.color }}
+        >
           {p.name}: ₹{p.value?.toLocaleString("en-IN")}
         </p>
       ))}
@@ -268,6 +272,7 @@ export const UserBudget = () => {
           </p>
         </div>
         <button
+          type="button"
           onClick={() => setIsModalOpen(true)}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
                      bg-gradient-to-r from-emerald-500 to-teal-600 text-sm font-bold text-white
@@ -327,7 +332,7 @@ export const UserBudget = () => {
           },
         ].map((card, idx) => (
           <motion.div
-            key={idx}
+            key={card.label}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: idx * 0.05 }}
@@ -358,6 +363,7 @@ export const UserBudget = () => {
       <div className="flex items-center gap-1 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap shadow-sm">
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all duration-200
@@ -399,6 +405,7 @@ export const UserBudget = () => {
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setIsModalOpen(true)}
                   className="mt-2 text-xs font-extrabold text-white bg-emerald-500 px-5 py-2.5 rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
                 >
@@ -426,7 +433,7 @@ export const UserBudget = () => {
                         : "bg-emerald-500/10 border-emerald-500/20";
                   return (
                     <motion.div
-                      key={item.id}
+                      key={item._id || item.category}
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.07 }}
@@ -511,9 +518,9 @@ export const UserBudget = () => {
                         paddingAngle={4}
                         label={false}
                       >
-                        {summary.map((_, i) => (
+                        {summary.map((item, i) => (
                           <Cell
-                            key={i}
+                            key={item.category}
                             fill={COLORS[i % COLORS.length]}
                             strokeWidth={0}
                           />
@@ -525,7 +532,7 @@ export const UserBudget = () => {
                   <div className="flex flex-wrap gap-3 justify-center mt-4">
                     {summary.map((s, i) => (
                       <span
-                        key={i}
+                        key={s.category}
                         className="flex items-center gap-2 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider"
                       >
                         <span
@@ -646,6 +653,7 @@ export const UserBudget = () => {
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={handleGeneratePlan}
                   disabled={loadingPlan}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold
@@ -732,7 +740,7 @@ export const UserBudget = () => {
                       },
                     ].map((s, i) => (
                       <motion.div
-                        key={i}
+                        key={s.label}
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.08 }}
@@ -761,9 +769,9 @@ export const UserBudget = () => {
                         </h3>
                       </div>
                       <div className="divide-y divide-[var(--border)]">
-                        {budgetPlan.budgetPlan.map((item, i) => (
+                        {budgetPlan.budgetPlan.map((item,i) => (
                           <motion.div
-                            key={i}
+                            key={item.category}
                             initial={{ opacity: 0, x: -8 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.05 }}
@@ -798,7 +806,7 @@ export const UserBudget = () => {
                       <ul className="space-y-4 relative z-10">
                         {budgetPlan.recommendations.map((tip, i) => (
                           <li
-                            key={i}
+                            key={tip}
                             className="flex items-start gap-4 text-xs font-medium text-[var(--text-secondary)] leading-relaxed"
                           >
                             <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 mt-1 shadow-lg shadow-emerald-500/50" />
@@ -834,6 +842,7 @@ export const UserBudget = () => {
                 </span>
               </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(true)}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface-secondary)]
                            border border-[var(--border)] text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]
@@ -877,6 +886,8 @@ export const UserBudget = () => {
                         </p>
                       </div>
                       <button
+                        type="button"
+                        aria-label="Delete budget"
                         onClick={() => {
                           setSelectedBudget(b);
                           setConfirmDeleteOpen(true);
@@ -930,9 +941,15 @@ export const UserBudget = () => {
             </div>
           </div>
           <IconButton
+            aria-label="Close budget dialog"
             onClick={() => setIsModalOpen(false)}
             size="small"
-            sx={{ color: "text.secondary", border: 1, borderColor: "divider", borderRadius: 2 }}
+            sx={{
+              color: "text.secondary",
+              border: 1,
+              borderColor: "divider",
+              borderRadius: 2,
+            }}
           >
             <FiX size={18} />
           </IconButton>
@@ -941,6 +958,7 @@ export const UserBudget = () => {
           <form onSubmit={handleAddBudget} className="space-y-5">
             <Field label="Category" icon={<FiTag size={16} />}>
               <select
+                aria-label="Budget category"
                 value={newBudget.categoryID}
                 onChange={(e) =>
                   setNewBudget({
@@ -964,6 +982,7 @@ export const UserBudget = () => {
               icon={<FiDollarSign size={16} />}
             >
               <input
+                aria-label="Budget amount"
                 type="number"
                 placeholder="0.00"
                 value={newBudget.amount}
@@ -981,6 +1000,7 @@ export const UserBudget = () => {
               icon={<FiAlignLeft size={16} />}
             >
               <input
+                aria-label="Budget description"
                 type="text"
                 placeholder="e.g. For household items"
                 value={newBudget.description}
@@ -1053,6 +1073,7 @@ export const UserBudget = () => {
           </p>
           <div className="flex flex-col gap-3">
             <button
+              type="button"
               onClick={handleDeleteBudget}
               disabled={isDeleting}
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-sm font-bold text-white hover:opacity-95 transition-all shadow-lg shadow-rose-500/20 active:scale-95 flex items-center justify-center gap-2"
@@ -1067,6 +1088,7 @@ export const UserBudget = () => {
               )}
             </button>
             <button
+              type="button"
               onClick={() => {
                 setConfirmDeleteOpen(false);
                 setSelectedBudget(null);
@@ -1081,4 +1103,3 @@ export const UserBudget = () => {
     </div>
   );
 };
-

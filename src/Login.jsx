@@ -6,7 +6,7 @@ import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "./components/Utils/axiosInstance";
-import { motion } from "framer-motion";
+import { domAnimation, LazyMotion, m } from "framer-motion";
 
 // ================ Material UI Components ================
 import Box from "@mui/material/Box";
@@ -132,6 +132,7 @@ export const Login = () => {
   };
 
   return (
+    <LazyMotion features={domAnimation}>
     <Box
       sx={{
         minHeight: "calc(100vh - 80px)",
@@ -178,7 +179,7 @@ export const Login = () => {
       />
 
       <Paper
-        component={motion.div}
+        component={m.div}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -284,7 +285,7 @@ export const Login = () => {
                     border: "rgba(59, 130, 246, 0.2)",
                   },
                 ].map((item, i) => (
-                  <Stack key={i} direction="row" spacing={2} alignItems="center">
+                  <Stack key={`${item.text}-${i}`} direction="row" spacing={2} alignItems="center">
                     <Avatar
                       sx={{
                         width: 40,
@@ -307,11 +308,11 @@ export const Login = () => {
 
               <Grid container spacing={2}>
                 {[
-                  { value: "₹2.5L+", label: "Avg. Savings" },
-                  { value: "99.9%", label: "Accuracy" },
-                  { value: "Secure", label: "Encryption" },
-                ].map((s, i) => (
-                  <Grid size={4} key={i}>
+                  { id: "stat-savings", value: "₹2.5L+", label: "Avg. Savings" },
+                  { id: "stat-accuracy", value: "99.9%", label: "Accuracy" },
+                  { id: "stat-encryption", value: "Secure", label: "Encryption" },
+                ].map((s) => (
+                  <Grid size={4} key={s.id}>
                     <Box
                       sx={{
                         bgcolor: "background.paper",
@@ -508,6 +509,7 @@ export const Login = () => {
         </Grid>
       </Paper>
     </Box>
+    </LazyMotion>
   );
 };
 

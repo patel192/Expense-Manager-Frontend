@@ -1,5 +1,6 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { LazyMotion, m } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 import {
   FiDollarSign,
   FiUsers,
@@ -19,24 +20,32 @@ import Stack from "@mui/material/Stack";
 
 const stats = [
   {
+    id: "stat_1",
+    index: 0,
     icon: <FiDollarSign size={16} />,
     value: "₹2.4M+",
     label: "Flow throughput",
     color: "success.main",
   },
   {
+    id: "stat_2",
+    index: 1,
     icon: <FiUsers size={16} />,
     value: "10K+",
     label: "Active nodes",
     color: "cyan.main",
   },
   {
+    id: "stat_3",
+    index: 2,
     icon: <FiShield size={16} />,
     value: "99.99%",
     label: "SLA Uptime",
     color: "primary.main",
   },
   {
+    id: "stat_4",
+    index: 3,
     icon: <FiZap size={16} />,
     value: "< 50ms",
     label: "Sync latency",
@@ -46,16 +55,17 @@ const stats = [
 
 export const StatsRow = () => {
   return (
-    <Box component="section" sx={{ py: 6 }}>
+    <LazyMotion features={domAnimation}>
+      <Box component="section" sx={{ py: 6 }}>
       <Grid container spacing={3}>
-        {stats.map((stat, i) => (
-          <Grid size={{ xs: 6, md: 3 }} key={i}>
+        {stats.map((stat) => (
+          <Grid size={{ xs: 6, md: 3 }} key={stat.id}>
             <Card
-              component={motion.div}
+              component={m.div}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
+              transition={{ duration: 0.4, delay: stat.index * 0.1 }}
               sx={{
                 position: "relative",
                 bgcolor: "background.paper",
@@ -95,7 +105,7 @@ export const StatsRow = () => {
                   }}
                 >
                   <FiTerminal size={12} />
-                  METRIC_{i + 1}
+                  METRIC_{stat.index + 1}
                 </Stack>
 
                 <Stack spacing={0.5}>
@@ -127,6 +137,7 @@ export const StatsRow = () => {
           </Grid>
         ))}
       </Grid>
-    </Box>
+      </Box>
+    </LazyMotion>
   );
 };

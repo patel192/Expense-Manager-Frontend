@@ -1,4 +1,4 @@
-import { useState, useContext, createContext, useEffect } from "react";
+import { useState, useContext, createContext,useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -6,37 +6,33 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(() => {
+    const storedToken = localStorage.getItem("token:v1");
+    return storedToken && storedToken !== "undefined" ? storedToken : null;
+  });
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-
-    if (
-      storedToken &&
-      storedToken !== "undefined" &&
-      storedUser &&
-      storedUser !== "undefined"
-    ) {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user:v1");
+    if (storedUser && storedUser !== "undefined") {
       try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      } catch{
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        return JSON.parse(storedUser);
+      } catch {
+        localStorage.removeItem("token:v1");
+        localStorage.removeItem("user:v1");
+        return null;
       }
     }
+    return null;
+  });
 
-    setLoading(false);
-  }, []);
+  const [loading, setLoading] = useState(false);
 
-  const login = (loginReponse) => {
-    const { token, data } = loginReponse;
+ // Import useCallback at the top if not present, otherwise we're leveraging React's core hooks
+  const login = React.useCallback((loginResponse) => {
+    const { token, data } = loginResponse;
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(data));
+    localStorage.setItem("token:v1", token);
+    localStorage.setItem("user:v1", JSON.stringify(data));
 
     setToken(token);
     setUser(data);
@@ -46,26 +42,38 @@ export const AuthProvider = ({ children }) => {
     } else {
       navigate("/private/userdashboard");
     }
-  };
+  }, [navigate]);
 
-  const updateUser = (updatedData) => {
-    const merged = { ...user, ...updatedData };
-    setUser(merged);
-    localStorage.setItem("user", JSON.stringify(merged));
-  };
+  const updateUser = React.useCallback((updatedData) => {
+    setUser((currentUser) => {
+      const merged = { ...currentUser, ...updatedData };
+      localStorage.setItem("user:v1", JSON.stringify(merged));
+      return merged;
+    });
+  }, []);
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+  const logout = React.useCallback(() => {
+    localStorage.removeItem("token:v1");
+    localStorage.removeItem("user:v1");
 
     setToken(null);
     setUser(null);
 
     navigate("/login");
-  };
+  }, [navigate]);
+
+  // Now dependencies are completely stable reference pipelines
+  const authValue = useMemo(() => ({
+    user,
+    token,
+    loading,
+    login,
+    logout,
+    updateUser
+  }), [user, token, loading, login, logout, updateUser]);
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, updateUser }}>
+    <AuthContext.Provider value={authValue}>
       {children}
     </AuthContext.Provider>
   );

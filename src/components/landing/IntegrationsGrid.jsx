@@ -1,5 +1,6 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { LazyMotion, m } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 import {
   FiFileText,
   FiDatabase,
@@ -33,7 +34,8 @@ const integrations = [
 
 export const IntegrationsGrid = () => {
   return (
-    <Container component="section" sx={{ py: 10 }}>
+    <LazyMotion features={domAnimation}>
+      <Container component="section" sx={{ py: 10 }}>
       {/* Header */}
       <Stack spacing={1.5} alignItems="center" textAlign="center" sx={{ mb: 6 }}>
         <Typography
@@ -60,9 +62,9 @@ export const IntegrationsGrid = () => {
       {/* Grid */}
       <Grid container spacing={3}>
         {integrations.map((item, i) => (
-          <Grid size={{ xs: 6, sm: 4, md: 3 }} key={i}>
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} key={`${item.name}-${i}`}>
             <Card
-              component={motion.div}
+              component={m.div}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -103,6 +105,7 @@ export const IntegrationsGrid = () => {
           </Grid>
         ))}
       </Grid>
-    </Container>
+      </Container>
+    </LazyMotion>
   );
 };

@@ -1,13 +1,6 @@
-import { useEffect, useState, useRef, useMemo, memo } from "react";
+import { useEffect, useState, useRef, useMemo, memo, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import axiosInstance from "../Utils/axiosInstance";
-
-/**
- * --- INTELLIGENCE HUB (USER DASHBOARD) ---
- * The central nervous system of the application.
- * Combines traditional financial metrics with AI-driven insights,
- * real-time forecasting, and a cognitive chat assistant.
- */
 
 import {
   BarChart,
@@ -24,7 +17,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { motion } from "framer-motion";
+import { LazyMotion, m, domAnimation } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBudgetData } from "../../redux/budget/budgetSlice";
 import { fetchIncomeData } from "../../redux/income/incomeSlice";
@@ -80,7 +73,7 @@ const COLORS = [
 /* ─── Metric Card ─── */
 const MetricCard = memo(({ title, value, icon, color, bg, border, glow }) => (
   <Card
-    component={motion.div}
+    component={m.div}
     whileHover={{ y: -4 }}
     sx={{
       position: "relative",
@@ -240,6 +233,7 @@ AICard.displayName = "AICard";
 /* ─── AI Button ─── */
 const AIButton = ({ onClick, label, color, icon = <FiZap size={14} /> }) => (
   <Button
+  type="button"
     onClick={onClick}
     variant="contained"
     startIcon={icon}
@@ -270,7 +264,7 @@ const AIButton = ({ onClick, label, color, icon = <FiZap size={14} /> }) => (
 /* ─── AI Result ─── */
 const AIResult = ({ content }) => (
   <Box
-    component={motion.div}
+    component={m.div}
     initial={{ opacity: 0, scale: 0.98 }}
     animate={{ opacity: 1, scale: 1 }}
     sx={{
@@ -356,8 +350,8 @@ const DashboardSkeleton = () => (
       />
     </Stack>
     <Grid container spacing={3}>
-      {[1, 2, 3, 4].map((i) => (
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={i}>
+      {["a", "b", "c", "d"].map((id) => (
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={id}>
           <Skeleton
             variant="rectangular"
             height={120}
@@ -367,8 +361,8 @@ const DashboardSkeleton = () => (
       ))}
     </Grid>
     <Grid container spacing={3}>
-      {[1, 2].map((i) => (
-        <Grid size={{ xs: 12, lg: 6 }} key={i}>
+      {["left", "right"].map((id) => (
+        <Grid size={{ xs: 12, lg: 6 }} key={id}>
           <Skeleton
             variant="rectangular"
             height={240}
@@ -394,9 +388,18 @@ export const UserDashboard = () => {
   const income = useSelector((state) => state.income.incomes);
   const expenses = useSelector((state) => state.expense.expenses);
   const chatEndRef = useRef(null);
-
-  const [bills, setBills] = useState([]);
-  const [recurring, setRecurring] = useState([]);
+  const currentDate = useMemo(
+    () =>
+      new Date().toLocaleDateString("en-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+    [],
+  );
+  const billsRef = useRef([]);
+  const recurringRef = useRef([]);
   const [transactions, setTransactions] = useState([]);
   const [expenseInsights, setExpenseInsights] = useState("");
   const [loadingInsights, setLoadingInsights] = useState(false);
@@ -450,14 +453,14 @@ export const UserDashboard = () => {
     }
   };
 
-  const fetchUpcomingRecurring = async () => {
+  const fetchUpcomingRecurring = useCallback(async () => {
     try {
       const res = await axiosInstance.get(`/recurring/upcoming/${userId}`);
       setUpcomingRecurring(res.data.data || []);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [userId]);
 
   const fetchExpenseInsights = async () => {
     try {
@@ -543,7 +546,7 @@ export const UserDashboard = () => {
           axiosInstance.get(`/recurring/${userId}`),
           axiosInstance.get(`/transactionsByUserId/${userId}`),
         ]);
-        setBills(billsRes.data.data || []);
+        billsRef.current = billsRes.data.data || [];
         setRecurring(recurringRes.data.data || []);
         setTransactions(txnRes.data.data || []);
       } finally {
@@ -553,7 +556,7 @@ export const UserDashboard = () => {
     };
     fetchSecondaryData();
     fetchUpcomingRecurring();
-  }, [userId, dispatch]);
+  }, [userId, dispatch, fetchUpcomingRecurring]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -627,906 +630,795 @@ export const UserDashboard = () => {
   };
 
   return (
-    <Box
-      component={motion.div}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      sx={{ display: "flex", flexDirection: "column", gap: 5 }}
-    >
-      {/* ══ HEADER ══ */}
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        justifyContent="space-between"
-        alignItems={{ xs: "flex-start", sm: "flex-end" }}
-        spacing={2}
+    <LazyMotion features={domAnimation}>
+      <Box
+        component={m.div}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        sx={{ display: "flex", flexDirection: "column", gap: 5 }}
       >
-        <Box>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: "black",
-              background:
-                "linear-gradient(to right, var(--text-primary), var(--text-secondary))",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Intelligence Hub
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              fontWeight: "bold",
-              textTransform: "uppercase",
-              mt: 0.5,
-              letterSpacing: "0.1em",
-            }}
-          >
-            {new Date().toLocaleDateString("en-IN", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </Typography>
-        </Box>
-
+        {/* ══ HEADER ══ */}
         <Stack
-          direction="row"
-          alignItems="center"
-          spacing={1}
-          sx={{
-            px: 2,
-            py: 1,
-            borderRadius: 4,
-            border: 1,
-            borderColor:
-              savingsRate >= 20
-                ? "rgba(16, 185, 129, 0.2)"
-                : "rgba(244, 63, 94, 0.2)",
-            bgcolor:
-              savingsRate >= 20
-                ? "rgba(16, 185, 129, 0.05)"
-                : "rgba(244, 63, 94, 0.05)",
-            color: savingsRate >= 20 ? "success.main" : "error.main",
-          }}
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems={{ xs: "flex-start", sm: "flex-end" }}
+          spacing={2}
         >
-          <FiActivity size={14} />
-          <Typography
-            variant="caption"
-            sx={{ fontWeight: "black", letterSpacing: "0.1em" }}
-          >
-            EFFICIENCY: {savingsRate}%
-          </Typography>
-        </Stack>
-      </Stack>
+          <Box>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "black",
+                background:
+                  "linear-gradient(to right, var(--text-primary), var(--text-secondary))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Intelligence Hub
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                mt: 0.5,
+                letterSpacing: "0.1em",
+              }}
+            >
+              {currentDate}
+            </Typography>
+          </Box>
 
-      {/* ══ METRIC CARDS ══ */}
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <MetricCard
-            title="Total Budget"
-            value={totalBudget}
-            icon={<FiTarget size={18} />}
-            color="cyan.main"
-            bg="rgba(6, 182, 212, 0.1)"
-            border="rgba(6, 182, 212, 0.2)"
-            glow="cyan.main"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <MetricCard
-            title="Total Income"
-            value={totalIncome}
-            icon={<FiTrendingUp size={18} />}
-            color="success.main"
-            bg="rgba(16, 185, 129, 0.1)"
-            border="rgba(16, 185, 129, 0.2)"
-            glow="success.main"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <MetricCard
-            title="Total Expenses"
-            value={totalExpenses}
-            icon={<FiTrendingDown size={18} />}
-            color="error.main"
-            bg="rgba(244, 63, 94, 0.1)"
-            border="rgba(244, 63, 94, 0.2)"
-            glow="error.main"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <Card
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
             sx={{
-              position: "relative",
-              overflow: "hidden",
+              px: 2,
+              py: 1,
               borderRadius: 4,
               border: 1,
               borderColor:
-                netSavings >= 0
-                  ? "rgba(59, 130, 246, 0.2)"
+                savingsRate >= 20
+                  ? "rgba(16, 185, 129, 0.2)"
                   : "rgba(244, 63, 94, 0.2)",
               bgcolor:
-                netSavings >= 0
-                  ? "rgba(59, 130, 246, 0.05)"
+                savingsRate >= 20
+                  ? "rgba(16, 185, 129, 0.05)"
                   : "rgba(244, 63, 94, 0.05)",
-              boxShadow: 2,
+              color: savingsRate >= 20 ? "success.main" : "error.main",
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                top: -40,
-                right: -40,
-                width: 96,
-                height: 96,
-                borderRadius: "50%",
-                filter: "blur(48px)",
-                bgcolor: netSavings >= 0 ? "primary.main" : "error.main",
-                opacity: 0.1,
-              }}
-            />
-            <CardContent sx={{ p: 3 }}>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                sx={{ mb: 2 }}
-              >
-                <Avatar
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 3,
-                    bgcolor:
-                      netSavings >= 0
-                        ? "rgba(59, 130, 246, 0.1)"
-                        : "rgba(244, 63, 94, 0.1)",
-                    color: netSavings >= 0 ? "primary.main" : "error.main",
-                    border: 1,
-                    borderColor: "divider",
-                  }}
-                >
-                  <FiDollarSign size={18} />
-                </Avatar>
-                <Chip
-                  label={netSavings >= 0 ? "Surplus" : "Deficit"}
-                  size="small"
-                  sx={{
-                    fontSize: "9px",
-                    fontWeight: "black",
-                    textTransform: "uppercase",
-                    color: netSavings >= 0 ? "success.main" : "error.main",
-                    bgcolor:
-                      netSavings >= 0
-                        ? "rgba(16, 185, 129, 0.1)"
-                        : "rgba(244, 63, 94, 0.1)",
-                    border: 1,
-                    borderColor: "divider",
-                  }}
-                />
-              </Stack>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                Liquidity Position
-              </Typography>
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "black",
-                  mt: 0.5,
-                  color: netSavings >= 0 ? "primary.main" : "error.main",
-                }}
-              >
-                ₹{Math.abs(netSavings).toLocaleString("en-IN")}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+            <FiActivity size={14} />
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: "black", letterSpacing: "0.1em" }}
+            >
+              EFFICIENCY: {savingsRate}%
+            </Typography>
+          </Stack>
+        </Stack>
 
-      {/* ══ AI ENGINE ══ */}
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <AICard
-            title="Spending Risk Analysis"
-            icon={<FiAlertTriangle size={15} />}
-            iconColor="error.main"
-            iconBg="rgba(244, 63, 94, 0.1)"
-            borderColor="rgba(244, 63, 94, 0.15)"
-            isLoading={loadingRisk}
-            onRefresh={fetchRisk}
-          >
-            {loadingRisk ? (
-              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                <LoadingSpinner
-                  color="error"
-                  label="Scanning transactions..."
-                />
-              </Box>
-            ) : riskData ? (
+        {/* ══ METRIC CARDS ══ */}
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <MetricCard
+              title="Total Budget"
+              value={totalBudget}
+              icon={<FiTarget size={18} />}
+              color="cyan.main"
+              bg="rgba(6, 182, 212, 0.1)"
+              border="rgba(6, 182, 212, 0.2)"
+              glow="cyan.main"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <MetricCard
+              title="Total Income"
+              value={totalIncome}
+              icon={<FiTrendingUp size={18} />}
+              color="success.main"
+              bg="rgba(16, 185, 129, 0.1)"
+              border="rgba(16, 185, 129, 0.2)"
+              glow="success.main"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <MetricCard
+              title="Total Expenses"
+              value={totalExpenses}
+              icon={<FiTrendingDown size={18} />}
+              color="error.main"
+              bg="rgba(244, 63, 94, 0.1)"
+              border="rgba(244, 63, 94, 0.2)"
+              glow="error.main"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <Card
+              sx={{
+                position: "relative",
+                overflow: "hidden",
+                borderRadius: 4,
+                border: 1,
+                borderColor:
+                  netSavings >= 0
+                    ? "rgba(59, 130, 246, 0.2)"
+                    : "rgba(244, 63, 94, 0.2)",
+                bgcolor:
+                  netSavings >= 0
+                    ? "rgba(59, 130, 246, 0.05)"
+                    : "rgba(244, 63, 94, 0.05)",
+                boxShadow: 2,
+              }}
+            >
               <Box
                 sx={{
-                  borderRadius: 4,
-                  p: 3,
-                  border: 1,
-                  borderColor: riskColors[riskData.riskLevel]?.border,
-                  bgcolor: riskColors[riskData.riskLevel]?.bg,
+                  position: "absolute",
+                  top: -40,
+                  right: -40,
+                  width: 96,
+                  height: 96,
+                  borderRadius: "50%",
+                  filter: "blur(48px)",
+                  bgcolor: netSavings >= 0 ? "primary.main" : "error.main",
+                  opacity: 0.1,
                 }}
-              >
+              />
+              <CardContent sx={{ p: 3 }}>
                 <Stack
                   direction="row"
                   justifyContent="space-between"
-                  alignItems="center"
+                  alignItems="flex-start"
                   sx={{ mb: 2 }}
                 >
-                  <Typography
-                    variant="caption"
+                  <Avatar
                     sx={{
-                      fontWeight: "bold",
-                      textTransform: "uppercase",
-                      color: "text.primary",
+                      width: 40,
+                      height: 40,
+                      borderRadius: 3,
+                      bgcolor:
+                        netSavings >= 0
+                          ? "rgba(59, 130, 246, 0.1)"
+                          : "rgba(244, 63, 94, 0.1)",
+                      color: netSavings >= 0 ? "primary.main" : "error.main",
+                      border: 1,
+                      borderColor: "divider",
                     }}
                   >
-                    Behavior Assessment
-                  </Typography>
+                    <FiDollarSign size={18} />
+                  </Avatar>
                   <Chip
-                    label={`${riskData.riskLevel} Criticality`}
+                    label={netSavings >= 0 ? "Surplus" : "Deficit"}
                     size="small"
                     sx={{
-                      fontWeight: "bold",
+                      fontSize: "9px",
+                      fontWeight: "black",
                       textTransform: "uppercase",
-                      fontSize: "10px",
-                      bgcolor: riskColors[riskData.riskLevel]?.badge,
-                      color: riskColors[riskData.riskLevel]?.text,
+                      color: netSavings >= 0 ? "success.main" : "error.main",
+                      bgcolor:
+                        netSavings >= 0
+                          ? "rgba(16, 185, 129, 0.1)"
+                          : "rgba(244, 63, 94, 0.1)",
+                      border: 1,
+                      borderColor: "divider",
                     }}
                   />
                 </Stack>
-                <Stack spacing={2}>
-                  <Box>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  Liquidity Position
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: "black",
+                    mt: 0.5,
+                    color: netSavings >= 0 ? "primary.main" : "error.main",
+                  }}
+                >
+                  ₹{Math.abs(netSavings).toLocaleString("en-IN")}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* ══ AI ENGINE ══ */}
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <AICard
+              title="Spending Risk Analysis"
+              icon={<FiAlertTriangle size={15} />}
+              iconColor="error.main"
+              iconBg="rgba(244, 63, 94, 0.1)"
+              borderColor="rgba(244, 63, 94, 0.15)"
+              isLoading={loadingRisk}
+              onRefresh={fetchRisk}
+            >
+              {loadingRisk ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                  <LoadingSpinner
+                    color="error"
+                    label="Scanning transactions..."
+                  />
+                </Box>
+              ) : riskData ? (
+                <Box
+                  sx={{
+                    borderRadius: 4,
+                    p: 3,
+                    border: 1,
+                    borderColor: riskColors[riskData.riskLevel]?.border,
+                    bgcolor: riskColors[riskData.riskLevel]?.bg,
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ mb: 2 }}
+                  >
                     <Typography
                       variant="caption"
-                      color="text.secondary"
                       sx={{
-                        display: "block",
-                        textTransform: "uppercase",
                         fontWeight: "bold",
+                        textTransform: "uppercase",
+                        color: "text.primary",
                       }}
                     >
-                      Observation Category
+                      Behavior Assessment
                     </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                      {riskData.category}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
+                    <Chip
+                      label={`${riskData.riskLevel} Criticality`}
+                      size="small"
                       sx={{
-                        display: "block",
+                        fontWeight: "bold",
                         textTransform: "uppercase",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Detective Logic
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "text.secondary", lineHeight: 1.5 }}
-                    >
-                      {riskData.reason}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ pt: 1.5, borderTop: 1, borderColor: "divider" }}>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: "bold",
+                        fontSize: "10px",
+                        bgcolor: riskColors[riskData.riskLevel]?.badge,
                         color: riskColors[riskData.riskLevel]?.text,
                       }}
-                    >
-                      ✨ {riskData.suggestion}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Box>
-            ) : (
-              <Stack
-                alignItems="center"
-                textAlign="center"
-                spacing={2}
-                sx={{ py: 2 }}
-              >
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ maxW: "80%" }}
-                >
-                  Run the advanced risk engine to detect anomalies in your
-                  spending patterns.
-                </Typography>
-                <AIButton
-                  onClick={fetchRisk}
-                  label="Initiate Scan"
-                  color="bg-rose-500 text-white hover:bg-rose-600"
-                />
-              </Stack>
-            )}
-          </AICard>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <AICard
-            title="Financial Health Quotient"
-            icon={<FiShield size={16} />}
-            iconColor="secondary.main"
-            iconBg="rgba(139, 92, 246, 0.1)"
-            borderColor="rgba(139, 92, 246, 0.15)"
-            isLoading={loadingHealth}
-            onRefresh={fetchHealthScore}
-          >
-            {loadingHealth ? (
-              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                <LoadingSpinner
-                  color="secondary"
-                  label="Calculating health score..."
-                />
-              </Box>
-            ) : healthScore ? (
-              <AIResult content={healthScore} />
-            ) : (
-              <Stack
-                alignItems="center"
-                textAlign="center"
-                spacing={2}
-                sx={{ py: 2 }}
-              >
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ maxW: "80%" }}
-                >
-                  Audit your wealth efficiency based on income vs outcome
-                  ratios.
-                </Typography>
-                <AIButton
-                  onClick={fetchHealthScore}
-                  label="Compute Quotient"
-                  color="bg-violet-500 text-white hover:bg-violet-600"
-                />
-              </Stack>
-            )}
-          </AICard>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <AICard
-            title="Structural Insights"
-            icon={<FiBarChart2 size={16} />}
-            iconColor="cyan.main"
-            iconBg="rgba(6, 182, 212, 0.1)"
-            borderColor="rgba(6, 182, 212, 0.15)"
-            isLoading={loadingInsights}
-            onRefresh={fetchExpenseInsights}
-          >
-            {loadingInsights ? (
-              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                <LoadingSpinner
-                  color="primary"
-                  label="Extracting patterns..."
-                />
-              </Box>
-            ) : expenseInsights ? (
-              <AIResult content={expenseInsights} />
-            ) : (
-              <Stack
-                alignItems="center"
-                textAlign="center"
-                spacing={2}
-                sx={{ py: 2 }}
-              >
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ maxW: "80%" }}
-                >
-                  Uncover hidden correlations and structural flaws in your
-                  financial data.
-                </Typography>
-                <AIButton
-                  onClick={fetchExpenseInsights}
-                  label="Uncover Insights"
-                  color="bg-cyan-500 text-white hover:bg-cyan-600"
-                />
-              </Stack>
-            )}
-          </AICard>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <AICard
-            title="AI Predictive Projection"
-            icon={<FiTrendingUp size={16} />}
-            iconColor="primary.main"
-            iconBg="rgba(59, 130, 246, 0.1)"
-            borderColor="rgba(59, 130, 246, 0.15)"
-            isLoading={loadingForecast}
-            onRefresh={fetchForecast}
-          >
-            {loadingForecast ? (
-              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                <LoadingSpinner color="primary" label="Modeling future..." />
-              </Box>
-            ) : forecast ? (
-              <AIResult content={forecast} />
-            ) : (
-              <Stack
-                alignItems="center"
-                textAlign="center"
-                spacing={2}
-                sx={{ py: 2 }}
-              >
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ maxW: "80%" }}
-                >
-                  Generate a 3-month trajectory forecast using machine learning
-                  models.
-                </Typography>
-                <AIButton
-                  onClick={fetchForecast}
-                  label="Render Forecast"
-                  color="bg-blue-500 text-white hover:bg-blue-600"
-                />
-              </Stack>
-            )}
-          </AICard>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <AICard
-            title="Optimization Protocol"
-            icon={<FiZap size={16} />}
-            iconColor="success.main"
-            iconBg="rgba(16, 185, 129, 0.1)"
-            borderColor="rgba(16, 185, 129, 0.15)"
-            isLoading={loadingSavings}
-            onRefresh={fetchSavingOpportunities}
-          >
-            {loadingSavings ? (
-              <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                <LoadingSpinner color="success" label="Optimizing surplus..." />
-              </Box>
-            ) : savingOpportunities ? (
-              <AIResult content={savingOpportunities} />
-            ) : (
-              <Stack
-                alignItems="center"
-                textAlign="center"
-                spacing={2}
-                sx={{ py: 2 }}
-              >
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ maxW: "80%" }}
-                >
-                  Identify specific budget optimizations to maximize your
-                  monthly net surplus.
-                </Typography>
-                <AIButton
-                  onClick={fetchSavingOpportunities}
-                  label="Run Optimization"
-                  color="bg-emerald-500 text-white hover:bg-emerald-600"
-                />
-              </Stack>
-            )}
-          </AICard>
-        </Grid>
-
-        {/* ── AI Chat Assistant ── */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <AICard
-            title="Cognitive Assistant"
-            icon={<FiCpu size={16} />}
-            iconColor="warning.main"
-            iconBg="rgba(245, 158, 11, 0.1)"
-            borderColor="rgba(245, 158, 11, 0.15)"
-          >
-            <Box
-              sx={{
-                height: 260,
-                overflowY: "auto",
-                mb: 2,
-                pr: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-              }}
-            >
-              {messages.length === 0 && (
-                <Stack
-                  alignItems="center"
-                  justifyContent="center"
-                  sx={{ height: "100%", opacity: 0.6 }}
-                >
-                  <Avatar
-                    sx={{
-                      bgcolor: "action.hover",
-                      border: 1,
-                      borderColor: "divider",
-                      width: 48,
-                      height: 48,
-                      mb: 1,
-                    }}
-                  >
-                    <FiInbox
-                      style={{ color: "var(--mui-palette-text-secondary)" }}
                     />
-                  </Avatar>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: "bold",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.1em",
-                    }}
-                  >
-                    Awaiting telemetry...
-                  </Typography>
-                </Stack>
-              )}
-              {messages.map((msg, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    display: "flex",
-                    justifyContent:
-                      msg.role === "user" ? "flex-end" : "flex-start",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      maxW: "85%",
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 4,
-                      fontSize: "0.85rem",
-                      lineHeight: 1.5,
-                      boxShadow: 1,
-                      bgcolor:
-                        msg.role === "user" ? "cyan.main" : "action.hover",
-                      color: msg.role === "user" ? "white" : "text.primary",
-                      border: 1,
-                      borderColor: "divider",
-                      borderBottomRightRadius: msg.role === "user" ? 1 : 4,
-                      borderBottomLeftRadius: msg.role === "ai" ? 1 : 4,
-                    }}
-                  >
-                    <ReactMarkdown>{msg.text}</ReactMarkdown>
-                  </Box>
-                </Box>
-              ))}
-              {loadingAI && (
-                <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-                  <Box
-                    sx={{
-                      bgcolor: "action.hover",
-                      border: 1,
-                      borderColor: "divider",
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 4,
-                      borderBottomLeftRadius: 1,
-                      display: "flex",
-                      gap: 1,
-                    }}
-                  >
-                    {[0, 150, 300].map((delay) => (
-                      <Box
-                        key={delay}
-                        component={motion.div}
-                        animate={{ y: [0, -6, 0] }}
-                        transition={{
-                          duration: 0.6,
-                          repeat: Infinity,
-                          delay: delay / 1000,
-                        }}
+                  </Stack>
+                  <Stack spacing={2}>
+                    <Box>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
                         sx={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: "50%",
-                          bgcolor: "cyan.main",
+                          display: "block",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
                         }}
-                      />
-                    ))}
-                  </Box>
+                      >
+                        Observation Category
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                        {riskData.category}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{
+                          display: "block",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Detective Logic
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary", lineHeight: 1.5 }}
+                      >
+                        {riskData.reason}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ pt: 1.5, borderTop: 1, borderColor: "divider" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: "bold",
+                          color: riskColors[riskData.riskLevel]?.text,
+                        }}
+                      >
+                        ✨ {riskData.suggestion}
+                      </Typography>
+                    </Box>
+                  </Stack>
                 </Box>
+              ) : (
+                <Stack
+                  alignItems="center"
+                  textAlign="center"
+                  spacing={2}
+                  sx={{ py: 2 }}
+                >
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ maxW: "80%" }}
+                  >
+                    Run the advanced risk engine to detect anomalies in your
+                    spending patterns.
+                  </Typography>
+                  <AIButton
+                    onClick={fetchRisk}
+                    label="Initiate Scan"
+                    color="bg-rose-500 text-white hover:bg-rose-600"
+                  />
+                </Stack>
               )}
-              <div ref={chatEndRef} />
-            </Box>
+            </AICard>
+          </Grid>
 
-            <Stack direction="row" spacing={1}>
-              <TextField
-                fullWidth
-                size="small"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                placeholder="Query financial state..."
-                slotProps={{
-                  input: {
-                    sx: { borderRadius: 3, fontSize: "0.8rem" },
-                  },
-                }}
-              />
-              <IconButton
-                color="warning"
-                onClick={sendMessage}
-                disabled={loadingAI || !input.trim()}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <AICard
+              title="Financial Health Quotient"
+              icon={<FiShield size={16} />}
+              iconColor="secondary.main"
+              iconBg="rgba(139, 92, 246, 0.1)"
+              borderColor="rgba(139, 92, 246, 0.15)"
+              isLoading={loadingHealth}
+              onRefresh={fetchHealthScore}
+            >
+              {loadingHealth ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                  <LoadingSpinner
+                    color="secondary"
+                    label="Calculating health score..."
+                  />
+                </Box>
+              ) : healthScore ? (
+                <AIResult content={healthScore} />
+              ) : (
+                <Stack
+                  alignItems="center"
+                  textAlign="center"
+                  spacing={2}
+                  sx={{ py: 2 }}
+                >
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ maxW: "80%" }}
+                  >
+                    Audit your wealth efficiency based on income vs outcome
+                    ratios.
+                  </Typography>
+                  <AIButton
+                    onClick={fetchHealthScore}
+                    label="Compute Quotient"
+                    color="bg-violet-500 text-white hover:bg-violet-600"
+                  />
+                </Stack>
+              )}
+            </AICard>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+            <AICard
+              title="Structural Insights"
+              icon={<FiBarChart2 size={16} />}
+              iconColor="cyan.main"
+              iconBg="rgba(6, 182, 212, 0.1)"
+              borderColor="rgba(6, 182, 212, 0.15)"
+              isLoading={loadingInsights}
+              onRefresh={fetchExpenseInsights}
+            >
+              {loadingInsights ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                  <LoadingSpinner
+                    color="primary"
+                    label="Extracting patterns..."
+                  />
+                </Box>
+              ) : expenseInsights ? (
+                <AIResult content={expenseInsights} />
+              ) : (
+                <Stack
+                  alignItems="center"
+                  textAlign="center"
+                  spacing={2}
+                  sx={{ py: 2 }}
+                >
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ maxW: "80%" }}
+                  >
+                    Uncover hidden correlations and structural flaws in your
+                    financial data.
+                  </Typography>
+                  <AIButton
+                    onClick={fetchExpenseInsights}
+                    label="Uncover Insights"
+                    color="bg-cyan-500 text-white hover:bg-cyan-600"
+                  />
+                </Stack>
+              )}
+            </AICard>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+            <AICard
+              title="AI Predictive Projection"
+              icon={<FiTrendingUp size={16} />}
+              iconColor="primary.main"
+              iconBg="rgba(59, 130, 246, 0.1)"
+              borderColor="rgba(59, 130, 246, 0.15)"
+              isLoading={loadingForecast}
+              onRefresh={fetchForecast}
+            >
+              {loadingForecast ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                  <LoadingSpinner color="primary" label="Modeling future..." />
+                </Box>
+              ) : forecast ? (
+                <AIResult content={forecast} />
+              ) : (
+                <Stack
+                  alignItems="center"
+                  textAlign="center"
+                  spacing={2}
+                  sx={{ py: 2 }}
+                >
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ maxW: "80%" }}
+                  >
+                    Generate a 3-month trajectory forecast using machine
+                    learning models.
+                  </Typography>
+                  <AIButton
+                    onClick={fetchForecast}
+                    label="Render Forecast"
+                    color="bg-blue-500 text-white hover:bg-blue-600"
+                  />
+                </Stack>
+              )}
+            </AICard>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+            <AICard
+              title="Optimization Protocol"
+              icon={<FiZap size={16} />}
+              iconColor="success.main"
+              iconBg="rgba(16, 185, 129, 0.1)"
+              borderColor="rgba(16, 185, 129, 0.15)"
+              isLoading={loadingSavings}
+              onRefresh={fetchSavingOpportunities}
+            >
+              {loadingSavings ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                  <LoadingSpinner
+                    color="success"
+                    label="Optimizing surplus..."
+                  />
+                </Box>
+              ) : savingOpportunities ? (
+                <AIResult content={savingOpportunities} />
+              ) : (
+                <Stack
+                  alignItems="center"
+                  textAlign="center"
+                  spacing={2}
+                  sx={{ py: 2 }}
+                >
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ maxW: "80%" }}
+                  >
+                    Identify specific budget optimizations to maximize your
+                    monthly net surplus.
+                  </Typography>
+                  <AIButton
+                    onClick={fetchSavingOpportunities}
+                    label="Run Optimization"
+                    color="bg-emerald-500 text-white hover:bg-emerald-600"
+                  />
+                </Stack>
+              )}
+            </AICard>
+          </Grid>
+
+          {/* ── AI Chat Assistant ── */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <AICard
+              title="Cognitive Assistant"
+              icon={<FiCpu size={16} />}
+              iconColor="warning.main"
+              iconBg="rgba(245, 158, 11, 0.1)"
+              borderColor="rgba(245, 158, 11, 0.15)"
+            >
+              <Box
                 sx={{
-                  bgcolor: "orange.main",
-                  color: "white",
-                  borderRadius: 3,
-                  width: 40,
-                  height: 40,
-                  background: "linear-gradient(to right, #f59e0b, #ea580c)",
-                  "&:disabled": { opacity: 0.4, color: "white" },
+                  height: 260,
+                  overflowY: "auto",
+                  mb: 2,
+                  pr: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
                 }}
               >
-                <FiSend size={16} />
-              </IconButton>
-            </Stack>
-          </AICard>
-        </Grid>
-      </Grid>
+                {messages.length === 0 && (
+                  <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ height: "100%", opacity: 0.6 }}
+                  >
+                    <Avatar
+                      sx={{
+                        bgcolor: "action.hover",
+                        border: 1,
+                        borderColor: "divider",
+                        width: 48,
+                        height: 48,
+                        mb: 1,
+                      }}
+                    >
+                      <FiInbox
+                        style={{ color: "var(--mui-palette-text-secondary)" }}
+                      />
+                    </Avatar>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: "bold",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                      }}
+                    >
+                      Awaiting telemetry...
+                    </Typography>
+                  </Stack>
+                )}
+                {messages.map((msg) => (
+                  <Box key={`${msg.role}-${msg.text}`}>
+                    <Box
+                      sx={{
+                        maxW: "85%",
+                        px: 2,
+                        py: 1.5,
+                        borderRadius: 4,
+                        fontSize: "0.85rem",
+                        lineHeight: 1.5,
+                        boxShadow: 1,
+                        bgcolor:
+                          msg.role === "user" ? "cyan.main" : "action.hover",
+                        color: msg.role === "user" ? "white" : "text.primary",
+                        border: 1,
+                        borderColor: "divider",
+                        borderBottomRightRadius: msg.role === "user" ? 1 : 4,
+                        borderBottomLeftRadius: msg.role === "ai" ? 1 : 4,
+                      }}
+                    >
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </Box>
+                  </Box>
+                ))}
+                {loadingAI && (
+                  <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+                    <Box
+                      sx={{
+                        bgcolor: "action.hover",
+                        border: 1,
+                        borderColor: "divider",
+                        px: 2,
+                        py: 1.5,
+                        borderRadius: 4,
+                        borderBottomLeftRadius: 1,
+                        display: "flex",
+                        gap: 1,
+                      }}
+                    >
+                      {[0, 150, 300].map((delay) => (
+                        <Box
+                          key={delay}
+                          component={m.div}
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            delay: delay / 1000,
+                          }}
+                          sx={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: "50%",
+                            bgcolor: "cyan.main",
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+                <div ref={chatEndRef} />
+              </Box>
 
-      {/* ══ VISUAL ANALYTICS ══ */}
-      {loadingCharts ? (
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, lg: 6 }}>
-            <Skeleton
-              variant="rectangular"
-              height={320}
-              sx={{ borderRadius: 6 }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, lg: 6 }}>
-            <Skeleton
-              variant="rectangular"
-              height={320}
-              sx={{ borderRadius: 6 }}
-            />
+              <Stack direction="row" spacing={1}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  placeholder="Query financial state..."
+                  slotProps={{
+                    input: {
+                      sx: { borderRadius: 3, fontSize: "0.8rem" },
+                    },
+                  }}
+                />
+                <IconButton
+                  color="warning"
+                  onClick={sendMessage}
+                  disabled={loadingAI || !input.trim()}
+                  sx={{
+                    bgcolor: "orange.main",
+                    color: "white",
+                    borderRadius: 3,
+                    width: 40,
+                    height: 40,
+                    background: "linear-gradient(to right, #f59e0b, #ea580c)",
+                    "&:disabled": { opacity: 0.4, color: "white" },
+                  }}
+                >
+                  <FiSend size={16} />
+                </IconButton>
+              </Stack>
+            </AICard>
           </Grid>
         </Grid>
-      ) : (
-        (totalIncome > 0 || totalExpenses > 0) && (
+
+        {/* ══ VISUAL ANALYTICS ══ */}
+        {loadingCharts ? (
           <Grid container spacing={3}>
-            {/* Spending Trend Line Chart */}
-            <Grid size={12}>
-              <Card
-                sx={{
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: 6,
-                  p: 4,
-                  position: "relative",
-                  overflow: "hidden",
-                  boxShadow: 3,
-                }}
-              >
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: 256,
-                    height: 256,
-                    bgcolor: "error.main",
-                    opacity: 0.03,
-                    filter: "blur(96px)",
-                  }}
-                />
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  alignItems="center"
-                  sx={{ mb: 4, position: "relative", zIndex: 1 }}
-                >
-                  <Avatar
-                    sx={{
-                      bgcolor: "rgba(244, 63, 94, 0.1)",
-                      border: 1,
-                      borderColor: "rgba(244, 63, 94, 0.2)",
-                      color: "error.main",
-                      borderRadius: 3,
-                      width: 40,
-                      height: 40,
-                    }}
-                  >
-                    <FiTrendingDown size={16} />
-                  </Avatar>
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                      Velocity Analytics
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.1em",
-                      }}
-                    >
-                      30-Day Outflow Trajectory
-                    </Typography>
-                  </Box>
-                </Stack>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={trendData}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="var(--border)"
-                      vertical={false}
-                      opacity={0.1}
-                    />
-                    <XAxis
-                      dataKey="date"
-                      stroke="var(--border)"
-                      tick={{
-                        fill: "var(--text-muted)",
-                        fontSize: 9,
-                        fontWeight: 700,
-                      }}
-                      axisLine={false}
-                      tickLine={false}
-                      interval={2}
-                    />
-                    <YAxis
-                      stroke="var(--border)"
-                      tick={{
-                        fill: "var(--text-muted)",
-                        fontSize: 9,
-                        fontWeight: 700,
-                      }}
-                      axisLine={false}
-                      tickLine={false}
-                      tickFormatter={(v) => `₹${v}`}
-                    />
-                    <Tooltip content={<ChartTooltip />} />
-                    <Line
-                      type="monotone"
-                      dataKey="amount"
-                      stroke="#f43f5e"
-                      strokeWidth={4}
-                      dot={{ r: 0 }}
-                      activeDot={{ r: 6, strokeWidth: 0 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </Card>
-            </Grid>
-
-            {/* Cash Equilibrium */}
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Card
-                sx={{
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: 6,
-                  p: 4,
-                  position: "relative",
-                  overflow: "hidden",
-                  boxShadow: 3,
-                }}
-              >
-                <Box
+              <Skeleton
+                variant="rectangular"
+                height={320}
+                sx={{ borderRadius: 6 }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, lg: 6 }}>
+              <Skeleton
+                variant="rectangular"
+                height={320}
+                sx={{ borderRadius: 6 }}
+              />
+            </Grid>
+          </Grid>
+        ) : (
+          (totalIncome > 0 || totalExpenses > 0) && (
+            <Grid container spacing={3}>
+              {/* Spending Trend Line Chart */}
+              <Grid size={12}>
+                <Card
                   sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: 192,
-                    height: 192,
-                    bgcolor: "primary.main",
-                    opacity: 0.03,
-                    filter: "blur(80px)",
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: 6,
+                    p: 4,
+                    position: "relative",
+                    overflow: "hidden",
+                    boxShadow: 3,
                   }}
-                />
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  alignItems="center"
-                  sx={{ mb: 4, position: "relative", zIndex: 1 }}
                 >
-                  <Avatar
+                  <Box
                     sx={{
-                      bgcolor: "rgba(59, 130, 246, 0.1)",
-                      border: 1,
-                      borderColor: "rgba(59, 130, 246, 0.2)",
-                      color: "primary.main",
-                      borderRadius: 3,
-                      width: 40,
-                      height: 40,
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: 256,
+                      height: 256,
+                      bgcolor: "error.main",
+                      opacity: 0.03,
+                      filter: "blur(96px)",
                     }}
+                  />
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    sx={{ mb: 4, position: "relative", zIndex: 1 }}
                   >
-                    <FiBarChart2 size={16} />
-                  </Avatar>
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                      Cash Equilibrium
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
+                    <Avatar
                       sx={{
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.1em",
+                        bgcolor: "rgba(244, 63, 94, 0.1)",
+                        border: 1,
+                        borderColor: "rgba(244, 63, 94, 0.2)",
+                        color: "error.main",
+                        borderRadius: 3,
+                        width: 40,
+                        height: 40,
                       }}
                     >
-                      Aggregate Flow Comparison
-                    </Typography>
-                  </Box>
-                </Stack>
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart
-                    data={[
-                      { name: "INFLOW", amount: totalIncome },
-                      { name: "OUTFLOW", amount: totalExpenses },
-                    ]}
-                    barSize={52}
-                  >
-                    <XAxis
-                      dataKey="name"
-                      stroke="var(--border)"
-                      tick={{
-                        fill: "var(--text-muted)",
-                        fontSize: 10,
-                        fontWeight: 700,
-                        letterSpacing: "0.1em",
-                      }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      stroke="var(--border)"
-                      tick={{
-                        fill: "var(--text-muted)",
-                        fontSize: 10,
-                        fontWeight: 700,
-                      }}
-                      axisLine={false}
-                      tickLine={false}
-                      tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}K`}
-                    />
-                    <Tooltip
-                      content={<ChartTooltip />}
-                      cursor={{ fill: "var(--surface-tertiary)", opacity: 0.1 }}
-                    />
-                    <Bar dataKey="amount" radius={[12, 12, 0, 0]}>
-                      <Cell fill="#10b981" />
-                      <Cell fill="#f43f5e" />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card>
-            </Grid>
+                      <FiTrendingDown size={16} />
+                    </Avatar>
+                    <Box>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        Velocity Analytics
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{
+                          fontWeight: "bold",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                        }}
+                      >
+                        30-Day Outflow Trajectory
+                      </Typography>
+                    </Box>
+                  </Stack>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={trendData}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="var(--border)"
+                        vertical={false}
+                        opacity={0.1}
+                      />
+                      <XAxis
+                        dataKey="date"
+                        stroke="var(--border)"
+                        tick={{
+                          fill: "var(--text-muted)",
+                          fontSize: 9,
+                          fontWeight: 700,
+                        }}
+                        axisLine={false}
+                        tickLine={false}
+                        interval={2}
+                      />
+                      <YAxis
+                        stroke="var(--border)"
+                        tick={{
+                          fill: "var(--text-muted)",
+                          fontSize: 9,
+                          fontWeight: 700,
+                        }}
+                        axisLine={false}
+                        tickLine={false}
+                        tickFormatter={(v) => `₹${v}`}
+                      />
+                      <Tooltip content={<ChartTooltip />} />
+                      <Line
+                        type="monotone"
+                        dataKey="amount"
+                        stroke="#f43f5e"
+                        strokeWidth={4}
+                        dot={{ r: 0 }}
+                        activeDot={{ r: 6, strokeWidth: 0 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Card>
+              </Grid>
 
-            {/* Disbursement Profile */}
-            {categoryData.length > 0 && (
+              {/* Cash Equilibrium */}
               <Grid size={{ xs: 12, lg: 6 }}>
                 <Card
                   sx={{
@@ -1543,10 +1435,10 @@ export const UserDashboard = () => {
                     sx={{
                       position: "absolute",
                       top: 0,
-                      right: 0,
+                      left: 0,
                       width: 192,
                       height: 192,
-                      bgcolor: "cyan.main",
+                      bgcolor: "primary.main",
                       opacity: 0.03,
                       filter: "blur(80px)",
                     }}
@@ -1559,23 +1451,23 @@ export const UserDashboard = () => {
                   >
                     <Avatar
                       sx={{
-                        bgcolor: "rgba(6, 182, 212, 0.1)",
+                        bgcolor: "rgba(59, 130, 246, 0.1)",
                         border: 1,
-                        borderColor: "rgba(6, 182, 212, 0.2)",
-                        color: "cyan.main",
+                        borderColor: "rgba(59, 130, 246, 0.2)",
+                        color: "primary.main",
                         borderRadius: 3,
                         width: 40,
                         height: 40,
                       }}
                     >
-                      <FiPieChart size={16} />
+                      <FiBarChart2 size={16} />
                     </Avatar>
                     <Box>
                       <Typography
                         variant="subtitle2"
                         sx={{ fontWeight: "bold" }}
                       >
-                        Disbursement Profile
+                        Cash Equilibrium
                       </Typography>
                       <Typography
                         variant="caption"
@@ -1586,48 +1478,321 @@ export const UserDashboard = () => {
                           letterSpacing: "0.1em",
                         }}
                       >
-                        Sector Allocation
+                        Aggregate Flow Comparison
                       </Typography>
                     </Box>
                   </Stack>
                   <ResponsiveContainer width="100%" height={260}>
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        dataKey="value"
-                        outerRadius={90}
-                        innerRadius={55}
-                        paddingAngle={4}
-                        stroke="none"
-                      >
-                        {categoryData.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Legend
-                        iconType="circle"
-                        iconSize={6}
-                        wrapperStyle={{
+                    <BarChart
+                      data={[
+                        { name: "INFLOW", amount: totalIncome },
+                        { name: "OUTFLOW", amount: totalExpenses },
+                      ]}
+                      barSize={52}
+                    >
+                      <XAxis
+                        dataKey="name"
+                        stroke="var(--border)"
+                        tick={{
+                          fill: "var(--text-muted)",
                           fontSize: 10,
                           fontWeight: 700,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          color: "var(--text-muted)",
-                          paddingTop: 20,
+                          letterSpacing: "0.1em",
+                        }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        stroke="var(--border)"
+                        tick={{
+                          fill: "var(--text-muted)",
+                          fontSize: 10,
+                          fontWeight: 700,
+                        }}
+                        axisLine={false}
+                        tickLine={false}
+                        tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}K`}
+                      />
+                      <Tooltip
+                        content={<ChartTooltip />}
+                        cursor={{
+                          fill: "var(--surface-tertiary)",
+                          opacity: 0.1,
                         }}
                       />
-                      <Tooltip content={<ChartTooltip />} />
-                    </PieChart>
+                      <Bar dataKey="amount" radius={[12, 12, 0, 0]}>
+                        <Cell fill="#10b981" />
+                        <Cell fill="#f43f5e" />
+                      </Bar>
+                    </BarChart>
                   </ResponsiveContainer>
                 </Card>
               </Grid>
-            )}
-          </Grid>
-        )
-      )}
 
-      {/* ══ RECURRING OPERATIONS ══ */}
-      {!loadingSecondary && upcomingRecurring.length > 0 && (
+              {/* Disbursement Profile */}
+              {categoryData.length > 0 && (
+                <Grid size={{ xs: 12, lg: 6 }}>
+                  <Card
+                    sx={{
+                      border: 1,
+                      borderColor: "divider",
+                      borderRadius: 6,
+                      p: 4,
+                      position: "relative",
+                      overflow: "hidden",
+                      boxShadow: 3,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        width: 192,
+                        height: 192,
+                        bgcolor: "cyan.main",
+                        opacity: 0.03,
+                        filter: "blur(80px)",
+                      }}
+                    />
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      sx={{ mb: 4, position: "relative", zIndex: 1 }}
+                    >
+                      <Avatar
+                        sx={{
+                          bgcolor: "rgba(6, 182, 212, 0.1)",
+                          border: 1,
+                          borderColor: "rgba(6, 182, 212, 0.2)",
+                          color: "cyan.main",
+                          borderRadius: 3,
+                          width: 40,
+                          height: 40,
+                        }}
+                      >
+                        <FiPieChart size={16} />
+                      </Avatar>
+                      <Box>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontWeight: "bold" }}
+                        >
+                          Disbursement Profile
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{
+                            fontWeight: "bold",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.1em",
+                          }}
+                        >
+                          Sector Allocation
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <PieChart>
+                        <Pie
+                          data={categoryData}
+                          dataKey="value"
+                          outerRadius={90}
+                          innerRadius={55}
+                          paddingAngle={4}
+                          stroke="none"
+                        >
+                          {categoryData.map((entry, i) => (
+                            <Cell
+                              key={entry.name}
+                              fill={COLORS[i % COLORS.length]}
+                            />
+                          ))}
+                        </Pie>
+                        <Legend
+                          iconType="circle"
+                          iconSize={6}
+                          wrapperStyle={{
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.05em",
+                            color: "var(--text-muted)",
+                            paddingTop: 20,
+                          }}
+                        />
+                        <Tooltip content={<ChartTooltip />} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </Card>
+                </Grid>
+              )}
+            </Grid>
+          )
+        )}
+
+        {/* ══ RECURRING OPERATIONS ══ */}
+        {!loadingSecondary && upcomingRecurring.length > 0 && (
+          <Card
+            sx={{
+              border: 1,
+              borderColor: "divider",
+              borderRadius: 6,
+              p: 4,
+              position: "relative",
+              overflow: "hidden",
+              boxShadow: 3,
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: 256,
+                height: 256,
+                bgcolor: "warning.main",
+                opacity: 0.03,
+                filter: "blur(96px)",
+              }}
+            />
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ mb: 4, position: "relative", zIndex: 1 }}
+            >
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Avatar
+                  sx={{
+                    bgcolor: "rgba(245, 158, 11, 0.1)",
+                    border: 1,
+                    borderColor: "rgba(245, 158, 11, 0.2)",
+                    color: "warning.main",
+                    borderRadius: 3,
+                    width: 40,
+                    height: 40,
+                  }}
+                >
+                  <FiRepeat size={16} />
+                </Avatar>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                    Pending Executions
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      fontWeight: "bold",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
+                    Upcoming Automated Events
+                  </Typography>
+                </Box>
+              </Stack>
+              <Chip
+                label={`${upcomingRecurring.length} Scheduled`}
+                size="small"
+                sx={{
+                  fontWeight: "black",
+                  textTransform: "uppercase",
+                  fontSize: "10px",
+                  bgcolor: "rgba(245, 158, 11, 0.1)",
+                  color: "warning.main",
+                  border: 1,
+                  borderColor: "divider",
+                }}
+              />
+            </Stack>
+            <Grid
+              container
+              spacing={3}
+              sx={{ position: "relative", zIndex: 1 }}
+            >
+              {upcomingRecurring.map((item) => (
+                <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={item._id}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      p: 2.5,
+                      borderRadius: 4,
+                      bgcolor: "action.hover",
+                      border: 1,
+                      borderColor: "divider",
+                      borderStyle: "dashed",
+                    }}
+                  >
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Avatar
+                        sx={{
+                          bgcolor: "background.paper",
+                          border: 1,
+                          borderColor: "divider",
+                          borderRadius: 3,
+                          width: 36,
+                          height: 36,
+                        }}
+                      >
+                        <FiCalendar
+                          size={14}
+                          style={{ color: "var(--mui-palette-warning-main)" }}
+                        />
+                      </Avatar>
+                      <Box>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            fontWeight: "bold",
+                            display: "block",
+                            textTransform: "uppercase",
+                            maxWidth: 120,
+                          }}
+                          noWrap
+                        >
+                          {item.title}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{
+                            fontWeight: "bold",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.05em",
+                            mt: 0.5,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          <FiClock size={10} />
+                          {new Date(item.nextDate).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: "black", color: "error.main" }}
+                    >
+                      ₹{item.amount.toLocaleString("en-IN")}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Card>
+        )}
+
+        {/* ══ CHRONOLOGICAL INSIGHTS ══ */}
         <Card
           sx={{
             border: 1,
@@ -1639,18 +1804,6 @@ export const UserDashboard = () => {
             boxShadow: 3,
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: 256,
-              height: 256,
-              bgcolor: "warning.main",
-              opacity: 0.03,
-              filter: "blur(96px)",
-            }}
-          />
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -1660,20 +1813,20 @@ export const UserDashboard = () => {
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar
                 sx={{
-                  bgcolor: "rgba(245, 158, 11, 0.1)",
+                  bgcolor: "rgba(6, 182, 212, 0.1)",
                   border: 1,
-                  borderColor: "rgba(245, 158, 11, 0.2)",
-                  color: "warning.main",
+                  borderColor: "rgba(6, 182, 212, 0.2)",
+                  color: "cyan.main",
                   borderRadius: 3,
                   width: 40,
                   height: 40,
                 }}
               >
-                <FiRepeat size={16} />
+                <FiCpu size={16} />
               </Avatar>
               <Box>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                  Pending Executions
+                  Intelligence Log
                 </Typography>
                 <Typography
                   variant="caption"
@@ -1684,241 +1837,107 @@ export const UserDashboard = () => {
                     letterSpacing: "0.1em",
                   }}
                 >
-                  Upcoming Automated Events
+                  Historical Telemetry
                 </Typography>
               </Box>
             </Stack>
-            <Chip
-              label={`${upcomingRecurring.length} Scheduled`}
-              size="small"
-              sx={{
-                fontWeight: "black",
-                textTransform: "uppercase",
-                fontSize: "10px",
-                bgcolor: "rgba(245, 158, 11, 0.1)",
-                color: "warning.main",
-                border: 1,
-                borderColor: "divider",
-              }}
-            />
+            {allInsights.length === 0 && !loadingHistory && (
+              <Button
+                type="button"
+                size="small"
+                onClick={fetchAllInsights}
+                startIcon={<FiRefreshCw size={12} />}
+                sx={{
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  borderRadius: 3,
+                }}
+              >
+                Sync Logs
+              </Button>
+            )}
           </Stack>
-          <Grid container spacing={3} sx={{ position: "relative", zIndex: 1 }}>
-            {upcomingRecurring.map((item) => (
-              <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={item._id}>
-                <Box
+
+          {loadingHistory ? (
+            <Stack spacing={2}>
+              <Skeleton
+                variant="rectangular"
+                height={100}
+                sx={{ borderRadius: 4 }}
+              />
+              <Skeleton
+                variant="rectangular"
+                height={100}
+                sx={{ borderRadius: 4 }}
+              />
+            </Stack>
+          ) : !allInsights || allInsights.length === 0 ? (
+            <Stack
+              alignItems="center"
+              justifyContent="center"
+              spacing={2}
+              sx={{ py: 6, opacity: 0.6 }}
+            >
+              <Avatar
+                sx={{
+                  bgcolor: "action.hover",
+                  border: 1,
+                  borderColor: "divider",
+                  width: 48,
+                  height: 48,
+                }}
+              >
+                <FiInbox
+                  style={{ color: "var(--mui-palette-text-secondary)" }}
+                />
+              </Avatar>
+              <Box textAlign="center">
+                <Typography
+                  variant="caption"
                   sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    p: 2.5,
-                    borderRadius: 4,
-                    bgcolor: "action.hover",
-                    border: 1,
-                    borderColor: "divider",
-                    borderStyle: "dashed",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
                   }}
                 >
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar
-                      sx={{
-                        bgcolor: "background.paper",
-                        border: 1,
-                        borderColor: "divider",
-                        borderRadius: 3,
-                        width: 36,
-                        height: 36,
-                      }}
-                    >
-                      <FiCalendar
-                        size={14}
-                        style={{ color: "var(--mui-palette-warning-main)" }}
-                      />
-                    </Avatar>
-                    <Box>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontWeight: "bold",
-                          display: "block",
-                          textTransform: "uppercase",
-                          maxWidth: 120,
-                        }}
-                        noWrap
-                      >
-                        {item.title}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{
-                          fontWeight: "bold",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          mt: 0.5,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        <FiClock size={10} />
-                        {new Date(item.nextDate).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                        })}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: "black", color: "error.main" }}
+                  No active telemetry available
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ maxW: 280, mx: "auto", mt: 0.5 }}
+                >
+                  Trigger AI modules to populate your historical intelligence
+                  ledger.
+                </Typography>
+              </Box>
+            </Stack>
+          ) : (
+            <Grid
+              container
+              spacing={3}
+              sx={{ position: "relative", zIndex: 1 }}
+            >
+              {allInsights.map((item) => (
+                <Grid size={{ xs: 12, md: 6 }} key={item._id}>
+                  <Card
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      border: 1,
+                      borderColor: "divider",
+                    }}
                   >
-                    ₹{item.amount.toLocaleString("en-IN")}
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </Card>
-      )}
-
-      {/* ══ CHRONOLOGICAL INSIGHTS ══ */}
-      <Card
-        sx={{
-          border: 1,
-          borderColor: "divider",
-          borderRadius: 6,
-          p: 4,
-          position: "relative",
-          overflow: "hidden",
-          boxShadow: 3,
-        }}
-      >
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ mb: 4, position: "relative", zIndex: 1 }}
-        >
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar
-              sx={{
-                bgcolor: "rgba(6, 182, 212, 0.1)",
-                border: 1,
-                borderColor: "rgba(6, 182, 212, 0.2)",
-                color: "cyan.main",
-                borderRadius: 3,
-                width: 40,
-                height: 40,
-              }}
-            >
-              <FiCpu size={16} />
-            </Avatar>
-            <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                Intelligence Log
-              </Typography>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                Historical Telemetry
-              </Typography>
-            </Box>
-          </Stack>
-          {allInsights.length === 0 && !loadingHistory && (
-            <Button
-              size="small"
-              onClick={fetchAllInsights}
-              startIcon={<FiRefreshCw size={12} />}
-              sx={{
-                fontWeight: "bold",
-                textTransform: "none",
-                borderRadius: 3,
-              }}
-            >
-              Sync Logs
-            </Button>
+                    <Typography variant="body2">
+                      {item.content || JSON.stringify(item)}
+                    </Typography>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
           )}
-        </Stack>
-
-        {loadingHistory ? (
-          <Stack spacing={2}>
-            <Skeleton
-              variant="rectangular"
-              height={100}
-              sx={{ borderRadius: 4 }}
-            />
-            <Skeleton
-              variant="rectangular"
-              height={100}
-              sx={{ borderRadius: 4 }}
-            />
-          </Stack>
-        ) : !allInsights || allInsights.length === 0 ? (
-          <Stack
-            alignItems="center"
-            justifyContent="center"
-            spacing={2}
-            sx={{ py: 6, opacity: 0.6 }}
-          >
-            <Avatar
-              sx={{
-                bgcolor: "action.hover",
-                border: 1,
-                borderColor: "divider",
-                width: 48,
-                height: 48,
-              }}
-            >
-              <FiInbox style={{ color: "var(--mui-palette-text-secondary)" }} />
-            </Avatar>
-            <Box textAlign="center">
-              <Typography
-                variant="caption"
-                sx={{
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                No active telemetry available
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ maxW: 280, mx: "auto", mt: 0.5 }}
-              >
-                Trigger AI modules to populate your historical intelligence
-                ledger.
-              </Typography>
-            </Box>
-          </Stack>
-        ) : (
-          <Grid container spacing={3} sx={{ position: "relative", zIndex: 1 }}>
-            {allInsights.map((item, index) => (
-              <Grid size={{ xs: 12, md: 6 }} key={item._id || index}>
-                <Card
-                  sx={{
-                    p: 2,
-                    borderRadius: 3,
-                    border: 1,
-                    borderColor: "divider",
-                  }}
-                >
-                  <Typography variant="body2">
-                    {item.content || JSON.stringify(item)}
-                  </Typography>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Card>
-    </Box>
+        </Card>
+      </Box>
+    </LazyMotion>
   );
 };

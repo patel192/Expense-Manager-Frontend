@@ -104,10 +104,10 @@ export const UserDashboardLayout = () => {
 
         {/* List of Navigation Links */}
         <List sx={{ px: 2, py: 3 }}>
-          {navTabs.map((tab, i) => {
+          {navTabs.map((tab) => {
             const isActive = location.pathname === tab.path;
             return (
-              <ListItem key={i} disablePadding sx={{ mb: 1 }}>
+              <ListItem key={tab.path} disablePadding sx={{ mb: 1 }}>
                 <ListItemButton
                   component={RouterLink}
                   to={tab.path}
@@ -224,14 +224,14 @@ export const UserDashboardLayout = () => {
                 borderRadius: 4,
                 border: 1,
                 borderColor: "divider",
-              }}
-            >
-              {navTabs.map((tab, i) => {
-                const isActive = location.pathname === tab.path;
-                return (
-                  <Button
-                    key={i}
-                    component={RouterLink}
+            }}
+          >
+            {navTabs.map((tab) => {
+              const isActive = location.pathname === tab.path;
+              return (
+                <Button
+                  key={tab.path}
+                  component={RouterLink}
                     to={tab.path}
                     startIcon={tab.icon}
                     sx={{

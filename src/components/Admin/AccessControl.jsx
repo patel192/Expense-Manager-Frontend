@@ -1,9 +1,8 @@
-// ================ Imports ================
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { motion } from "framer-motion";
+import { LazyMotion, m } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 
-// ================ Material UI Components ================
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -19,31 +18,25 @@ import CircularProgress from "@mui/material/CircularProgress";
 import InputAdornment from "@mui/material/InputAdornment";
 import Pagination from "@mui/material/Pagination";
 
-// ================ Icons ================
 import { FaSearch } from "react-icons/fa";
 import { FiShield } from "react-icons/fi";
 
-// ================ Redux Actions ================
 import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
 
 export const AccessControl = () => {
   const dispatch = useDispatch();
 
-  // ================= Redux State ======================
   const { users, loading } = useSelector((state) => state.user);
 
-  // =================== Local State ========================
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 6;
 
-  // ========================= Effects =========================
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  // ========================= Derived Data =========================
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,7 +52,6 @@ export const AccessControl = () => {
     currentPage * rowsPerPage,
   );
 
-  // ========================= Handlers =========================
   const handleDelete = async (userId) => {
     if (!window.confirm("Delete this user?")) return;
     try {
@@ -69,7 +61,6 @@ export const AccessControl = () => {
     }
   };
 
-  // ========================= Loading State =========================
   if (loading) {
     return (
       <Box 
@@ -99,10 +90,9 @@ export const AccessControl = () => {
     );
   }
 
-  // ========================= Render =========================
   return (
-    <Box sx={{ pb: 5 }}>
-      {/* ======= Header ======= */}
+    <LazyMotion features={domAnimation}>
+      <Box sx={{ pb: 5 }}>
       <Stack 
         direction={{ xs: 'column', md: 'row' }} 
         justifyContent="between" 
@@ -119,7 +109,6 @@ export const AccessControl = () => {
           </Typography>
         </Box>
 
-        {/* System status indicator */}
         <Stack 
           direction="row" 
           alignItems="center" 
@@ -144,9 +133,8 @@ export const AccessControl = () => {
         </Stack>
       </Stack>
 
-      {/* ======= Filters Panel ======= */}
       <Box
-        component={motion.div}
+        component={m.div}
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         sx={{
@@ -182,7 +170,6 @@ export const AccessControl = () => {
             />
           </Grid>
 
-          {/* Role filter dropdown */}
           <Grid size={{ xs: 12, md: 4 }}>
             <TextField
               select
@@ -202,13 +189,12 @@ export const AccessControl = () => {
         </Grid>
       </Box>
 
-      {/* ======= User Cards Layout ======= */}
       <Grid container spacing={3}>
         {paginatedUsers.length > 0 ? (
           paginatedUsers.map((user, index) => (
             <Grid size={{ xs: 12, md: 6, xl: 4 }} key={user._id}>
               <Card
-                component={motion.div}
+                component={m.div}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
@@ -274,7 +260,6 @@ export const AccessControl = () => {
                     </Grid>
                   </Stack>
 
-                  {/* Buttons */}
                   <Stack direction="row" spacing={2} sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: 'divider' }}>
                     <Button fullWidth variant="outlined" size="small" color="inherit">
                       CONFIG
@@ -299,7 +284,6 @@ export const AccessControl = () => {
         )}
       </Grid>
 
-      {/* ======= Pagination ======= */}
       {totalPages > 1 && (
         <Stack direction="row" justifyContent="center" sx={{ mt: 5 }}>
           <Pagination 
@@ -311,6 +295,7 @@ export const AccessControl = () => {
           />
         </Stack>
       )}
-    </Box>
+      </Box>
+    </LazyMotion>
   );
 };

@@ -287,7 +287,7 @@ export const Systemlog = () => {
                   <AnimatePresence>
                     {filteredLogs.map((log, index) => (
                       <TableRow
-                        key={log._id || index}
+                        key={log._id}
                         component={motion.tr}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -375,7 +375,7 @@ export const Systemlog = () => {
             <Box sx={{ display: { xs: "block", lg: "none" }, p: 3, "& > :not(style)": { mb: 3 }, "& > :last-child": { mb: 0 } }}>
               {filteredLogs.map((log, index) => (
                 <Card
-                  key={log._id || index}
+                  key={log._id}
                   component={motion.div}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

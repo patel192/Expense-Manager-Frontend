@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m, AnimatePresence } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 import { fetchUsers, deleteUser } from "../../redux/user/userSlice";
 
 // ================ Material UI Components ================
@@ -31,10 +32,28 @@ import { FaTrash, FaEye } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { FiUsers, FiFilter, FiActivity } from "react-icons/fi";
 
+const getRoleColorStyles = (role) => {
+  if (role === "Admin")
+    return {
+      color: "#a78bfa",
+      bgcolor: "rgba(139, 92, 246, 0.1)",
+      borderColor: "rgba(139, 92, 246, 0.2)",
+    };
+  if (role === "Manager")
+    return {
+      color: "#3b82f6",
+      bgcolor: "rgba(59, 130, 246, 0.1)",
+      borderColor: "rgba(59, 130, 246, 0.2)",
+    };
+  return {
+    color: "#10b981",
+    bgcolor: "rgba(16, 185, 129, 0.1)",
+    borderColor: "rgba(16, 185, 129, 0.2)",
+  };
+};
 export const ManageUsers = () => {
   const dispatch = useDispatch();
   const { users = [], loading } = useSelector((state) => state.user);
-  const [displayedUsers, setDisplayedUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,27 +64,23 @@ export const ManageUsers = () => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  useEffect(() => {
-    setDisplayedUsers(users);
-  }, [users]);
-
-  // Command Filter Logic
-  useEffect(() => {
+  const displayedUsers = useMemo(() => {
     let filtered = [...users];
 
     if (search) {
       filtered = filtered.filter(
         (u) =>
           u.name?.toLowerCase().includes(search.toLowerCase()) ||
-          u.email?.toLowerCase().includes(search.toLowerCase())
+          u.email?.toLowerCase().includes(search.toLowerCase()),
       );
     }
+
     if (roleFilter !== "all") {
       filtered = filtered.filter((u) => u.role === roleFilter);
     }
-    setDisplayedUsers(filtered);
-    setCurrentPage(1);
-  }, [search, roleFilter, users]);
+
+    return filtered;
+  }, [users, search, roleFilter]);
 
   // Navigation Logic
   const indexOfLastUser = currentPage * usersPerPage;
@@ -102,19 +117,14 @@ export const ManageUsers = () => {
     }
   };
 
-  const getRoleColorStyles = (role) => {
-    if (role === "Admin") return { color: "#a78bfa", bgcolor: "rgba(139, 92, 246, 0.1)", borderColor: "rgba(139, 92, 246, 0.2)" };
-    if (role === "Manager") return { color: "#3b82f6", bgcolor: "rgba(59, 130, 246, 0.1)", borderColor: "rgba(59, 130, 246, 0.2)" };
-    return { color: "#10b981", bgcolor: "rgba(16, 185, 129, 0.1)", borderColor: "rgba(16, 185, 129, 0.2)" };
-  };
-
   return (
-    <Box
-      component={motion.div}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      sx={{ display: "flex", flexDirection: "column", gap: 5, pb: 5 }}
-    >
+    <LazyMotion features={domAnimation}>
+      <Box
+        component={m.div}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        sx={{ display: "flex", flexDirection: "column", gap: 5, pb: 5 }}
+      >
       <ToastContainer theme="dark" transition={Bounce} />
 
       {/* ══ REGISTRY HEADER ══ */}
@@ -131,7 +141,8 @@ export const ManageUsers = () => {
               fontWeight: 900,
               letterSpacing: -0.5,
               textTransform: "uppercase",
-              background: "linear-gradient(to right, var(--text-primary), var(--text-secondary))",
+              background:
+                "linear-gradient(to right, var(--text-primary), var(--text-secondary))",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -154,7 +165,13 @@ export const ManageUsers = () => {
         </Box>
 
         <Chip
-          icon={<FiActivity size={12} className="animate-pulse" style={{ color: "inherit" }} />}
+          icon={
+            <FiActivity
+              size={12}
+              className="animate-pulse"
+              style={{ color: "inherit" }}
+            />
+          }
           label={`${displayedUsers.length} DATA NODES ACTIVE`}
           sx={{
             fontWeight: 900,
@@ -183,8 +200,30 @@ export const ManageUsers = () => {
         }}
       >
         {/* Glow ambient nodes */}
-        <Box sx={{ position: "absolute", top: 0, right: 0, width: 256, height: 256, bgcolor: "rgba(6, 182, 212, 0.03)", filter: "blur(100px)", pointerEvents: "none" }} />
-        <Box sx={{ position: "absolute", bottom: 0, left: 0, width: 256, height: 256, bgcolor: "rgba(99, 102, 241, 0.03)", filter: "blur(100px)", pointerEvents: "none" }} />
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 256,
+            height: 256,
+            bgcolor: "rgba(6, 182, 212, 0.03)",
+            filter: "blur(100px)",
+            pointerEvents: "none",
+          }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: 256,
+            height: 256,
+            bgcolor: "rgba(99, 102, 241, 0.03)",
+            filter: "blur(100px)",
+            pointerEvents: "none",
+          }}
+        />
 
         <Grid container spacing={3} sx={{ position: "relative" }}>
           <Grid item xs={12} lg={9}>
@@ -192,10 +231,16 @@ export const ManageUsers = () => {
               fullWidth
               placeholder="Query registry by entity name or comm signature..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
               InputProps={{
                 startAdornment: (
-                  <IoSearch size={18} style={{ marginRight: 12, color: "var(--text-muted)" }} />
+                  <IoSearch
+                    size={18}
+                    style={{ marginRight: 12, color: "var(--text-muted)" }}
+                  />
                 ),
               }}
               sx={{
@@ -214,10 +259,16 @@ export const ManageUsers = () => {
               select
               fullWidth
               value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
+              onChange={(e) => {
+                setRoleFilter(e.target.value);
+                setCurrentPage(1);
+              }}
               InputProps={{
                 startAdornment: (
-                  <FiFilter size={14} style={{ marginRight: 12, color: "var(--text-muted)" }} />
+                  <FiFilter
+                    size={14}
+                    style={{ marginRight: 12, color: "var(--text-muted)" }}
+                  />
                 ),
               }}
               sx={{
@@ -230,10 +281,27 @@ export const ManageUsers = () => {
                 },
               }}
             >
-              <MenuItem value="all" sx={{ fontSize: "11px", fontWeight: 900 }}>GLOBAL PERSPECTIVE</MenuItem>
-              <MenuItem value="Admin" sx={{ fontSize: "11px", fontWeight: 900 }}>ADMIN OVERRIDE</MenuItem>
-              <MenuItem value="Manager" sx={{ fontSize: "11px", fontWeight: 900 }}>EXECUTIVE ACCESS</MenuItem>
-              <MenuItem value="Standard" sx={{ fontSize: "11px", fontWeight: 900 }}>STANDARD NODE</MenuItem>
+              <MenuItem value="all" sx={{ fontSize: "11px", fontWeight: 900 }}>
+                GLOBAL PERSPECTIVE
+              </MenuItem>
+              <MenuItem
+                value="Admin"
+                sx={{ fontSize: "11px", fontWeight: 900 }}
+              >
+                ADMIN OVERRIDE
+              </MenuItem>
+              <MenuItem
+                value="Manager"
+                sx={{ fontSize: "11px", fontWeight: 900 }}
+              >
+                EXECUTIVE ACCESS
+              </MenuItem>
+              <MenuItem
+                value="Standard"
+                sx={{ fontSize: "11px", fontWeight: 900 }}
+              >
+                STANDARD NODE
+              </MenuItem>
             </TextField>
           </Grid>
         </Grid>
@@ -255,19 +323,52 @@ export const ManageUsers = () => {
         }}
       >
         {loading ? (
-          <Stack alignItems="center" justifyContent="center" sx={{ py: 16, gap: 3 }}>
-            <CircularProgress size={48} thickness={4} sx={{ color: "#06b6d4" }} />
+          <Stack
+            alignItems="center"
+            justifyContent="center"
+            sx={{ py: 16, gap: 3 }}
+          >
+            <CircularProgress
+              size={48}
+              thickness={4}
+              sx={{ color: "#06b6d4" }}
+            />
             <Box sx={{ textAlign: "center" }}>
-              <Typography variant="caption" sx={{ display: "block", fontWeight: 900, color: "text.primary", tracking: 1.5, textTransform: "uppercase" }} className="animate-pulse">
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  fontWeight: 900,
+                  color: "text.primary",
+                  tracking: 1.5,
+                  textTransform: "uppercase",
+                }}
+                className="animate-pulse"
+              >
                 Synchronizing Nodes...
               </Typography>
-              <Typography variant="caption" sx={{ display: "block", fontWeight: "bold", color: "text.disabled", tracking: 1.5, textTransform: "uppercase", fontSize: "10px", mt: 0.5 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  fontWeight: "bold",
+                  color: "text.disabled",
+                  tracking: 1.5,
+                  textTransform: "uppercase",
+                  fontSize: "10px",
+                  mt: 0.5,
+                }}
+              >
                 Querying Distributed Registry
               </Typography>
             </Box>
           </Stack>
         ) : displayedUsers.length === 0 ? (
-          <Stack alignItems="center" justifyContent="center" sx={{ py: 16, gap: 2 }}>
+          <Stack
+            alignItems="center"
+            justifyContent="center"
+            sx={{ py: 16, gap: 2 }}
+          >
             <Avatar
               variant="rounded"
               sx={{
@@ -280,13 +381,36 @@ export const ManageUsers = () => {
                 boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)",
               }}
             >
-              <FiUsers size={40} style={{ opacity: 0.2, color: "var(--text-muted)" }} />
+              <FiUsers
+                size={40}
+                style={{ opacity: 0.2, color: "var(--text-muted)" }}
+              />
             </Avatar>
             <Box sx={{ textAlign: "center" }}>
-              <Typography variant="caption" sx={{ display: "block", fontWeight: 900, color: "text.primary", tracking: 1.5, textTransform: "uppercase" }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  fontWeight: 900,
+                  color: "text.primary",
+                  tracking: 1.5,
+                  textTransform: "uppercase",
+                }}
+              >
                 No entities detected
               </Typography>
-              <Typography variant="caption" sx={{ display: "block", fontWeight: "bold", color: "text.disabled", tracking: 1.5, textTransform: "uppercase", fontSize: "10px", mt: 0.5 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  fontWeight: "bold",
+                  color: "text.disabled",
+                  tracking: 1.5,
+                  textTransform: "uppercase",
+                  fontSize: "10px",
+                  mt: 0.5,
+                }}
+              >
                 Broaden your search parameters.
               </Typography>
             </Box>
@@ -294,15 +418,84 @@ export const ManageUsers = () => {
         ) : (
           <>
             {/* DESKTOP MATRIX VIEW */}
-            <Box sx={{ display: { xs: "none", lg: "block" }, overflowX: "auto" }}>
+            <Box
+              sx={{ display: { xs: "none", lg: "block" }, overflowX: "auto" }}
+            >
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: "action.hover", borderBottom: 1, borderColor: "divider" }}>
-                    <TableCell sx={{ fontSize: "10px", fontWeight: 900, color: "text.disabled", letterSpacing: "0.2em", textTransform: "uppercase", px: 4, py: 3 }}>Identity Vector</TableCell>
-                    <TableCell sx={{ fontSize: "10px", fontWeight: 900, color: "text.disabled", letterSpacing: "0.2em", textTransform: "uppercase", px: 4, py: 3 }}>Metric (Age)</TableCell>
-                    <TableCell sx={{ fontSize: "10px", fontWeight: 900, color: "text.disabled", letterSpacing: "0.2em", textTransform: "uppercase", px: 4, py: 3 }}>Comm Signature</TableCell>
-                    <TableCell sx={{ fontSize: "10px", fontWeight: 900, color: "text.disabled", letterSpacing: "0.2em", textTransform: "uppercase", px: 4, py: 3 }}>Privilege Level</TableCell>
-                    <TableCell align="center" sx={{ fontSize: "10px", fontWeight: 900, color: "text.disabled", letterSpacing: "0.2em", textTransform: "uppercase", px: 4, py: 3 }}>Operational Controls</TableCell>
+                  <TableRow
+                    sx={{
+                      bgcolor: "action.hover",
+                      borderBottom: 1,
+                      borderColor: "divider",
+                    }}
+                  >
+                    <TableCell
+                      sx={{
+                        fontSize: "10px",
+                        fontWeight: 900,
+                        color: "text.disabled",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        px: 4,
+                        py: 3,
+                      }}
+                    >
+                      Identity Vector
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: "10px",
+                        fontWeight: 900,
+                        color: "text.disabled",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        px: 4,
+                        py: 3,
+                      }}
+                    >
+                      Metric (Age)
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: "10px",
+                        fontWeight: 900,
+                        color: "text.disabled",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        px: 4,
+                        py: 3,
+                      }}
+                    >
+                      Comm Signature
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: "10px",
+                        fontWeight: 900,
+                        color: "text.disabled",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        px: 4,
+                        py: 3,
+                      }}
+                    >
+                      Privilege Level
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        fontSize: "10px",
+                        fontWeight: 900,
+                        color: "text.disabled",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        px: 4,
+                        py: 3,
+                      }}
+                    >
+                      Operational Controls
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -322,7 +515,11 @@ export const ManageUsers = () => {
                         }}
                       >
                         <TableCell sx={{ px: 4, py: 3 }}>
-                          <Stack direction="row" alignItems="center" spacing={2}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={2}
+                          >
                             <Avatar
                               variant="rounded"
                               sx={{
@@ -337,22 +534,58 @@ export const ManageUsers = () => {
                                 color: "#06b6d4",
                                 boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)",
                                 transition: "border-color 0.3s",
-                                ".MuiTableRow-root:hover &": { borderColor: "rgba(6, 182, 212, 0.5)" },
+                                ".MuiTableRow-root:hover &": {
+                                  borderColor: "rgba(6, 182, 212, 0.5)",
+                                },
                               }}
                             >
                               {user.name?.charAt(0).toUpperCase()}
                             </Avatar>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 900, textTransform: "uppercase", letterSpacing: -0.5, transition: "color 0.3s", ".MuiTableRow-root:hover &": { color: "#06b6d4" } }}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                fontWeight: 900,
+                                textTransform: "uppercase",
+                                letterSpacing: -0.5,
+                                transition: "color 0.3s",
+                                ".MuiTableRow-root:hover &": {
+                                  color: "#06b6d4",
+                                },
+                              }}
+                            >
                               {user.name}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell sx={{ px: 4, py: 3, fontFamily: "monospace", fontSize: "12px", fontWeight: "bold", color: "text.secondary" }}>
+                        <TableCell
+                          sx={{
+                            px: 4,
+                            py: 3,
+                            fontFamily: "monospace",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            color: "text.secondary",
+                          }}
+                        >
                           {user.age || "--"} YRS
                         </TableCell>
 
-                        <TableCell sx={{ px: 4, py: 3, fontSize: "11px", fontWeight: "bold", color: "text.secondary", textTransform: "uppercase", letterSpacing: 0.5, transition: "color 0.3s", ".MuiTableRow-root:hover &": { color: "text.primary" } }}>
+                        <TableCell
+                          sx={{
+                            px: 4,
+                            py: 3,
+                            fontSize: "11px",
+                            fontWeight: "bold",
+                            color: "text.secondary",
+                            textTransform: "uppercase",
+                            letterSpacing: 0.5,
+                            transition: "color 0.3s",
+                            ".MuiTableRow-root:hover &": {
+                              color: "text.primary",
+                            },
+                          }}
+                        >
                           {user.email}
                         </TableCell>
 
@@ -373,10 +606,16 @@ export const ManageUsers = () => {
                         </TableCell>
 
                         <TableCell sx={{ px: 4, py: 3 }}>
-                          <Stack direction="row" spacing={1.5} justifyContent="center">
+                          <Stack
+                            direction="row"
+                            spacing={1.5}
+                            justifyContent="center"
+                          >
                             <IconButton
                               size="small"
-                              onClick={() => navigate(`/admin/user/${user._id}`)}
+                              onClick={() =>
+                                navigate(`/admin/user/${user._id}`)
+                              }
                               sx={{
                                 width: 40,
                                 height: 40,
@@ -386,7 +625,10 @@ export const ManageUsers = () => {
                                 borderColor: "divider",
                                 color: "#06b6d4",
                                 transition: "all 0.2s",
-                                "&:hover": { bgcolor: "#06b6d4", color: "#fff" },
+                                "&:hover": {
+                                  bgcolor: "#06b6d4",
+                                  color: "#fff",
+                                },
                                 "&:active": { transform: "scale(0.9)" },
                               }}
                               title="INSPECT VECTOR"
@@ -405,7 +647,10 @@ export const ManageUsers = () => {
                                 borderColor: "divider",
                                 color: "#f43f5e",
                                 transition: "all 0.2s",
-                                "&:hover": { bgcolor: "#f43f5e", color: "#fff" },
+                                "&:hover": {
+                                  bgcolor: "#f43f5e",
+                                  color: "#fff",
+                                },
                                 "&:active": { transform: "scale(0.9)" },
                               }}
                               title="ARCHIVE ENTITY"
@@ -427,7 +672,7 @@ export const ManageUsers = () => {
                 {currentUsers.map((user) => (
                   <Grid item xs={12} md={6} key={user._id}>
                     <Card
-                      component={motion.div}
+                      component={m.div}
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       whileTap={{ scale: 0.98 }}
@@ -446,23 +691,72 @@ export const ManageUsers = () => {
                         "&:hover .ambient-glow": { transform: "scale(1.5)" },
                       }}
                     >
-                      <Box className="ambient-glow" sx={{ position: "absolute", top: -48, right: -48, width: 128, height: 128, bgcolor: "rgba(6, 182, 212, 0.03)", filter: "blur(50px)", pointerEvents: "none", transition: "transform 0.7s" }} />
+                      <Box
+                        className="ambient-glow"
+                        sx={{
+                          position: "absolute",
+                          top: -48,
+                          right: -48,
+                          width: 128,
+                          height: 128,
+                          bgcolor: "rgba(6, 182, 212, 0.03)",
+                          filter: "blur(50px)",
+                          pointerEvents: "none",
+                          transition: "transform 0.7s",
+                        }}
+                      />
 
                       <Stack direction="row" alignItems="center" spacing={2.5}>
-                        <Avatar variant="rounded" sx={{ width: 56, height: 56, borderRadius: 4, bgcolor: "background.paper", border: 1, borderColor: "divider", color: "#06b6d4", fontWeight: 900, fontSize: "20px" }}>
+                        <Avatar
+                          variant="rounded"
+                          sx={{
+                            width: 56,
+                            height: 56,
+                            borderRadius: 4,
+                            bgcolor: "background.paper",
+                            border: 1,
+                            borderColor: "divider",
+                            color: "#06b6d4",
+                            fontWeight: 900,
+                            fontSize: "20px",
+                          }}
+                        >
                           {user.name?.charAt(0).toUpperCase()}
                         </Avatar>
                         <Box sx={{ minWidth: 0, flex: 1 }}>
-                          <Typography variant="h6" sx={{ fontWeight: 900, textTransform: "uppercase", letterSpacing: -0.5, noWrap: true }}>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              fontWeight: 900,
+                              textTransform: "uppercase",
+                              letterSpacing: -0.5,
+                              noWrap: true,
+                            }}
+                          >
                             {user.name}
                           </Typography>
-                          <Typography variant="caption" sx={{ display: "block", fontWeight: "bold", color: "text.disabled", letterSpacing: 1, textTransform: "uppercase", noWrap: true }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              display: "block",
+                              fontWeight: "bold",
+                              color: "text.disabled",
+                              letterSpacing: 1,
+                              textTransform: "uppercase",
+                              noWrap: true,
+                            }}
+                          >
                             {user.email}
                           </Typography>
                         </Box>
                       </Stack>
 
-                      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pt: 3, borderTop: 1, borderColor: "divider" }}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ pt: 3, borderTop: 1, borderColor: "divider" }}
+                      >
                         <Chip
                           label={`${user.role} ACCESS`}
                           variant="outlined"
@@ -476,10 +770,32 @@ export const ManageUsers = () => {
                           }}
                         />
                         <Stack direction="row" spacing={1}>
-                          <IconButton onClick={() => navigate(`/admin/user/${user._id}`)} sx={{ p: 1.5, borderRadius: 3, bgcolor: "#06b6d4", color: "#fff", boxShadow: "0 10px 15px -3px rgba(6,182,212,0.2)", "&:hover": { bgcolor: "#06b6d4" }, "&:active": { transform: "scale(0.9)" } }}>
+                          <IconButton
+                            onClick={() => navigate(`/admin/user/${user._id}`)}
+                            sx={{
+                              p: 1.5,
+                              borderRadius: 3,
+                              bgcolor: "#06b6d4",
+                              color: "#fff",
+                              boxShadow: "0 10px 15px -3px rgba(6,182,212,0.2)",
+                              "&:hover": { bgcolor: "#06b6d4" },
+                              "&:active": { transform: "scale(0.9)" },
+                            }}
+                          >
                             <FaEye size={14} />
                           </IconButton>
-                          <IconButton onClick={() => handleDelete(user._id)} sx={{ p: 1.5, borderRadius: 3, bgcolor: "#f43f5e", color: "#fff", boxShadow: "0 10px 15px -3px rgba(244,63,94,0.2)", "&:hover": { bgcolor: "#f43f5e" }, "&:active": { transform: "scale(0.9)" } }}>
+                          <IconButton
+                            onClick={() => handleDelete(user._id)}
+                            sx={{
+                              p: 1.5,
+                              borderRadius: 3,
+                              bgcolor: "#f43f5e",
+                              color: "#fff",
+                              boxShadow: "0 10px 15px -3px rgba(244,63,94,0.2)",
+                              "&:hover": { bgcolor: "#f43f5e" },
+                              "&:active": { transform: "scale(0.9)" },
+                            }}
+                          >
                             <FaTrash size={14} />
                           </IconButton>
                         </Stack>
@@ -496,7 +812,16 @@ export const ManageUsers = () => {
       {/* ── NAVIGATION ENGINE ── */}
       {totalPages > 1 && (
         <Stack direction="row" justifyContent="center" sx={{ mt: 2 }}>
-          <Box sx={{ p: 1, bgcolor: "background.paper", borderRadius: 8, border: 1, borderColor: "divider", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
+          <Box
+            sx={{
+              p: 1,
+              bgcolor: "background.paper",
+              borderRadius: 8,
+              border: 1,
+              borderColor: "divider",
+              boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+            }}
+          >
             <Pagination
               count={totalPages}
               page={currentPage}
@@ -504,7 +829,9 @@ export const ManageUsers = () => {
               renderItem={(item) => (
                 <PaginationItem
                   {...item}
-                  page={item.page ? String(item.page).padStart(2, "0") : undefined}
+                  page={
+                    item.page ? String(item.page).padStart(2, "0") : undefined
+                  }
                   sx={{
                     minWidth: 44,
                     height: 44,
@@ -514,11 +841,13 @@ export const ManageUsers = () => {
                     color: "text.disabled",
                     transition: "all 0.3s",
                     "&.Mui-selected": {
-                      background: "linear-gradient(to top right, #06b6d4, #2563eb)",
+                      background:
+                        "linear-gradient(to top right, #06b6d4, #2563eb)",
                       color: "#fff",
                       boxShadow: "0 10px 15px -3px rgba(6,182,212,0.3)",
                       "&:hover": {
-                        background: "linear-gradient(to top right, #06b6d4, #2563eb)",
+                        background:
+                          "linear-gradient(to top right, #06b6d4, #2563eb)",
                       },
                     },
                     "&:not(.Mui-selected):hover": {
@@ -533,5 +862,6 @@ export const ManageUsers = () => {
         </Stack>
       )}
     </Box>
+    </LazyMotion>
   );
 };

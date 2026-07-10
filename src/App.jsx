@@ -63,7 +63,7 @@ function App() {
     } else {
       document.body.className = "public-layout";
     }
-  }, [location.pathname]);
+  }, [location]);
 
   return (
     <>

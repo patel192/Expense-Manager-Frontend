@@ -7,7 +7,8 @@ import {
   fetchRecentExpenses,
   fetchCategories,
 } from "../../../redux/expense/expenseSlice";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m, AnimatePresence } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 import {
   BarChart,
   Bar,
@@ -41,13 +42,6 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 
-/**
- * --- EXPENSE CENTER ---
- * The primary dashboard for tracking outgoing capital and analyzing spending habits.
- * Features: Recent Activity, Deep Analytics, and a Filterable Ledger.
- */
-
-// --- ATOMIC UI & SHARED COMPONENTS ---
 
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -114,7 +108,7 @@ export const UserExpenses = () => {
     datePreset: "all",
   });
 
-  const userId = useMemo(() => user?._id, [user]);
+  const userId = user?._id;
   const COLORS = [
     "#ef4444",
     "#06b6d4",
@@ -203,7 +197,7 @@ export const UserExpenses = () => {
   }, [expenses]);
 
   // Handle new expense submission
-  const SubmitHandler = async (data) => {
+  const submitHandler = async (data) => {
     try {
       setIsSubmitting(true);
       await axiosInstance.post("/expenses", {
@@ -267,13 +261,14 @@ export const UserExpenses = () => {
   ];
 
   return (
-    <div className="space-y-6 text-[var(--text-primary)]">
-      {/* ── HEADER ── */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-      >
+    <LazyMotion features={domAnimation}>
+      <div className="space-y-6 text-[var(--text-primary)]">
+        {/* ── HEADER ── */}
+        <m.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent">
             Expense Center
@@ -283,6 +278,7 @@ export const UserExpenses = () => {
           </p>
         </div>
         <button
+        type="button"
           onClick={() => setIsModalOpen(true)}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
                      bg-gradient-to-r from-rose-500 to-pink-600 text-sm font-bold text-white
@@ -291,7 +287,7 @@ export const UserExpenses = () => {
         >
           <FiPlus size={18} /> Add Expense
         </button>
-      </motion.div>
+      </m.div>
 
       {/* ── QUICK STAT CARDS ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -333,8 +329,8 @@ export const UserExpenses = () => {
             icon: <FiTag size={18} />,
           },
         ].map((card, idx) => (
-          <motion.div
-            key={idx}
+          <m.div
+            key={card.label}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: idx * 0.05 }}
@@ -367,6 +363,7 @@ export const UserExpenses = () => {
       <div className="flex items-center gap-1 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-2xl p-1.5 w-fit flex-wrap shadow-sm">
         {tabs.map((tab) => (
           <button
+          type="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all duration-200
@@ -421,6 +418,7 @@ export const UserExpenses = () => {
                     No recent expenses found.
                   </p>
                   <button
+                  type="button"
                     onClick={() => setIsModalOpen(true)}
                     className="text-xs font-bold text-rose-500 hover:text-rose-400 transition-colors uppercase tracking-widest"
                   >
@@ -563,9 +561,9 @@ export const UserExpenses = () => {
                         paddingAngle={4}
                         label={false}
                       >
-                        {categoryBreakdown.map((_, i) => (
+                        {categoryBreakdown.map((entry, i) => (
                           <Cell
-                            key={i}
+                            key={entry.name}
                             fill={COLORS[i % COLORS.length]}
                             strokeWidth={0}
                           />
@@ -578,7 +576,7 @@ export const UserExpenses = () => {
                   <div className="space-y-2.5 max-h-[220px] overflow-y-auto px-2 custom-scrollbar">
                     {categoryBreakdown.map((cat, i) => (
                       <div
-                        key={i}
+                        key={cat.name}
                         className="flex items-center justify-between group"
                       >
                         <div className="flex items-center gap-2.5">
@@ -623,12 +621,14 @@ export const UserExpenses = () => {
               </div>
               <div className="flex items-center gap-2">
                 <button
+                type="button"
                   onClick={clearFilters}
                   className="text-[10px] font-bold text-rose-500 uppercase tracking-widest hover:underline px-2"
                 >
                   Clear All
                 </button>
                 <button
+                type="button"
                   onClick={() => setIsModalOpen(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface-secondary)]
                             border border-[var(--border)] text-xs font-bold text-[var(--text-primary)] hover:bg-[var(--surface-tertiary)]
@@ -720,6 +720,7 @@ export const UserExpenses = () => {
                   </p>
                 </div>
                 <button
+                type="button"
                   onClick={() => setIsModalOpen(true)}
                   className="mt-2 text-xs font-extrabold text-white bg-rose-500 px-5 py-2.5 rounded-xl hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20"
                 >
@@ -735,9 +736,9 @@ export const UserExpenses = () => {
                     "Amount",
                     "Entry Date",
                     "Action",
-                  ].map((h, i) => (
+                  ].map((h) => (
                     <span
-                      key={i}
+                      key={h}
                       className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.15em]"
                     >
                       {h}
@@ -747,7 +748,7 @@ export const UserExpenses = () => {
 
                 <div className="divide-y divide-[var(--border)]">
                   {expenses.map((expense, i) => (
-                    <motion.div
+                    <m.div
                       key={expense._id}
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -788,6 +789,7 @@ export const UserExpenses = () => {
                       </span>
 
                       <button
+                      type="button"
                         onClick={() => deleteExpense(expense._id)}
                         className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
                                    text-[var(--text-muted)] hover:bg-rose-500 hover:text-white hover:shadow-lg hover:shadow-rose-500/30 transition-all active:scale-90 border border-transparent hover:border-rose-600"
@@ -795,7 +797,7 @@ export const UserExpenses = () => {
                       >
                         <FiTrash2 size={14} />
                       </button>
-                    </motion.div>
+                    </m.div>
                   ))}
                 </div>
               </div>
@@ -847,7 +849,7 @@ export const UserExpenses = () => {
 
         <DialogContent sx={{ px: 4, py: 4 }}>
           <form
-            onSubmit={handleSubmit(SubmitHandler)}
+            onSubmit={handleSubmit(submitHandler)}
             className="space-y-5"
           >
             <Field
@@ -939,5 +941,6 @@ export const UserExpenses = () => {
         </DialogContent>
       </MuiDialog>
     </div>
+    </LazyMotion>
   );
 };

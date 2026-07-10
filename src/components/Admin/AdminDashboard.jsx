@@ -14,7 +14,8 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { motion } from "framer-motion";
+import { LazyMotion, m } from "framer-motion";
+import { domAnimation } from "framer-motion/features/reducedMotion";
 
 // ================ Material UI Components ================
 import Box from "@mui/material/Box";
@@ -126,7 +127,8 @@ export const AdminDashboard = () => {
   if (loadingDashboard) return <DashboardSkeleton />;
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 5, pb: 10 }}>
+    <LazyMotion features={domAnimation}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 5, pb: 10 }}>
       
       {/* ---------- HEADER ---------- */}
       <Stack
@@ -181,9 +183,9 @@ export const AdminDashboard = () => {
           { label: "System Health", value: "99.9%", icon: <FiLayout />, color: "success.main" },
           { label: "Database Latency", value: "24ms", icon: <FiDatabase />, color: "error.main" },
         ].map((kpi, i) => (
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={i}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={`${kpi.label}-${i}`}>
             <Box
-              component={motion.div}
+              component={m.div}
               whileHover={{ y: -5 }}
               sx={{
                 p: 3,
@@ -232,7 +234,7 @@ export const AdminDashboard = () => {
               { label: "System Outflow", value: summary.totalExpense, icon: <FiTrendingDown />, color: "error.main" },
               { label: "Net Infrastructure Flow", value: summary.balance, icon: <FiActivity />, color: "cyan.main" },
             ].map((card, i) => (
-              <Grid size={{ xs: 12, md: 4 }} key={i}>
+              <Grid size={{ xs: 12, md: 4 }} key={`${card.label}-${i}`}>
                 <Stack
                   direction="row"
                   spacing={3}
@@ -323,7 +325,7 @@ export const AdminDashboard = () => {
                 <PieChart>
                   <Pie data={categoryData} innerRadius={70} outerRadius={90} paddingAngle={8} dataKey="value">
                     {categoryData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="none" />
+                      <Cell key={`${categoryData[i]?.name}-${i}`} fill={COLORS[i % COLORS.length]} stroke="none" />
                     ))}
                   </Pie>
                   <Tooltip
@@ -349,7 +351,7 @@ export const AdminDashboard = () => {
             <Stack spacing={1.5} sx={{ mt: 3 }}>
               {categoryData.map((item, idx) => (
                 <Stack
-                  key={idx}
+                  key={`${item.name}-${idx}`}
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
@@ -435,7 +437,7 @@ export const AdminDashboard = () => {
               {filteredTransactions.slice(0, itemsPerPage).map((tx, idx) => (
                 <TableRow
                   key={tx._id || idx}
-                  component={motion.tr}
+                  component={m.tr}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   sx={{ "&:hover": { bgcolor: "action.hover" } }}
@@ -525,7 +527,7 @@ export const AdminDashboard = () => {
           </Stack>
         </Stack>
       </Box>
-    </Box>
+    </LazyMotion>
   );
 };
 

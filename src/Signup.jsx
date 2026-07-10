@@ -228,7 +228,7 @@ export const Signup = () => {
                     border: "rgba(59, 130, 246, 0.2)",
                   },
                 ].map((item, i) => (
-                  <Stack key={i} direction="row" spacing={2} alignItems="center">
+                  <Stack key={`${item.text}-${i}`} direction="row" spacing={2} alignItems="center">
                     <Avatar
                       sx={{
                         width: 40,
@@ -255,7 +255,7 @@ export const Signup = () => {
                   { label: "Free", sublabel: "For Lifetime" },
                   { label: "Private", sublabel: "Zero Tracking" },
                 ].map((s, i) => (
-                  <Grid size={6} key={i}>
+                  <Grid size={6} key={`${s.label}-${i}`}>
                     <Box
                       sx={{
                         bgcolor: "background.paper",

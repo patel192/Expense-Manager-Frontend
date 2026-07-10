@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-
+import { m, AnimatePresence } from "framer-motion";
 // ================ Material UI Components ================
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -17,10 +16,15 @@ import Stack from "@mui/material/Stack";
 import { FiMenu, FiX, FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from "../../context/ThemeContext";
 
-/**
- * --- MAIN NAVIGATION BAR ---
- * Handles site-wide navigation, section scrolling, and theme switching.
- */
+// Hoisted outside the runtime lifecycle entirely to prevent layout break-gaps
+const NAV_LINKS = [
+  { label: "Home", to: "/" },
+  { label: "Income", id: "income" },
+  { label: "Expenses", id: "expenses" },
+  { label: "Budgets", id: "budgets" },
+  { label: "Reports", id: "reports" },
+];
+
 export const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
@@ -38,7 +42,9 @@ export const Navbar = () => {
 
   useEffect(() => {
     const handleOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+      if (!menuRef.current) return;
+
+      if (!menuRef.current.contains(e.target)) {
         setOpen(false);
       }
     };
@@ -48,17 +54,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     setOpen(false);
-  }, [location.pathname]);
-
-  // --- NAVIGATION HELPERS ---
-
-  const links = [
-    { label: "Home", to: "/" },
-    { label: "Income", id: "income" },
-    { label: "Expenses", id: "expenses" },
-    { label: "Budgets", id: "budgets" },
-    { label: "Reports", id: "reports" },
-  ];
+  }, [location]);
 
   const scrollToSection = (e, id) => {
     e.preventDefault();
@@ -83,7 +79,9 @@ export const Navbar = () => {
         zIndex: (theme) => theme.zIndex.appBar + 100,
         borderBottom: 1,
         borderColor: "divider",
-        bgcolor: scrolled ? "rgba(var(--bg-rgb), 0.95)" : "rgba(var(--bg-rgb), 0.8)",
+        bgcolor: scrolled
+          ? "rgba(var(--bg-rgb), 0.95)"
+          : "rgba(var(--bg-rgb), 0.8)",
         backdropFilter: scrolled ? "blur(24px)" : "blur(16px)",
         transition: "all 0.3s ease-in-out",
       }}
@@ -92,14 +90,14 @@ export const Navbar = () => {
         <Toolbar
           disableGutters
           sx={{
-            justifyContent: "between",
+            justifyContent: "space-between",
             py: scrolled ? 1 : 1.75,
             transition: "padding 0.3s ease-in-out",
           }}
         >
           {/* ── LOGO BRAND MARK ── */}
           <Stack
-            component={motion.div}
+            component={m.div}
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
@@ -152,7 +150,7 @@ export const Navbar = () => {
 
           {/* ── DESKTOP NAVIGATION INTERFACE ── */}
           <Box
-            component={motion.div}
+            component={m.div}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
@@ -163,10 +161,11 @@ export const Navbar = () => {
               flexGrow: 1,
             }}
           >
-            {links.map((link, i) =>
-              link.id ? (
+            {NAV_LINKS.map((link) => {
+              const stableKey = `nav-desktop-${link.id || link.to}`;
+              return link.id ? (
                 <Button
-                  key={i}
+                  key={stableKey}
                   onClick={(e) => scrollToSection(e, link.id)}
                   sx={{
                     px: 1.5,
@@ -175,14 +174,17 @@ export const Navbar = () => {
                     textTransform: "none",
                     fontWeight: 500,
                     color: "text.secondary",
-                    "&:hover": { color: "text.primary", bgcolor: "action.hover" },
+                    "&:hover": {
+                      color: "text.primary",
+                      bgcolor: "action.hover",
+                    },
                   }}
                 >
                   {link.label}
                 </Button>
               ) : (
                 <Button
-                  key={i}
+                  key={stableKey}
                   component={RouterLink}
                   to={link.to}
                   sx={{
@@ -193,17 +195,24 @@ export const Navbar = () => {
                     fontWeight: 500,
                     color: isHomeActive ? "text.primary" : "text.secondary",
                     bgcolor: isHomeActive ? "action.hover" : "transparent",
-                    "&:hover": { color: "text.primary", bgcolor: "action.hover" },
+                    "&:hover": {
+                      color: "text.primary",
+                      bgcolor: "action.hover",
+                    },
                   }}
                 >
                   {link.label}
                 </Button>
-              )
-            )}
+              );
+            })}
 
-            <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 1.5, my: 1 }} />
+            <Divider
+              orientation="vertical"
+              variant="middle"
+              flexItem
+              sx={{ mx: 1.5, my: 1 }}
+            />
 
-            {/* Light / Dark Mode Toggle Action Element */}
             <IconButton
               onClick={toggleTheme}
               sx={{
@@ -230,7 +239,10 @@ export const Navbar = () => {
                   borderColor: "divider",
                   color: "text.secondary",
                   bgcolor: "action.hover",
-                  "&:hover": { bgcolor: "action.selected", borderColor: "divider" },
+                  "&:hover": {
+                    bgcolor: "action.selected",
+                    borderColor: "divider",
+                  },
                 }}
               >
                 Login
@@ -257,7 +269,12 @@ export const Navbar = () => {
           </Box>
 
           {/* ── MOBILE ACTIONS VIEWPORT BAR ── */}
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ display: { xs: "flex", md: "none" } }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ display: { xs: "flex", md: "none" } }}
+          >
             <IconButton
               onClick={toggleTheme}
               sx={{
@@ -276,7 +293,12 @@ export const Navbar = () => {
               component={RouterLink}
               to="/login"
               size="small"
-              sx={{ textTransform: "none", color: "text.secondary", bgcolor: "action.hover", px: 1.5 }}
+              sx={{
+                textTransform: "none",
+                color: "text.secondary",
+                bgcolor: "action.hover",
+                px: 1.5,
+              }}
             >
               Login
             </Button>
@@ -305,14 +327,17 @@ export const Navbar = () => {
                 p: 1,
                 borderRadius: 2,
                 color: "text.secondary",
-                "&:hover": { color: "text.primary", bgcolor: "rgba(255,255,255,0.1)" },
+                "&:hover": {
+                  color: "text.primary",
+                  bgcolor: "rgba(255,255,255,0.1)",
+                },
                 width: 40,
                 height: 40,
               }}
             >
               <AnimatePresence mode="wait" initial={false}>
                 <Box
-                  component={motion.span}
+                  component={m.span}
                   key={open ? "close" : "open"}
                   initial={{ opacity: 0, rotate: -90 }}
                   animate={{ opacity: 1, rotate: 0 }}
@@ -332,10 +357,11 @@ export const Navbar = () => {
       <AnimatePresence>
         {open && (
           <Box
-            component={motion.div}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
+            component={m.div}
+            initial={{ opacity: 0, scaleY: 0 }}
+            animate={{ opacity: 1, scaleY: 1 }}
+            style={{ transformOrigin: "top" }}
+            exit={{ opacity: 0, scaleY: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
             sx={{
               display: { md: "none" },
@@ -362,12 +388,23 @@ export const Navbar = () => {
                 Navigate
               </Typography>
 
-              {links.map((link, i) =>
-                link.id ? (
+              {NAV_LINKS.map((link) => {
+                const stableKey = `nav-mobile-${link.id || link.to}`;
+                return link.id ? (
                   <Button
-                    key={i}
+                    key={stableKey}
                     onClick={(e) => scrollToSection(e, link.id)}
-                    startIcon={<Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: "cyan.main", opacity: 0.6 }} />}
+                    startIcon={
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          bgcolor: "cyan.main",
+                          opacity: 0.6,
+                        }}
+                      />
+                    }
                     sx={{
                       justifyContent: "flex-start",
                       textTransform: "none",
@@ -377,14 +414,17 @@ export const Navbar = () => {
                       borderRadius: 3,
                       fontSize: "0.875rem",
                       minHeight: 44,
-                      "&:hover": { color: "text.primary", bgcolor: "action.hover" },
+                      "&:hover": {
+                        color: "text.primary",
+                        bgcolor: "action.hover",
+                      },
                     }}
                   >
                     {link.label}
                   </Button>
                 ) : (
                   <Button
-                    key={i}
+                    key={stableKey}
                     component={RouterLink}
                     to={link.to}
                     onClick={() => setOpen(false)}
@@ -402,19 +442,24 @@ export const Navbar = () => {
                       justifyContent: "flex-start",
                       textTransform: "none",
                       color: isHomeActive ? "cyan.main" : "text.secondary",
-                      bgcolor: isHomeActive ? "rgba(6, 182, 212, 0.08)" : "transparent",
+                      bgcolor: isHomeActive
+                        ? "rgba(6, 182, 212, 0.08)"
+                        : "transparent",
                       py: 1.5,
                       px: 1.5,
                       borderRadius: 3,
                       fontSize: "0.875rem",
                       minHeight: 44,
-                      "&:hover": { color: "text.primary", bgcolor: "action.hover" },
+                      "&:hover": {
+                        color: "text.primary",
+                        bgcolor: "action.hover",
+                      },
                     }}
                   >
                     {link.label}
                   </Button>
-                )
-              )}
+                );
+              })}
 
               <Divider sx={{ my: 1.5 }} />
 
